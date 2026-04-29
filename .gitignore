@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Claude Code — personal session allowlist (project settings.json is committed)
+.claude/settings.local.json
