@@ -6,7 +6,7 @@ Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro h
 
 ## 1. Cele
 
-- **1:1 funkcjonalność** względem `example.html` (motyw, akcent, active nav, flow cycle, timeline collapse, reveal, form, mobile sheet)
+- **1:1 funkcjonalność** względem `example.html` minus akcenty / tweaks panel (decyzja właściciela: tylko motyw light | dark | system, jeden akcent — navy)
 - **Lepsze fundamenty** niż prototyp: brak FOUC, lepsze a11y, IntersectionObserver zamiast scroll listenera, structured data, OG, sitemap
 - **Gotowe pod blog** — content collections + layouty + RSS + ClientRouter zaprojektowane od początku
 - **Lighthouse 100/100/100/100** na home (cel mierzalny przed deployem)
@@ -34,7 +34,7 @@ Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro h
 
 ### Runtime helpers
 - **`zod`** — schemy dla content collections + walidacja form
-- **`nanostores`** — minimalny state share (theme/accent między wyspami, jeśli zajdzie potrzeba)
+- **`nanostores`** — minimalny state share (theme między wyspami, jeśli zajdzie potrzeba)
 
 ### Testing
 - **`vitest`** — unit (validators, helpers)
@@ -55,16 +55,16 @@ Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro h
 
 | Decyzja | Wybór | Uzasadnienie |
 |---|---|---|
-| CSS approach | **Vanilla CSS + scoped `<style>` w `.astro`** | Design opiera się na CSS variables (10+ tokenów × 2 themes × 3 akcenty) — Tailwind nie dodałby wartości |
+| CSS approach | **Vanilla CSS + scoped `<style>` w `.astro`** | Design oparty na CSS variables + `light-dark()`; Tailwind/SCSS nie dodałyby wartości |
+| Theming | **`light \| dark \| system` przez `light-dark()` + `color-scheme`** | "system" za free przez `prefers-color-scheme`, brak duplikacji w :root vs `[data-theme="dark"]`; jeden akcent (navy) |
 | Naming convention plików | **kebab-case** | Decyzja właściciela; importy w PascalCase działają normalnie |
-| FOUC prevention | **Inline script w `<head>`, `data-theme` na `<html>`** | Synchronicznie przed paint, zero błysku |
+| FOUC prevention | **Inline script w `<head>`, `data-theme` na `<html>` tylko gdy forced** | Synchronicznie przed paint, system mode = brak atrybutu = @media |
 | Active section | **IntersectionObserver z rootMargin** | Tańszy i bardziej deterministyczny niż scroll listener |
 | Form (na teraz) | **Mock + `console.info` payload + state machine na buttonie** | Bez wysyłki; gotowe do podpięcia Action |
 | Form (potem) | **Astro Actions + Zod + Resend** | Walidacja shared client/server, type-safe |
 | Hosting (start) | **CF Pages static** (bez adaptera) | Zero coldstart, najszybszy TTFB; form i tak mockowany |
 | Hosting (potem) | **CF Pages + `@astrojs/cloudflare` w hybrid mode** | Jak będzie real form: home/blog static, `/actions/contact` jako Function |
-| Tweaks panel w prod | **Wyłączony przez env flag** | `PUBLIC_ENABLE_TWEAKS=false` w prod; kod zostaje pod edit-mode |
-| Fonts | **Self-hosted Geist (woff2 w `public/fonts`)** | -1 preconnect, -50ms FCP, GDPR-friendly |
+| Fonts | **Self-hosted Geist (variable woff2 w `public/fonts`)** | -1 preconnect, -50ms FCP, GDPR-friendly |
 | Icons | **`astro-icon` + lucide** | Sprite, tree-shake, mniejszy HTML |
 
 ---
@@ -103,8 +103,7 @@ kacperadler.pl/
 │   │   │   ├── experience.astro
 │   │   │   └── contact.astro
 │   │   ├── theme/
-│   │   │   ├── theme-fab.astro
-│   │   │   └── tweaks-panel.astro
+│   │   │   └── theme-fab.astro       # 3-state: light | dark | system
 │   │   └── contact/
 │   │       ├── contact-form.astro
 │   │       └── contact-links.astro
@@ -140,7 +139,7 @@ kacperadler.pl/
 │   │   └── theme.ts                 # nanostores
 │   ├── styles/
 │   │   ├── global.css
-│   │   ├── tokens.css               # CSS variables, themes, accents
+│   │   ├── tokens.css               # CSS variables + light-dark() + @font-face
 │   │   └── utilities.css
 │   ├── lib/
 │   │   ├── seo.ts
@@ -168,22 +167,20 @@ kacperadler.pl/
 
 | # | Funkcja | Lokalizacja |
 |---|---|---|
-| 1 | Motyw light/dark, persist + prefers-color-scheme fallback | `theme-script.astro` (inline w head) + `scripts/theme.ts` |
-| 2 | Akcent (navy/slate/royal) | `scripts/theme.ts` + `tokens.css` |
-| 3 | Tweaks panel (postMessage edit-mode) | `tweaks-panel.astro`, opt-in via env flag |
-| 4 | Sticky nav z `.scrolled` po >12px | `scripts/nav-scroll.ts` |
-| 5 | Active section w menu (IO zamiast scroll) | `scripts/nav-active.ts` |
-| 6 | CTA "Kontakt" przejmuje active w sekcji #contact | `scripts/nav-active.ts` (data-cta-active) |
-| 7 | Mobile sheet (burger overlay) | `scripts/mobile-sheet.ts` + `mobile-sheet.astro` |
-| 8 | Hero — chips technologiczne, hero-card | `sections/hero.astro` |
-| 9 | Services grid (3 kafelki) | `sections/services.astro` + `content/services` |
-| 10 | Projects grid (n kafelków) | `sections/projects.astro` + `content/projects` |
-| 11 | How-I-work — auto-cycle flow nodes co 2.6s + hover sync | `scripts/flow-cycle.ts` (z Page Visibility API) |
-| 12 | Experience timeline | `sections/experience.astro` + `content/experience` |
-| 13 | Collapsible expand/collapse z animacją max-height | `scripts/timeline-collapse.ts` (+ reduced-motion) |
-| 14 | Reveal-on-scroll | `scripts/reveal.ts` |
-| 15 | Contact form — validation, button states, success | `contact-form.astro` + `scripts/contact-form.ts` |
-| 16 | Footer z social linkami | `layout/footer.astro` |
+| 1 | Motyw `light \| dark \| system` (3-state), persist do localStorage, system = `prefers-color-scheme` | `theme-script.astro` (inline w head) + `scripts/theme.ts` + `theme-fab.astro` |
+| 2 | Sticky nav z `.scrolled` po >12px | `scripts/nav-scroll.ts` |
+| 3 | Active section w menu (IO zamiast scroll) | `scripts/nav-active.ts` |
+| 4 | CTA "Kontakt" przejmuje active w sekcji #contact | `scripts/nav-active.ts` (data-cta-active) |
+| 5 | Mobile sheet (burger overlay) | `scripts/mobile-sheet.ts` + `mobile-sheet.astro` |
+| 6 | Hero — chips technologiczne, hero-card | `sections/hero.astro` |
+| 7 | Services grid (3 kafelki) | `sections/services.astro` + `content/services` |
+| 8 | Projects grid (n kafelków) | `sections/projects.astro` + `content/projects` |
+| 9 | How-I-work — auto-cycle flow nodes co 2.6s + hover sync | `scripts/flow-cycle.ts` (z Page Visibility API) |
+| 10 | Experience timeline | `sections/experience.astro` + `content/experience` |
+| 11 | Collapsible expand/collapse z animacją max-height | `scripts/timeline-collapse.ts` (+ reduced-motion) |
+| 12 | Reveal-on-scroll | `scripts/reveal.ts` |
+| 13 | Contact form — validation, button states, success | `contact-form.astro` + `scripts/contact-form.ts` |
+| 14 | Footer z social linkami | `layout/footer.astro` |
 
 ### Form — state machine na buttonie (nowość vs prototyp)
 
@@ -195,21 +192,24 @@ type FormState = 'idle' | 'submitting' | 'success' | 'error';
 - Mock: `console.info('[contact]', payload)` + setTimeout, gotowe do zamiany na `actions.contact()`
 - CSS: `.btn-submit[data-state="success"]` — wizualny feedback
 
-### Theme — anty-FOUC (nowość vs prototyp)
+### Theme — anty-FOUC + 3-state (nowość vs prototyp)
+
+Model: `light | dark | system`. CSS używa `light-dark()` + `color-scheme: light dark` na `:root`. Kiedy user wymusi `light` lub `dark`, JS ustawia `data-theme` na `<html>`, co zmienia `color-scheme` i tym samym `light-dark()`. Tryb `system` = brak atrybutu = `prefers-color-scheme` rządzi automatycznie.
 
 Inline w `<head>` przed pierwszym paint:
 ```js
-(function () {
+(() => {
   try {
     const stored = localStorage.getItem('ka:theme');
-    const accent = localStorage.getItem('ka:accent') || 'navy';
-    const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.dataset.theme = stored ?? (prefersDark ? 'dark' : 'light');
-    document.documentElement.dataset.accent = accent;
+    if (stored === 'light' || stored === 'dark') {
+      document.documentElement.dataset.theme = stored;
+    }
+    // null lub "system" → brak atrybutu → @media (prefers-color-scheme) via light-dark()
   } catch {}
 })();
 ```
-**Uwaga:** `data-theme` przenosimy z `<body>` na `<html>` — krótszy CSS, lepsza zgodność z View Transitions.
+
+**Uwaga:** `data-theme` przenosimy z `<body>` na `<html>` — krótszy CSS, lepsza zgodność z View Transitions. Akcent (navy/slate/royal) z prototypu wyrzucony — tylko jedna paleta (navy).
 
 ---
 
@@ -227,7 +227,7 @@ Inline w `<head>` przed pierwszym paint:
 - [x] `astro.config.mjs` — `site` URL + vite alias mirror
 
 ### Faza 1 — fundamenty
-- [x] `styles/tokens.css` — CSS variables (light/dark × navy/slate/royal) + `@font-face`
+- [x] `styles/tokens.css` — CSS variables (light/dark via `light-dark()`, navy single accent) + `@font-face`
 - [x] `styles/global.css` — reset + body + `prefers-reduced-motion`
 - [x] `public/fonts/` — Geist + Geist Mono (Variable woff2 z vercel/geist-font), `font-display: swap`
 - [x] `components/layout/theme-script.astro` (inline anty-FOUC) — render w `<head>`
@@ -239,8 +239,7 @@ Inline w `<head>` przed pierwszym paint:
 - [ ] `layout/header.astro` + `layout/nav.astro`
 - [ ] `layout/mobile-sheet.astro`
 - [ ] `layout/footer.astro` + social links (icons via `astro-icon`)
-- [ ] `theme/theme-fab.astro`
-- [ ] `theme/tweaks-panel.astro` (opt-in via `PUBLIC_ENABLE_TWEAKS`)
+- [ ] `theme/theme-fab.astro` — 3-state toggle (`light | dark | system`)
 
 ### Faza 3 — content collections
 - [ ] `content/config.ts` — Zod schemas (services, projects, experience)
@@ -257,7 +256,7 @@ Inline w `<head>` przed pierwszym paint:
 - [ ] `pages/index.astro` — kompozycja sekcji
 
 ### Faza 5 — interakcje
-- [ ] `scripts/theme.ts` — fab toggle + tweaks panel + nanostore sync
+- [ ] `scripts/theme.ts` — 3-state fab toggle (`light | dark | system`) + localStorage persist
 - [ ] `scripts/nav-scroll.ts` — `.scrolled` state
 - [ ] `scripts/nav-active.ts` — IO + CTA contact special case
 - [ ] `scripts/mobile-sheet.ts`
@@ -311,12 +310,11 @@ Inline w `<head>` przed pierwszym paint:
 2. Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git
 3. Build settings:
    - Framework preset: **Astro**
-   - Build command: `pnpm build`
+   - Build command: `bun run build`
    - Build output: `dist`
-   - Node version: `20`
+   - Build runtime: `BUN_VERSION=1.3` (env var)
 4. Environment variables (Production):
    - `PUBLIC_SITE_URL=https://kacperadler.pl`
-   - `PUBLIC_ENABLE_TWEAKS=false`
 5. Custom domain: kacperadler.pl + auto SSL
 6. Preview deploys: każdy PR dostaje URL `*.pages.dev`
 
@@ -369,4 +367,4 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0 + 1 — DONE.** Faza 2 — layout shell: `header.astro`, `nav.astro`, `mobile-sheet.astro`, `footer.astro` + theme-fab + tweaks-panel (opt-in env flag).
+**Faza 0 + 1 — DONE.** Faza 2 — layout shell: `header.astro`, `nav.astro`, `mobile-sheet.astro`, `footer.astro` + 3-state theme-fab.

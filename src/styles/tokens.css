@@ -1,5 +1,10 @@
-/* Design tokens — light/dark × navy/slate/royal accents.
-   Theming applied via [data-theme] + [data-accent] on <html>. */
+/* Design tokens. Theme model:
+ *   - default (no [data-theme]): follow system via prefers-color-scheme
+ *   - [data-theme="light"]: forced light
+ *   - [data-theme="dark"]:  forced dark
+ *
+ * light-dark() resolves against the active color-scheme; setting
+ * color-scheme on the root node is what makes it work. */
 
 @font-face {
   font-family: "Geist";
@@ -18,72 +23,30 @@
 }
 
 :root {
-  --ink: #141416;
-  --ink-2: #2a2a2f;
-  --muted: #6b6b74;
-  --line: rgba(20, 20, 22, 0.12);
-  --line-2: rgba(20, 20, 22, 0.06);
-  --paper: #f6f3ec;
-  --paper-2: #efeadd;
-  --card: #ffffff;
-  --blue: #1e3a5f;
-  --blue-2: #2a4d7f;
-  --blue-wash: rgba(30, 58, 95, 0.08);
-  --accent: var(--blue);
+  --ink: light-dark(#141416, #ece7dc);
+  --ink-2: light-dark(#2a2a2f, #c8c3b8);
+  --muted: light-dark(#6b6b74, #8b8a84);
+  --line: light-dark(rgba(20, 20, 22, 0.12), rgba(236, 231, 220, 0.14));
+  --line-2: light-dark(rgba(20, 20, 22, 0.06), rgba(236, 231, 220, 0.07));
+  --paper: light-dark(#f6f3ec, #0f1116);
+  --paper-2: light-dark(#efeadd, #161922);
+  --card: light-dark(#ffffff, #171a22);
+  --blue: light-dark(#1e3a5f, #8eaed8);
+  --blue-2: light-dark(#2a4d7f, #b4c8e6);
+  --blue-wash: light-dark(rgba(30, 58, 95, 0.08), rgba(142, 174, 216, 0.1));
 
   --display: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
   --sans: "Geist", system-ui, -apple-system, sans-serif;
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
 
   --container: 1160px;
+  color-scheme: light dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --ink: #ece7dc;
-  --ink-2: #c8c3b8;
-  --muted: #8b8a84;
-  --line: rgba(236, 231, 220, 0.14);
-  --line-2: rgba(236, 231, 220, 0.07);
-  --paper: #0f1116;
-  --paper-2: #161922;
-  --card: #171a22;
-  --blue: #8eaed8;
-  --blue-2: #b4c8e6;
-  --blue-wash: rgba(142, 174, 216, 0.1);
-}
-
-[data-accent="navy"] {
-  --blue: #1e3a5f;
-  --blue-2: #2a4d7f;
-  --blue-wash: rgba(30, 58, 95, 0.08);
-}
-
-[data-accent="slate"] {
-  --blue: #334155;
-  --blue-2: #475569;
-  --blue-wash: rgba(51, 65, 85, 0.08);
-}
-
-[data-accent="royal"] {
-  --blue: #3b5bdb;
-  --blue-2: #5169e5;
-  --blue-wash: rgba(59, 91, 219, 0.08);
-}
-
-[data-theme="dark"][data-accent="navy"] {
-  --blue: #8eaed8;
-  --blue-2: #b4c8e6;
-  --blue-wash: rgba(142, 174, 216, 0.1);
-}
-
-[data-theme="dark"][data-accent="slate"] {
-  --blue: #9aa5b5;
-  --blue-2: #b8c1ce;
-  --blue-wash: rgba(154, 165, 181, 0.1);
-}
-
-[data-theme="dark"][data-accent="royal"] {
-  --blue: #8da0ef;
-  --blue-2: #a9b8f3;
-  --blue-wash: rgba(141, 160, 239, 0.1);
+  color-scheme: dark;
 }

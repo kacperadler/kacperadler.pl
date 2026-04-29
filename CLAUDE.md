@@ -7,7 +7,7 @@ Prototyp single-file: `example.html`. **Plan migracji i decyzje architektoniczne
 ## Stack
 
 - **Astro 6** (TypeScript strict)
-- **Vanilla CSS** + scoped `<style>` w `.astro`. Theming oparty o CSS variables (light/dark × navy/slate/royal). **Bez Tailwinda** — design system zbudowany na customowych tokenach.
+- **Vanilla CSS** + scoped `<style>` w `.astro`. Theming: `light | dark | system` przez `light-dark()` + `color-scheme`, jeden akcent (navy). **Bez Tailwinda** — design system zbudowany na customowych tokenach.
 - **Ultracite (Biome)** — lint + format dla TS/JS/JSON
 - **Prettier + prettier-plugin-astro** — formatowanie `*.astro` (Biome ich nie parsuje)
 - **Content Collections** (Zod) dla services / projects / experience / blog
@@ -17,8 +17,8 @@ Prototyp single-file: `example.html`. **Plan migracji i decyzje architektoniczne
 - **Pliki: kebab-case** (`contact-form.astro`, `nav-active.ts`). Importy w PascalCase.
 - **Symbole w plikach**: camelCase dla zmiennych/funkcji, PascalCase dla typów.
 - **Path aliasy**: `@/components`, `@/layouts`, `@/lib`, `@/scripts`, `@/styles`, `@/data`, `@/content`, `@/stores`, `@/assets`.
-- **`data-theme`/`data-accent` na `<html>`** (nie `<body>`) — wymóg anty-FOUC.
-- **Theme script inline w `<head>`** (synchronicznie, przed paint) — eliminuje błysk.
+- **`data-theme` na `<html>`** (nie `<body>`) tylko gdy user wymusił `light` lub `dark`. Brak atrybutu = `system` → `light-dark()` + `color-scheme: light dark` śledzi `prefers-color-scheme` automatycznie.
+- **Theme script inline w `<head>`** (synchronicznie, przed paint) — eliminuje błysk gdy user ma forced theme.
 - **Active section**: IntersectionObserver, **nie** scroll listener.
 - **Form submission**: state machine (`idle | submitting | success | error`) na `data-state` buttona. Aktualnie mock przez `console.info` — real submit przez `astro:actions` w Fazie 9.
 - **`prefers-reduced-motion`** szanowany w każdej animowanej tranzycji.
