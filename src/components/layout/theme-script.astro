@@ -1,0 +1,27 @@
+---
+/* Inline anty-FOUC theme bootstrap.
+ *
+ * Runs synchronously in <head> before first paint. Reads `ka:theme` /
+ * `ka:accent` from localStorage with prefers-color-scheme fallback for
+ * theme. data-theme/data-accent are set on <html> (not <body>) for View
+ * Transitions compatibility and shorter selectors. */
+const THEME_KEY = "ka:theme";
+const ACCENT_KEY = "ka:accent";
+const DEFAULT_ACCENT = "navy";
+---
+
+<script is:inline define:vars={{ THEME_KEY, ACCENT_KEY, DEFAULT_ACCENT }}>
+  (() => {
+    try {
+      const stored = localStorage.getItem(THEME_KEY);
+      const accent = localStorage.getItem(ACCENT_KEY) || DEFAULT_ACCENT;
+      const prefersDark =
+        typeof matchMedia === "function" && matchMedia("(prefers-color-scheme: dark)").matches;
+      const root = document.documentElement;
+      root.dataset.theme = stored ?? (prefersDark ? "dark" : "light");
+      root.dataset.accent = accent;
+    } catch {
+      // localStorage unavailable (private mode, etc.) — fall through to CSS defaults.
+    }
+  })();
+</script>

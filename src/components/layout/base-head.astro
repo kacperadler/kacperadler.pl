@@ -1,0 +1,69 @@
+---
+import ThemeScript from "@/components/layout/theme-script.astro";
+import { siteConfig } from "@/data/site-config";
+import { personSchema, websiteSchema } from "@/lib/seo";
+
+interface Props {
+  description?: string;
+  noindex?: boolean;
+  ogImage?: string;
+  title?: string;
+}
+
+const {
+  title,
+  description = siteConfig.description,
+  ogImage = siteConfig.ogImage,
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title
+  ? `${title} — ${siteConfig.name}`
+  : `${siteConfig.name} — ${siteConfig.role}`;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? siteConfig.url).toString();
+const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+{noindex && <meta content="noindex, nofollow" name="robots" />}
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f3ec" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1116" />
+
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
+<link
+  rel="preload"
+  href="/fonts/GeistMono-Variable.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:locale" content={siteConfig.locale.replace("-", "_")} />
+<meta property="og:site_name" content={siteConfig.name} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+
+<ThemeScript />

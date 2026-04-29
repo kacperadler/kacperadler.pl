@@ -1,0 +1,27 @@
+---
+import { ClientRouter } from "astro:transitions";
+import BaseHead from "@/components/layout/base-head.astro";
+import { siteConfig } from "@/data/site-config";
+import "@/styles/tokens.css";
+import "@/styles/global.css";
+
+interface Props {
+  description?: string;
+  noindex?: boolean;
+  ogImage?: string;
+  title?: string;
+}
+
+const { title, description, ogImage, noindex } = Astro.props;
+---
+
+<!doctype html>
+<html lang={siteConfig.lang}>
+  <head>
+    <BaseHead title={title} description={description} ogImage={ogImage} noindex={noindex} />
+    <ClientRouter />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

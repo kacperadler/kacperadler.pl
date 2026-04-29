@@ -227,13 +227,13 @@ Inline w `<head>` przed pierwszym paint:
 - [x] `astro.config.mjs` — `site` URL + vite alias mirror
 
 ### Faza 1 — fundamenty
-- [ ] `styles/tokens.css` — CSS variables (light/dark × navy/slate/royal)
-- [ ] `styles/global.css` — reset + body
-- [ ] `public/fonts/` — Geist + Geist Mono (woff2), `@font-face` z `font-display: swap`
-- [ ] `theme-script.astro` (inline anty-FOUC) — render w `<head>`
-- [ ] `base-layout.astro` z `<ClientRouter />`
-- [ ] `base-head.astro` — meta, OG, JSON-LD `Person`, sitemap link
-- [ ] `data/site-config.ts`, `data/navigation.ts`
+- [x] `styles/tokens.css` — CSS variables (light/dark × navy/slate/royal) + `@font-face`
+- [x] `styles/global.css` — reset + body + `prefers-reduced-motion`
+- [x] `public/fonts/` — Geist + Geist Mono (Variable woff2 z vercel/geist-font), `font-display: swap`
+- [x] `components/layout/theme-script.astro` (inline anty-FOUC) — render w `<head>`
+- [x] `layouts/base-layout.astro` z `<ClientRouter />`
+- [x] `components/layout/base-head.astro` — meta, OG, Twitter, JSON-LD `Person` + `WebSite`, font preload (sitemap link odłożony do Fazy 6)
+- [x] `data/site-config.ts`, `data/navigation.ts`, `lib/seo.ts`
 
 ### Faza 2 — layout shell
 - [ ] `layout/header.astro` + `layout/nav.astro`
@@ -369,4 +369,4 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0 — DONE.** Faza 1 — fundamenty: `tokens.css`, `global.css`, `theme-script.astro`, `base-layout.astro`, `base-head.astro`, `data/site-config.ts`, `data/navigation.ts` + self-hosted Geist.
+**Faza 0 + 1 — DONE.** Faza 2 — layout shell: `header.astro`, `nav.astro`, `mobile-sheet.astro`, `footer.astro` + theme-fab + tweaks-panel (opt-in env flag).
