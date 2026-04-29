@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["ultracite/biome/core", "ultracite/biome/astro"],
+  "files": {
+    "includes": [
+      "!**/dist",
+      "!**/.astro",
+      "!**/node_modules",
+      "!**/bun.lock",
+      "!**/example.html",
+      "!**/public"
+    ]
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.astro"],
+      "formatter": {
+        "enabled": false
+      }
+    }
+  ]
+}
