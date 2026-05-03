@@ -5,37 +5,95 @@
 
   "languages": {
     "TypeScript": {
-      "formatter": [
-        { "code_action": "source.fixAll.biome" },
-        { "code_action": "source.organizeImports.biome" }
-      ]
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": [
+            "biome",
+            "check",
+            "--write",
+            "--stdin-file-path={buffer_path}"
+          ]
+        }
+      }
     },
     "TSX": {
-      "formatter": [
-        { "code_action": "source.fixAll.biome" },
-        { "code_action": "source.organizeImports.biome" }
-      ]
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": [
+            "biome",
+            "check",
+            "--write",
+            "--stdin-file-path={buffer_path}"
+          ]
+        }
+      }
     },
     "JavaScript": {
-      "formatter": [
-        { "code_action": "source.fixAll.biome" },
-        { "code_action": "source.organizeImports.biome" }
-      ]
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": [
+            "biome",
+            "check",
+            "--write",
+            "--stdin-file-path={buffer_path}"
+          ]
+        }
+      }
     },
     "JSX": {
-      "formatter": [
-        { "code_action": "source.fixAll.biome" },
-        { "code_action": "source.organizeImports.biome" }
-      ]
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": [
+            "biome",
+            "check",
+            "--write",
+            "--stdin-file-path={buffer_path}"
+          ]
+        }
+      }
     },
     "JSON": {
-      "formatter": [{ "code_action": "source.fixAll.biome" }]
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": [
+            "biome",
+            "check",
+            "--write",
+            "--stdin-file-path={buffer_path}"
+          ]
+        }
+      }
     },
     "JSONC": {
-      "formatter": [{ "code_action": "source.fixAll.biome" }]
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": [
+            "biome",
+            "check",
+            "--write",
+            "--stdin-file-path={buffer_path}"
+          ]
+        }
+      }
     },
     "CSS": {
-      "formatter": [{ "code_action": "source.fixAll.biome" }]
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": [
+            "biome",
+            "check",
+            "--write",
+            "--stdin-file-path={buffer_path}"
+          ]
+        }
+      }
     },
     "Astro": {
       "formatter": {
