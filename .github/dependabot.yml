@@ -1,0 +1,35 @@
+version: 2
+updates:
+  # bun ecosystem reads bun.lock + package.json (supported since 2024).
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Warsaw"
+    open-pull-requests-limit: 5
+    labels:
+      - "deps"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Keeps actions/checkout, setup-bun, etc. pinned to fresh versions.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Warsaw"
+    labels:
+      - "deps"
+      - "ci"
+    groups:
+      actions:
+        update-types:
+          - "minor"
+          - "patch"
