@@ -21,7 +21,7 @@ Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro h
 - **`@astrojs/check`** + `typescript` — type checking dla `.astro`
 - **`@astrojs/mdx`** — pod blog i case-studies projektów (Faza 3)
 - **`@astrojs/sitemap`** — auto-sitemap (Faza 6)
-- **`@astrojs/rss`** — RSS pod blog (Faza 8)
+- **`@astrojs/rss`** — RSS pod blog (Faza 10)
 - **`astro:assets` + `<Image />`** — auto-optymalizacja obrazków
 - **`<ClientRouter />`** (View Transitions) — płynne przejścia
 - **`astro-icon`** + `lucide` icon set — zamiast inline SVG
@@ -289,19 +289,35 @@ Inline w `<head>` przed pierwszym paint:
 - [ ] Cloudflare Pages: connect repo, build cmd `pnpm build`, output `dist`
 - [ ] Custom domain `kacperadler.pl` + DNS
 
-### Faza 8 (przyszłość) — blog
-- [ ] `pages/blog/index.astro` — lista z `getCollection('blog')`
-- [ ] `pages/blog/[slug].astro` — render MDX, TOC, prev/next
-- [ ] `layouts/blog-post.astro`
-- [ ] `pages/rss.xml.ts`
-- [ ] Reading time, tagi, search (pagefind?)
+### Faza 8 — copy improvement
+Przegląd i dopracowanie wszystkich tekstów na stronie po pierwszym deployu (jak content "siedzi" już w realnym layoucie, łatwiej widać co zgrzyta).
+
+- [ ] **`siteConfig`** (`src/data/site-config.ts`) — `name`, `role`, `tagline`, `description`, social handles, e-mail
+- [ ] **Hero** — eyebrow ("Frontend Engineer · Polska"), `<h1>`, hero-sub, hero-card facts (Model / Lokalizacja / Języki / Czas odpowiedzi)
+- [ ] **Services** (`content/services/*.json`) — opisy 3 serwisów (web-apps / landing-pages / internal-tools); rozważyć dodanie konkretnych liczb / metryk
+- [ ] **Projects** (`content/projects/*.json`) — zastąpić 4 placeholdery (alpha/beta/gamma/delta) realnymi projektami z opisami case-study
+- [ ] **How-I-work** — 5 kroków + headings + descriptions; aktualnie jest OK po zigzag refactorze, ale przejrzeć ton
+- [ ] **Experience** (`content/experience/*.json`) — 7 wpisów timeline'a; doszlifować descriptions, sprawdzić daty / lokalizacje
+- [ ] **Contact** — lead text, reply ("Odpowiadam zwykle w ciągu 24h"), spam disclaimer pod submit, success message
+- [ ] **404** — copy "Tej strony nie ma" + paragraf — sprawdzić czy ton pasuje do reszty
+- [ ] **Cross-section consistency audit**: konsekwentny ton (formalny vs swobodny), brak literówek, spójny mix PL/EN dla nazw technologii (np. "TypeScript" vs "Typescript")
 
 ### Faza 9 (przyszłość) — real form submit
-- [ ] `pnpm astro add cloudflare` → `output: 'hybrid'`
+- [ ] `bun astro add cloudflare` → `output: 'hybrid'` (lub server)
 - [ ] `actions/index.ts` — `contact` action z Zod + Resend
+- [ ] `lib/validators.ts` — schemat Zod współdzielony client/server
 - [ ] Honeypot field + rate limit (CF KV)
-- [ ] `scripts/contact-form.ts` — zamiana `console.info` na `actions.contact()`
+- [ ] `scripts/contact-form.ts` — zamiana `console.info` mock na `actions.contact()`
 - [ ] Sentry / CF Logpush dla błędów
+
+### Faza 10 (przyszłość) — blog
+- [ ] `bun astro add mdx` → `@astrojs/mdx` integration
+- [ ] `pages/blog/index.astro` — lista z `getCollection('blog')`, sortowanie po `pubDate`
+- [ ] `pages/blog/[slug].astro` — render MDX, TOC, prev/next
+- [ ] `layouts/blog-post.astro` — meta na artykuł, breadcrumb, related posts
+- [ ] `pages/rss.xml.ts` — `@astrojs/rss` feed
+- [ ] Reading time, tagi, search (pagefind?)
+- [ ] Per-post OG image (Satori / `@vercel/og`) generowany z tytułu
 
 ---
 
@@ -370,4 +386,4 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0 + 1 + 2 + 3 + 4 + 5 + 6 — DONE** (poza Lighthouse / axe audytem — manual po deployu). Faza 7 — testy + deploy: Vitest unit (`validators.ts`), Playwright E2E (theme/nav/sheet/form/timeline), CI build job, Cloudflare Pages connect.
+**Faza 0 + 1 + 2 + 3 + 4 + 5 + 6 — DONE** (poza Lighthouse / axe audytem — manual po deployu). Faza 7 — testy + deploy: Vitest unit, Playwright E2E, CI test job, Cloudflare Pages connect. Po deployu: **Faza 8** copy improvement → **Faza 9** real form submit → **Faza 10** blog.
