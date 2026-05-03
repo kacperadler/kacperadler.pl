@@ -256,7 +256,7 @@ Inline w `<head>` przed pierwszym paint:
 - [ ] `pages/index.astro` — kompozycja sekcji
 
 ### Faza 5 — interakcje
-- [ ] `scripts/theme.ts` — 3-state fab toggle (`light | dark | system`) + localStorage persist
+- [x] ~~`scripts/theme.ts`~~ — wbudowany w `theme-fab.astro` (inline `<script>`, event delegation na `document`, sync na `astro:page-load`); wjechał już w F2 bo bez tego UX wyglądał jak bug
 - [ ] `scripts/nav-scroll.ts` — `.scrolled` state
 - [ ] `scripts/nav-active.ts` — IO + CTA contact special case
 - [ ] `scripts/mobile-sheet.ts`

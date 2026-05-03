@@ -2,12 +2,13 @@
 import { Icon } from "astro-icon/components";
 
 /* 3-state theme toggle: light | dark | system.
- * Markup only — wiring lives in scripts/theme.ts (Faza 5):
- *   - reads/writes localStorage["ka:theme"]
- *   - sets aria-pressed on the active button
- *   - updates <html data-theme> for "light"/"dark", clears it for "system"
  *
- * data-theme-mode is the script's hook; the buttons are inert until then. */
+ * Click handler is delegated on document so it survives ClientRouter
+ * swaps. Sync of aria-pressed runs on first load AND on
+ * astro:page-load so navigation between pages keeps the buttons in
+ * sync with the current state. "system" mode just removes
+ * <html data-theme>, letting `light-dark()` + `color-scheme: light dark`
+ * follow prefers-color-scheme automatically. */
 ---
 
 <div class="fab-stack" role="group" aria-label="Motyw">
@@ -87,3 +88,68 @@ import { Icon } from "astro-icon/components";
     }
   }
 </style>
+
+<script>
+  type ThemeMode = "light" | "dark" | "system";
+  const THEME_KEY = "ka:theme";
+
+  function readStored(): ThemeMode {
+    try {
+      const value = localStorage.getItem(THEME_KEY);
+      return value === "light" || value === "dark" ? value : "system";
+    } catch {
+      return "system";
+    }
+  }
+
+  function writeStored(value: ThemeMode): void {
+    try {
+      if (value === "system") {
+        localStorage.removeItem(THEME_KEY);
+      } else {
+        localStorage.setItem(THEME_KEY, value);
+      }
+    } catch {
+      // ignore (private mode, etc.)
+    }
+  }
+
+  function applyTheme(value: ThemeMode): void {
+    const root = document.documentElement;
+    if (value === "light" || value === "dark") {
+      root.dataset.theme = value;
+    } else {
+      delete root.dataset.theme;
+    }
+  }
+
+  function syncPressed(): void {
+    const active = readStored();
+    const buttons = document.querySelectorAll<HTMLButtonElement>("[data-theme-mode]");
+    for (const btn of buttons) {
+      btn.setAttribute("aria-pressed", btn.dataset.themeMode === active ? "true" : "false");
+    }
+  }
+
+  // Delegated click — survives ClientRouter swaps without re-attaching.
+  document.addEventListener("click", (event) => {
+    const target =
+      event.target instanceof Element
+        ? event.target.closest<HTMLElement>("[data-theme-mode]")
+        : null;
+    if (!target) {
+      return;
+    }
+    const mode = target.dataset.themeMode;
+    if (mode !== "light" && mode !== "dark" && mode !== "system") {
+      return;
+    }
+    writeStored(mode);
+    applyTheme(mode);
+    syncPressed();
+  });
+
+  // Initial sync + re-sync after view transitions.
+  syncPressed();
+  document.addEventListener("astro:page-load", syncPressed);
+</script>
