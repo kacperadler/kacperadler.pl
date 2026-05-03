@@ -267,27 +267,39 @@ Inline w `<head>` przed pierwszym paint:
 - [x] `scripts/reveal.ts` — IO once-only `.in` toggle, reduced-motion = instant final state
 - [x] `scripts/contact-form.ts` — `idle | submitting | success | error` state machine, email/type/message validation, `console.info` mock z 600ms delay
 
-### Faza 6 — SEO + a11y + polish
+### Faza 6 — SEO + a11y + polish ✅ DONE
 - [x] `@astrojs/sitemap` + `public/robots.txt` (z linkiem do sitemap-index.xml)
 - [x] OG image (1200×630) — `src/pages/og-default.png.ts` build-time endpoint przez sharp + SVG; zdjęcie po lewej (smart-crop), brand typografia po prawej
 - [x] JSON-LD `Person` + `WebSite` — wjechało już w F1 (`src/lib/seo.ts`)
 - [x] `aria-live="polite"` na form-success (F4), `aria-busy` na submit (F5), `aria-current="location"` na active nav link (F6)
 - [x] `404.astro` — z BaseLayout(`noindex`), brand mark, dwa CTA (home + contact)
 - [x] Skip-to-content link + globalne `:focus-visible` outline na każdym interactive (a11y baseline)
-- [ ] **Lighthouse audit — cel 100×4** *(manualne — user uruchamia po deployu)*
-- [ ] **axe-core audit przez Playwright** *(odłożone do Fazy 7 razem z resztą E2E)*
+- [x] Heading hierarchy linear (h1 → h2 → h3) — fix `h4 → h3` w how-i-work step-cards po Lighthouse a11y findingu
+- [x] **Lighthouse mobile 100/100/100/100** — Performance / A11y / Best Practices / SEO. Cel z sekcji 9 osiągnięty.
+- [→ F7] **axe-core audit przez Playwright** — odłożone do F7 razem z E2E setupem (jeden wspólny `bun add -D @playwright/test @axe-core/playwright`)
+- [→ post-deploy] Re-run Lighthouse z prawdziwej domeny po podpięciu CF Pages — sanity check na real network / brotli / CDN edge (zwykle wynik *lepszy* niż localhost)
 
 ### Faza 7 — testy + deploy
-- [ ] Vitest unit: `validators.ts` (email regex, form schema)
-- [ ] Playwright E2E:
-  - theme persist (set dark → reload → still dark)
-  - nav active scroll
-  - mobile sheet open/close
-  - form invalid → error states, valid → success
-  - timeline expand/collapse
-- [ ] CI (GitHub Actions): `pnpm install` → `pnpm check` → `pnpm test` → `pnpm build`
-- [ ] Cloudflare Pages: connect repo, build cmd `pnpm build`, output `dist`
-- [ ] Custom domain `kacperadler.pl` + DNS
+- [→ F9] ~~Vitest unit: `validators.ts`~~ — odłożone, `lib/validators.ts` powstaje dopiero w F9 razem z Zod schematem real form action. Teraz nic do testowania jednostkowo.
+- [ ] **Playwright E2E** (`tests/e2e/*.spec.ts`):
+  - theme persist (set dark → reload → still dark; system mode → no `data-theme`)
+  - nav active scroll (scrollIntoView per section → odpowiedni link `.active` + `aria-current`)
+  - contact CTA przejmuje active w sekcji `#contact`
+  - mobile sheet open/close (hamburger click → `data-mobile-sheet="open"`; Escape close)
+  - timeline expand/collapse (button click → `.expanded` toggle + button label swap)
+  - contact form: invalid email → `data-invalid`; valid submit → `data-state="success"` + `data-show` na `.form-success`
+  - skip-to-content link → focus reveals, click jumps to `#top`
+- [ ] **axe-core a11y test** w Playwright (`@axe-core/playwright`) — runuje się jako jeden test w E2E suite, na wszystkich stronach (`/`, `/404`)
+- [ ] **CI workflow update** (`.github/workflows/ci.yml`):
+  - dodać job `e2e` z `bun playwright install --with-deps chromium` + `bun playwright test`
+  - main job sekwencja: lint → check → prettier → build → e2e
+- [ ] **Cloudflare Pages**:
+  - Connect repo na CF dashboard
+  - Build cmd: `bun run build`, output dir: `dist`
+  - Env: `BUN_VERSION=1.3` + `PUBLIC_SITE_URL=https://kacperadler.pl`
+  - Preview deploys per PR (`*.pages.dev`)
+- [ ] **Custom domain** `kacperadler.pl` + DNS (CNAME → `kacperadler-pl.pages.dev`) + auto SSL
+- [ ] **Post-deploy Lighthouse re-run** z prawdziwej domeny (sanity check)
 
 ### Faza 8 — copy improvement
 Przegląd i dopracowanie wszystkich tekstów na stronie po pierwszym deployu (jak content "siedzi" już w realnym layoucie, łatwiej widać co zgrzyta).
@@ -386,4 +398,12 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0 + 1 + 2 + 3 + 4 + 5 + 6 — DONE** (poza Lighthouse / axe audytem — manual po deployu). Faza 7 — testy + deploy: Vitest unit, Playwright E2E, CI test job, Cloudflare Pages connect. Po deployu: **Faza 8** copy improvement → **Faza 9** real form submit → **Faza 10** blog.
+**Faza 0–6 — DONE.** Lighthouse mobile 100×4 ✅ (na localhost — re-run po deployu).
+
+Następnie: **Faza 7 — testy + deploy**:
+1. Playwright E2E + @axe-core/playwright a11y test
+2. CI workflow update (test job)
+3. Cloudflare Pages connect + custom domain DNS
+4. Post-deploy Lighthouse sanity check
+
+Potem: **Faza 8** copy improvement → **Faza 9** real form submit → **Faza 10** blog.
