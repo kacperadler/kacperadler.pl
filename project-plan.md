@@ -251,7 +251,7 @@ Inline w `<head>` przed pierwszym paint:
 - [x] `sections/hero.astro` (eyebrow z pulse, hero-grid, hero-card kv)
 - [x] `sections/services.astro` (mapowanie z collection, sortowanie po `order`)
 - [x] `sections/projects.astro` (mapowanie + cover gradient + glyph; filtruje `draft: true`)
-- [x] `sections/how-i-work.astro` (flow-visual + lista, dane inline w komponencie)
+- [x] `sections/how-i-work.astro` — zigzag timeline (file-tab header + 5 kart naprzemiennie L/R wokół centralnej osi, badge'e czasu na connectorach, statusbar footer); mobile = wszystko po prawej linii à la Experience
 - [x] `sections/experience.astro` (timeline + collapsible markup; toggle JS w F5)
 - [x] `sections/contact.astro` (info + form + contact-link), `contact/contact-form.astro`, `contact/contact-link.astro`
 - [x] `pages/index.astro` — kompozycja sekcji
@@ -262,7 +262,7 @@ Inline w `<head>` przed pierwszym paint:
 - [x] `scripts/nav-scroll.ts` — rAF-throttled scrollY > 12 → `.scrolled` na `[data-nav-wrap]`
 - [x] `scripts/nav-active.ts` — IO + CTA contact special case (#contact ⇒ aktywne CTA, nie link)
 - [x] `scripts/mobile-sheet.ts` — open/close + Escape + body-scroll lock + auto-close po kliknięciu linka
-- [x] `scripts/flow-cycle.ts` — auto co 2.6s + hover sync na `.how-item` + Page Visibility pause
+- [x] ~~`scripts/flow-cycle.ts`~~ — DROPPED. Sekcja how-i-work przeprojektowana na zigzag timeline (jeden komponent zamiast aside + list); auto-cycle stracił sens, hover state to czysty CSS
 - [x] `scripts/timeline-collapse.ts` — class-based + CSS max-height transition (4000px gen. cap zamiast scrollHeight calc)
 - [x] `scripts/reveal.ts` — IO once-only `.in` toggle, reduced-motion = instant final state
 - [x] `scripts/contact-form.ts` — `idle | submitting | success | error` state machine, email/type/message validation, `console.info` mock z 600ms delay
