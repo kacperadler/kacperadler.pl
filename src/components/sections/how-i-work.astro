@@ -59,26 +59,18 @@ const steps: readonly FlowStep[] = [
 
       <div class="how-track">
         {
-          steps.map((step, idx) => {
-            const side = idx % 2 === 0 ? "left" : "right";
-            const isLast = idx === steps.length - 1;
-            return (
-              <>
-                <article class="step" data-side={side}>
-                  <div class="step-card">
-                    <div class="step-num">{step.num}</div>
-                    <h4>{step.title}</h4>
-                    <p>{step.description}</p>
-                  </div>
-                </article>
-                {!isLast && (
-                  <div class="step-connector">
-                    <span class="connector-badge">{step.badge}</span>
-                  </div>
-                )}
-              </>
-            );
-          })
+          steps.map((step, idx) => (
+            <article class="step" data-side={idx % 2 === 0 ? "left" : "right"}>
+              <div class="step-card">
+                <header class="step-head">
+                  <span class="step-num">{step.num}</span>
+                  <h4>{step.title}</h4>
+                  <span class="step-badge">{step.badge}</span>
+                </header>
+                <p>{step.description}</p>
+              </div>
+            </article>
+          ))
         }
       </div>
 
@@ -142,6 +134,9 @@ const steps: readonly FlowStep[] = [
 
   .how-track {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
     padding: 36px 28px;
   }
 
@@ -173,11 +168,13 @@ const steps: readonly FlowStep[] = [
       border-color 0.2s ease;
   }
 
+  /* Dot anchored to the centre line, vertically centred against the card. */
   .step-card::before {
     position: absolute;
-    top: 22px;
+    top: 50%;
     width: 12px;
     height: 12px;
+    margin-top: -6px;
     content: "";
     background: var(--paper);
     border: 2px solid var(--blue);
@@ -215,8 +212,14 @@ const steps: readonly FlowStep[] = [
     left: -34px;
   }
 
+  .step-head {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+
   .step-num {
-    margin-bottom: 6px;
     font-family: var(--mono);
     font-size: 12px;
     color: var(--blue);
@@ -224,7 +227,8 @@ const steps: readonly FlowStep[] = [
   }
 
   .step-card h4 {
-    margin: 0 0 6px;
+    flex: 1;
+    margin: 0;
     font-family: var(--display);
     font-size: 16px;
     font-weight: 500;
@@ -232,30 +236,21 @@ const steps: readonly FlowStep[] = [
     letter-spacing: -0.02em;
   }
 
+  .step-badge {
+    padding: 3px 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--blue);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    background: var(--blue-wash);
+  }
+
   .step-card p {
     margin: 0;
     font-size: 14px;
     line-height: 1.55;
     color: var(--muted);
-  }
-
-  .step-connector {
-    position: relative;
-    height: 36px;
-  }
-
-  .connector-badge {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    padding: 4px 10px;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-    background: light-dark(var(--card), var(--paper-2));
-    transform: translate(-50%, -50%);
   }
 
   @media (max-width: 880px) {
@@ -284,10 +279,6 @@ const steps: readonly FlowStep[] = [
     .step[data-side="right"] .step-card::before {
       right: auto;
       left: -34px;
-    }
-
-    .connector-badge {
-      left: 16px;
     }
   }
 
