@@ -1,0 +1,89 @@
+---
+import { Icon } from "astro-icon/components";
+
+/* 3-state theme toggle: light | dark | system.
+ * Markup only — wiring lives in scripts/theme.ts (Faza 5):
+ *   - reads/writes localStorage["ka:theme"]
+ *   - sets aria-pressed on the active button
+ *   - updates <html data-theme> for "light"/"dark", clears it for "system"
+ *
+ * data-theme-mode is the script's hook; the buttons are inert until then. */
+---
+
+<div class="fab-stack" role="group" aria-label="Motyw">
+  <button
+    type="button"
+    class="fab-btn"
+    data-theme-mode="light"
+    aria-pressed="false"
+    aria-label="Motyw jasny"
+    title="Jasny"
+  >
+    <Icon name="lucide:sun" aria-hidden="true" />
+  </button>
+  <button
+    type="button"
+    class="fab-btn"
+    data-theme-mode="dark"
+    aria-pressed="false"
+    aria-label="Motyw ciemny"
+    title="Ciemny"
+  >
+    <Icon name="lucide:moon" aria-hidden="true" />
+  </button>
+  <button
+    type="button"
+    class="fab-btn"
+    data-theme-mode="system"
+    aria-pressed="false"
+    aria-label="Motyw systemowy"
+    title="System"
+  >
+    <Icon name="lucide:monitor" aria-hidden="true" />
+  </button>
+</div>
+
+<style>
+  .fab-stack {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 55;
+    display: inline-flex;
+    background: var(--card);
+    border: 1px solid var(--line);
+    box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.18);
+  }
+
+  .fab-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    color: var(--muted);
+    transition:
+      color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .fab-btn:hover {
+    color: var(--ink);
+  }
+
+  .fab-btn[aria-pressed="true"] {
+    color: var(--blue);
+    background: var(--blue-wash);
+  }
+
+  .fab-btn :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fab-btn {
+      transition: none;
+    }
+  }
+</style>

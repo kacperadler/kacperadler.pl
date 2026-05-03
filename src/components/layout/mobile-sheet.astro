@@ -1,0 +1,91 @@
+---
+import { Icon } from "astro-icon/components";
+import { contactCta, primaryNav } from "@/data/navigation";
+---
+
+<div id="mobile-sheet" class="sheet" data-mobile-sheet aria-hidden="true" aria-label="Menu mobilne">
+  <button type="button" class="sheet-close" data-menu-close aria-label="Zamknij menu">
+    <Icon name="lucide:x" aria-hidden="true" />
+  </button>
+
+  {
+    primaryNav.map((link) => (
+      <a data-sheet-link href={link.href}>
+        {link.label}
+      </a>
+    ))
+  }
+
+  <a class="nav-cta" data-sheet-link href={contactCta.href}>
+    {contactCta.label}
+    <Icon name="lucide:arrow-right" aria-hidden="true" />
+  </a>
+</div>
+
+<style>
+  .sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 80px 24px 24px;
+    background: var(--paper);
+  }
+
+  .sheet[data-mobile-sheet="open"] {
+    display: flex;
+  }
+
+  .sheet a {
+    padding: 10px 0;
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sheet-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--line);
+  }
+
+  .sheet-close :global(svg) {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* nav-cta inside the sheet — re-styled to fill width and center. */
+  .nav-cta {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 500;
+    color: light-dark(var(--paper), var(--paper-2));
+    letter-spacing: -0.01em;
+    background: var(--ink);
+    border-bottom: 0;
+  }
+
+  .nav-cta :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+</style>

@@ -2,12 +2,15 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "astro/config";
 
+import icon from "astro-icon";
+
 /** @param {string} path */
 const r = (path) => fileURLToPath(new URL(path, import.meta.url));
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://kacperadler.pl",
+
   vite: {
     resolve: {
       alias: {
@@ -23,4 +26,6 @@ export default defineConfig({
       },
     },
   },
+
+  integrations: [icon()],
 });

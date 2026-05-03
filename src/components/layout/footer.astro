@@ -1,0 +1,127 @@
+---
+import { Icon } from "astro-icon/components";
+import { siteConfig } from "@/data/site-config";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <a href="#top" class="brand" aria-label={`${siteConfig.name} — Strona główna`}>
+      <span class="mark" aria-hidden="true">k</span>
+      <span><b>Kacper</b> <em>Adler</em></span>
+    </a>
+
+    <div class="meta">© {year} · kacperadler.pl</div>
+
+    <div class="socials">
+      <a class="sico" href={`mailto:${siteConfig.email}`} aria-label="Email">
+        <Icon name="lucide:mail" />
+      </a>
+      <a
+        class="sico"
+        href={siteConfig.social.linkedin}
+        target="_blank"
+        rel="noopener"
+        aria-label="LinkedIn"
+      >
+        <Icon name="lucide:linkedin" />
+      </a>
+      <a
+        class="sico"
+        href={siteConfig.social.github}
+        target="_blank"
+        rel="noopener"
+        aria-label="GitHub"
+      >
+        <Icon name="lucide:github" />
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding: 36px 0;
+    margin-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 600;
+    color: light-dark(var(--paper), #0f1116);
+    background: var(--blue);
+    box-shadow: 0 2px 6px rgba(30, 58, 95, 0.18);
+  }
+
+  .brand b {
+    font-weight: 500;
+  }
+  .brand em {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .socials {
+    display: flex;
+    gap: 8px;
+  }
+
+  .sico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    color: var(--ink-2);
+    background: var(--card);
+    border: 1px solid var(--line);
+    transition: all 0.15s ease;
+  }
+
+  .sico:hover {
+    color: light-dark(var(--paper), var(--paper-2));
+    background: var(--blue);
+    border-color: var(--blue);
+    transform: translateY(-2px);
+  }
+
+  .sico :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+</style>

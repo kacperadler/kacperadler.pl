@@ -1,6 +1,10 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import BaseHead from "@/components/layout/base-head.astro";
+import Footer from "@/components/layout/footer.astro";
+import Header from "@/components/layout/header.astro";
+import MobileSheet from "@/components/layout/mobile-sheet.astro";
+import ThemeFab from "@/components/theme/theme-fab.astro";
 import { siteConfig } from "@/data/site-config";
 import "@/styles/tokens.css";
 import "@/styles/global.css";
@@ -22,6 +26,10 @@ const { title, description, ogImage, noindex } = Astro.props;
     <ClientRouter />
   </head>
   <body>
+    <Header />
     <slot />
+    <Footer />
+    <MobileSheet />
+    <ThemeFab />
   </body>
 </html>

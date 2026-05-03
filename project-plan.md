@@ -236,10 +236,10 @@ Inline w `<head>` przed pierwszym paint:
 - [x] `data/site-config.ts`, `data/navigation.ts`, `lib/seo.ts`
 
 ### Faza 2 — layout shell
-- [ ] `layout/header.astro` + `layout/nav.astro`
-- [ ] `layout/mobile-sheet.astro`
-- [ ] `layout/footer.astro` + social links (icons via `astro-icon`)
-- [ ] `theme/theme-fab.astro` — 3-state toggle (`light | dark | system`)
+- [x] `layout/header.astro` (sticky wrap) + `layout/nav.astro` (desktop nav)
+- [x] `layout/mobile-sheet.astro` (overlay; markup inert do F5)
+- [x] `layout/footer.astro` + social links (icons via `astro-icon` + `@iconify-json/lucide`)
+- [x] `theme/theme-fab.astro` — 3-state toggle (`light | dark | system`); markup + a11y, JS w F5
 
 ### Faza 3 — content collections
 - [ ] `content/config.ts` — Zod schemas (services, projects, experience)
@@ -367,4 +367,4 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0 + 1 — DONE.** Faza 2 — layout shell: `header.astro`, `nav.astro`, `mobile-sheet.astro`, `footer.astro` + 3-state theme-fab.
+**Faza 0 + 1 + 2 — DONE.** Faza 3 — content collections: `content/config.ts` z Zod schemami (services, projects, experience), migracja danych z `example.html`.
