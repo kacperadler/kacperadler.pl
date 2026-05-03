@@ -24,6 +24,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      # Astro CLI (astro check, astro build) shells out to Node — bun
+      # alone isn't enough. Astro 6 requires Node >= 22.12.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       # Reads packageManager: "bun@x.y.z" from package.json
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
