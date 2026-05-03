@@ -1,0 +1,55 @@
+{
+  "$schema": "https://zed.dev/schema/settings/v0.2.0.json",
+
+  "format_on_save": "on",
+
+  "languages": {
+    "TypeScript": {
+      "formatter": [
+        { "code_action": "source.fixAll.biome" },
+        { "code_action": "source.organizeImports.biome" }
+      ]
+    },
+    "TSX": {
+      "formatter": [
+        { "code_action": "source.fixAll.biome" },
+        { "code_action": "source.organizeImports.biome" }
+      ]
+    },
+    "JavaScript": {
+      "formatter": [
+        { "code_action": "source.fixAll.biome" },
+        { "code_action": "source.organizeImports.biome" }
+      ]
+    },
+    "JSX": {
+      "formatter": [
+        { "code_action": "source.fixAll.biome" },
+        { "code_action": "source.organizeImports.biome" }
+      ]
+    },
+    "JSON": {
+      "formatter": [{ "code_action": "source.fixAll.biome" }]
+    },
+    "JSONC": {
+      "formatter": [{ "code_action": "source.fixAll.biome" }]
+    },
+    "CSS": {
+      "formatter": [{ "code_action": "source.fixAll.biome" }]
+    },
+    "Astro": {
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"]
+        }
+      },
+      "tab_size": 2
+    },
+    "Markdown": {
+      "formatter": "language_server",
+      "soft_wrap": "preferred_line_length",
+      "preferred_line_length": 100
+    }
+  }
+}

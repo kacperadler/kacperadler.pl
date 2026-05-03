@@ -30,6 +30,17 @@ bun run build       # production build → dist/
 bun run preview     # preview prod build lokalnie
 ```
 
+## Edytor
+
+Projekt zawiera config dla VS Code (`.vscode/`) i Zed (`.zed/`). Format-on-save uruchamia Biome (`source.fixAll.biome` + `source.organizeImports.biome`) dla TS/JS/JSON/CSS i Prettier dla `.astro`.
+
+**Wymagane extension'y:**
+
+- VS Code: `astro-build.astro-vscode`, `biomejs.biome`, `esbenp.prettier-vscode` (recommendations w `.vscode/extensions.json`)
+- Zed: **Astro**, **Biome** (instaluje się z poziomu `cmd+shift+x`)
+
+`.editorconfig` (LF, UTF-8, 2-space indent) działa w obu edytorach natywnie.
+
 ## Skrypty
 
 | Komenda           | Opis                                                                 |
