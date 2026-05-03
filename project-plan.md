@@ -268,13 +268,14 @@ Inline w `<head>` przed pierwszym paint:
 - [x] `scripts/contact-form.ts` — `idle | submitting | success | error` state machine, email/type/message validation, `console.info` mock z 600ms delay
 
 ### Faza 6 — SEO + a11y + polish
-- [ ] `@astrojs/sitemap` + `robots.txt`
-- [ ] OG image (1200×630) — statyczny lub generator
-- [ ] JSON-LD `Person` + `WebSite`
-- [ ] `aria-live` na form-success, `aria-busy` na submit, `aria-current` na active link
-- [ ] `404.astro`
-- [ ] Lighthouse audit — cel 100×4
-- [ ] axe-core audit przez Playwright
+- [x] `@astrojs/sitemap` + `public/robots.txt` (z linkiem do sitemap-index.xml)
+- [x] OG image (1200×630) — `src/pages/og-default.png.ts` build-time endpoint przez sharp + SVG; zdjęcie po lewej (smart-crop), brand typografia po prawej
+- [x] JSON-LD `Person` + `WebSite` — wjechało już w F1 (`src/lib/seo.ts`)
+- [x] `aria-live="polite"` na form-success (F4), `aria-busy` na submit (F5), `aria-current="location"` na active nav link (F6)
+- [x] `404.astro` — z BaseLayout(`noindex`), brand mark, dwa CTA (home + contact)
+- [x] Skip-to-content link + globalne `:focus-visible` outline na każdym interactive (a11y baseline)
+- [ ] **Lighthouse audit — cel 100×4** *(manualne — user uruchamia po deployu)*
+- [ ] **axe-core audit przez Playwright** *(odłożone do Fazy 7 razem z resztą E2E)*
 
 ### Faza 7 — testy + deploy
 - [ ] Vitest unit: `validators.ts` (email regex, form schema)
@@ -369,4 +370,4 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0 + 1 + 2 + 3 + 4 + 5 — DONE.** Faza 6 — SEO + a11y + polish: `@astrojs/sitemap`, `robots.txt`, OG image, finalne audity (Lighthouse 100×4, axe via Playwright).
+**Faza 0 + 1 + 2 + 3 + 4 + 5 + 6 — DONE** (poza Lighthouse / axe audytem — manual po deployu). Faza 7 — testy + deploy: Vitest unit (`validators.ts`), Playwright E2E (theme/nav/sheet/form/timeline), CI build job, Cloudflare Pages connect.
