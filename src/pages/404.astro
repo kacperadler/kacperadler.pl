@@ -1,0 +1,71 @@
+---
+import Button from "@/components/ui/button.astro";
+import BaseLayout from "@/layouts/base-layout.astro";
+---
+
+<BaseLayout title="404 — strona nie znaleziona" noindex>
+  <main class="not-found" id="top">
+    <div class="container">
+      <div class="not-found-inner">
+        <div class="code">404</div>
+        <h1>Tej strony nie ma.</h1>
+        <p>
+          Adres mógł się zmienić, link został wpisany z literówką albo strona została usunięta.
+          Wracaj na stronę główną — wszystko ważne jest tam.
+        </p>
+        <div class="ctas">
+          <Button variant="primary" href="/" icon="lucide:arrow-right">Strona główna</Button>
+          <Button variant="ghost" href="/#contact">Napisz do mnie</Button>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 240px);
+    padding: 80px 0;
+  }
+
+  .not-found-inner {
+    max-width: 56ch;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .code {
+    margin-bottom: 18px;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--blue);
+    letter-spacing: 0.2em;
+  }
+
+  h1 {
+    margin: 0 0 16px;
+    font-family: var(--display);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0 0 32px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+</style>

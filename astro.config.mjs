@@ -1,7 +1,7 @@
 // @ts-check
 import { fileURLToPath } from "node:url";
+import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
-
 import icon from "astro-icon";
 
 /** @param {string} path */
@@ -27,5 +27,5 @@ export default defineConfig({
     },
   },
 
-  integrations: [icon()],
+  integrations: [icon(), sitemap()],
 });

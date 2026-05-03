@@ -14,11 +14,22 @@ const visibleSections = new Set<Element>();
 let contactSection: Element | null = null;
 let contactCta: HTMLAnchorElement | null = null;
 
+function setLinkActive(link: HTMLAnchorElement, active: boolean): void {
+  link.classList.toggle("active", active);
+  if (active) {
+    link.setAttribute("aria-current", "location");
+  } else {
+    link.removeAttribute("aria-current");
+  }
+}
+
 function clearActive(): void {
   for (const link of sectionToLink.values()) {
-    link.classList.remove("active");
+    setLinkActive(link, false);
   }
-  contactCta?.classList.remove("active");
+  if (contactCta) {
+    setLinkActive(contactCta, false);
+  }
 }
 
 function applyActive(): void {
@@ -33,13 +44,15 @@ function applyActive(): void {
 
   if (inContact && contactCta) {
     for (const link of sectionToLink.values()) {
-      link.classList.remove("active");
+      setLinkActive(link, false);
     }
-    contactCta.classList.add("active");
+    setLinkActive(contactCta, true);
     return;
   }
 
-  contactCta?.classList.remove("active");
+  if (contactCta) {
+    setLinkActive(contactCta, false);
+  }
 
   // Pick the section closest to the top of the viewport.
   let topMost: Element | null = null;
@@ -53,7 +66,7 @@ function applyActive(): void {
   }
 
   for (const [section, link] of sectionToLink) {
-    link.classList.toggle("active", section === topMost);
+    setLinkActive(link, section === topMost);
   }
 }
 
