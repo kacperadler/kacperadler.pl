@@ -1,0 +1,113 @@
+---
+import { getCollection } from "astro:content";
+import SectionHead from "@/components/ui/section-head.astro";
+import Tag from "@/components/ui/tag.astro";
+
+const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="block" id="services">
+  <div class="container">
+    <SectionHead
+      label="Usługi"
+      lede="Trzy obszary, w których mam najwięcej do zaoferowania. Wszystko w oparciu o React i TypeScript — reszta dobiera się do projektu."
+    >
+      Co mogę dla Ciebie <em>zrobić</em>
+    </SectionHead>
+
+    <div class="services">
+      {
+        services.map((service, idx) => (
+          <article class="service">
+            <div class="num">{String(idx + 1).padStart(2, "0")}</div>
+            <h3>{service.data.title}</h3>
+            <p>{service.data.description}</p>
+            <div class="tags">
+              {service.data.tags.map((tag) => (
+                <Tag>{tag}</Tag>
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .services {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .service {
+    position: relative;
+    padding: 28px 26px;
+    overflow: hidden;
+    background: var(--card);
+    border: 1px solid var(--line);
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .service::before {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    content: "";
+    background: linear-gradient(90deg, var(--blue), transparent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .service:hover {
+    border-color: color-mix(in srgb, var(--blue) 40%, var(--line));
+    transform: translateY(-2px);
+  }
+
+  .service:hover::before {
+    opacity: 1;
+  }
+
+  .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--blue);
+    letter-spacing: 0.1em;
+  }
+
+  h3 {
+    margin: 8px 0 12px;
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 0 0 18px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  @media (max-width: 880px) {
+    .services {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service,
+    .service::before {
+      transition: none;
+    }
+  }
+</style>

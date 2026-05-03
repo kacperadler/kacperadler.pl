@@ -1,0 +1,28 @@
+---
+interface Props {
+  highlighted?: boolean;
+}
+
+const { highlighted = false } = Astro.props;
+---
+
+<span class:list={["chip", { on: highlighted }]}>
+  <slot />
+</span>
+
+<style>
+  .chip {
+    padding: 5px 11px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-2);
+    background: transparent;
+    border: 1px solid var(--line);
+  }
+
+  .chip.on {
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-color: var(--blue);
+  }
+</style>

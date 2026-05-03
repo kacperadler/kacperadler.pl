@@ -1,0 +1,251 @@
+---
+import Button from "@/components/ui/button.astro";
+import Chip from "@/components/ui/chip.astro";
+
+interface HeroChip {
+  highlighted?: boolean;
+  label: string;
+}
+
+interface HeroFact {
+  key: string;
+  pill?: boolean;
+  value: string;
+}
+
+const chips: readonly HeroChip[] = [
+  { label: "React", highlighted: true },
+  { label: "TypeScript", highlighted: true },
+  { label: "Next.js" },
+  { label: "Angular" },
+  { label: "React Native" },
+  { label: "Tailwind" },
+  { label: "React Query" },
+  { label: "Zustand" },
+  { label: "LLM" },
+  { label: "MCP" },
+];
+
+const facts: readonly HeroFact[] = [
+  { key: "Model", value: "B2B · async" },
+  { key: "Lokalizacja", value: "Polska / EU" },
+  { key: "Języki", value: "PL native · EN B2" },
+  { key: "Czas odpowiedzi", value: "~24h", pill: true },
+];
+---
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">
+          <span class="dot" aria-hidden="true"></span>
+          Frontend Engineer · Polska
+        </div>
+
+        <h1>
+          Buduję szybkie,<br />
+          czytelne <em>interfejsy</em><br />
+          <span class="break">we frontendzie.</span>
+        </h1>
+
+        <p class="hero-sub">
+          Od landing pages i SaaS-ów po wewnętrzne narzędzia używane codziennie przez setki osób.
+          Analitycznie, uporządkowanie, po swojemu.
+        </p>
+
+        <div class="hero-ctas">
+          <Button variant="primary" href="#contact" icon="lucide:arrow-right">
+            Porozmawiajmy
+          </Button>
+          <Button variant="ghost" href="#projects">Zobacz realizacje</Button>
+        </div>
+
+        <div class="hero-stack" aria-label="Technologie">
+          {chips.map((c) => <Chip highlighted={c.highlighted}>{c.label}</Chip>)}
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="Informacje o współpracy">
+        <div class="hero-card-title">Współpraca</div>
+        {
+          facts.map((fact) => (
+            <div class="kv">
+              <span class="k">{fact.key}</span>
+              <span class="v">
+                {fact.pill ? <span class="pill">{fact.value}</span> : fact.value}
+              </span>
+            </div>
+          ))
+        }
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding: 80px 0 60px;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: center;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--blue);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px var(--blue-wash);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    50% {
+      box-shadow: 0 0 0 8px transparent;
+    }
+  }
+
+  h1 {
+    margin: 0 0 22px;
+    font-family: var(--display);
+    font-size: 60px;
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--blue);
+  }
+
+  h1 .break {
+    display: block;
+  }
+
+  .hero-sub {
+    max-width: 52ch;
+    margin: 0 0 28px;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .hero-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 32px;
+  }
+
+  .hero-card {
+    position: relative;
+    padding: 24px 24px 8px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    box-shadow:
+      0 1px 0 var(--line-2),
+      0 22px 44px -30px light-dark(rgba(20, 20, 22, 0.12), rgba(0, 0, 0, 0.5));
+  }
+
+  .hero-card-title {
+    margin-bottom: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .kv {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line-2);
+  }
+
+  .kv:last-child {
+    border-bottom: none;
+  }
+
+  .k {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .v {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    text-align: right;
+  }
+
+  .pill {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--blue);
+    background: var(--blue-wash);
+  }
+
+  .pill::before {
+    width: 6px;
+    height: 6px;
+    content: "";
+    background: var(--blue);
+    border-radius: 50%;
+  }
+
+  @media (max-width: 880px) {
+    .hero {
+      padding: 48px 0 32px;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    h1 {
+      font-size: 44px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot {
+      animation: none;
+    }
+  }
+</style>

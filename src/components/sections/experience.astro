@@ -1,0 +1,230 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import SectionHead from "@/components/ui/section-head.astro";
+
+const items = (await getCollection("experience")).sort((a, b) => a.data.order - b.data.order);
+const totalCount = items.length;
+---
+
+<section class="block" id="experience">
+  <div class="container">
+    <SectionHead label="Doświadczenie">
+      ~ 5 lat w <em>branży frontendowej</em>.
+    </SectionHead>
+
+    <div class="collapsible" data-experience-collapse>
+      <div class="timeline-inner" data-timeline-inner>
+        <div class="timeline">
+          {
+            items.map((item) => (
+              <div class:list={["t-item", { now: item.data.current }]}>
+                <div class="t-head">
+                  <h3>{item.data.company}</h3>
+                  <span class="meta">{item.data.period}</span>
+                </div>
+                <div class="t-role">{item.data.role}</div>
+                <p class="t-desc">
+                  {item.data.location && <strong class="t-location">{item.data.location}.</strong>}
+                  {item.data.description}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <div class="timeline-fade" aria-hidden="true"></div>
+    </div>
+
+    <div class="expand-wrap">
+      <button
+        type="button"
+        class="expand-btn"
+        data-experience-toggle
+        aria-expanded="false"
+        aria-controls="experience"
+      >
+        <span class="label">Pokaż pełną historię ({totalCount})</span>
+        <span class="chev" aria-hidden="true">
+          <Icon name="lucide:chevron-down" />
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    position: relative;
+    padding-left: 36px;
+  }
+
+  .timeline::before {
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: 9px;
+    content: "";
+    border-left: 1.5px dashed var(--line);
+  }
+
+  .t-item {
+    position: relative;
+    padding: 14px 0 22px;
+  }
+
+  .t-item::before {
+    position: absolute;
+    top: 22px;
+    left: -32px;
+    width: 10px;
+    height: 10px;
+    content: "";
+    background: var(--paper);
+    border: 2px solid var(--blue);
+    border-radius: 50%;
+    transition: background 0.2s ease;
+  }
+
+  .t-item.now::before {
+    background: var(--blue);
+    box-shadow: 0 0 0 5px var(--blue-wash);
+  }
+
+  .t-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .t-head h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .t-head .meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+
+  .t-role {
+    margin-top: 2px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--blue);
+  }
+
+  .t-desc {
+    max-width: 68ch;
+    margin: 10px 0 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .t-location {
+    margin-right: 4px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .t-item.now .t-head h3::after {
+    margin-left: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    vertical-align: 4px;
+    color: var(--blue);
+    letter-spacing: 0.05em;
+    content: "• teraz";
+  }
+
+  .collapsible {
+    position: relative;
+  }
+
+  .timeline-inner {
+    overflow: hidden;
+    transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .collapsible:not(.expanded) .timeline-inner {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 97%);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 97%);
+  }
+
+  .timeline-fade {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 160px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent 0%, var(--paper) 80%);
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
+
+  .collapsible.expanded .timeline-fade {
+    opacity: 0;
+  }
+
+  .expand-wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  .expand-btn {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    padding: 11px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    transition:
+      transform 0.12s ease,
+      background 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .expand-btn:hover {
+    background: var(--blue-wash);
+    border-color: var(--ink);
+  }
+
+  .chev {
+    display: inline-flex;
+    transition: transform 0.25s ease;
+  }
+
+  .chev :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+
+  .collapsible.expanded .chev {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-inner,
+    .timeline-fade,
+    .expand-btn,
+    .chev {
+      transition: none;
+    }
+  }
+</style>

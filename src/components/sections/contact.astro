@@ -1,0 +1,91 @@
+---
+import ContactForm from "@/components/contact/contact-form.astro";
+import ContactLink from "@/components/contact/contact-link.astro";
+import SectionHead from "@/components/ui/section-head.astro";
+import { siteConfig } from "@/data/site-config";
+---
+
+<section class="block" id="contact">
+  <div class="container">
+    <SectionHead label="Kontakt">
+      Porozmawiajmy o <em>Twoim projekcie</em>.
+    </SectionHead>
+
+    <div class="contact">
+      <div class="contact-info">
+        <p class="lead">
+          Najchętniej zaczynamy od maila — opisz projekt w 2–3 zdaniach, a wrócę z pytaniami albo
+          propozycją rozmowy.
+        </p>
+        <div class="reply">Odpowiadam zwykle w ciągu 24h</div>
+
+        <div class="contact-links">
+          <ContactLink
+            icon="lucide:mail"
+            label="Email"
+            value={siteConfig.email}
+            href={`mailto:${siteConfig.email}`}
+          />
+          <ContactLink
+            icon="lucide:linkedin"
+            label="LinkedIn"
+            value="/in/kacperadler"
+            href={siteConfig.social.linkedin}
+            external
+          />
+        </div>
+      </div>
+
+      <ContactForm />
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .lead {
+    max-width: 42ch;
+    margin: 0;
+    font-size: 17px;
+    color: var(--ink-2);
+  }
+
+  .reply {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 6px 12px;
+    margin-top: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--blue);
+    background: var(--blue-wash);
+  }
+
+  .reply::before {
+    width: 6px;
+    height: 6px;
+    content: "";
+    background: var(--blue);
+    border-radius: 50%;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  @media (max-width: 880px) {
+    .contact {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -247,13 +247,15 @@ Inline w `<head>` przed pierwszym paint:
 - [x] (placeholder) `content/blog/` + schema; brak wpisów do Fazy 8
 
 ### Faza 4 — sekcje home
-- [ ] `sections/hero.astro` (eyebrow z animacją pulse, hero-grid, hero-card kv)
-- [ ] `sections/services.astro` (mapowanie z collection)
-- [ ] `sections/projects.astro` (mapowanie + cover gradient)
-- [ ] `sections/how-i-work.astro` (flow-visual + lista)
-- [ ] `sections/experience.astro` (timeline + collapsible)
-- [ ] `sections/contact.astro` (info + form)
-- [ ] `pages/index.astro` — kompozycja sekcji
+- [x] UI primitives: `ui/{button,chip,tag,section-head}.astro`
+- [x] `sections/hero.astro` (eyebrow z pulse, hero-grid, hero-card kv)
+- [x] `sections/services.astro` (mapowanie z collection, sortowanie po `order`)
+- [x] `sections/projects.astro` (mapowanie + cover gradient + glyph; filtruje `draft: true`)
+- [x] `sections/how-i-work.astro` (flow-visual + lista, dane inline w komponencie)
+- [x] `sections/experience.astro` (timeline + collapsible markup; toggle JS w F5)
+- [x] `sections/contact.astro` (info + form + contact-link), `contact/contact-form.astro`, `contact/contact-link.astro`
+- [x] `pages/index.astro` — kompozycja sekcji
+- [ ] `pages/projects/[slug].astro` — case-study route (decyzja sekcja 8); odłożone do real content
 
 ### Faza 5 — interakcje
 - [x] ~~`scripts/theme.ts`~~ — wbudowany w `theme-fab.astro` (inline `<script>`, event delegation na `document`, sync na `astro:page-load`); wjechał już w F2 bo bez tego UX wyglądał jak bug
@@ -367,4 +369,4 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0 + 1 + 2 + 3 — DONE.** Faza 4 — sekcje home: `hero.astro`, `services.astro`, `projects.astro`, `how-i-work.astro`, `experience.astro`, `contact.astro` + kompozycja w `pages/index.astro`.
+**Faza 0 + 1 + 2 + 3 + 4 — DONE.** Faza 5 — interakcje: scripts dla nav-scroll, nav-active (IO), mobile-sheet, flow-cycle, timeline-collapse, reveal, contact-form state machine.

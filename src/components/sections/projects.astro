@@ -1,0 +1,147 @@
+---
+import { getCollection } from "astro:content";
+import SectionHead from "@/components/ui/section-head.astro";
+import Tag from "@/components/ui/tag.astro";
+
+const projects = (await getCollection("projects", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<section class="block" id="projects">
+  <div class="container">
+    <SectionHead
+      label="Realizacje"
+      lede="Niewielka próbka — mogę rozwinąć temat na mailu lub pokazać więcej na rozmowie."
+    >
+      Wybrane <em>projekty</em>
+    </SectionHead>
+
+    <div class="projects">
+      {
+        projects.map((project) => (
+          <article class="project">
+            <div aria-hidden="true" class="cover">
+              <span class="logo-glyph">{project.data.glyph}</span>
+            </div>
+            <div class="meta">
+              <h3>{project.data.title}</h3>
+              <div class="role">{project.data.role}</div>
+              <p>{project.data.description}</p>
+              <div class="stack">
+                {project.data.stack.map((tech) => (
+                  <Tag>{tech}</Tag>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .project {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--card);
+    border: 1px solid var(--line);
+    transition:
+      transform 0.25s ease,
+      border-color 0.2s ease;
+  }
+
+  .project:hover {
+    border-color: color-mix(in srgb, var(--blue) 35%, var(--line));
+    transform: translateY(-3px);
+  }
+
+  .cover {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--blue) 14%, var(--card)) 0%,
+      var(--card) 100%
+    );
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cover::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background-image: repeating-linear-gradient(
+      135deg,
+      transparent 0 8px,
+      color-mix(in srgb, var(--blue) 10%, transparent) 8px 9px
+    );
+    opacity: 0.35;
+  }
+
+  .logo-glyph {
+    position: relative;
+    z-index: 1;
+    font-family: var(--display);
+    font-size: 64px;
+    font-weight: 600;
+    color: var(--blue);
+    letter-spacing: -0.05em;
+    opacity: 0.28;
+  }
+
+  .meta {
+    padding: 22px 22px 24px;
+  }
+
+  h3 {
+    margin: 0 0 4px;
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .role {
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  p {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  @media (max-width: 720px) {
+    .projects {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+interface Props {
+  tone?: "default" | "muted";
+}
+
+const { tone = "default" } = Astro.props;
+---
+
+<span class:list={["tag", `tag-${tone}`]}>
+  <slot />
+</span>
+
+<style>
+  .tag {
+    padding: 3px 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+
+  .tag-default {
+    background: var(--paper-2);
+  }
+
+  .tag-muted {
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line-2);
+  }
+</style>

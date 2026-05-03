@@ -1,0 +1,258 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface ProjectType {
+  label: string;
+  value: string;
+}
+
+const projectTypes: readonly ProjectType[] = [
+  { value: "webapp", label: "Aplikacja webowa" },
+  { value: "landing", label: "Landing page" },
+  { value: "mobile", label: "Mobile" },
+  { value: "tool", label: "Narzędzie wewn." },
+  { value: "other", label: "Inne" },
+];
+---
+
+<form class="form" data-contact-form novalidate>
+  <div class="field" data-field="email">
+    <label for="contact-email">Twój email</label>
+    <input
+      type="email"
+      id="contact-email"
+      name="email"
+      placeholder="twoj@email.pl"
+      autocomplete="email"
+      required
+    />
+    <span class="err">Podaj prawidłowy adres email.</span>
+  </div>
+
+  <div class="field" data-field="type">
+    <label>Typ projektu</label>
+    <div class="radios" role="radiogroup" aria-label="Typ projektu">
+      {
+        projectTypes.map((opt) => (
+          <label class="radio">
+            <input name="type" type="radio" value={opt.value} />
+            <span>{opt.label}</span>
+          </label>
+        ))
+      }
+    </div>
+    <span class="err">Wybierz typ projektu.</span>
+  </div>
+
+  <div class="field" data-field="message">
+    <label for="contact-message">Wiadomość</label>
+    <textarea
+      id="contact-message"
+      name="message"
+      placeholder="Opisz krótko, o co chodzi — zakres, deadline, jeśli znane. 2–3 zdania wystarczą, żeby zacząć rozmowę."
+      required></textarea>
+    <span class="err">Dodaj krótki opis projektu.</span>
+  </div>
+
+  <div class="submit-row">
+    <div class="small">Nie spam-uję, nie dodaję do newslettera.</div>
+    <button type="submit" class="btn-submit" data-submit data-state="idle">
+      <span class="t">Wyślij wiadomość</span>
+      <Icon name="lucide:arrow-right" aria-hidden="true" />
+    </button>
+  </div>
+
+  <div class="form-success" role="status" aria-live="polite" data-form-success>
+    <Icon name="lucide:check" aria-hidden="true" />
+    Dzięki! Wiadomość wysłana — odezwę się w ciągu 24h.
+  </div>
+</form>
+
+<style>
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .field label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .field input,
+  .field textarea {
+    padding: 12px 14px;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .field textarea {
+    min-height: 130px;
+    line-height: 1.55;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .field input:focus,
+  .field textarea:focus {
+    background: var(--paper);
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-wash);
+  }
+
+  .field[data-invalid] input,
+  .field[data-invalid] textarea {
+    border-color: #c44545;
+  }
+
+  .err {
+    display: none;
+    font-size: 12px;
+    color: #c44545;
+  }
+
+  .field[data-invalid] .err {
+    display: block;
+  }
+
+  .radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .radio {
+    position: relative;
+  }
+
+  .radio input {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .radio span {
+    display: inline-block;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--ink-2);
+    cursor: pointer;
+    border: 1px solid var(--line);
+    transition: all 0.15s ease;
+  }
+
+  .radio input:checked + span {
+    font-weight: 500;
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-color: var(--blue);
+  }
+
+  .radio:hover span {
+    border-color: var(--ink);
+  }
+
+  /* Keyboard focus on the radio surfaces a clear ring on the wrapper. */
+  .radio input:focus-visible + span {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .small {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .btn-submit {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-weight: 500;
+    color: light-dark(var(--paper), var(--paper-2));
+    background: var(--ink);
+    transition:
+      transform 0.12s ease,
+      opacity 0.15s ease;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-submit:disabled,
+  .btn-submit[data-state="submitting"] {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+  }
+
+  .btn-submit :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+
+  .form-success {
+    display: none;
+    gap: 10px;
+    align-items: center;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--blue);
+    background: var(--blue-wash);
+    border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent);
+  }
+
+  .form-success[data-show] {
+    display: flex;
+  }
+
+  .form-success :global(svg) {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field input,
+    .field textarea,
+    .radio span,
+    .btn-submit {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,79 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  class?: string;
+  href?: string;
+  icon?: string;
+  type?: "button" | "submit" | "reset";
+  variant: "primary" | "ghost";
+}
+
+const { variant, href, type = "button", icon, class: extraClass, ...rest } = Astro.props;
+---
+
+{
+  href ? (
+    <a href={href} class:list={["btn", `btn-${variant}`, extraClass]} {...rest}>
+      <slot />
+      {icon && <Icon aria-hidden="true" name={icon} />}
+    </a>
+  ) : (
+    <button class:list={["btn", `btn-${variant}`, extraClass]} type={type} {...rest}>
+      <slot />
+      {icon && <Icon aria-hidden="true" name={icon} />}
+    </button>
+  )
+}
+
+<style>
+  .btn {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 13px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    transition:
+      transform 0.12s ease,
+      background 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .btn :global(svg) {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.2s ease;
+  }
+
+  .btn:hover :global(svg) {
+    transform: translateX(3px);
+  }
+
+  .btn-primary {
+    color: light-dark(var(--paper), var(--paper-2));
+    background: var(--ink);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+
+  .btn-ghost:hover {
+    background: var(--blue-wash);
+    border-color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn,
+    .btn :global(svg) {
+      transition: none;
+    }
+  }
+</style>

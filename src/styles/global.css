@@ -49,6 +49,17 @@ button {
   margin: 0 auto;
 }
 
+section.block {
+  padding: 88px 0;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 880px) {
+  section.block {
+    padding: 64px 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
