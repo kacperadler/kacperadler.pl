@@ -1,0 +1,8 @@
+{
+  "title": "Projekt placeholder",
+  "role": "Frontend · aplikacja webowa",
+  "description": "Krótki opis projektu: co było wyzwaniem, jaka była moja rola, jaki efekt. Miejsce na 2–3 zdania.",
+  "glyph": "α",
+  "stack": ["Next.js", "TypeScript", "Tailwind"],
+  "order": 1
+}

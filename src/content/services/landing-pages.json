@@ -1,0 +1,6 @@
+{
+  "title": "Landing pages",
+  "description": "Strony marketingowe i produktowe — szybkie, SEO-first, dopięte co do piksela. Nacisk na Core Web Vitals i konwersję.",
+  "tags": ["Next.js", "Tailwind", "MDX", "SEO"],
+  "order": 2
+}

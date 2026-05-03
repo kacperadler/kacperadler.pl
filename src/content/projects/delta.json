@@ -1,0 +1,8 @@
+{
+  "title": "Projekt placeholder",
+  "role": "Frontend · Web3",
+  "description": "Krótki opis projektu: co było wyzwaniem, jaka była moja rola, jaki efekt. Miejsce na 2–3 zdania.",
+  "glyph": "δ",
+  "stack": ["React", "Vite", "React Query"],
+  "order": 4
+}

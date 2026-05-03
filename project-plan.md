@@ -242,9 +242,9 @@ Inline w `<head>` przed pierwszym paint:
 - [x] `theme/theme-fab.astro` — 3-state toggle (`light | dark | system`); markup + a11y, JS w F5
 
 ### Faza 3 — content collections
-- [ ] `content/config.ts` — Zod schemas (services, projects, experience)
-- [ ] Migracja danych z `example.html` do plików w `content/`
-- [ ] (placeholder) `content/blog/` + schema, ale bez stron jeszcze
+- [x] `src/content.config.ts` — Zod schemas (services, projects, experience, blog) z `import { z } from "astro/zod"` (Astro 5/6+ canonical)
+- [x] Migracja danych z `example.html` do JSON: 3 services, 4 placeholder projects, 7 experience items
+- [x] (placeholder) `content/blog/` + schema; brak wpisów do Fazy 8
 
 ### Faza 4 — sekcje home
 - [ ] `sections/hero.astro` (eyebrow z animacją pulse, hero-grid, hero-card kv)
@@ -367,4 +367,4 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0 + 1 + 2 — DONE.** Faza 3 — content collections: `content/config.ts` z Zod schemami (services, projects, experience), migracja danych z `example.html`.
+**Faza 0 + 1 + 2 + 3 — DONE.** Faza 4 — sekcje home: `hero.astro`, `services.astro`, `projects.astro`, `how-i-work.astro`, `experience.astro`, `contact.astro` + kompozycja w `pages/index.astro`.

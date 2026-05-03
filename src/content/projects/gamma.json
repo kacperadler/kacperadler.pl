@@ -1,0 +1,8 @@
+{
+  "title": "Projekt placeholder",
+  "role": "Frontend · mobile",
+  "description": "Krótki opis projektu: co było wyzwaniem, jaka była moja rola, jaki efekt. Miejsce na 2–3 zdania.",
+  "glyph": "γ",
+  "stack": ["React Native", "TypeScript"],
+  "order": 3
+}

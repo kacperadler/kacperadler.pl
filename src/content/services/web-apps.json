@@ -1,0 +1,6 @@
+{
+  "title": "Aplikacje webowe",
+  "description": "Pełny frontend dla produktów SaaS i narzędzi B2B. SPA od zera albo przejęcie krytycznych komponentów w istniejącym kodzie.",
+  "tags": ["React", "TypeScript", "Next.js", "React Query"],
+  "order": 1
+}
