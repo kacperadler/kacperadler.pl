@@ -259,13 +259,13 @@ Inline w `<head>` przed pierwszym paint:
 
 ### Faza 5 — interakcje
 - [x] ~~`scripts/theme.ts`~~ — wbudowany w `theme-fab.astro` (inline `<script>`, event delegation na `document`, sync na `astro:page-load`); wjechał już w F2 bo bez tego UX wyglądał jak bug
-- [ ] `scripts/nav-scroll.ts` — `.scrolled` state
-- [ ] `scripts/nav-active.ts` — IO + CTA contact special case
-- [ ] `scripts/mobile-sheet.ts`
-- [ ] `scripts/flow-cycle.ts` — auto + hover sync + Page Visibility
-- [ ] `scripts/timeline-collapse.ts` — animacja + `prefers-reduced-motion` skip
-- [ ] `scripts/reveal.ts`
-- [ ] `scripts/contact-form.ts` — state machine + walidacja + console.info mock
+- [x] `scripts/nav-scroll.ts` — rAF-throttled scrollY > 12 → `.scrolled` na `[data-nav-wrap]`
+- [x] `scripts/nav-active.ts` — IO + CTA contact special case (#contact ⇒ aktywne CTA, nie link)
+- [x] `scripts/mobile-sheet.ts` — open/close + Escape + body-scroll lock + auto-close po kliknięciu linka
+- [x] `scripts/flow-cycle.ts` — auto co 2.6s + hover sync na `.how-item` + Page Visibility pause
+- [x] `scripts/timeline-collapse.ts` — class-based + CSS max-height transition (4000px gen. cap zamiast scrollHeight calc)
+- [x] `scripts/reveal.ts` — IO once-only `.in` toggle, reduced-motion = instant final state
+- [x] `scripts/contact-form.ts` — `idle | submitting | success | error` state machine, email/type/message validation, `console.info` mock z 600ms delay
 
 ### Faza 6 — SEO + a11y + polish
 - [ ] `@astrojs/sitemap` + `robots.txt`
@@ -369,4 +369,4 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0 + 1 + 2 + 3 + 4 — DONE.** Faza 5 — interakcje: scripts dla nav-scroll, nav-active (IO), mobile-sheet, flow-cycle, timeline-collapse, reveal, contact-form state machine.
+**Faza 0 + 1 + 2 + 3 + 4 + 5 — DONE.** Faza 6 — SEO + a11y + polish: `@astrojs/sitemap`, `robots.txt`, OG image, finalne audity (Lighthouse 100×4, axe via Playwright).

@@ -7,7 +7,7 @@ const items = (await getCollection("experience")).sort((a, b) => a.data.order - 
 const totalCount = items.length;
 ---
 
-<section class="block" id="experience">
+<section class="block reveal" id="experience">
   <div class="container">
     <SectionHead label="Doświadczenie">
       ~ 5 lat w <em>branży frontendowej</em>.
@@ -151,8 +151,13 @@ const totalCount = items.length;
   }
 
   .timeline-inner {
+    max-height: 380px;
     overflow: hidden;
     transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .collapsible.expanded .timeline-inner {
+    max-height: 4000px;
   }
 
   .collapsible:not(.expanded) .timeline-inner {

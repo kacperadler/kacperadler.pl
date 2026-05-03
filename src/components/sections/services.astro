@@ -6,7 +6,7 @@ import Tag from "@/components/ui/tag.astro";
 const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<section class="block" id="services">
+<section class="block reveal" id="services">
   <div class="container">
     <SectionHead
       label="Usługi"
