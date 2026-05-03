@@ -20,6 +20,12 @@ function getNodes(): NodeListOf<HTMLElement> {
   );
 }
 
+function getConnectors(): NodeListOf<HTMLElement> {
+  return document.querySelectorAll<HTMLElement>(
+    "[data-flow-visual] .flow-connector[data-step]"
+  );
+}
+
 function getProgress(): HTMLElement | null {
   return document.querySelector<HTMLElement>("[data-flow-progress]");
 }
@@ -28,6 +34,12 @@ function setActive(step: number): void {
   currentStep = step;
   for (const node of getNodes()) {
     node.classList.toggle("active", Number(node.dataset.step) === step);
+  }
+  for (const connector of getConnectors()) {
+    connector.classList.toggle(
+      "active",
+      Number(connector.dataset.step) === step
+    );
   }
   const progress = getProgress();
   if (progress && stepCount > 0) {

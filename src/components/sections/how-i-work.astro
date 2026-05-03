@@ -29,7 +29,7 @@ const steps: readonly FlowStep[] = [
   {
     num: "03",
     title: "Budowa",
-    badge: "sprinty",
+    badge: "podział na etapy",
     heading: "Budujemy krok po kroku.",
     description:
       "Pracuję w małych etapach — co tydzień widzisz postęp na działającej wersji strony, nie na screenach. Łatwiej wtedy reagować, jeśli coś idzie w niedobrą stronę.",
@@ -66,16 +66,23 @@ const steps: readonly FlowStep[] = [
 
         <div class="how-visual-body">
           {
-            steps.map((step, idx) => (
-              <>
-                <div class="flow-node" data-step={idx}>
-                  <div class="idx">{step.num}</div>
-                  <div class="title">{step.title}</div>
-                  <div class="badge">{step.badge}</div>
-                </div>
-                {idx < steps.length - 1 && <div class="flow-connector" />}
-              </>
-            ))
+            steps.map((step, idx) => {
+              const isLast = idx === steps.length - 1;
+              return (
+                <>
+                  <div class="flow-node" data-step={idx}>
+                    <div class="idx">{step.num}</div>
+                    <div class="title">{step.title}</div>
+                    {isLast && <div class="badge">{step.badge}</div>}
+                  </div>
+                  {!isLast && (
+                    <div class="flow-connector" data-step={idx}>
+                      <span class="connector-badge">{step.badge}</span>
+                    </div>
+                  )}
+                </>
+              );
+            })
           }
         </div>
 
@@ -109,15 +116,11 @@ const steps: readonly FlowStep[] = [
     display: grid;
     grid-template-columns: 1fr 1.15fr;
     gap: 56px;
-    align-items: start;
   }
 
   .how-visual {
-    position: sticky;
-    top: 100px;
     display: flex;
     flex-direction: column;
-    height: 499px;
     padding: 28px;
     overflow: hidden;
     background: light-dark(var(--card), var(--paper-2));
@@ -155,7 +158,6 @@ const steps: readonly FlowStep[] = [
     flex: 1;
     flex-direction: column;
     gap: 10px;
-    justify-content: center;
     min-height: 0;
     padding: 18px 0;
   }
@@ -221,9 +223,37 @@ const steps: readonly FlowStep[] = [
 
   .flow-connector {
     position: relative;
-    height: 8px;
-    margin-left: 28px;
+    flex: 1;
+    align-self: center;
+    width: 0;
+    min-height: 32px;
     border-left: 1.5px dashed var(--line);
+  }
+
+  .connector-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    background: light-dark(var(--card), var(--paper-2));
+    transform: translate(-50%, -50%);
+    transition:
+      color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      font-weight 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .flow-connector.active {
+    border-left-color: var(--blue);
+  }
+
+  .flow-connector.active .connector-badge {
+    font-weight: 500;
+    color: var(--blue);
   }
 
   .how-visual-foot {
@@ -286,11 +316,6 @@ const steps: readonly FlowStep[] = [
     .how {
       grid-template-columns: 1fr;
       gap: 32px;
-    }
-    .how-visual {
-      position: static;
-      height: auto;
-      aspect-ratio: auto;
     }
   }
 
