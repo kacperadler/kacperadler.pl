@@ -1,7 +1,8 @@
 {
   "company": "PwC Polska",
   "role": "Junior Frontend Developer",
-  "period": "10.2021 — 04.2022 · 7 mies.",
+  "startDate": "2021-10",
+  "endDate": "2022-04",
   "description": "Rozwój aplikacji wewnętrznych w korporacyjnym środowisku — praca w dużym zespole, nauka standardów code review, procesów i architektury enterprise.",
   "location": "Warszawa",
   "order": 6

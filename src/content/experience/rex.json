@@ -1,7 +1,7 @@
 {
   "company": "ReX Recruitment Exchange",
   "role": "Frontend Developer · Pełny etat",
-  "period": "02.2026 — teraz · 3 mies.",
+  "startDate": "2026-02",
   "description": "Rozwijam i utrzymuję frontend aplikacji w Angularze i TypeScripcie — dodaję nowe widoki, aktualizuję istniejące i dbam o starszy kod. W bliskiej współpracy z designerem przeprowadziłem refactor kluczowych widoków, wprowadziłem nowe funkcjonalności i naprawiłem bugi raportowane przez użytkowników.",
   "current": true,
   "order": 1
