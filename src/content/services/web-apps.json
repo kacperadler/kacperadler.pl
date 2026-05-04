@@ -1,6 +1,6 @@
 {
   "title": "Aplikacje webowe",
-  "description": "Pełny frontend dla produktów SaaS i narzędzi B2B. SPA od zera albo przejęcie krytycznych komponentów w istniejącym kodzie.",
+  "description": "Aplikacje webowe SaaS i narzędzia B2B — od pierwszego przycisku po deploy. Buduję end-to-end albo dołączam do istniejącego zespołu jako wsparcie.",
   "tags": ["React", "TypeScript", "Next.js", "React Query"],
   "order": 1
 }
