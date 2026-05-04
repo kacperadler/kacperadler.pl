@@ -3,6 +3,6 @@
   "role": "Frontend Developer · B2B",
   "startDate": "2024-05",
   "endDate": "2026-01",
-  "description": "Rozwój i utrzymanie wewnętrznego CRM-a dla 200+ pracowników i partnerów. Integracje z zewnętrznymi usługami (Weylo/Focus, Gmail), zarządzanie złożonym stanem i asynchronicznością, optymalizacja wydajności przy dużych listach, budowa spójnego interfejsu na bazie biblioteki komponentów.",
+  "description": "Wewnętrzny CRM dla 200+ osób — pracowników i partnerów. Integracje z Weylo/Focus i Gmailem, długie listy do wirtualizacji, async statusy, własna biblioteka komponentów. Codzienne narzędzie pracy całej firmy, więc każdy bug bolał.",
   "order": 2
 }
