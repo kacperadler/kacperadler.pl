@@ -279,7 +279,22 @@ Inline w `<head>` przed pierwszym paint:
 - [→ F7] **axe-core audit przez Playwright** — odłożone do F7 razem z E2E setupem (jeden wspólny `bun add -D @playwright/test @axe-core/playwright`)
 - [→ post-deploy] Re-run Lighthouse z prawdziwej domeny po podpięciu CF Pages — sanity check na real network / brotli / CDN edge (zwykle wynik *lepszy* niż localhost)
 
-### Faza 7 — testy + deploy
+### Faza 7 — copy improvement
+*(Wcześniej Faza 8 — przeniesione przed deploy: nie chcemy `kacperadler.pl` na żywo z "Projekt placeholder × 4", a piszemy E2E testy raz przeciw realnemu copy zamiast iterować selektory po contencie.)*
+
+- [ ] **`siteConfig`** (`src/data/site-config.ts`) — `name`, `role`, `tagline`, `description`, social handles, e-mail
+- [ ] **Hero** — eyebrow ("Frontend Engineer · Polska"), `<h1>`, hero-sub, hero-card facts (Model / Lokalizacja / Języki / Czas odpowiedzi)
+- [ ] **Services** (`content/services/*.json`) — opisy 3 serwisów (web-apps / landing-pages / internal-tools); rozważyć dodanie konkretnych liczb / metryk
+- [ ] **Projects** (`content/projects/*.json`) — zastąpić 4 placeholdery (alpha/beta/gamma/delta) realnymi projektami z opisami case-study
+- [ ] **How-I-work** — 5 kroków + headings + descriptions; aktualnie jest OK po zigzag refactorze, ale przejrzeć ton
+- [ ] **Experience** (`content/experience/*.json`) — 7 wpisów timeline'a; doszlifować descriptions, sprawdzić daty / lokalizacje
+- [ ] **Contact** — lead text, reply ("Odpowiadam zwykle w ciągu 24h"), spam disclaimer pod submit, success message
+- [ ] **404** — copy "Tej strony nie ma" + paragraf — sprawdzić czy ton pasuje do reszty
+- [ ] **Cross-section consistency audit**: konsekwentny ton (formalny vs swobodny), brak literówek, spójny mix PL/EN dla nazw technologii (np. "TypeScript" vs "Typescript")
+
+### Faza 8 — testy + deploy
+*(Wcześniej Faza 7 — po copy improvement, żeby E2E asserts trafiały od razu w finalną treść.)*
+
 - [→ F9] ~~Vitest unit: `validators.ts`~~ — odłożone, `lib/validators.ts` powstaje dopiero w F9 razem z Zod schematem real form action. Teraz nic do testowania jednostkowo.
 - [ ] **Playwright E2E** (`tests/e2e/*.spec.ts`):
   - theme persist (set dark → reload → still dark; system mode → no `data-theme`)
@@ -300,19 +315,6 @@ Inline w `<head>` przed pierwszym paint:
   - Preview deploys per PR (`*.pages.dev`)
 - [ ] **Custom domain** `kacperadler.pl` + DNS (CNAME → `kacperadler-pl.pages.dev`) + auto SSL
 - [ ] **Post-deploy Lighthouse re-run** z prawdziwej domeny (sanity check)
-
-### Faza 8 — copy improvement
-Przegląd i dopracowanie wszystkich tekstów na stronie po pierwszym deployu (jak content "siedzi" już w realnym layoucie, łatwiej widać co zgrzyta).
-
-- [ ] **`siteConfig`** (`src/data/site-config.ts`) — `name`, `role`, `tagline`, `description`, social handles, e-mail
-- [ ] **Hero** — eyebrow ("Frontend Engineer · Polska"), `<h1>`, hero-sub, hero-card facts (Model / Lokalizacja / Języki / Czas odpowiedzi)
-- [ ] **Services** (`content/services/*.json`) — opisy 3 serwisów (web-apps / landing-pages / internal-tools); rozważyć dodanie konkretnych liczb / metryk
-- [ ] **Projects** (`content/projects/*.json`) — zastąpić 4 placeholdery (alpha/beta/gamma/delta) realnymi projektami z opisami case-study
-- [ ] **How-I-work** — 5 kroków + headings + descriptions; aktualnie jest OK po zigzag refactorze, ale przejrzeć ton
-- [ ] **Experience** (`content/experience/*.json`) — 7 wpisów timeline'a; doszlifować descriptions, sprawdzić daty / lokalizacje
-- [ ] **Contact** — lead text, reply ("Odpowiadam zwykle w ciągu 24h"), spam disclaimer pod submit, success message
-- [ ] **404** — copy "Tej strony nie ma" + paragraf — sprawdzić czy ton pasuje do reszty
-- [ ] **Cross-section consistency audit**: konsekwentny ton (formalny vs swobodny), brak literówek, spójny mix PL/EN dla nazw technologii (np. "TypeScript" vs "Typescript")
 
 ### Faza 9 (przyszłość) — real form submit
 - [ ] `bun astro add cloudflare` → `output: 'hybrid'` (lub server)
@@ -335,7 +337,7 @@ Przegląd i dopracowanie wszystkich tekstów na stronie po pierwszym deployu (ja
 
 ## 7. Cloudflare Pages — deployment
 
-### Start (Faza 7) — static deploy
+### Start (Faza 8) — static deploy
 
 1. Push repo na GitHub (`main`)
 2. Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git
@@ -400,10 +402,6 @@ Przed deployem produkcyjnym:
 
 **Faza 0–6 — DONE.** Lighthouse mobile 100×4 ✅ (na localhost — re-run po deployu).
 
-Następnie: **Faza 7 — testy + deploy**:
-1. Playwright E2E + @axe-core/playwright a11y test
-2. CI workflow update (test job)
-3. Cloudflare Pages connect + custom domain DNS
-4. Post-deploy Lighthouse sanity check
+Następnie: **Faza 7 — copy improvement** (siteConfig + sekcje + content collections, audit tonu i spójności).
 
-Potem: **Faza 8** copy improvement → **Faza 9** real form submit → **Faza 10** blog.
+Potem: **Faza 8** testy + deploy → **Faza 9** real form submit → **Faza 10** blog.
