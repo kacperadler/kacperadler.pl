@@ -4,7 +4,9 @@ export interface PersonSchema {
   "@context": "https://schema.org";
   "@type": "Person";
   description: string;
+  image: string;
   jobTitle: string;
+  knowsAbout: string[];
   name: string;
   sameAs: string[];
   url: string;
@@ -18,6 +20,8 @@ export interface WebSiteSchema {
   url: string;
 }
 
+const ogImageUrl = new URL(siteConfig.ogImage, siteConfig.url).toString();
+
 export const personSchema: PersonSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -25,11 +29,18 @@ export const personSchema: PersonSchema = {
   url: siteConfig.url,
   jobTitle: siteConfig.role,
   description: siteConfig.description,
-  sameAs: [
-    siteConfig.social.github,
-    siteConfig.social.linkedin,
-    siteConfig.social.x,
+  image: ogImageUrl,
+  knowsAbout: [
+    "React",
+    "TypeScript",
+    "Next.js",
+    "React Native",
+    "Frontend Development",
+    "Web Performance",
+    "B2B Applications",
+    "Astro",
   ],
+  sameAs: [siteConfig.social.github, siteConfig.social.linkedin],
 };
 
 export const websiteSchema: WebSiteSchema = {

@@ -1,9 +1,9 @@
 export const siteConfig = {
   name: "Kacper Adler",
   role: "Frontend Engineer",
-  tagline: "Buduję szybkie, czytelne interfejsy we frontendzie.",
+  tagline: "Interfejsy dla produktów, z których ludzie korzystają codziennie.",
   description:
-    "Frontend Engineer specjalizujący się w React i TypeScript. ~5 lat doświadczenia. Aplikacje webowe, landing pages, narzędzia wewnętrzne.",
+    "Aplikacje webowe, narzędzia B2B i landing pages dla Twoich produktów. React, TypeScript, React Native, Next.js — ~5 lat. Polska, B2B.",
   url: "https://kacperadler.pl",
   locale: "pl-PL",
   lang: "pl",
@@ -11,7 +11,6 @@ export const siteConfig = {
   social: {
     github: "https://github.com/kacperadler",
     linkedin: "https://www.linkedin.com/in/kacperadler/",
-    x: "https://x.com/kacperadler",
   },
   ogImage: "/og-default.png",
 } as const;
