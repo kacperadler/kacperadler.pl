@@ -1,9 +1,10 @@
 export const siteConfig = {
   name: "Kacper Adler",
   role: "Frontend Engineer",
-  tagline: "Interfejsy dla produktów, z których ludzie korzystają codziennie.",
+  tagline:
+    "Buduję interfejsy dla produktów, z których ludzie korzystają codziennie.",
   description:
-    "Aplikacje webowe, narzędzia B2B i landing pages dla Twoich produktów. React, TypeScript, React Native, Next.js — ~5 lat. Polska, B2B.",
+    "Aplikacje webowe, narzędzia B2B i landing pages — od architektury po deploy. Pracuję w sprintach, async, z zespołami produktowymi w PL/EU.",
   url: "https://kacperadler.pl",
   locale: "pl-PL",
   lang: "pl",

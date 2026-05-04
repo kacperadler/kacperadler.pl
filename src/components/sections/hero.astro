@@ -1,16 +1,13 @@
 ---
+import { Image } from "astro:assets";
+import meJpg from "@/assets/me.jpg";
 import Button from "@/components/ui/button.astro";
 import Chip from "@/components/ui/chip.astro";
+import { siteConfig } from "@/data/site-config";
 
 interface HeroChip {
   highlighted?: boolean;
   label: string;
-}
-
-interface HeroFact {
-  key: string;
-  pill?: boolean;
-  value: string;
 }
 
 const chips: readonly HeroChip[] = [
@@ -25,33 +22,25 @@ const chips: readonly HeroChip[] = [
   { label: "MCP" },
   { label: "LLM" },
 ];
-
-const facts: readonly HeroFact[] = [
-  { key: "Model", value: "B2B · async" },
-  { key: "Lokalizacja", value: "Polska / EU" },
-  { key: "Języki", value: "PL native · EN B2" },
-  { key: "Czas odpowiedzi", value: "~24h", pill: true },
-];
 ---
 
 <section class="hero reveal">
   <div class="container">
     <div class="hero-grid">
-      <div>
+      <div class="hero-text">
         <div class="eyebrow">
           <span class="dot" aria-hidden="true"></span>
-          Frontend Engineer · Polska
+          {siteConfig.role} · Polska
         </div>
 
         <h1>
-          Buduję szybkie,<br />
-          czytelne <em>interfejsy</em><br />
-          <span class="break">we frontendzie.</span>
+          Buduję <em>interfejsy</em> dla produktów,<br />
+          z których ludzie korzystają codziennie.
         </h1>
 
         <p class="hero-sub">
-          Od landing pages i SaaS-ów po wewnętrzne narzędzia używane codziennie przez setki osób.
-          Analitycznie, uporządkowanie, po swojemu.
+          Aplikacje webowe, narzędzia B2B i landing pages — od architektury po deploy. Pracuję w
+          sprintach, async, z zespołami produktowymi w PL/EU.
         </p>
 
         <div class="hero-ctas">
@@ -66,19 +55,17 @@ const facts: readonly HeroFact[] = [
         </div>
       </div>
 
-      <aside class="hero-card" aria-label="Informacje o współpracy">
-        <div class="hero-card-title">Współpraca</div>
-        {
-          facts.map((fact) => (
-            <div class="kv">
-              <span class="k">{fact.key}</span>
-              <span class="v">
-                {fact.pill ? <span class="pill">{fact.value}</span> : fact.value}
-              </span>
-            </div>
-          ))
-        }
-      </aside>
+      <div class="hero-portrait">
+        <Image
+          src={meJpg}
+          alt={siteConfig.name}
+          width={520}
+          height={450}
+          loading="eager"
+          fetchpriority="high"
+          class="hero-photo"
+        />
+      </div>
     </div>
   </div>
 </section>
@@ -127,9 +114,9 @@ const facts: readonly HeroFact[] = [
   h1 {
     margin: 0 0 22px;
     font-family: var(--display);
-    font-size: 60px;
+    font-size: 56px;
     font-weight: 500;
-    line-height: 1.02;
+    line-height: 1.04;
     letter-spacing: -0.035em;
     text-wrap: balance;
   }
@@ -137,10 +124,6 @@ const facts: readonly HeroFact[] = [
   h1 em {
     font-style: normal;
     color: var(--blue);
-  }
-
-  h1 .break {
-    display: block;
   }
 
   .hero-sub {
@@ -165,67 +148,21 @@ const facts: readonly HeroFact[] = [
     margin-top: 32px;
   }
 
-  .hero-card {
-    position: relative;
-    padding: 24px 24px 8px;
-    background: var(--card);
+  .hero-portrait {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-portrait :global(.hero-photo) {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    object-fit: cover;
     border: 1px solid var(--line);
     box-shadow:
       0 1px 0 var(--line-2),
-      0 22px 44px -30px light-dark(rgba(20, 20, 22, 0.12), rgba(0, 0, 0, 0.5));
-  }
-
-  .hero-card-title {
-    margin-bottom: 4px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-
-  .kv {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line-2);
-  }
-
-  .kv:last-child {
-    border-bottom: none;
-  }
-
-  .k {
-    font-size: 14px;
-    color: var(--muted);
-  }
-
-  .v {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
-    text-align: right;
-  }
-
-  .pill {
-    display: inline-flex;
-    gap: 6px;
-    align-items: center;
-    padding: 2px 8px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--blue);
-    background: var(--blue-wash);
-  }
-
-  .pill::before {
-    width: 6px;
-    height: 6px;
-    content: "";
-    background: var(--blue);
-    border-radius: 50%;
+      0 22px 44px -30px light-dark(rgba(20, 20, 22, 0.18), rgba(0, 0, 0, 0.55));
   }
 
   @media (max-width: 880px) {
@@ -238,8 +175,12 @@ const facts: readonly HeroFact[] = [
       gap: 32px;
     }
 
+    .hero-portrait {
+      grid-row: 1;
+    }
+
     h1 {
-      font-size: 44px;
+      font-size: 40px;
     }
   }
 
