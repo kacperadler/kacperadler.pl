@@ -9,7 +9,7 @@ interface ProjectType {
 const projectTypes: readonly ProjectType[] = [
   { value: "webapp", label: "Aplikacja webowa" },
   { value: "landing", label: "Landing page" },
-  { value: "mobile", label: "Mobile" },
+  { value: "mobile", label: "Aplikacja mobilna" },
   { value: "tool", label: "Narzędzie wewn." },
   { value: "other", label: "Inne" },
 ];
@@ -55,7 +55,6 @@ const projectTypes: readonly ProjectType[] = [
   </div>
 
   <div class="submit-row">
-    <div class="small">Nie spam-uję, nie dodaję do newslettera.</div>
     <button type="submit" class="btn-submit" data-submit data-state="idle">
       <span class="t">Wyślij wiadomość</span>
       <Icon name="lucide:arrow-right" aria-hidden="true" />
@@ -189,12 +188,7 @@ const projectTypes: readonly ProjectType[] = [
     flex-wrap: wrap;
     gap: 12px;
     align-items: center;
-    justify-content: space-between;
-  }
-
-  .small {
-    font-size: 12px;
-    color: var(--muted);
+    justify-content: flex-end;
   }
 
   .btn-submit {
