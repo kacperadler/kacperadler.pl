@@ -13,7 +13,7 @@ const steps: readonly FlowStep[] = [
     num: "01",
     title: "Zaczynamy od rozmowy.",
     description:
-      "Krótkie spotkanie lub wymiana maili — opowiadasz, co chcesz zbudować i po co. Ja zadaję pytania, żeby zrozumieć Twój biznes, użytkowników i priorytety.",
+      "Krótkie spotkanie albo wymiana maili — co Ci wygodniej. Opowiadasz, co chcesz zbudować i po co; ja zadaję pytania, czasem niewygodne.",
     badge: "~ 30 min",
   },
   {
@@ -27,7 +27,7 @@ const steps: readonly FlowStep[] = [
     num: "03",
     title: "Budujemy krok po kroku.",
     description:
-      "Pracuję w małych etapach — co tydzień widzisz postęp na działającej wersji strony, nie na screenach. Łatwiej wtedy reagować, jeśli coś idzie w niedobrą stronę.",
+      "Pracuję małymi etapami — co tydzień widzisz coś, co działa, nie obrazek. Gdy coś idzie nie tak, łatwiej to zauważyć i poprawić.",
     badge: "podział na etapy",
   },
   {
@@ -39,17 +39,22 @@ const steps: readonly FlowStep[] = [
   },
   {
     num: "05",
-    title: "Wdrożenie i wsparcie po.",
+    title: "Wdrożenie i bieżący nadzór.",
     description:
-      "Po odpaleniu projekt nie znika z mojego radaru. Zostaję dostępny na pytania, drobne poprawki i obserwuję, czy wszystko działa tak, jak zakładaliśmy.",
-    badge: "+ wsparcie",
+      "Po wdrożeniu zostaje monitoring. Łapię błędy zanim staną się problemem, mierzę performance, przygotowuję poprawki. Twój produkt nie jest sam.",
+    badge: "+ nadzór",
   },
 ];
 ---
 
 <section class="block reveal" id="how">
   <div class="container">
-    <SectionHead label="Jak pracuję">Kilka zasad, które <em>działają</em>.</SectionHead>
+    <SectionHead
+      label="Jak pracuję"
+      lede="Prosty flow, bez ceremonii. Pięć kroków, dużo rozmowy, miejsce na Twój feedback."
+    >
+      Tak <em>pracuję</em>.
+    </SectionHead>
 
     <div class="how-timeline">
       <header class="how-head">
