@@ -5,7 +5,7 @@ export interface NavLink {
 
 export const primaryNav: readonly NavLink[] = [
   { label: "Usługi", href: "#services" },
-  { label: "Realizacje", href: "#projects" },
+  // Realizacje disabled until real case-studies land — restore { label: "Realizacje", href: "#projects" } when ready.
   { label: "Jak pracuję", href: "#how" },
   { label: "Doświadczenie", href: "#experience" },
 ] as const;
