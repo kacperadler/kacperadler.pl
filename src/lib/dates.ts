@@ -84,3 +84,20 @@ export function totalYearsFloor(
 ): number {
   return Math.floor(durationInMonths(earliestStart, undefined, now) / 12);
 }
+
+// Coarser timeline label for past jobs - drops the date range and
+// rounds the duration to whole years (1y 9m → "~ 2 lata").
+// Special-cases n=1 to "~ rok" (omitting the digit reads more
+// naturally in Polish than "~ 1 rok").
+export function roundedYearsLabel(
+  start: string,
+  end?: string,
+  now: Date = new Date()
+): string {
+  const months = durationInMonths(start, end, now);
+  const years = Math.max(1, Math.round(months / 12));
+  if (years === 1) {
+    return "~ rok";
+  }
+  return `~ ${years} ${yearsUnit(years)}`;
+}

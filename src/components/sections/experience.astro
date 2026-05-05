@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import SectionHead from "@/components/ui/section-head.astro";
-import { formatPeriod, totalYearsFloor, yearsUnit } from "@/lib/dates";
+import { roundedYearsLabel, totalYearsFloor, yearsUnit } from "@/lib/dates";
 
 const all = (await getCollection("experience")).sort((a, b) => a.data.order - b.data.order);
 const items = all.slice(0, 4);
@@ -31,7 +31,13 @@ const totalYears = earliestStart ? totalYearsFloor(earliestStart) : 0;
           <div class:list={["t-item", { now: item.data.current }]}>
             <div class="t-head">
               <h3>{item.data.company}</h3>
-              <span class="meta">{formatPeriod(item.data.startDate, item.data.endDate)}</span>
+              {item.data.current ? (
+                <span class="meta meta-now">teraz</span>
+              ) : (
+                <span class="meta">
+                  {roundedYearsLabel(item.data.startDate, item.data.endDate)}
+                </span>
+              )}
             </div>
             <div class="t-role">{item.data.role}</div>
             <p class="t-desc">
@@ -106,6 +112,10 @@ const totalYears = earliestStart ? totalYearsFloor(earliestStart) : 0;
     letter-spacing: 0.02em;
   }
 
+  .t-head .meta-now {
+    color: var(--blue);
+  }
+
   .t-role {
     margin-top: 2px;
     font-size: 14px;
@@ -125,16 +135,5 @@ const totalYears = earliestStart ? totalYearsFloor(earliestStart) : 0;
     margin-right: 4px;
     font-weight: 500;
     color: var(--ink);
-  }
-
-  .t-item.now .t-head h3::after {
-    margin-left: 10px;
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    vertical-align: 4px;
-    color: var(--blue);
-    letter-spacing: 0.05em;
-    content: "• teraz";
   }
 </style>
