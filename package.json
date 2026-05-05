@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
-    "astro": "^6.2.1",
+    "astro": "^6.2.2",
     "astro-icon": "^1.1.5"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3",
-    "ultracite": "7.6.2"
+    "ultracite": "7.6.3"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,jsonc,css}": "ultracite fix",
