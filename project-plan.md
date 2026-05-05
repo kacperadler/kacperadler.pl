@@ -279,18 +279,21 @@ Inline w `<head>` przed pierwszym paint:
 - [→ F7] **axe-core audit przez Playwright** — odłożone do F7 razem z E2E setupem (jeden wspólny `bun add -D @playwright/test @axe-core/playwright`)
 - [→ post-deploy] Re-run Lighthouse z prawdziwej domeny po podpięciu CF Pages — sanity check na real network / brotli / CDN edge (zwykle wynik *lepszy* niż localhost)
 
-### Faza 7 — copy improvement
-*(Wcześniej Faza 8 — przeniesione przed deploy: nie chcemy `kacperadler.pl` na żywo z "Projekt placeholder × 4", a piszemy E2E testy raz przeciw realnemu copy zamiast iterować selektory po contencie.)*
+### Faza 7 — copy improvement ✅ DONE
 
-- [ ] **`siteConfig`** (`src/data/site-config.ts`) — `name`, `role`, `tagline`, `description`, social handles, e-mail
-- [ ] **Hero** — eyebrow ("Frontend Engineer · Polska"), `<h1>`, hero-sub, hero-card facts (Model / Lokalizacja / Języki / Czas odpowiedzi)
-- [ ] **Services** (`content/services/*.json`) — opisy 3 serwisów (web-apps / landing-pages / internal-tools); rozważyć dodanie konkretnych liczb / metryk
-- [ ] **Projects** (`content/projects/*.json`) — zastąpić 4 placeholdery (alpha/beta/gamma/delta) realnymi projektami z opisami case-study
-- [ ] **How-I-work** — 5 kroków + headings + descriptions; aktualnie jest OK po zigzag refactorze, ale przejrzeć ton
-- [ ] **Experience** (`content/experience/*.json`) — 7 wpisów timeline'a; doszlifować descriptions, sprawdzić daty / lokalizacje
-- [ ] **Contact** — lead text, reply ("Odpowiadam zwykle w ciągu 24h"), spam disclaimer pod submit, success message
-- [ ] **404** — copy "Tej strony nie ma" + paragraf — sprawdzić czy ton pasuje do reszty
-- [ ] **Cross-section consistency audit**: konsekwentny ton (formalny vs swobodny), brak literówek, spójny mix PL/EN dla nazw technologii (np. "TypeScript" vs "Typescript")
+8 commitów per-sekcja (`copy(faza-7/0X): ...`), każdy z atomowym diffem do łatwego rewerta:
+
+- [x] **`siteConfig`** — tagline + description przepisane (134 chars, sweet-spot dla Google snippet); `image` + `knowsAbout` w `personSchema` (Knowledge Graph signal); `social.x` usunięte. **`8488b0c`**
+- [x] **Hero** — H1 + hero-sub zsynchronizowane z siteConfig (zero drift); hero-card "Współpraca" wycięty na rzecz portretu z `src/assets/me.jpg` przez Astro `<Image>`. **`d7d3eac`**
+- [x] **Services** — title sharpened (`Trzy obszary, w których działam`), lede dodany; reframe descriptions na "Aplikacje X" zamiast "frontend dla X" (positioning shift). **`1d4969d`**
+- [x] **Projects** — sekcja wyłączona pending real case-studies (3 miejsca: index.astro / nav / hero CTA). **`12eea3e`**
+- [x] **How-I-work** — title (`Tak pracuję.`) + lede dodany; wszystkie 5 step descriptions humanized, krok 05 pivot z "wsparcia" na "monitoring/nadzór". **`66d0186`**
+- [x] **Experience (infra)** — `lib/dates.ts` + schema migration (`startDate`/`endDate` zamiast hardkodowanego `period`); top 4 filter + drop collapsible (3 firmy hidden); section title "~ N lat" liczony automatycznie z najwcześniejszego startDate. **`fe9a600`**
+- [x] **Experience (copy)** — wszystkie 7 wpisów humanized (ujawnione kontekst Moneya = side project + Web3 Devs Poland = niezależny projekt). **`87d0bd8`**
+- [x] **Contact** — title (`Opowiedz mi, co budujesz.`) + lede dodany; lead text 1. osoba; "Mobile" radio → "Aplikacja mobilna"; spam disclaimer wyrzucony. **`94af7ee`**
+- [x] **404** — title prop cleaner (`Strona nie znaleziona`); paragraph humanized; **+ global em-dash → hyphen sweep** (32 plików, anti-AI-detection signal). **`edce860`**
+
+Cross-section consistency audit (literówki, ton, PL/EN mix) — ogarnięte at the same time podczas iteracji per-sekcji.
 
 ### Faza 8 — testy + deploy
 *(Wcześniej Faza 7 — po copy improvement, żeby E2E asserts trafiały od razu w finalną treść.)*
@@ -400,8 +403,8 @@ Przed deployem produkcyjnym:
 
 ## 10. Następny krok
 
-**Faza 0–6 — DONE.** Lighthouse mobile 100×4 ✅ (na localhost — re-run po deployu).
+**Faza 0–7 — DONE.** Lighthouse mobile 100×4 ✅. Copy zsynchronizowany z siteConfig, em-dashes wycięte (anti-AI-detection), Experience timeline z auto-liczonym tenure, Projects schowane do realnych case-studies.
 
-Następnie: **Faza 7 — copy improvement** (siteConfig + sekcje + content collections, audit tonu i spójności).
+Następnie: **Faza 8 — testy + deploy** (Playwright E2E + axe-core + CI test job + Cloudflare Pages connect).
 
-Potem: **Faza 8** testy + deploy → **Faza 9** real form submit → **Faza 10** blog.
+Potem: **Faza 9** real form submit → **Faza 10** blog.
