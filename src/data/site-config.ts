@@ -4,7 +4,7 @@ export const siteConfig = {
   tagline:
     "Buduję interfejsy dla produktów, z których ludzie korzystają codziennie.",
   description:
-    "Aplikacje webowe, narzędzia B2B i landing pages — od architektury po deploy. Pracuję w sprintach, async, z zespołami produktowymi w PL/EU.",
+    "Aplikacje webowe, narzędzia B2B i landing pages - od architektury po deploy. Pracuję w sprintach, async, z zespołami produktowymi w PL/EU.",
   url: "https://kacperadler.pl",
   locale: "pl-PL",
   lang: "pl",

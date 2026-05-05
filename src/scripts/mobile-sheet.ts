@@ -3,7 +3,7 @@
  * any click on a [data-sheet-link] inside (so anchor navigation
  * dismisses the overlay).
  *
- * The visibility flag is data-mobile-sheet="open" — CSS in
+ * The visibility flag is data-mobile-sheet="open" - CSS in
  * mobile-sheet.astro keys on it. Synced ARIA: aria-expanded on the
  * trigger, aria-hidden on the sheet itself.
  *
@@ -76,7 +76,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-// On view transition the sheet is rebuilt — make sure it starts closed
+// On view transition the sheet is rebuilt - make sure it starts closed
 // and ARIA state is consistent.
 function syncOnLoad(): void {
   const sheet = getSheet();

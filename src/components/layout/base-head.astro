@@ -18,8 +18,8 @@ const {
 } = Astro.props;
 
 const fullTitle = title
-  ? `${title} — ${siteConfig.name}`
-  : `${siteConfig.name} — ${siteConfig.role}`;
+  ? `${title} - ${siteConfig.name}`
+  : `${siteConfig.name} - ${siteConfig.role}`;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? siteConfig.url).toString();
 const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();

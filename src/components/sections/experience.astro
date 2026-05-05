@@ -7,7 +7,7 @@ const all = (await getCollection("experience")).sort((a, b) => a.data.order - b.
 const items = all.slice(0, 4);
 
 // Section title shows total years from earliest startDate across the
-// FULL collection (not the displayed slice) — total tenure is the
+// FULL collection (not the displayed slice) - total tenure is the
 // honest signal.
 const earliestStart = all
   .map((i) => i.data.startDate)

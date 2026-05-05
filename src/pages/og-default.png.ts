@@ -4,7 +4,7 @@ import { siteConfig } from "@/data/site-config";
 
 /* Build-time OG image (1200×630). Layout: paper background, photo
  * on the left occupying a 540px square slot, brand typography on the
- * right (name + role + tagline + url). System fonts in the SVG —
+ * right (name + role + tagline + url). System fonts in the SVG -
  * Geist isn't directly embeddable in sharp's SVG renderer (librsvg)
  * without extra tooling, and at OG thumbnail size the difference vs
  * the site is barely visible.
@@ -32,7 +32,7 @@ function escapeXml(value: string): string {
 
 /* Wrap a tagline onto at most two lines so it fits the 560px text
  * column at 26px font. Splits at the first comma when the string
- * exceeds the per-line budget — handles our typical "X dla Y, z
+ * exceeds the per-line budget - handles our typical "X dla Y, z
  * których Z" rhythm; falls back to a word-wrap loop otherwise. */
 const MAX_LINE_CHARS = 32;
 

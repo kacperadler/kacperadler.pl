@@ -1,6 +1,6 @@
 {
   "title": "Aplikacje webowe",
-  "description": "Aplikacje webowe SaaS i narzędzia B2B — od pierwszego przycisku po deploy. Buduję end-to-end albo dołączam do istniejącego zespołu jako wsparcie.",
+  "description": "Aplikacje webowe SaaS i narzędzia B2B - od pierwszego przycisku po deploy. Buduję end-to-end albo dołączam do istniejącego zespołu jako wsparcie.",
   "tags": ["React", "TypeScript", "Next.js", "React Query"],
   "order": 1
 }

@@ -1,5 +1,5 @@
 /* Reveal-on-scroll. Adds `.in` to `.reveal` elements once they enter
- * the viewport, then unobserves them — animation is one-shot.
+ * the viewport, then unobserves them - animation is one-shot.
  *
  * Skipped entirely under prefers-reduced-motion: elements get `.in`
  * immediately so the page renders in its final state without

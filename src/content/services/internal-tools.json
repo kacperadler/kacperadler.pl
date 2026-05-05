@@ -1,6 +1,6 @@
 {
   "title": "Narzędzia wewnętrzne",
-  "description": "Aplikacje wewnętrzne dla zespołów — dashboardy, CRM-y, panele używane codziennie. Złożony stan, duże listy, integracje z zewnętrznymi API.",
+  "description": "Aplikacje wewnętrzne dla zespołów - dashboardy, CRM-y, panele używane codziennie. Złożony stan, duże listy, integracje z zewnętrznymi API.",
   "tags": ["React", "Zustand", "Virtuoso"],
   "order": 3
 }

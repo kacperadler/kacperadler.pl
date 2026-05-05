@@ -3,7 +3,7 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 /* All collections use the glob loader and JSON files for now. Projects
- * may flip to MDX later when real case-studies land — the schema +
+ * may flip to MDX later when real case-studies land - the schema +
  * filename-as-slug stay compatible. Blog directory is empty: schema
  * is defined so Faza 8 can drop posts in without touching this file. */
 

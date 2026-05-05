@@ -4,7 +4,7 @@
  * usually counted in Polish:
  *
  *   - Historical (with endDate): inclusive count of work months.
- *     "07.2020 — 10.2021" = 16 months = "1 rok 4 mies."
+ *     "07.2020 - 10.2021" = 16 months = "1 rok 4 mies."
  *   - Current (no endDate): months elapsed since start, excluding
  *     the in-flight month. Started 02.2026, today is in May 2026
  *     → 3 mies. (Feb, Mar, Apr completed). */
@@ -75,7 +75,7 @@ export function formatPeriod(
     parts.push("1 mies.");
   }
 
-  return `${startStr} — ${endStr} · ${parts.join(" ")}`;
+  return `${startStr} - ${endStr} · ${parts.join(" ")}`;
 }
 
 export function totalYearsFloor(

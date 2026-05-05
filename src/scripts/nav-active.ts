@@ -1,11 +1,11 @@
-/* Active nav link tracking via IntersectionObserver — no scroll
+/* Active nav link tracking via IntersectionObserver - no scroll
  * listener. Each [data-nav-link] points to a #section-id; the section
  * that's most-visible gets `.active` on its corresponding link.
  *
  * Special case from the prototype: when the user is in the contact
  * section, ALL primary links lose `.active` and the contact CTA
  * ([data-nav-cta]) takes over with its own `.active` style. This
- * matches the visual hierarchy — once you're at the destination,
+ * matches the visual hierarchy - once you're at the destination,
  * the CTA shouldn't compete with a different highlighted item. */
 
 let observer: IntersectionObserver | null = null;
