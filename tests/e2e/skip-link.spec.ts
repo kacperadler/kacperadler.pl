@@ -6,9 +6,16 @@ test.describe("skip-to-content link", () => {
   test("first Tab focuses the skip link and reveals it", async ({ page }) => {
     await page.goto("/");
 
-    await page.keyboard.press("Tab");
-
     const skipLink = page.locator(".skip-link");
+
+    // Before focus the link must sit off-screen (transform translateY)
+    // so sighted users don't see it floating above the page. Without
+    // this pre-assertion the test would also pass for a broken design
+    // where the skip link is always visible.
+    const boxBefore = await skipLink.boundingBox();
+    expect(boxBefore?.y ?? 0).toBeLessThan(0);
+
+    await page.keyboard.press("Tab");
     await expect(skipLink).toBeFocused();
 
     // Reveal is via transform: translateY(0); poll because the transition
