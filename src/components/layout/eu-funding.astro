@@ -1,0 +1,84 @@
+---
+import { Image } from "astro:assets";
+import logoFunduszeEu from "@/assets/logotyp_fundusze_eu.png";
+
+/* Mandatory disclosure required by the funding contract with PUP
+ * Krotoszyn (project "Aktywizacja na plus 2", EFS+). Displayed as a
+ * white band beneath the footer on every page; logos + the contract's
+ * verbatim disclosure text + project link + required hashtags. */
+
+const PROJECT_URL = "https://krotoszyn.praca.gov.pl/projekty-efs";
+---
+
+<aside class="eu-funding" aria-label="Informacja o dofinansowaniu">
+  <div class="eu-inner">
+    <Image
+      src={logoFunduszeEu}
+      alt="Fundusze Europejskie dla Wielkopolski · Rzeczpospolita Polska · Dofinansowane przez Unię Europejską · Samorząd Województwa Wielkopolskiego"
+      class="eu-logos"
+      loading="lazy"
+    />
+    <p class="eu-text">
+      Niniejszy podmiot powstał dzięki współfinansowaniu ze środków Europejskiego Funduszu
+      Społecznego Plus (EFS+) w ramach projektu „Aktywizacja na plus 2" realizowanego od 01.01.2025
+      r. do 31.12.2026 r. przez Powiatowy Urząd Pracy w Krotoszynie.
+    </p>
+    <p class="eu-meta">
+      Więcej o projekcie:
+      <a href={PROJECT_URL} target="_blank" rel="noopener">{PROJECT_URL}</a>
+    </p>
+    <p class="eu-tags">#FunduszeUE #FunduszeEuropejskie</p>
+  </div>
+</aside>
+
+<style>
+  /* Forced light palette - the disclosure must stay legible regardless
+   * of the visitor's chosen theme, and the logos are designed for a
+   * white background. */
+  .eu-funding {
+    padding: 32px 0;
+    color: #111;
+    color-scheme: light;
+    background: #fff;
+  }
+
+  .eu-inner {
+    max-width: var(--container);
+    padding: 0 24px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .eu-logos {
+    display: block;
+    width: 100%;
+    max-width: 720px;
+    height: auto;
+    margin: 0 auto 24px;
+  }
+
+  .eu-text {
+    max-width: 80ch;
+    margin: 0 auto;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .eu-meta {
+    margin: 12px auto 0;
+    font-size: 13px;
+  }
+
+  .eu-meta a {
+    color: #0a4ea8;
+    word-break: break-all;
+    text-decoration: underline;
+  }
+
+  .eu-tags {
+    margin: 8px auto 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #444;
+  }
+</style>
