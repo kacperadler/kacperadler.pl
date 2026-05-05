@@ -7,15 +7,15 @@ import { siteConfig } from "@/data/site-config";
 
 <section class="block reveal" id="contact">
   <div class="container">
-    <SectionHead
-      label="Kontakt"
-      lede="Najlepiej mailem albo formularzem. Zwykle wracam tego samego dnia."
-    >
-      Opowiedz mi, co <em>budujesz</em>.
-    </SectionHead>
-
     <div class="contact">
       <div class="contact-info">
+        <SectionHead
+          label="Kontakt"
+          lede="Najlepiej mailem albo formularzem. Zwykle wracam tego samego dnia."
+        >
+          Opowiedz mi, co <em>budujesz</em>.
+        </SectionHead>
+
         <p class="lead">
           Najchętniej zaczynam od maila - opisz projekt w 2–3 zdaniach, a wrócę z pytaniami albo
           propozycją rozmowy.
@@ -49,7 +49,7 @@ import { siteConfig } from "@/data/site-config";
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 48px;
-    align-items: start;
+    align-items: stretch;
   }
 
   .lead {
