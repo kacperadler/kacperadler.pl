@@ -14,7 +14,8 @@
     "check": "astro check",
     "lint": "ultracite check",
     "format": "ultracite fix && prettier --write \"**/*.astro\"",
-    "test": "echo \"tests added in Faza 7\" && exit 0",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "prepare": "husky"
   },
   "dependencies": {
@@ -24,8 +25,10 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@axe-core/playwright": "^4.11.3",
     "@biomejs/biome": "2.4.14",
     "@iconify-json/lucide": "^1.2.105",
+    "@playwright/test": "^1.59.1",
     "@types/node": "^25.6.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",

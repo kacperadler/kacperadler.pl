@@ -12,7 +12,10 @@
  * no re-binding. */
 
 function getSheet(): HTMLElement | null {
-  return document.querySelector<HTMLElement>("[data-mobile-sheet]");
+  // Look up by id, not by [data-mobile-sheet]: the attribute is removed
+  // when the sheet is closed, so an attribute selector would break every
+  // subsequent open after syncOnLoad runs.
+  return document.getElementById("mobile-sheet");
 }
 
 function getOpenButton(): HTMLElement | null {

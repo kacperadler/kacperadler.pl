@@ -83,29 +83,37 @@ function resetForm(form: HTMLFormElement): void {
   setFieldInvalid(form, "message", false);
 }
 
-document.addEventListener("submit", (event) => {
-  const form = event.target;
-  if (
-    !(form instanceof HTMLFormElement && form.matches("[data-contact-form]"))
-  ) {
-    return;
-  }
-  event.preventDefault();
+// Capture phase: ClientRouter also listens for submit and would
+// otherwise treat the relative-action form as an internal navigation
+// (swapping the DOM and resetting our state). Running first lets us
+// preventDefault before ClientRouter's bubble-phase handler sees it.
+document.addEventListener(
+  "submit",
+  (event) => {
+    const form = event.target;
+    if (
+      !(form instanceof HTMLFormElement && form.matches("[data-contact-form]"))
+    ) {
+      return;
+    }
+    event.preventDefault();
 
-  const payload = readPayload(form);
-  if (!validate(form, payload)) {
-    setState(form, "error");
-    return;
-  }
+    const payload = readPayload(form);
+    if (!validate(form, payload)) {
+      setState(form, "error");
+      return;
+    }
 
-  setState(form, "submitting");
+    setState(form, "submitting");
 
-  // Mock the network round-trip. F9 replaces this with actions.contact().
-  console.info("[contact]", payload);
-  window.setTimeout(() => {
-    setState(form, "success");
-  }, SUBMIT_DELAY_MS);
-});
+    // Mock the network round-trip. F9 replaces this with actions.contact().
+    console.info("[contact]", payload);
+    window.setTimeout(() => {
+      setState(form, "success");
+    }, SUBMIT_DELAY_MS);
+  },
+  true
+);
 
 // Clear the per-field invalid mark as soon as the user edits.
 document.addEventListener("input", (event) => {
