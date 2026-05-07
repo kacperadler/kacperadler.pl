@@ -1,0 +1,151 @@
+<!--
+  CSS-only phone mockup with a welcome-screen UI inside. Decorative -
+  whole frame is aria-hidden, and the inner "Formularz kontaktowy"
+  link is tabindex="-1" because the regular hero CTA already exposes
+  the same destination to keyboard / AT users. Bezel stays dark in
+  both themes; screen interior follows site theme via light-dark().
+-->
+<div class="phone" aria-hidden="true">
+  <div class="phone-notch"></div>
+  <div class="phone-screen">
+    <div class="screen-status">
+      <span>9:41</span>
+      <span class="status-dots">•••</span>
+    </div>
+
+    <div class="welcome">
+      <div class="welcome-mark">k</div>
+      <div class="welcome-greet">Cześć!</div>
+      <p class="welcome-text">Fajnie że wpadłeś.<br />W czym mogę Ci dziś pomóc?</p>
+    </div>
+
+    <a class="welcome-cta" href="#contact" tabindex="-1">
+      Porozmawiajmy
+      <span class="welcome-arrow">→</span>
+    </a>
+  </div>
+  <div class="phone-home"></div>
+</div>
+
+<style>
+  .phone {
+    position: relative;
+    width: 240px;
+    aspect-ratio: 9 / 19;
+    padding: 8px;
+    background: #14171c;
+    border-radius: 36px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 22px 50px -28px light-dark(rgba(20, 20, 22, 0.35), rgba(0, 0, 0, 0.65));
+  }
+
+  .phone-notch {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    z-index: 2;
+    width: 70px;
+    height: 18px;
+    background: #14171c;
+    border-radius: 99px;
+    transform: translateX(-50%);
+  }
+
+  .phone-screen {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 28px 16px 24px;
+    overflow: hidden;
+    background: light-dark(#fafaf6, #0c0d0f);
+    border-radius: 28px;
+  }
+
+  .screen-status {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: light-dark(#141416, #f5f0e6);
+  }
+
+  .status-dots {
+    letter-spacing: 1px;
+  }
+
+  .welcome {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .welcome-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 4px;
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: light-dark(#fafaf6, #0c0d0f);
+    background: var(--blue);
+    border-radius: 14px;
+    box-shadow: 0 8px 20px -10px var(--blue);
+  }
+
+  .welcome-greet {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 500;
+    color: light-dark(#141416, #f5f0e6);
+    letter-spacing: -0.03em;
+  }
+
+  .welcome-text {
+    max-width: 22ch;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: light-dark(#6c6a64, rgba(255, 255, 255, 0.6));
+  }
+
+  .welcome-cta {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    align-self: center;
+    padding: 7px 12px;
+    margin-bottom: 18px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: light-dark(#fafaf6, #0c0d0f);
+    background: var(--blue);
+    border-radius: 99px;
+  }
+
+  .welcome-arrow {
+    font-size: 11px;
+  }
+
+  .phone-home {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    width: 90px;
+    height: 4px;
+    background: light-dark(rgba(20, 20, 22, 0.35), rgba(255, 255, 255, 0.4));
+    border-radius: 99px;
+    transform: translateX(-50%);
+  }
+</style>
