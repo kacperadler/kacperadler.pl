@@ -2,7 +2,7 @@
 
 Portfolio Kacpra Adlera — Frontend Engineer (~5 lat, React/TS).
 
-Prototyp single-file: `example.html`. **Plan migracji i decyzje architektoniczne: `project-plan.md` — przeczytaj go przed zmianami.**
+**Plan migracji i decyzje architektoniczne: `project-plan.md` — przeczytaj go przed zmianami.**
 
 ## Stack
 
