@@ -96,16 +96,15 @@ test.describe("contact form", () => {
       page.locator("[data-contact-form] [data-form-success]")
     ).toHaveAttribute("data-show", "true");
 
-    // multipart/form-data with PascalCase column names + values must
-    // appear in the body. NocoDB rejects JSON outright.
+    // Must be multipart/form-data with a single "data" part whose
+    // value is a JSON string of the row fields. Catches future drift
+    // back to JSON or to per-column parts (both rejected by NocoDB).
     expect(capturedContentType).toMatch(MULTIPART_RX);
-    expect(capturedBody).toContain('name="Email"');
-    expect(capturedBody).toContain("kacper@example.com");
-    expect(capturedBody).toContain('name="Type"');
-    expect(capturedBody).toContain("landing");
-    expect(capturedBody).toContain('name="Message"');
+    expect(capturedBody).toContain('name="data"');
+    expect(capturedBody).toContain('"Email":"kacper@example.com"');
+    expect(capturedBody).toContain('"Type":"landing"');
     expect(capturedBody).toContain(
-      "Chciałbym landing page dla nowego produktu."
+      '"Message":"Chciałbym landing page dla nowego produktu."'
     );
   });
 
