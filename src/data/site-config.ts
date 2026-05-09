@@ -19,6 +19,13 @@ export const siteConfig = {
   // honeypot field + manual moderation in NocoDB.
   nocodbFormUrl:
     "https://crm.kacperadler.pl/api/v1/db/public/shared-view/3f05fcfa-3df7-4e2a-9eb1-4c9538c14c12/rows",
+  // Self-hosted Umami analytics. No cookies, no fingerprinting, no
+  // third party - the script only loads in PROD and respects the
+  // visitor's Do Not Track setting (see base-head.astro).
+  analytics: {
+    umamiUrl: "https://analytics.kacperadler.pl",
+    umamiWebsiteId: "937a952a-548b-4e9d-ba9a-d511be5454f6",
+  },
 } as const;
 
 export type SiteConfig = typeof siteConfig;

@@ -69,3 +69,21 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
 <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
 
 <ThemeScript />
+
+{
+  /* Umami analytics, self-hosted at analytics.kacperadler.pl. PROD-only
+   so dev pageviews don't pollute the data; data-astro-rerun re-fires
+   on every ClientRouter view transition; data-do-not-track honours
+   visitors who set DNT in their browser. is:inline so Astro doesn't
+   try to bundle the external src. */
+  import.meta.env.PROD && (
+    <script
+      data-astro-rerun
+      data-do-not-track="true"
+      data-website-id={siteConfig.analytics.umamiWebsiteId}
+      defer
+      is:inline
+      src={`${siteConfig.analytics.umamiUrl}/script.js`}
+    />
+  )
+}
