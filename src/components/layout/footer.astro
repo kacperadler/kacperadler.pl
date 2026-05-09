@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
 
 <footer class="site-footer">
   <div class="container footer-row">
-    <a href="#top" class="brand" aria-label={`${siteConfig.name} - Strona główna`}>
+    <a href="/#top" class="brand" aria-label={`${siteConfig.name} - Strona główna`}>
       <span class="mark" aria-hidden="true">k</span>
       <span><b>Kacper</b> <em>Adler</em></span>
     </a>
@@ -37,6 +37,12 @@ const year = new Date().getFullYear();
         <Icon name="lucide:github" />
       </a>
     </div>
+  </div>
+
+  <div class="container legal-row">
+    <a href="/polityka-prywatnosci">Polityka prywatności</a>
+    <span class="sep" aria-hidden="true">·</span>
+    <a href="/regulamin">Regulamin</a>
   </div>
 </footer>
 
@@ -94,6 +100,32 @@ const year = new Date().getFullYear();
     font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.04em;
+  }
+
+  /* Legal links sit on their own row below the brand line - secondary
+   * priority, scannable but not competing with primary footer. */
+  .legal-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .legal-row a {
+    color: var(--muted);
+    transition: color 0.15s ease;
+  }
+
+  .legal-row a:hover {
+    color: var(--ink);
+  }
+
+  .legal-row .sep {
+    color: var(--line);
   }
 
   .socials {
