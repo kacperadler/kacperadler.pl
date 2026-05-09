@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const ANY_VALUE = /.*/;
 const NOCODB_FORM_URL = "**/api/v1/db/public/shared-view/**/rows";
+const MULTIPART_RX = /^multipart\/form-data/;
 
 test.describe("contact form", () => {
   test("empty submit marks all fields invalid", async ({ page }) => {
@@ -56,12 +57,14 @@ test.describe("contact form", () => {
     page,
   }) => {
     // Intercept the NocoDB POST so the test never hits the live
-    // shared-view endpoint, and capture the body to assert on the
-    // payload shape (PascalCase keys NocoDB requires).
-    let captured: { Email?: string; Type?: string; Message?: string } | null =
-      null;
+    // shared-view endpoint, and capture the body to assert that the
+    // request goes out as multipart/form-data with the expected field
+    // names + values - NocoDB rejects anything that's not multipart.
+    let capturedBody = "";
+    let capturedContentType: string | null = null;
     await page.route(NOCODB_FORM_URL, async (route) => {
-      captured = route.request().postDataJSON();
+      capturedBody = route.request().postData() ?? "";
+      capturedContentType = route.request().headers()["content-type"] ?? null;
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -93,13 +96,17 @@ test.describe("contact form", () => {
       page.locator("[data-contact-form] [data-form-success]")
     ).toHaveAttribute("data-show", "true");
 
-    // Payload shape: NocoDB needs PascalCase keys matching its column
-    // names. If the form ever drifts, this test catches it instantly.
-    expect(captured).toEqual({
-      Email: "kacper@example.com",
-      Type: "landing",
-      Message: "Chciałbym landing page dla nowego produktu.",
-    });
+    // multipart/form-data with PascalCase column names + values must
+    // appear in the body. NocoDB rejects JSON outright.
+    expect(capturedContentType).toMatch(MULTIPART_RX);
+    expect(capturedBody).toContain('name="Email"');
+    expect(capturedBody).toContain("kacper@example.com");
+    expect(capturedBody).toContain('name="Type"');
+    expect(capturedBody).toContain("landing");
+    expect(capturedBody).toContain('name="Message"');
+    expect(capturedBody).toContain(
+      "Chciałbym landing page dla nowego produktu."
+    );
   });
 
   test("upstream failure flips the form to error state", async ({ page }) => {

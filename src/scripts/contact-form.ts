@@ -85,15 +85,19 @@ function isHoneypotTripped(form: HTMLFormElement): boolean {
 }
 
 async function submitToNocodb(payload: ContactPayload): Promise<boolean> {
+  // NocoDB's public shared-view rows endpoint expects
+  // multipart/form-data, not JSON - posting JSON returns a generic
+  // "Something didn't work as expected" error. Letting the browser
+  // build the FormData body sets the right Content-Type + boundary.
+  const body = new FormData();
+  body.append("Email", payload.email);
+  body.append("Type", payload.type);
+  body.append("Message", payload.message);
+
   try {
     const res = await fetch(siteConfig.nocodbFormUrl, {
       method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        Email: payload.email,
-        Type: payload.type,
-        Message: payload.message,
-      }),
+      body,
     });
     return res.ok;
   } catch (err) {
