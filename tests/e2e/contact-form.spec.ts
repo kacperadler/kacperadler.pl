@@ -1,11 +1,41 @@
+import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
 const ANY_VALUE = /.*/;
 const NOCODB_FORM_URL = "**/api/v1/db/public/shared-view/**/rows";
 const MULTIPART_RX = /^multipart\/form-data/;
 
+interface TrackedEvent {
+  data?: Record<string, unknown>;
+  name: string;
+}
+
+// Stub window.umami before any page script runs and capture every
+// track() call into window.__trackedEvents. Tests read it via
+// readUmamiCalls() to assert on what was tracked.
+async function stubUmami(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    const tracked: TrackedEvent[] = [];
+    (window as unknown as { __trackedEvents: TrackedEvent[] }).__trackedEvents =
+      tracked;
+    window.umami = {
+      track: (name: string, data?: Record<string, unknown>) => {
+        tracked.push({ name, data });
+      },
+    };
+  });
+}
+
+function readUmamiCalls(page: Page): Promise<TrackedEvent[]> {
+  return page.evaluate(
+    () =>
+      (window as unknown as { __trackedEvents: TrackedEvent[] }).__trackedEvents
+  );
+}
+
 test.describe("contact form", () => {
   test("empty submit marks all fields invalid", async ({ page }) => {
+    await stubUmami(page);
     await page.goto("/#contact");
 
     await page.click("[data-contact-form] [data-submit]");
@@ -33,6 +63,10 @@ test.describe("contact form", () => {
     await expect(
       page.locator("[data-contact-form] [data-form-error]")
     ).toBeHidden();
+
+    // Validation errors are silent - we don't want noise in Umami
+    // every time someone clicks submit on an empty form.
+    expect(await readUmamiCalls(page)).toEqual([]);
   });
 
   test("invalid email is flagged, valid email clears on input", async ({
@@ -83,6 +117,7 @@ test.describe("contact form", () => {
       });
     });
 
+    await stubUmami(page);
     await page.goto("/#contact");
     await page.waitForLoadState("networkidle");
 
@@ -109,6 +144,12 @@ test.describe("contact form", () => {
     await expect(page.locator("[data-contact-form]")).toBeHidden();
     await expect(page.locator("[data-form-success]")).toBeVisible();
     await expect(page.locator("[data-form-reset]")).toBeVisible();
+
+    // Umami event fires on success with the project type so the
+    // dashboard can break submissions down by category.
+    expect(await readUmamiCalls(page)).toEqual([
+      { name: "form-submit", data: { type: "landing" } },
+    ]);
 
     expect(capturedContentType).toMatch(MULTIPART_RX);
     expect(capturedBody).toContain('name="data"');
@@ -167,6 +208,7 @@ test.describe("contact form", () => {
       route.fulfill({ status: 500, body: "boom" })
     );
 
+    await stubUmami(page);
     await page.goto("/#contact");
     await page.waitForLoadState("networkidle");
 
@@ -200,6 +242,12 @@ test.describe("contact form", () => {
     await expect(
       page.locator('[data-contact-form] input[name="email"]')
     ).toHaveValue("kacper@example.com");
+
+    // form-error event fires too, so the Umami dashboard surfaces
+    // upstream failures as a separate signal from successful submits.
+    expect(await readUmamiCalls(page)).toEqual([
+      { name: "form-error", data: { type: "webapp" } },
+    ]);
   });
 
   test("honeypot fill silently drops the request and shows success", async ({
@@ -211,6 +259,7 @@ test.describe("contact form", () => {
       await route.fulfill({ status: 200, body: "{}" });
     });
 
+    await stubUmami(page);
     await page.goto("/#contact");
     await page.waitForLoadState("networkidle");
 
@@ -241,5 +290,9 @@ test.describe("contact form", () => {
     // The submit handler must short-circuit before fetch - otherwise
     // bots learn that filling the honeypot still works.
     expect(nocodbHit).toBe(false);
+
+    // form-honeypot event lets the Umami dashboard show how much bot
+    // traffic is hitting the form without inflating form-submit.
+    expect(await readUmamiCalls(page)).toEqual([{ name: "form-honeypot" }]);
   });
 });

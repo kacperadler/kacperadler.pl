@@ -18,12 +18,27 @@
 
 import { siteConfig } from "@/data/site-config";
 
+declare global {
+  interface Window {
+    umami?: {
+      track: (name: string, data?: Record<string, unknown>) => void;
+    };
+  }
+}
+
 type WrapState =
   | "idle"
   | "submitting"
   | "error-validation"
   | "error-submit"
   | "success";
+
+// Optional-chained call: Umami isn't loaded in dev, may be blocked by
+// ad-blockers, and visitors with Do Not Track are deliberately skipped
+// by the tracker itself. All those cases are fine - just no-op.
+function trackEvent(name: string, data?: Record<string, unknown>): void {
+  window.umami?.track(name, data);
+}
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_MESSAGE_LENGTH = 5000;
@@ -155,8 +170,11 @@ document.addEventListener(
     event.preventDefault();
 
     // Honeypot hit - bot. Pretend everything's fine but don't actually
-    // submit; loud rejection would help the bot iterate.
+    // submit; loud rejection would help the bot iterate. Track
+    // separately from real submits so honeypot hits don't inflate the
+    // form-submit number.
     if (isHoneypotTripped(form)) {
+      trackEvent("form-honeypot");
       setState(form, "success");
       return;
     }
@@ -171,6 +189,9 @@ document.addEventListener(
 
     submitToNocodb(payload).then((ok) => {
       setState(form, ok ? "success" : "error-submit");
+      // Type goes to Umami so the dashboard can break submissions down
+      // by project category. NocoDB still has the full record.
+      trackEvent(ok ? "form-submit" : "form-error", { type: payload.type });
     });
   },
   true
