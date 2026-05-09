@@ -27,7 +27,7 @@ Dane osobowe zbieram, gdy sam przekazujesz je przez formularz kontaktowy w sekcj
 
 ### Anonimowe statystyki odwiedzin (Umami)
 
-Strona korzysta z self-hostowanego, prywatnościowego narzędzia statystyk **Umami** dostępnego pod adresem analytics.kacperadler.pl. Umami zbiera **anonimowe** dane techniczne o ruchu na stronie:
+Strona korzysta z self-hostowanego, prywatnościowego narzędzia statystyk **Umami** uruchomionego na mojej własnej infrastrukturze. Umami zbiera **anonimowe** dane techniczne o ruchu na stronie:
 
 - URL odwiedzanej podstrony,
 - źródło ruchu (referrer — z jakiej strony przyszedłeś),
@@ -59,7 +59,7 @@ Podstawa prawna:
 
 ## 4. Komu przekazuję dane
 
-Twoje dane są przechowywane na serwerze dedykowanym pozostającym pod moją bezpośrednią kontrolą — w tym dane z formularza (crm.kacperadler.pl) oraz statystyki Umami (analytics.kacperadler.pl). **Nie korzystam z zewnętrznych procesorów danych** ani z chmurowych narzędzi analitycznych. Dane nie są przekazywane do państw trzecich (poza Europejski Obszar Gospodarczy).
+Twoje dane są przechowywane na serwerze dedykowanym pozostającym pod moją bezpośrednią kontrolą — dotyczy to zarówno danych z formularza kontaktowego, jak i statystyk Umami. **Nie korzystam z zewnętrznych procesorów danych** ani z chmurowych narzędzi analitycznych. Dane nie są przekazywane do państw trzecich (poza Europejski Obszar Gospodarczy).
 
 Dane mogą zostać udostępnione organom państwowym wyłącznie w przypadku, gdy obowiązek taki wynika z przepisów prawa (np. na żądanie sądu lub prokuratury).
 
