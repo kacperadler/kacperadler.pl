@@ -20,9 +20,19 @@ test.describe("contact form", () => {
       page.locator('[data-contact-form] [data-field="message"]')
     ).toHaveAttribute("data-invalid", "true");
 
+    // Wrapper enters validation-error so the form stays visible and
+    // the inline field errors do the talking; the submit-error banner
+    // must NOT appear for client-side validation failures.
+    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+      "data-state",
+      "error-validation"
+    );
     await expect(
       page.locator("[data-contact-form] [data-submit]")
     ).toHaveAttribute("data-state", "error");
+    await expect(
+      page.locator("[data-contact-form] [data-form-error]")
+    ).toBeHidden();
   });
 
   test("invalid email is flagged, valid email clears on input", async ({
@@ -53,13 +63,14 @@ test.describe("contact form", () => {
     ).not.toHaveAttribute("data-invalid", ANY_VALUE);
   });
 
-  test("valid submit transitions through submitting → success", async ({
+  test("valid submit hides the form and shows the success card", async ({
     page,
   }) => {
     // Intercept the NocoDB POST so the test never hits the live
     // shared-view endpoint, and capture the body to assert that the
-    // request goes out as multipart/form-data with the expected field
-    // names + values - NocoDB rejects anything that's not multipart.
+    // request goes out as multipart/form-data with a single "data"
+    // part whose value is a JSON string of the row fields - NocoDB
+    // rejects anything else.
     let capturedBody = "";
     let capturedContentType: string | null = null;
     await page.route(NOCODB_FORM_URL, async (route) => {
@@ -89,16 +100,16 @@ test.describe("contact form", () => {
 
     await page.click("[data-contact-form] [data-submit]");
 
-    const submit = page.locator("[data-contact-form] [data-submit]");
-    await expect(submit).toHaveAttribute("data-state", "success");
+    // Wrapper flips to success → form node is hidden, success card
+    // (with its reset button) takes over.
+    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+      "data-state",
+      "success"
+    );
+    await expect(page.locator("[data-contact-form]")).toBeHidden();
+    await expect(page.locator("[data-form-success]")).toBeVisible();
+    await expect(page.locator("[data-form-reset]")).toBeVisible();
 
-    await expect(
-      page.locator("[data-contact-form] [data-form-success]")
-    ).toHaveAttribute("data-show", "true");
-
-    // Must be multipart/form-data with a single "data" part whose
-    // value is a JSON string of the row fields. Catches future drift
-    // back to JSON or to per-column parts (both rejected by NocoDB).
     expect(capturedContentType).toMatch(MULTIPART_RX);
     expect(capturedBody).toContain('name="data"');
     expect(capturedBody).toContain('"Email":"kacper@example.com"');
@@ -108,7 +119,50 @@ test.describe("contact form", () => {
     );
   });
 
-  test("upstream failure flips the form to error state", async ({ page }) => {
+  test("reset button on success card brings the form back empty", async ({
+    page,
+  }) => {
+    await page.route(NOCODB_FORM_URL, (route) =>
+      route.fulfill({ status: 200, body: "{}" })
+    );
+
+    await page.goto("/#contact");
+    await page.waitForLoadState("networkidle");
+
+    await page.fill(
+      '[data-contact-form] input[name="email"]',
+      "kacper@example.com"
+    );
+    await page
+      .locator('[data-contact-form] input[name="type"][value="webapp"]')
+      .check({ force: true });
+    await page.fill(
+      '[data-contact-form] textarea[name="message"]',
+      "Pierwsza wiadomość"
+    );
+
+    await page.click("[data-contact-form] [data-submit]");
+    await expect(page.locator("[data-form-success]")).toBeVisible();
+
+    await page.click("[data-form-reset]");
+
+    // Wrapper back to idle, form visible again, fields cleared so the
+    // user can compose a fresh message.
+    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+      "data-state",
+      "idle"
+    );
+    await expect(page.locator("[data-contact-form]")).toBeVisible();
+    await expect(page.locator("[data-form-success]")).toBeHidden();
+    await expect(
+      page.locator('[data-contact-form] input[name="email"]')
+    ).toHaveValue("");
+    await expect(
+      page.locator('[data-contact-form] textarea[name="message"]')
+    ).toHaveValue("");
+  });
+
+  test("upstream failure shows the inline error banner", async ({ page }) => {
     await page.route(NOCODB_FORM_URL, (route) =>
       route.fulfill({ status: 500, body: "boom" })
     );
@@ -130,9 +184,22 @@ test.describe("contact form", () => {
 
     await page.click("[data-contact-form] [data-submit]");
 
+    // Form stays visible (so the user keeps what they wrote), the
+    // banner appears, and the success card is NOT shown.
+    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+      "data-state",
+      "error-submit"
+    );
+    await expect(page.locator("[data-contact-form]")).toBeVisible();
     await expect(
-      page.locator("[data-contact-form] [data-submit]")
-    ).toHaveAttribute("data-state", "error");
+      page.locator("[data-contact-form] [data-form-error]")
+    ).toBeVisible();
+    await expect(page.locator("[data-form-success]")).toBeHidden();
+    // Field values must survive the failure - the user gets to retry
+    // without retyping.
+    await expect(
+      page.locator('[data-contact-form] input[name="email"]')
+    ).toHaveValue("kacper@example.com");
   });
 
   test("honeypot fill silently drops the request and shows success", async ({
@@ -165,9 +232,11 @@ test.describe("contact form", () => {
 
     await page.click("[data-contact-form] [data-submit]");
 
-    await expect(
-      page.locator("[data-contact-form] [data-submit]")
-    ).toHaveAttribute("data-state", "success");
+    // Bot sees the same success view a human would.
+    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+      "data-state",
+      "success"
+    );
 
     // The submit handler must short-circuit before fetch - otherwise
     // bots learn that filling the honeypot still works.

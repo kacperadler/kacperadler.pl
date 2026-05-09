@@ -15,77 +15,106 @@ const projectTypes: readonly ProjectType[] = [
 ];
 ---
 
-<form class="form" data-contact-form novalidate>
-  <div class="field" data-field="email">
-    <label for="contact-email">Twój email</label>
-    <input
-      type="email"
-      id="contact-email"
-      name="email"
-      placeholder="twoj@email.pl"
-      autocomplete="email"
-      required
-    />
-    <span class="err">Podaj prawidłowy adres email.</span>
-  </div>
-
-  <div class="field" data-field="type">
-    <label>Typ projektu</label>
-    <div class="radios" role="radiogroup" aria-label="Typ projektu">
-      {
-        projectTypes.map((opt) => (
-          <label class="radio">
-            <input name="type" type="radio" value={opt.value} />
-            <span>{opt.label}</span>
-          </label>
-        ))
-      }
+<div class="contact-form-wrap" data-contact-wrap data-state="idle">
+  <form class="form" data-contact-form novalidate>
+    <div class="field" data-field="email">
+      <label for="contact-email">Twój email</label>
+      <input
+        type="email"
+        id="contact-email"
+        name="email"
+        placeholder="twoj@email.pl"
+        autocomplete="email"
+        required
+      />
+      <span class="err">Podaj prawidłowy adres email.</span>
     </div>
-    <span class="err">Wybierz typ projektu.</span>
-  </div>
 
-  <div class="field" data-field="message">
-    <label for="contact-message">Wiadomość</label>
-    <textarea
-      id="contact-message"
-      name="message"
-      placeholder="Opisz krótko, o co chodzi - zakres, deadline, jeśli znane. 2–3 zdania wystarczą, żeby zacząć rozmowę."
-      required></textarea>
-    <span class="err">Dodaj krótki opis projektu.</span>
-  </div>
+    <div class="field" data-field="type">
+      <label>Typ projektu</label>
+      <div class="radios" role="radiogroup" aria-label="Typ projektu">
+        {
+          projectTypes.map((opt) => (
+            <label class="radio">
+              <input name="type" type="radio" value={opt.value} />
+              <span>{opt.label}</span>
+            </label>
+          ))
+        }
+      </div>
+      <span class="err">Wybierz typ projektu.</span>
+    </div>
 
-  <!--
-    Honeypot - bots fill every field, humans don't see this one. The
-    submit handler drops the request if it's non-empty. aria-hidden +
-    tabindex=-1 keeps it out of the keyboard tab order and screen
-    reader output; the off-screen position keeps it out of view.
-  -->
-  <div class="hp" aria-hidden="true">
-    <label for="hp-website">Strona WWW (zostaw puste)</label>
-    <input type="text" id="hp-website" name="website" tabindex="-1" autocomplete="off" />
-  </div>
+    <div class="field" data-field="message">
+      <label for="contact-message">Wiadomość</label>
+      <textarea
+        id="contact-message"
+        name="message"
+        placeholder="Opisz krótko, o co chodzi - zakres, deadline, jeśli znane. 2–3 zdania wystarczą, żeby zacząć rozmowę."
+        required></textarea>
+      <span class="err">Dodaj krótki opis projektu.</span>
+    </div>
 
-  <div class="submit-row">
-    <button type="submit" class="btn-submit" data-submit data-state="idle">
-      <span class="t">Wyślij wiadomość</span>
-      <Icon name="lucide:arrow-right" aria-hidden="true" />
-    </button>
-  </div>
+    <!--
+      Honeypot - bots fill every field, humans don't see this one. The
+      submit handler drops the request if it's non-empty. aria-hidden +
+      tabindex=-1 keeps it out of the keyboard tab order and screen
+      reader output; the off-screen position keeps it out of view.
+    -->
+    <div class="hp" aria-hidden="true">
+      <label for="hp-website">Strona WWW (zostaw puste)</label>
+      <input type="text" id="hp-website" name="website" tabindex="-1" autocomplete="off" />
+    </div>
 
-  <div class="form-success" role="status" aria-live="polite" data-form-success>
-    <Icon name="lucide:check" aria-hidden="true" />
-    Dzięki! Wiadomość wysłana - odezwę się w ciągu 24h.
+    <div class="form-error" role="alert" data-form-error>
+      <Icon name="lucide:triangle-alert" aria-hidden="true" />
+      Coś poszło nie tak. Spróbuj ponownie za chwilę albo napisz mailem na
+      <a href="mailto:kontakt@kacperadler.pl">kontakt@kacperadler.pl</a>.
+    </div>
+
+    <div class="submit-row">
+      <button type="submit" class="btn-submit" data-submit data-state="idle">
+        <span class="t">Wyślij wiadomość</span>
+        <Icon name="lucide:arrow-right" aria-hidden="true" />
+      </button>
+    </div>
+  </form>
+
+  <div class="form-success-card" role="status" aria-live="polite" data-form-success>
+    <div class="success-mark" aria-hidden="true">
+      <Icon name="lucide:check" />
+    </div>
+    <h3>Wiadomość wysłana</h3>
+    <p>Dzięki! Odezwę się tego samego dnia, najpóźniej w ciągu 24h.</p>
+    <button type="button" class="btn-reset" data-form-reset> Wyślij kolejną wiadomość </button>
   </div>
-</form>
+</div>
 
 <style>
+  /* The wrapper holds two states side by side - one is hidden via the
+   * data-state attribute below. Stretch keeps the card's height aligned
+   * with the left contact-info column when align-self: stretch is set
+   * by the parent grid. */
+  .contact-form-wrap {
+    display: flex;
+    flex-direction: column;
+  }
+
   .form {
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 18px;
     padding: 28px;
     background: var(--card);
     border: 1px solid var(--line);
+  }
+
+  /* On success the form node is hidden entirely and the success card
+   * takes its place. Errors keep the form visible (so the user doesn't
+   * lose what they wrote) and surface a banner above submit-row. */
+  .contact-form-wrap[data-state="success"] .form {
+    display: none;
   }
 
   /* Honeypot - taken out of the visual flow without display:none so
@@ -243,31 +272,110 @@ const projectTypes: readonly ProjectType[] = [
     height: 14px;
   }
 
-  .form-success {
+  /* Inline server-error banner above submit-row. Hidden by default,
+   * revealed when the wrapper enters error-submit state. */
+  .form-error {
     display: none;
     gap: 10px;
     align-items: center;
-    padding: 14px 16px;
-    font-size: 14px;
-    color: var(--blue);
-    background: var(--blue-wash);
-    border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent);
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #c44545;
+    background: color-mix(in srgb, #c44545 8%, transparent);
+    border: 1px solid color-mix(in srgb, #c44545 30%, transparent);
   }
 
-  .form-success[data-show] {
+  .contact-form-wrap[data-state="error-submit"] .form-error {
     display: flex;
   }
 
-  .form-success :global(svg) {
+  .form-error :global(svg) {
+    flex-shrink: 0;
     width: 18px;
     height: 18px;
+  }
+
+  .form-error a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  /* Replaces the form on success. Sized to fill the same vertical
+   * space as the form so the contact section's column heights stay
+   * aligned. */
+  .form-success-card {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 28px;
+    text-align: center;
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+
+  .contact-form-wrap[data-state="success"] .form-success-card {
+    display: flex;
+  }
+
+  .success-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    color: light-dark(var(--paper), var(--paper-2));
+    background: var(--blue);
+    border-radius: 50%;
+  }
+
+  .success-mark :global(svg) {
+    width: 24px;
+    height: 24px;
+  }
+
+  .form-success-card h3 {
+    margin: 4px 0 0;
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .form-success-card p {
+    max-width: 36ch;
+    margin: 0 0 12px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .btn-reset {
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--line);
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .btn-reset:hover {
+    color: var(--blue);
+    border-color: var(--blue);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .field input,
     .field textarea,
     .radio span,
-    .btn-submit {
+    .btn-submit,
+    .btn-reset {
       transition: none;
     }
   }

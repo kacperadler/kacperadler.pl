@@ -1,19 +1,29 @@
-/* Contact form state machine. States surfaced via data-state on the
- * submit button and data-invalid on the field wrappers.
+/* Contact form state machine.
  *
- * On submit: validate client-side, drop silently if the honeypot is
- * filled, then POST the payload to NocoDB's public shared form view
- * endpoint. NocoDB column names are PascalCase (Email/Type/Message)
- * and must match the table view exactly.
+ * State lives on two elements:
+ *   - [data-contact-wrap] — drives the visible UX block (form vs.
+ *     success card vs. error banner). Values:
+ *       idle | submitting | error-validation | error-submit | success
+ *   - [data-submit] button — drives button styling; mirrors the
+ *     wrapper state but maps both error variants to "error".
+ *
+ * Submit flow: validate client-side, drop silently if the honeypot
+ * is filled, then POST the payload to NocoDB's public shared form
+ * view as multipart/form-data with a single "data" part holding the
+ * row JSON. NocoDB column names are PascalCase (Email/Type/Message).
  *
  * Listeners are document-delegated so they survive ClientRouter
- * swaps. The form's clean state (no data-invalid, button data-state
- * back to idle, success hidden) is restored on every astro:page-load
- * in case the user navigates away mid-submit. */
+ * swaps. astro:page-load resets the wrapper to "idle" so navigating
+ * back to the page never lands on a stale success/error view. */
 
 import { siteConfig } from "@/data/site-config";
 
-type FormState = "idle" | "submitting" | "success" | "error";
+type WrapState =
+  | "idle"
+  | "submitting"
+  | "error-validation"
+  | "error-submit"
+  | "success";
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_MESSAGE_LENGTH = 5000;
@@ -24,20 +34,24 @@ interface ContactPayload {
   type: string;
 }
 
-function setState(form: HTMLFormElement, state: FormState): void {
+function getWrap(form: HTMLFormElement): HTMLElement | null {
+  return form.closest<HTMLElement>("[data-contact-wrap]");
+}
+
+function setState(form: HTMLFormElement, state: WrapState): void {
+  const wrap = getWrap(form);
+  if (wrap) {
+    wrap.dataset.state = state;
+  }
   const submit = form.querySelector<HTMLButtonElement>("[data-submit]");
   if (submit) {
-    submit.dataset.state = state;
+    const buttonState =
+      state === "error-validation" || state === "error-submit"
+        ? "error"
+        : state;
+    submit.dataset.state = buttonState;
     submit.disabled = state === "submitting";
     submit.setAttribute("aria-busy", state === "submitting" ? "true" : "false");
-  }
-  const success = form.querySelector<HTMLElement>("[data-form-success]");
-  if (success) {
-    if (state === "success") {
-      success.dataset.show = "true";
-    } else {
-      delete success.dataset.show;
-    }
   }
 }
 
@@ -113,11 +127,16 @@ async function submitToNocodb(payload: ContactPayload): Promise<boolean> {
   }
 }
 
-function resetForm(form: HTMLFormElement): void {
+function clearState(form: HTMLFormElement): void {
   setState(form, "idle");
   setFieldInvalid(form, "email", false);
   setFieldInvalid(form, "type", false);
   setFieldInvalid(form, "message", false);
+}
+
+function resetForm(form: HTMLFormElement): void {
+  form.reset();
+  clearState(form);
 }
 
 // Capture phase: ClientRouter also listens for submit and would
@@ -144,18 +163,39 @@ document.addEventListener(
 
     const payload = readPayload(form);
     if (!validate(form, payload)) {
-      setState(form, "error");
+      setState(form, "error-validation");
       return;
     }
 
     setState(form, "submitting");
 
     submitToNocodb(payload).then((ok) => {
-      setState(form, ok ? "success" : "error");
+      setState(form, ok ? "success" : "error-submit");
     });
   },
   true
 );
+
+// "Wyślij kolejną wiadomość" button on the success card resets the
+// form back to a clean idle state. Document-delegated so it survives
+// ClientRouter swaps.
+document.addEventListener("click", (event) => {
+  if (!(event.target instanceof Element)) {
+    return;
+  }
+  const reset = event.target.closest<HTMLElement>("[data-form-reset]");
+  if (!reset) {
+    return;
+  }
+  const wrap = reset.closest<HTMLElement>("[data-contact-wrap]");
+  const form = wrap?.querySelector<HTMLFormElement>("[data-contact-form]");
+  if (form) {
+    resetForm(form);
+    form
+      .querySelector<HTMLInputElement>('input[name="email"]')
+      ?.focus({ preventScroll: true });
+  }
+});
 
 // Clear the per-field invalid mark as soon as the user edits.
 document.addEventListener("input", (event) => {
@@ -182,9 +222,11 @@ document.addEventListener("change", (event) => {
 });
 
 function syncOnLoad(): void {
+  // Only nuke state (button/wrapper/invalid markers), never the field
+  // values - the user might be returning to the page mid-fill.
   const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
   if (form) {
-    resetForm(form);
+    clearState(form);
   }
 }
 
