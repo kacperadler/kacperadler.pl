@@ -1,20 +1,22 @@
 /* Contact form state machine. States surfaced via data-state on the
  * submit button and data-invalid on the field wrappers.
  *
- * F5 mock: validate client-side, console.info the payload, simulate
- * a 600ms in-flight delay, then transition to success. F9 will swap
- * the setTimeout for an Astro Action call without changing this
- * file's surface.
+ * On submit: validate client-side, drop silently if the honeypot is
+ * filled, then POST the payload to NocoDB's public shared form view
+ * endpoint. NocoDB column names are PascalCase (Email/Type/Message)
+ * and must match the table view exactly.
  *
  * Listeners are document-delegated so they survive ClientRouter
  * swaps. The form's clean state (no data-invalid, button data-state
  * back to idle, success hidden) is restored on every astro:page-load
  * in case the user navigates away mid-submit. */
 
+import { siteConfig } from "@/data/site-config";
+
 type FormState = "idle" | "submitting" | "success" | "error";
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const SUBMIT_DELAY_MS = 600;
+const MAX_MESSAGE_LENGTH = 5000;
 
 interface ContactPayload {
   email: string;
@@ -67,13 +69,37 @@ function readPayload(form: HTMLFormElement): ContactPayload {
 function validate(form: HTMLFormElement, payload: ContactPayload): boolean {
   const emailOk = EMAIL_RX.test(payload.email);
   const typeOk = payload.type.length > 0;
-  const messageOk = payload.message.length > 0;
+  const messageOk =
+    payload.message.length > 0 && payload.message.length <= MAX_MESSAGE_LENGTH;
 
   setFieldInvalid(form, "email", !emailOk);
   setFieldInvalid(form, "type", !typeOk);
   setFieldInvalid(form, "message", !messageOk);
 
   return emailOk && typeOk && messageOk;
+}
+
+function isHoneypotTripped(form: HTMLFormElement): boolean {
+  const data = new FormData(form);
+  return String(data.get("website") ?? "").trim().length > 0;
+}
+
+async function submitToNocodb(payload: ContactPayload): Promise<boolean> {
+  try {
+    const res = await fetch(siteConfig.nocodbFormUrl, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        Email: payload.email,
+        Type: payload.type,
+        Message: payload.message,
+      }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.error("[contact] submit failed", err);
+    return false;
+  }
 }
 
 function resetForm(form: HTMLFormElement): void {
@@ -98,6 +124,13 @@ document.addEventListener(
     }
     event.preventDefault();
 
+    // Honeypot hit - bot. Pretend everything's fine but don't actually
+    // submit; loud rejection would help the bot iterate.
+    if (isHoneypotTripped(form)) {
+      setState(form, "success");
+      return;
+    }
+
     const payload = readPayload(form);
     if (!validate(form, payload)) {
       setState(form, "error");
@@ -106,11 +139,9 @@ document.addEventListener(
 
     setState(form, "submitting");
 
-    // Mock the network round-trip. F9 replaces this with actions.contact().
-    console.info("[contact]", payload);
-    window.setTimeout(() => {
-      setState(form, "success");
-    }, SUBMIT_DELAY_MS);
+    submitToNocodb(payload).then((ok) => {
+      setState(form, ok ? "success" : "error");
+    });
   },
   true
 );
@@ -147,5 +178,3 @@ function syncOnLoad(): void {
 }
 
 document.addEventListener("astro:page-load", syncOnLoad);
-
-export {};

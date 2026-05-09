@@ -54,6 +54,17 @@ const projectTypes: readonly ProjectType[] = [
     <span class="err">Dodaj krótki opis projektu.</span>
   </div>
 
+  <!--
+    Honeypot - bots fill every field, humans don't see this one. The
+    submit handler drops the request if it's non-empty. aria-hidden +
+    tabindex=-1 keeps it out of the keyboard tab order and screen
+    reader output; the off-screen position keeps it out of view.
+  -->
+  <div class="hp" aria-hidden="true">
+    <label for="hp-website">Strona WWW (zostaw puste)</label>
+    <input type="text" id="hp-website" name="website" tabindex="-1" autocomplete="off" />
+  </div>
+
   <div class="submit-row">
     <button type="submit" class="btn-submit" data-submit data-state="idle">
       <span class="t">Wyślij wiadomość</span>
@@ -75,6 +86,16 @@ const projectTypes: readonly ProjectType[] = [
     padding: 28px;
     background: var(--card);
     border: 1px solid var(--line);
+  }
+
+  /* Honeypot - taken out of the visual flow without display:none so
+   * autofill / focus-stealing bots that ignore display still hit it. */
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
 
   .field {

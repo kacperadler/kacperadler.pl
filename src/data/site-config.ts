@@ -14,6 +14,11 @@ export const siteConfig = {
     linkedin: "https://www.linkedin.com/in/kacperadler/",
   },
   ogImage: "/og-default.png",
+  // Public NocoDB shared form view endpoint. The UUID is not a secret
+  // (it appears in the client bundle); spam protection is layered via
+  // honeypot field + manual moderation in NocoDB.
+  nocodbFormUrl:
+    "https://crm.kacperadler.pl/api/v1/db/public/shared-view/3f05fcfa-3df7-4e2a-9eb1-4c9538c14c12/rows",
 } as const;
 
 export type SiteConfig = typeof siteConfig;
