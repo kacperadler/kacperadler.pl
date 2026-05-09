@@ -1,0 +1,35 @@
+# Build cache and output (regenerated in image)
+.astro/
+dist/
+
+# Dependencies (re-installed inside the image)
+node_modules/
+
+# Test artifacts (not part of the runtime image)
+tests/
+playwright.config.ts
+playwright-report/
+test-results/
+blob-report/
+
+# Git / GitHub
+.git/
+.github/
+.gitignore
+
+# IDE / OS noise
+.vscode/
+.idea/
+.DS_Store
+
+# Tooling that doesn't need to be in the build context
+.husky/
+.claude/
+
+# Logs and env
+*.log
+.env
+.env.*
+
+# Docs (CLAUDE.md, README, project-plan.md aren't part of the build)
+*.md

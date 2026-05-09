@@ -49,9 +49,12 @@ Pre-commit hook: `lint-staged` (ultracite fix dla TS/JS/JSON/CSS, prettier dla `
 
 ## Hosting
 
-**Cloudflare Pages**:
-- Faza 7 (start) — static deploy z `dist/`, bez adaptera
-- Faza 9 — `@astrojs/cloudflare` w hybrid mode pod real form submission (Astro Actions + Resend)
+**Dokploy** (self-hosted, własny serwer):
+- Build type: **Dockerfile** w repo (multi-stage `oven/bun:1.3.13-alpine` → `nginx:1.27-alpine`)
+- `nginx.conf` w repo: gzip, security headers (X-Frame-Options/X-Content-Type-Options/Referrer-Policy/Permissions-Policy), cache rules (immutable dla `/_astro/` + fontów, 30d dla obrazków, must-revalidate dla HTML)
+- Container port: **80**, Traefik-routed przez Dokploy z Let's Encrypt cert
+- W build stage `apk add fontconfig ttf-dejavu` — librsvg w `og-default.png.ts` potrzebuje fontu z polskimi diakrytykami, inaczej tofu boxes
+- Lokalny test: `docker build -t kacperadler-pl-test . && docker run -p 8089:80 kacperadler-pl-test`
 
 ## Struktura
 
