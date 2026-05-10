@@ -207,10 +207,6 @@ const steps: readonly FlowStep[] = [
 
         <div class="contact-grid">
           <aside class="contact-info-panel">
-            <p class="contact-lead">
-              Najchętniej zaczynam od maila - opisz projekt w 2–3 zdaniach, a wrócę z pytaniami albo
-              propozycją rozmowy.
-            </p>
             <div class="reply-badge">
               <span class="reply-dot" aria-hidden="true"></span>
               Odpowiadam zwykle w ciągu 24h
@@ -230,6 +226,10 @@ const steps: readonly FlowStep[] = [
                 external
               />
             </div>
+            <p class="contact-lead">
+              Najchętniej zaczynam od maila - opisz projekt w 2–3 zdaniach, a wrócę z pytaniami albo
+              propozycją rozmowy.
+            </p>
           </aside>
 
           <div class="contact-form-host">
@@ -598,7 +598,13 @@ const steps: readonly FlowStep[] = [
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: auto;
+  }
+
+  /* ContactLink rows are imported as a v1 component; round their
+   * surfaces here so they match the v2 panel radius scale without
+   * forking the component. */
+  .contact-links :global(.contact-link) {
+    border-radius: var(--v2-radius-sm);
   }
 
   /* Form host - reuses v1's ContactForm via CSS variable inheritance.
@@ -622,6 +628,20 @@ const steps: readonly FlowStep[] = [
   .contact-form-host :global(.form),
   .contact-form-host :global(.form-success-card) {
     border-radius: var(--v2-radius-md);
+  }
+
+  /* Form internals - the v1 component ships with sharp corners
+   * (border-radius: 0). Round inputs / textareas / radio chips /
+   * buttons / error banner so the form reads as v2-native instead
+   * of "v1 form jammed into a v2 page". --v2-radius-sm matches the
+   * primary CTA pill radius from the hero. */
+  .contact-form-host :global(.field input),
+  .contact-form-host :global(.field textarea),
+  .contact-form-host :global(.btn-submit),
+  .contact-form-host :global(.btn-reset),
+  .contact-form-host :global(.radio span),
+  .contact-form-host :global(.form-error) {
+    border-radius: var(--v2-radius-sm);
   }
 
   .eyebrow {
