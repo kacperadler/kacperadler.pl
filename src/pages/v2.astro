@@ -1,5 +1,7 @@
 ---
 import { getCollection } from "astro:content";
+import ContactForm from "@/components/contact/contact-form.astro";
+import ContactLink from "@/components/contact/contact-link.astro";
 import { siteConfig } from "@/data/site-config";
 import V2Layout from "@/layouts/v2-layout.astro";
 import { roundedYearsLabel, totalYearsFloor, yearsUnit } from "@/lib/dates";
@@ -7,7 +9,7 @@ import { roundedYearsLabel, totalYearsFloor, yearsUnit } from "@/lib/dates";
 /* /v2 - redesign track. noindex via V2Layout default, sitemap
  * exclusion lives in astro.config.ts.
  *
- * Faza 1: hero. Faza 2: services + how-i-work + experience.
+ * Faza 1: hero. Faza 2: services + how-i-work + experience + contact.
  * Section heads stay text-on-bg (the grid is the stage); only
  * content blocks become panels. */
 
@@ -190,6 +192,50 @@ const steps: readonly FlowStep[] = [
             ))
           }
         </ol>
+      </section>
+
+      <section class="contact-block" id="contact">
+        <header class="section-head">
+          <p class="eyebrow eyebrow-section">Kontakt</p>
+          <h2>
+            Opowiedz mi, co <em>budujesz</em>.
+          </h2>
+          <p class="section-lede">
+            Najlepiej mailem albo formularzem. Zwykle wracam tego samego dnia.
+          </p>
+        </header>
+
+        <div class="contact-grid">
+          <aside class="contact-info-panel">
+            <p class="contact-lead">
+              Najchętniej zaczynam od maila - opisz projekt w 2–3 zdaniach, a wrócę z pytaniami albo
+              propozycją rozmowy.
+            </p>
+            <div class="reply-badge">
+              <span class="reply-dot" aria-hidden="true"></span>
+              Odpowiadam zwykle w ciągu 24h
+            </div>
+            <div class="contact-links">
+              <ContactLink
+                icon="lucide:mail"
+                label="Email"
+                value={siteConfig.email}
+                href={`mailto:${siteConfig.email}`}
+              />
+              <ContactLink
+                icon="lucide:linkedin"
+                label="LinkedIn"
+                value="/in/kacperadler"
+                href={siteConfig.social.linkedin}
+                external
+              />
+            </div>
+          </aside>
+
+          <div class="contact-form-host">
+            <ContactForm />
+          </div>
+        </div>
       </section>
     </div>
   </main>
@@ -494,6 +540,90 @@ const steps: readonly FlowStep[] = [
     color: var(--ink);
   }
 
+  /* Contact — info panel on the left, ContactForm host on the right.
+   * Stretch keeps both panels at equal height regardless of content. */
+  .contact-block {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--v2-space-md);
+    align-items: stretch;
+  }
+
+  .contact-info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+    padding: var(--v2-space-lg);
+    background: var(--v2-panel);
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-md);
+  }
+
+  .contact-lead {
+    max-width: 42ch;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  /* Reply badge - filled blue-wash pill, same vocab as the step
+   * number pill so brand-blue stays consistent across sections. */
+  .reply-badge {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    align-self: flex-start;
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-radius: var(--v2-radius-xs);
+  }
+
+  .reply-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--blue);
+    border-radius: var(--v2-radius-full);
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+  }
+
+  /* Form host - reuses v1's ContactForm via CSS variable inheritance.
+   * Overriding --card / --line / --paper inside the host swaps the
+   * surface tones for the v2 palette without forking the form
+   * component. The :global() rule reaches the inner .form node to
+   * give it the v2 radius (the form component itself has none).
+   * --paper override pushes input bg slightly darker than the panel
+   * so input fields stay visible against the lighter form surface. */
+  .contact-form-host {
+    --card: var(--v2-panel);
+    --line: var(--v2-line);
+    --paper: var(--v2-bg);
+    display: flex;
+  }
+
+  .contact-form-host :global(.contact-form-wrap) {
+    width: 100%;
+  }
+
+  .contact-form-host :global(.form),
+  .contact-form-host :global(.form-success-card) {
+    border-radius: var(--v2-radius-md);
+  }
+
   .eyebrow {
     display: inline-flex;
     gap: 10px;
@@ -609,17 +739,20 @@ const steps: readonly FlowStep[] = [
 
     .services-block,
     .how-block,
-    .exp-block {
+    .exp-block,
+    .contact-block {
       margin-top: var(--v2-space-xl);
     }
 
-    .services-grid {
+    .services-grid,
+    .contact-grid {
       grid-template-columns: 1fr;
     }
 
     .service-panel,
     .step-panel,
-    .exp-panel {
+    .exp-panel,
+    .contact-info-panel {
       padding: var(--v2-space-md);
     }
   }
