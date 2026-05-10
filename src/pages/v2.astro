@@ -2,15 +2,29 @@
 import { getCollection } from "astro:content";
 import { siteConfig } from "@/data/site-config";
 import V2Layout from "@/layouts/v2-layout.astro";
+import { roundedYearsLabel, totalYearsFloor, yearsUnit } from "@/lib/dates";
 
 /* /v2 - redesign track. noindex via V2Layout default, sitemap
  * exclusion lives in astro.config.ts.
  *
- * Faza 1: hero. Faza 2 (this commit): services as 3-panel grid.
+ * Faza 1: hero. Faza 2: services + how-i-work + experience.
  * Section heads stay text-on-bg (the grid is the stage); only
  * content blocks become panels. */
 
 const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
+
+const allExperience = (await getCollection("experience")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const experience = allExperience.slice(0, 4);
+// Total tenure shown in the section title pulls from the FULL
+// collection, not the displayed slice - hidden older roles still
+// count toward total years.
+const earliestStart = allExperience
+  .map((i) => i.data.startDate)
+  .sort()
+  .at(0);
+const totalYears = earliestStart ? totalYearsFloor(earliestStart) : 0;
 
 interface FlowStep {
   badge: string;
@@ -136,6 +150,42 @@ const steps: readonly FlowStep[] = [
                   <span class="step-badge">{step.badge}</span>
                 </header>
                 <p class="step-desc">{step.description}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="exp-block" id="experience">
+        <header class="section-head">
+          <p class="eyebrow eyebrow-section">Doświadczenie</p>
+          <h2>
+            {`~ ${totalYears} ${yearsUnit(totalYears)} w `}<em>branży frontendowej</em>.
+          </h2>
+          <p class="section-lede">Cztery firmy, jedna pasja: frontend dla zespołów produktowych.</p>
+        </header>
+
+        <ol class="exp-list">
+          {
+            experience.map((item) => (
+              <li class:list={["exp-panel", { "exp-now": item.data.current }]}>
+                <header class="exp-head">
+                  <h3>{item.data.company}</h3>
+                  {item.data.current ? (
+                    <span class="exp-meta exp-meta-now">teraz</span>
+                  ) : (
+                    <span class="exp-meta">
+                      {roundedYearsLabel(item.data.startDate, item.data.endDate)}
+                    </span>
+                  )}
+                </header>
+                <div class="exp-role">{item.data.role}</div>
+                <p class="exp-desc">
+                  {item.data.location && (
+                    <strong class="exp-location">{item.data.location}.</strong>
+                  )}
+                  {item.data.description}
+                </p>
               </li>
             ))
           }
@@ -350,6 +400,100 @@ const steps: readonly FlowStep[] = [
     color: var(--ink-2);
   }
 
+  /* Experience — top 4 roles as panels stacked vertically. Same
+   * surface as how-i-work steps; head row puts company on the left,
+   * duration badge on the right (matches the step-panel pattern so
+   * the eye learns the layout once). */
+  .exp-block {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  .exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .exp-panel {
+    padding: var(--v2-space-lg);
+    background: var(--v2-panel);
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-md);
+    transition: border-color 0.2s ease;
+  }
+
+  .exp-panel:hover {
+    border-color: color-mix(in srgb, var(--blue) 30%, var(--v2-line));
+  }
+
+  /* Current role gets a subtle blue-tinted left border so the eye
+   * can pick it out without reading the badge. */
+  .exp-panel.exp-now {
+    border-left: 3px solid var(--blue);
+  }
+
+  .exp-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .exp-panel h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .exp-meta {
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    background: transparent;
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-xs);
+  }
+
+  /* "teraz" badge for the current role - filled blue-wash to match
+   * the step number pill, signals "active" without shouting. */
+  .exp-meta-now {
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-color: transparent;
+  }
+
+  .exp-role {
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--blue);
+  }
+
+  .exp-desc {
+    max-width: 70ch;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-2);
+  }
+
+  .exp-location {
+    margin-right: 4px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
   .eyebrow {
     display: inline-flex;
     gap: 10px;
@@ -464,7 +608,8 @@ const steps: readonly FlowStep[] = [
     }
 
     .services-block,
-    .how-block {
+    .how-block,
+    .exp-block {
       margin-top: var(--v2-space-xl);
     }
 
@@ -473,7 +618,8 @@ const steps: readonly FlowStep[] = [
     }
 
     .service-panel,
-    .step-panel {
+    .step-panel,
+    .exp-panel {
       padding: var(--v2-space-md);
     }
   }
@@ -486,7 +632,8 @@ const steps: readonly FlowStep[] = [
     .btn-primary,
     .btn-ghost,
     .service-panel,
-    .step-panel {
+    .step-panel,
+    .exp-panel {
       transition: none;
     }
   }
