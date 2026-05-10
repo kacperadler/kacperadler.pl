@@ -16,6 +16,10 @@ import "@/styles/global.css";
  *     panels sit on top in --v2-panel, so the radius literally cuts
  *     through to the darker bg between blocks. Inspired by
  *     firecrawl.dev's grid layout.
+ *   - a fixed .bg-stage sits behind everything, holding the dot
+ *     grid + soft navy ribbons that drift across the viewport.
+ *     Markup + CSS lifted directly from src/pages/v2-bg-test.astro
+ *     (where we tuned the timing/amplitude/colors that we liked).
  *   - header/footer/EU band are reused from v1 for now; their
  *     restyle is part of later v2 iterations.
  *
@@ -28,7 +32,31 @@ interface Props {
   title?: string;
 }
 
+interface Ribbon {
+  right: number;
+  rotate: number;
+  variant: "accent" | "wash";
+}
+
 const { title, description, ogImage } = Astro.props;
+
+const ribbons: readonly Ribbon[] = [
+  { right: 78, rotate: 14, variant: "accent" },
+  { right: 60, rotate: -10, variant: "wash" },
+  { right: 42, rotate: 18, variant: "accent" },
+  { right: 24, rotate: -6, variant: "wash" },
+  { right: 6, rotate: 12, variant: "accent" },
+  { right: -12, rotate: -8, variant: "wash" },
+];
+
+const ribbonStyles = ribbons.map((r, i) => {
+  const duration = 8 + i * 1.5;
+  const delay = -((i / ribbons.length) * duration);
+  return {
+    ...r,
+    style: `right: ${r.right}vw; --ribbon-rot: rotate(${r.rotate}deg); animation-duration: ${duration}s; animation-delay: ${delay.toFixed(2)}s;`,
+  };
+});
 ---
 
 <!doctype html>
@@ -39,10 +67,24 @@ const { title, description, ogImage } = Astro.props;
   </head>
   <body class="v2-body">
     <a href="#top" class="skip-link">Przejdź do treści</a>
-    <Header />
-    <slot />
-    <Footer />
-    <EuFunding />
+
+    <div class="bg-stage" aria-hidden="true">
+      {
+        ribbonStyles.map((r) => (
+          <div class:list={["ribbon", `ribbon-${r.variant}`]} style={r.style} />
+        ))
+      }
+      <div class="fade-h"></div>
+      <div class="fade-v"></div>
+    </div>
+
+    <div class="v2-shell">
+      <Header />
+      <slot />
+      <Footer />
+      <EuFunding />
+    </div>
+
     <MobileSheet />
     <ThemeFab />
   </body>
@@ -57,13 +99,95 @@ const { title, description, ogImage } = Astro.props;
 </script>
 
 <style is:global>
-  /* Page-level overrides scoped to v2 only. background-image paints
-   * a 1px dot every 24px on the darker substrate; the grid is what
-   * makes the radius on panels feel intentional rather than just
-   * "rounded card". */
   body.v2-body {
+    background: var(--v2-bg);
+  }
+
+  .v2-shell {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Fixed stage holds the bg layers; nothing in here scrolls.
+   * No negative z-index — that would tuck this BEHIND body's
+   * fallback bg paint. Leans on DOM order: stage comes before
+   * .v2-shell, .v2-shell has position:relative + z-index:1, so
+   * its stacking context paints on top. pointer-events:none lets
+   * clicks fall through to the content above. */
+  .bg-stage {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
     background-color: var(--v2-bg);
     background-image: radial-gradient(circle at 1px 1px, var(--v2-grid) 1px, transparent 0);
     background-size: 24px 24px;
+  }
+
+  /* Each ribbon is a 0×120vh element whose box-shadow paints the
+   * coloured slab. will-change keeps it on its own GPU layer so
+   * the compositor doesn't throttle the animation when nothing in
+   * the 0×0 bounding box visibly changes. */
+  .ribbon {
+    position: absolute;
+    top: -10vh;
+    width: 0;
+    height: 120vh;
+    transform: var(--ribbon-rot) translateZ(0);
+    transform-origin: top right;
+    animation-name: v2-drift;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    will-change: transform;
+  }
+
+  @keyframes v2-drift {
+    0%,
+    100% {
+      transform: var(--ribbon-rot) translateZ(0) translateX(-40px);
+    }
+    50% {
+      transform: var(--ribbon-rot) translateZ(0) translateX(40px);
+    }
+  }
+
+  .ribbon-accent {
+    box-shadow:
+      -120px 0 80px 40px var(--v2-bg),
+      -30px 0 60px 30px color-mix(in srgb, var(--blue) 55%, transparent),
+      30px 0 80px 40px color-mix(in srgb, var(--blue) 35%, transparent),
+      120px 0 80px 40px var(--v2-bg);
+  }
+
+  .ribbon-wash {
+    box-shadow:
+      -120px 0 80px 40px var(--v2-bg),
+      -30px 0 70px 35px color-mix(in srgb, var(--blue-2) 30%, transparent),
+      30px 0 90px 45px color-mix(in srgb, var(--blue) 20%, transparent),
+      120px 0 80px 40px var(--v2-bg);
+  }
+
+  .fade-h {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 0;
+    box-shadow: 0 0 50vh 30vh var(--v2-bg);
+  }
+
+  .fade-v {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 100vh;
+    box-shadow: 0 0 35vw 20vw var(--v2-bg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ribbon {
+      animation: none;
+    }
   }
 </style>
