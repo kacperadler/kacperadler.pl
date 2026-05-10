@@ -1,0 +1,69 @@
+---
+import { ClientRouter } from "astro:transitions";
+import BaseHead from "@/components/layout/base-head.astro";
+import EuFunding from "@/components/layout/eu-funding.astro";
+import Footer from "@/components/layout/footer.astro";
+import Header from "@/components/layout/header.astro";
+import MobileSheet from "@/components/layout/mobile-sheet.astro";
+import ThemeFab from "@/components/theme/theme-fab.astro";
+import { siteConfig } from "@/data/site-config";
+import "@/styles/tokens.css";
+import "@/styles/global.css";
+
+/* /v2 redesign track. Mirrors base-layout but:
+ *   - body is forced noindex (prop default = true here)
+ *   - the page-shell paints --v2-bg with a faint dot grid; content
+ *     panels sit on top in --v2-panel, so the radius literally cuts
+ *     through to the darker bg between blocks. Inspired by
+ *     firecrawl.dev's grid layout.
+ *   - header/footer/EU band are reused from v1 for now; their
+ *     restyle is part of later v2 iterations.
+ *
+ * Once /v2 stabilises, this file collapses into base-layout and
+ * /v2 redirects to /. */
+
+interface Props {
+  description?: string;
+  ogImage?: string;
+  title?: string;
+}
+
+const { title, description, ogImage } = Astro.props;
+---
+
+<!doctype html>
+<html lang={siteConfig.lang}>
+  <head>
+    <BaseHead title={title} description={description} ogImage={ogImage} noindex />
+    <ClientRouter />
+  </head>
+  <body class="v2-body">
+    <a href="#top" class="skip-link">Przejdź do treści</a>
+    <Header />
+    <slot />
+    <Footer />
+    <EuFunding />
+    <MobileSheet />
+    <ThemeFab />
+  </body>
+</html>
+
+<script>
+  import "@/scripts/contact-form.ts";
+  import "@/scripts/mobile-sheet.ts";
+  import "@/scripts/nav-active.ts";
+  import "@/scripts/nav-scroll.ts";
+  import "@/scripts/reveal.ts";
+</script>
+
+<style is:global>
+  /* Page-level overrides scoped to v2 only. background-image paints
+   * a 1px dot every 24px on the darker substrate; the grid is what
+   * makes the radius on panels feel intentional rather than just
+   * "rounded card". */
+  body.v2-body {
+    background-color: var(--v2-bg);
+    background-image: radial-gradient(circle at 1px 1px, var(--v2-grid) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+</style>

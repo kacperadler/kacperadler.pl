@@ -27,5 +27,13 @@ export default defineConfig({
     },
   },
 
-  integrations: [icon(), sitemap()],
+  integrations: [
+    icon(),
+    sitemap({
+      // /v2 is the redesign staging route; it's noindex via meta but
+      // we also keep it out of the sitemap so we don't even advertise
+      // its existence to crawlers.
+      filter: (page) => !(page.endsWith("/v2/") || page.endsWith("/v2")),
+    }),
+  ],
 });

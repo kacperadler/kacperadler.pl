@@ -1,0 +1,187 @@
+---
+import { siteConfig } from "@/data/site-config";
+import V2Layout from "@/layouts/v2-layout.astro";
+
+/* /v2 - redesign track. noindex via V2Layout default, sitemap
+ * exclusion lives in astro.config.ts.
+ *
+ * Faza 1 scope: hero only, in the new visual language (firecrawl-
+ * style panel on grid bg). Other sections come in subsequent
+ * iterations. */
+---
+
+<V2Layout title="v2 redesign">
+  <main id="top" class="v2-main">
+    <div class="v2-container">
+      <section class="hero-panel">
+        <p class="eyebrow">
+          <span class="dot" aria-hidden="true"></span>
+          {siteConfig.role} · Polska
+        </p>
+
+        <h1>
+          Buduję <em>interfejsy</em> dla produktów,<br />
+          z których ludzie korzystają codziennie.
+        </h1>
+
+        <p class="hero-sub">
+          Aplikacje webowe, narzędzia B2B i landing pages - od architektury po deploy. Pracuję w
+          sprintach, async, z zespołami produktowymi w PL/EU.
+        </p>
+
+        <div class="ctas">
+          <a class="btn-primary" href="#contact">
+            Porozmawiajmy
+            <span aria-hidden="true">→</span>
+          </a>
+          <a class="btn-ghost" href="#how">Jak pracuję</a>
+        </div>
+      </section>
+    </div>
+  </main>
+</V2Layout>
+
+<style>
+  .v2-main {
+    padding: 48px 0 96px;
+  }
+
+  .v2-container {
+    max-width: var(--container);
+    padding: 0 var(--v2-space-md);
+    margin: 0 auto;
+  }
+
+  /* Hero panel - the canonical "panel on grid" demo. Radius reveals
+   * the v2-bg dot grid at the corners. */
+  .hero-panel {
+    padding: var(--v2-space-xl) var(--v2-space-lg);
+    background: var(--v2-panel);
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-lg);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    margin: 0 0 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--blue);
+    border-radius: var(--v2-radius-full);
+    box-shadow: 0 0 0 4px var(--blue-wash);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    50% {
+      box-shadow: 0 0 0 8px transparent;
+    }
+  }
+
+  h1 {
+    max-width: 22ch;
+    margin: 0 0 24px;
+    font-family: var(--display);
+    font-size: clamp(36px, 5.5vw, 60px);
+    font-weight: 500;
+    line-height: 1.04;
+    color: var(--ink);
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--blue);
+  }
+
+  .hero-sub {
+    max-width: 56ch;
+    margin: 0 0 32px;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    padding: 14px 22px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: light-dark(var(--paper), var(--paper-2));
+    letter-spacing: 0.04em;
+    background: var(--ink);
+    border-radius: var(--v2-radius-sm);
+    transition:
+      transform 0.12s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 8px 24px -12px rgba(20, 20, 22, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 14px 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    background: transparent;
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-sm);
+    transition: border-color 0.2s ease;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--ink);
+  }
+
+  @media (max-width: 880px) {
+    .v2-main {
+      padding: 32px 0 64px;
+    }
+
+    .hero-panel {
+      padding: var(--v2-space-lg) var(--v2-space-md);
+      border-radius: var(--v2-radius-md);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot {
+      animation: none;
+    }
+
+    .btn-primary,
+    .btn-ghost {
+      transition: none;
+    }
+  }
+</style>

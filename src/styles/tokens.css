@@ -40,6 +40,34 @@
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
 
   --container: 1160px;
+
+  /* ─── v2 redesign track (additive — see DESIGN.md, page /v2). ────
+   * Grid base + elevated panels: --v2-bg is the darker substrate
+   * with a faint dot-grid laid on top, --v2-panel sits ~1 step
+   * lighter (light mode) / ~1 step lighter (dark mode) so the panel
+   * radius reveals --v2-bg between blocks. Blue accent stays in sync
+   * with v1 so the brand doesn't drift while we iterate. */
+  --v2-bg: light-dark(#ebe7df, #0a0c10);
+  --v2-panel: light-dark(#f6f3ec, #14171c);
+  --v2-panel-elevated: light-dark(#fbf9f5, #1a1e26);
+  --v2-grid: light-dark(rgba(20, 20, 22, 0.05), rgba(236, 231, 220, 0.045));
+  --v2-line: light-dark(rgba(20, 20, 22, 0.1), rgba(236, 231, 220, 0.1));
+
+  /* Radius scale - tweak any of these and every v2 component picks
+   * it up; pinned to a "medium" feel (Vercel/Stripe-style). */
+  --v2-radius-xs: 6px;
+  --v2-radius-sm: 10px;
+  --v2-radius-md: 16px;
+  --v2-radius-lg: 24px;
+  --v2-radius-full: 9999px;
+
+  /* 8px-base spacing scale, mirrors the DESIGN.md spec. */
+  --v2-space-xs: 4px;
+  --v2-space-sm: 8px;
+  --v2-space-md: 16px;
+  --v2-space-lg: 32px;
+  --v2-space-xl: 64px;
+  --v2-space-2xl: 96px;
   color-scheme: light dark;
 }
 
