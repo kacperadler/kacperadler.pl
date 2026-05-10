@@ -104,7 +104,7 @@ const steps: readonly FlowStep[] = [
             </div>
           </div>
 
-          <aside class="hero-status" aria-label="Stan obecny">
+          <aside class="hero-status" aria-label="Stan obecny" data-spotlight>
             <span class="status-pill">
               <span class="status-pill-dot" aria-hidden="true"></span>
               Otwarty na nowe współprace
@@ -300,8 +300,21 @@ const steps: readonly FlowStep[] = [
   /* Status card - liquid glass, mirroring the header chrome. Translucent
    * --v2-panel + backdrop-filter blur, lit-edge inset highlight, soft
    * line border. Reads as "atmosphere-floating UI" rather than content
-   * panel. Future demo block can live in this slot with the same skin. */
+   * panel. Future demo block can live in this slot with the same skin.
+   *
+   * Two pseudo-elements layered on top render the spotlight effect:
+   *   ::before is a soft white wash centered at (--mx, --my) - "the
+   *     panel brightens under your cursor".
+   *   ::after is a navy radial gradient masked via mask-composite to
+   *     a 1px ring - "the border lights up near the cursor".
+   *   Both fade in on :hover. --mx / --my are set by spotlight.ts;
+   *   default 50%/50% so the resting paint (which is invisible
+   *   anyway because opacity:0) doesn't shift on first move.
+   *
+   * isolation: isolate gives the pseudos their own stacking context
+   * so they paint cleanly above the panel bg. */
   .hero-status {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--v2-space-md);
@@ -310,8 +323,72 @@ const steps: readonly FlowStep[] = [
     border: 1px solid color-mix(in srgb, var(--v2-line) 60%, transparent);
     border-radius: var(--v2-radius-md);
     box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    isolation: isolate;
     -webkit-backdrop-filter: saturate(160%) blur(20px);
     backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  .hero-status > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-status::before,
+  .hero-status::after {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Surface wash - 220px radius radial-gradient at (--mx, --my). Soft
+   * white at 4%, fades to transparent at 55% so the highlight reads
+   * as ambient lift, not a flashlight. */
+  .hero-status::before {
+    z-index: 0;
+    background: radial-gradient(
+      220px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, white 4%, transparent),
+      transparent 55%
+    );
+  }
+
+  /* Border ring - navy gradient painted across the whole pseudo, then
+   * masked via mask-composite: exclude to a 1px ring (whole-box mask
+   * MINUS content-box mask = padding strip). Result: only the 1px
+   * perimeter is painted, brightest near the cursor. -webkit-mask-
+   * composite: xor is the legacy syntax for the same effect. */
+  .hero-status::after {
+    z-index: 2;
+    padding: 1px;
+    background: radial-gradient(
+      160px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--blue) 50%, transparent),
+      transparent 55%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .hero-status:hover::before,
+  .hero-status:hover::after {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-status::before,
+    .hero-status::after {
+      transition: none;
+    }
   }
 
   /* Static blue-wash pill - intentionally not pulsing. The hero
