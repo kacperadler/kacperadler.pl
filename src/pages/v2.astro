@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
 import ContactForm from "@/components/contact/contact-form.astro";
 import ContactLink from "@/components/contact/contact-link.astro";
 import Button from "@/components/ui/button.astro";
@@ -32,6 +33,7 @@ const totalYears = earliestStart ? totalYearsFloor(earliestStart) : 0;
 interface FlowStep {
   badge: string;
   description: string;
+  icon: string;
   num: string;
   title: string;
 }
@@ -39,35 +41,40 @@ interface FlowStep {
 const steps: readonly FlowStep[] = [
   {
     num: "01",
-    title: "Zaczynamy od rozmowy.",
+    icon: "lucide:messages-square",
+    title: "Rozmowa",
     description:
       "Krótkie spotkanie albo wymiana maili - co Ci wygodniej. Opowiadasz, co chcesz zbudować i po co; ja zadaję pytania, czasem niewygodne.",
     badge: "~ 30 min",
   },
   {
     num: "02",
-    title: "Plan i realna wycena.",
+    icon: "lucide:clipboard-list",
+    title: "Plan i wycena",
     description:
-      "Po rozmowie dostajesz od mnie krótki dokument: co robimy, w jakiej kolejności, ile to zajmie i ile kosztuje. Bez ukrytych kosztów, bez niespodzianek w trakcie.",
+      "Po rozmowie dostajesz krótki dokument: co robimy, w jakiej kolejności, ile to zajmie i ile kosztuje. Bez ukrytych kosztów, bez niespodzianek w trakcie.",
     badge: "2–3 dni",
   },
   {
     num: "03",
-    title: "Budujemy krok po kroku.",
+    icon: "lucide:code",
+    title: "Realizacja",
     description:
       "Pracuję małymi etapami - co tydzień widzisz coś, co działa, nie obrazek. Gdy coś idzie nie tak, łatwiej to zauważyć i poprawić.",
     badge: "podział na etapy",
   },
   {
     num: "04",
-    title: "Twój feedback idzie do kodu.",
+    icon: "lucide:message-circle",
+    title: "Feedback i iteracje",
     description:
       "Nie musisz znać się na technologii. Mówisz „to powinno być szybsze”, „tu brakuje jasności”, „zmieńmy kolejność” - ja tłumaczę to na konkretne zmiany i pokazuję efekt.",
     badge: "na bieżąco",
   },
   {
     num: "05",
-    title: "Wdrożenie i bieżący nadzór.",
+    icon: "lucide:rocket",
+    title: "Wdrożenie i opieka",
     description:
       "Po wdrożeniu zostaje monitoring. Łapię błędy zanim staną się problemem, mierzę performance, przygotowuję poprawki. Twój produkt nie jest sam.",
     badge: "+ nadzór",
@@ -165,7 +172,7 @@ const steps: readonly FlowStep[] = [
         <header class="section-head">
           <p class="eyebrow eyebrow-section">Proces</p>
           <h2>
-            Od <em>rozmowy</em> do <em>rozwiązania</em>.
+            Od <em>rozmowy</em> do <em>produktu</em>.
           </h2>
           <p class="section-lede">
             Biorąc pod uwagę Twoje potrzeby, skupiam się na znalezieniu najlepszego rozwiązania dla
@@ -176,13 +183,18 @@ const steps: readonly FlowStep[] = [
         <ol class="how-steps">
           {
             steps.map((step) => (
-              <li class="step-panel">
-                <header class="step-head">
-                  <span class="step-num">{step.num}</span>
-                  <h3>{step.title}</h3>
-                  <span class="step-badge">{step.badge}</span>
-                </header>
-                <p class="step-desc">{step.description}</p>
+              <li class="step-item">
+                <div aria-hidden="true" class="step-marker">
+                  <span class="step-dot">{step.num}</span>
+                </div>
+                <article class="step-panel" data-spotlight>
+                  <header class="step-head">
+                    <Icon aria-hidden="true" class="step-icon" name={step.icon} />
+                    <h3>{step.title}</h3>
+                    <span class="step-badge">{step.badge}</span>
+                  </header>
+                  <p class="step-desc">{step.description}</p>
+                </article>
               </li>
             ))
           }
@@ -339,16 +351,19 @@ const steps: readonly FlowStep[] = [
    * the ::before pseudo's flat blue layer (kicks in via opacity 0→1
    * along with the cursor wash). */
   .hero-status:hover,
-  .service-panel:hover {
+  .service-panel:hover,
+  .step-panel:hover {
     background: color-mix(in srgb, var(--v2-panel) 65%, transparent);
   }
 
   /* Spotlight pattern shared by .hero-status (always glass, spotlight
-   * on hover) and .service-panel (opaque idle, glass + spotlight on
-   * hover). Same gradient values, same opacity:0→1 transition; only
-   * the surface treatment around the pseudos differs per element. */
+   * on hover), .service-panel and .step-panel (opaque idle, glass +
+   * spotlight on hover). Same gradient values, same opacity:0→1
+   * transition; only the surface treatment around the pseudos differs
+   * per element. */
   .hero-status > *,
-  .service-panel > * {
+  .service-panel > *,
+  .step-panel > * {
     position: relative;
     z-index: 1;
   }
@@ -356,7 +371,9 @@ const steps: readonly FlowStep[] = [
   .hero-status::before,
   .hero-status::after,
   .service-panel::before,
-  .service-panel::after {
+  .service-panel::after,
+  .step-panel::before,
+  .step-panel::after {
     position: absolute;
     inset: 0;
     pointer-events: none;
@@ -374,7 +391,8 @@ const steps: readonly FlowStep[] = [
    * ::before fades in (opacity 0→1 on hover). One pseudo for both
    * layers means the tint fades in smoothly along with the wash. */
   .hero-status::before,
-  .service-panel::before {
+  .service-panel::before,
+  .step-panel::before {
     z-index: 0;
     background:
       radial-gradient(
@@ -391,7 +409,8 @@ const steps: readonly FlowStep[] = [
    * perimeter is painted, brightest near the cursor. -webkit-mask-
    * composite: xor is the legacy syntax for the same effect. */
   .hero-status::after,
-  .service-panel::after {
+  .service-panel::after,
+  .step-panel::after {
     z-index: 2;
     padding: 1px;
     background: radial-gradient(
@@ -412,7 +431,9 @@ const steps: readonly FlowStep[] = [
   .hero-status:hover::before,
   .hero-status:hover::after,
   .service-panel:hover::before,
-  .service-panel:hover::after {
+  .service-panel:hover::after,
+  .step-panel:hover::before,
+  .step-panel:hover::after {
     opacity: 1;
   }
 
@@ -420,7 +441,9 @@ const steps: readonly FlowStep[] = [
     .hero-status::before,
     .hero-status::after,
     .service-panel::before,
-    .service-panel::after {
+    .service-panel::after,
+    .step-panel::before,
+    .step-panel::after {
       transition: none;
     }
   }
@@ -630,9 +653,10 @@ const steps: readonly FlowStep[] = [
     border-radius: var(--v2-radius-xs);
   }
 
-  /* How I work — five steps as a vertical column of panels. Same
-   * panel surface as services but full-width and stacked, so the
-   * grid bg shows through on the gaps. */
+  /* How I work — vertical timeline. Each li is a 2-col grid: 56px
+   * marker rail with a numbered dot + connector line, 1fr panel that
+   * uses the same glass-on-hover treatment as services (selectors
+   * extended further up). Reads as roadmap/milestone plan. */
   .how-block {
     margin-top: var(--v2-space-2xl);
   }
@@ -646,16 +670,97 @@ const steps: readonly FlowStep[] = [
     list-style: none;
   }
 
+  .step-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: var(--v2-space-md);
+    align-items: stretch;
+  }
+
+  /* Marker column - holds the numbered dot, plus a connector line
+   * that runs from below the dot down through the row gap to the
+   * next dot. Last item's connector is hidden so the line stops at
+   * the final step instead of trailing into nothing. The line is a
+   * top→bottom blue gradient that fades, suggesting a flow forward. */
+  .step-marker {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .step-marker::before {
+    position: absolute;
+    top: 48px;
+    bottom: calc(-1 * var(--v2-space-md));
+    left: 50%;
+    width: 2px;
+    content: "";
+    background: linear-gradient(
+      color-mix(in srgb, var(--blue) 50%, transparent),
+      color-mix(in srgb, var(--blue) 20%, transparent)
+    );
+    transform: translateX(-50%);
+  }
+
+  .step-item:last-child .step-marker::before {
+    display: none;
+  }
+
+  /* Numbered dot - small glass circle that lights up when its sibling
+   * panel is hovered (via :has(), supported across modern browsers).
+   * Backdrop-blur lets the bg-stage ribbons show through subtly. */
+  .step-dot {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--blue);
+    letter-spacing: -0.01em;
+    background: color-mix(in srgb, var(--v2-panel) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--v2-line));
+    border-radius: var(--v2-radius-full);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .step-item:has(.step-panel:hover) .step-dot {
+    background: color-mix(in srgb, var(--blue) 18%, var(--v2-panel));
+    border-color: color-mix(in srgb, var(--blue) 80%, transparent);
+  }
+
   .step-panel {
+    position: relative;
     padding: var(--v2-space-lg);
     background: var(--v2-panel);
     border: 1px solid var(--v2-line);
     border-radius: var(--v2-radius-md);
-    transition: border-color 0.2s ease;
+    isolation: isolate;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      -webkit-backdrop-filter 0.3s ease,
+      backdrop-filter 0.3s ease;
   }
 
   .step-panel:hover {
-    border-color: color-mix(in srgb, var(--blue) 30%, var(--v2-line));
+    border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
   }
 
   .step-head {
@@ -666,14 +771,11 @@ const steps: readonly FlowStep[] = [
     margin-bottom: 12px;
   }
 
-  .step-num {
-    padding: 4px 10px;
-    font-family: var(--mono);
-    font-size: 11px;
+  .step-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
     color: var(--blue);
-    letter-spacing: 0.1em;
-    background: var(--blue-wash);
-    border-radius: var(--v2-radius-xs);
   }
 
   .step-panel h3 {
@@ -696,6 +798,19 @@ const steps: readonly FlowStep[] = [
     background: transparent;
     border: 1px solid var(--v2-line);
     border-radius: var(--v2-radius-xs);
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  /* On panel hover badge swaps to the same "active" look as the hero
+   * status-pill - blue-wash fill + var(--blue) text - so the duration
+   * label reads "this step is the one you're focused on right now". */
+  .step-panel:hover .step-badge {
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-color: transparent;
   }
 
   .step-desc {
@@ -1004,6 +1119,24 @@ const steps: readonly FlowStep[] = [
     .exp-panel,
     .contact-info-panel {
       padding: var(--v2-space-md);
+    }
+
+    /* Compact rail on mobile - 40px col / 36px dot keeps the timeline
+     * affordance without eating too much horizontal space. */
+    .step-item {
+      grid-template-columns: 40px 1fr;
+      gap: 12px;
+    }
+
+    .step-dot {
+      width: 36px;
+      height: 36px;
+      font-size: 13px;
+    }
+
+    .step-marker::before {
+      top: 36px;
+      bottom: -12px;
     }
   }
 
