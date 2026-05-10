@@ -1,0 +1,6 @@
+{
+  "title": "Aplikacje mobilne",
+  "description": "Aplikacje mobilne na iOS i Android — jeden codebase w React Native, natywne wrażenie, szybkie iteracje. OTA updates dla pilnych poprawek.",
+  "tags": ["React Native", "Expo", "TypeScript"],
+  "order": 1
+}

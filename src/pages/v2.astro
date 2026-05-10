@@ -135,16 +135,20 @@ const steps: readonly FlowStep[] = [
             Obszary w&nbsp;których <em>działam</em>.
           </h2>
           <p class="section-lede">
-            React i TypeScript jako fundament - reszta dobiera się pod konkretny projekt.
+            Moje doświadczenie pozwala mi na pracę w wielu technologiach<br />i projektach.
           </p>
         </header>
 
         <div class="services-grid">
           {
             services.map((service, idx) => (
-              <article class="service-panel">
-                <div class="service-num">{String(idx + 1).padStart(2, "0")}</div>
-                <h3>{service.data.title}</h3>
+              <article class="service-panel" data-spotlight>
+                <header class="service-head">
+                  <h3>{service.data.title}</h3>
+                  <span aria-hidden="true" class="service-num">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                </header>
                 <p>{service.data.description}</p>
                 <ul class="service-tags">
                   {service.data.tags.map((tag) => (
@@ -164,7 +168,8 @@ const steps: readonly FlowStep[] = [
             Od <em>rozmowy</em> do <em>kodu</em>.
           </h2>
           <p class="section-lede">
-            Prosty flow, bez ceremonii. Pięć kroków, dużo rozmowy, miejsce na Twój feedback.
+            Biorąc pod uwagę Twój problem, skupiam się na znalezieniu dopasowanego rozwiązania dla
+            Ciebie.
           </p>
         </header>
 
@@ -328,13 +333,20 @@ const steps: readonly FlowStep[] = [
     backdrop-filter: saturate(160%) blur(20px);
   }
 
-  .hero-status > * {
+  /* Spotlight pattern shared by .hero-status (always glass, spotlight
+   * on hover) and .service-panel (opaque idle, glass + spotlight on
+   * hover). Same gradient values, same opacity:0→1 transition; only
+   * the surface treatment around the pseudos differs per element. */
+  .hero-status > *,
+  .service-panel > * {
     position: relative;
     z-index: 1;
   }
 
   .hero-status::before,
-  .hero-status::after {
+  .hero-status::after,
+  .service-panel::before,
+  .service-panel::after {
     position: absolute;
     inset: 0;
     pointer-events: none;
@@ -347,7 +359,8 @@ const steps: readonly FlowStep[] = [
   /* Surface wash - 220px radius radial-gradient at (--mx, --my). Soft
    * white at 4%, fades to transparent at 55% so the highlight reads
    * as ambient lift, not a flashlight. */
-  .hero-status::before {
+  .hero-status::before,
+  .service-panel::before {
     z-index: 0;
     background: radial-gradient(
       220px circle at var(--mx, 50%) var(--my, 50%),
@@ -361,7 +374,8 @@ const steps: readonly FlowStep[] = [
    * MINUS content-box mask = padding strip). Result: only the 1px
    * perimeter is painted, brightest near the cursor. -webkit-mask-
    * composite: xor is the legacy syntax for the same effect. */
-  .hero-status::after {
+  .hero-status::after,
+  .service-panel::after {
     z-index: 2;
     padding: 1px;
     background: radial-gradient(
@@ -380,13 +394,17 @@ const steps: readonly FlowStep[] = [
   }
 
   .hero-status:hover::before,
-  .hero-status:hover::after {
+  .hero-status:hover::after,
+  .service-panel:hover::before,
+  .service-panel:hover::after {
     opacity: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hero-status::before,
-    .hero-status::after {
+    .hero-status::after,
+    .service-panel::before,
+    .service-panel::after {
       transition: none;
     }
   }
@@ -480,47 +498,92 @@ const steps: readonly FlowStep[] = [
     color: var(--ink-2);
   }
 
-  /* Three panels on desktop, single column from 880px down. Gap
-   * shows the dot grid through, which is the whole point. */
+  /* 2x2 grid on desktop, single column from 880px down. Gap shows
+   * the dot grid through, which is the whole point. */
   .services-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--v2-space-md);
   }
 
+  /* Service panel is opaque idle, lifts into the same liquid-glass
+   * paint as .hero-status on hover (translucent --v2-panel + blur +
+   * lit-edge inset + soft border) and reveals the spotlight pseudos
+   * defined alongside .hero-status further down. No translateY -
+   * panel stays planted, only the surface paint changes. */
   .service-panel {
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: var(--v2-space-lg);
     background: var(--v2-panel);
     border: 1px solid var(--v2-line);
     border-radius: var(--v2-radius-md);
+    isolation: isolate;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     transition:
-      transform 0.2s ease,
-      border-color 0.2s ease;
+      background 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      -webkit-backdrop-filter 0.3s ease,
+      backdrop-filter 0.3s ease;
   }
 
   .service-panel:hover {
-    border-color: color-mix(in srgb, var(--blue) 35%, var(--v2-line));
-    transform: translateY(-2px);
+    background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
+    border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
   }
 
-  .service-num {
-    margin-bottom: 14px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--blue);
-    letter-spacing: 0.12em;
+  /* Title row - h3 on the left, ghost number on the right at same
+   * baseline. align-items: baseline keeps the typographic line
+   * shared even though the number is much larger. */
+  .service-head {
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 10px;
   }
 
   .service-panel h3 {
-    margin: 0 0 10px;
+    margin: 0;
     font-family: var(--display);
     font-size: 22px;
     font-weight: 500;
     line-height: 1.2;
     color: var(--ink);
     letter-spacing: -0.02em;
+  }
+
+  /* Ghost number - large display digit pushed to the right of the
+   * title row, faded with opacity so it reads as background rather
+   * than competing with the title. Hover bumps it up a notch so the
+   * card lights up holistically with the spotlight + glass paint.
+   * flex-shrink: 0 prevents the title wrap from squashing it. */
+  .service-num {
+    flex-shrink: 0;
+    font-family: var(--display);
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--muted);
+    letter-spacing: -0.02em;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+
+  .service-panel:hover .service-num {
+    opacity: 0.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service-num {
+      transition: none;
+    }
   }
 
   .service-panel p {
