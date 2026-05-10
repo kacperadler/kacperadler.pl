@@ -190,4 +190,63 @@ const ribbonStyles = ribbons.map((r, i) => {
       animation: none;
     }
   }
+
+  /* Liquid-glass header — v2-scoped override of v1's .nav-wrap so
+   * v1 stays untouched. The animated ribbons behind need to bleed
+   * through the chrome, so the surface is much more transparent
+   * than v1 (55% panel vs 82% paper) and the blur is stronger so
+   * the smear feels intentional rather than just "frosted". The
+   * inset top hairline imitates the lit edge you get on iOS-style
+   * glass surfaces — subtle, but it sells depth. */
+  body.v2-body .nav-wrap {
+    background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--v2-line) 60%, transparent);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  /* Once the user scrolls past the hero, snap to a slightly more
+   * opaque + tinted state so the header reads as "fixed UI" rather
+   * than the floaty intro state. Border firms up too. */
+  body.v2-body .nav-wrap.scrolled {
+    background: color-mix(in srgb, var(--v2-panel) 75%, transparent);
+    border-bottom-color: var(--v2-line);
+  }
+
+  /* Brand mark + contact CTA pick up v2 radii so they harmonise with
+   * the rounded panels below. v1 keeps its hard square edges. */
+  body.v2-body .mark {
+    border-radius: var(--v2-radius-sm);
+  }
+
+  /* Synchronizujemy wszystkie tweeny CTA na jednej krzywej, żeby
+   * przyciemnienie tła i blue-wash ring wjeżdżały razem zamiast
+   * z różną prędkością jak w v1. */
+  body.v2-body .nav-cta {
+    border-radius: var(--v2-radius-sm);
+    transition:
+      background 0.25s ease,
+      color 0.25s ease,
+      box-shadow 0.25s ease,
+      padding 0.25s ease,
+      font-size 0.25s ease;
+  }
+
+  /* Hover w v2 zapowiada stan aktywny — ten sam --blue-wash ring +
+   * lekkie przyciemnienie tła. color-mix(... black) darken'uje
+   * symetrycznie w light/dark (ink jest dark w light, light w
+   * dark — mix z black w obie strony idzie w "ciemniej"). Bez
+   * translateY (button trzyma pozycję, glass-podobnie). */
+  body.v2-body .nav-cta:hover {
+    background: color-mix(in srgb, var(--ink) 88%, black);
+    box-shadow: 0 0 0 4px var(--blue-wash);
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body.v2-body .nav-cta {
+      transition: none;
+    }
+  }
 </style>

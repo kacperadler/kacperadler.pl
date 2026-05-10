@@ -95,7 +95,7 @@ components:
 
 ## Overview
 
-`kacperadler.pl` v2 is a grid-driven, panel-based layout. The visitor sees a darker substrate (`base`) painted with a faint dot grid; the actual content lives on lighter "panels" with medium radius, so the corners of every block reveal the grid pattern around them. The aesthetic owes more to `firecrawl.dev` than to glossy "liquid glass" UIs — restrained, technical, friendly.
+`kacperadler.pl` v2 is a grid-driven, panel-based layout. The visitor sees a darker substrate (`base`) painted with a faint dot grid; the actual content lives on lighter "panels" with medium radius, so the corners of every block reveal the grid pattern around them. The grid + panel rhythm borrows from `firecrawl.dev`; on top of it sit two subtle atmosphere layers — navy ribbons drifting behind the substrate, and a liquid-glass treatment on the fixed header. Both register only in peripheral vision; content stays the focus.
 
 The v1 site (currently in production at `/`) uses the same brand colors and typography but without the grid + panel pattern. v2 is being built incrementally on `/v2` (noindex) and will replace `/` once stable.
 
@@ -139,13 +139,34 @@ Headings use negative letter-spacing (~ -0.02em to -0.035em) to feel typeset; bo
 - **Panel rhythm:** every section is a single panel (or 2-3 stacked panels) sitting in the container with vertical gaps showing the bg through. Breathing room between panels matters — lean toward `--v2-space-lg` (32px) gap minimum.
 - **Radius scale (medium):** `xs 6 / sm 10 / md 16 / lg 24 / full`. `lg` is for hero / large content panels; `md` for cards/forms; `sm` for buttons; `xs` for chips/badges; `full` for pills and the welcome-screen mark icon.
 
+## Atmosphere
+
+A fixed `bg-stage` (`position: fixed`, `inset: 0`, `pointer-events: none`) sits behind every v2 page and holds the moving layers:
+
+- **Dot grid** painted as a `radial-gradient` on top of `base` (1px circle every 24px).
+- **Six navy ribbons** — 0×120vh elements whose entire paint comes from `box-shadow` (the box itself has no width). Each rotates 6–18° and drifts ±40px on an 8–15.5s ease-in-out loop. Phases are spread evenly across the cycle (`-i/n * duration`) so the field reads as multidirectional drift, never a synchronized push. Saturation: `accent` ribbons mix `blue` 35–55% with transparent, `wash` ribbons mix `blue-2`/`blue` 20–30%.
+- **GPU pinning:** every ribbon has `will-change: transform` and the keyframe transforms include `translateZ(0)`. Without this the compositor throttles 0×0 elements (their bounding box never visibly changes).
+- **Edge fades:** two radial fade layers (bottom horizontal, bottom-left vertical) collapse the field back to `base` near the viewport edges so ribbons dissolve instead of clipping.
+
+`prefers-reduced-motion: reduce` stops the drift entirely; the static composition still reads.
+
 ## Components
 
 ### Panel (default surface)
 Background `panel`, border `1px solid line` (≈10% ink). Radius `lg`. Default padding `lg`. Use `panel-elevated` only for the single most important block per screen (hero, primary card).
 
+### Header (liquid glass)
+The fixed header inherits the v1 markup but v2 paints it as semi-translucent glass so the ribbon motion bleeds through:
+
+- Background `panel` at 55% opacity (idle) / 75% (scrolled past hero), with `backdrop-filter: saturate(160%) blur(20px)`.
+- An inset 1px top hairline — `light-dark()` 60% white in light mode, 5% white in dark — reads as a "lit edge", selling iOS-style depth without a real highlight gradient.
+- Border bottom is the `line` token at 60% in idle, full strength in scrolled — the chrome firms up once the hero is past.
+- Brand mark and contact CTA inherit `sm` radius so they harmonise with the panels below.
+
+Glass is reserved for this surface — interior panels stay flat over the substrate.
+
 ### Buttons
-- **Primary** — `ink` background, `paper` text, mono-uppercase label, `sm` radius. On hover: subtle lift (`translateY(-1px)`) + soft shadow. One per screen.
+- **Primary** — `ink` background, `paper` text, mono-uppercase label, `sm` radius. **Hover:** background darkens 12% toward black + a 4px `--blue-wash` ring (the same ring used in `.active`, so hover previews the "you arrived" state). The button does not lift — it stays planted, glass-style. All button transitions are unified at `0.25s ease`. One primary per screen.
 - **Ghost** — transparent, `ink` text, 1px `line` border, `sm` radius. For secondary action.
 
 Avoid filled blue buttons — `blue` is for accent text, not buttons (collides with the eyebrow dot + `<em>` highlights).
@@ -158,9 +179,11 @@ Border `1px solid line`, focus state shifts border to `blue` + a 3px `blue` wash
 
 ## Motion
 
-- All transitions short (`120ms` for state changes, `200ms` for hover effects). No long fades.
-- `prefers-reduced-motion: reduce` is honored everywhere — pulses, transforms, transitions all collapse to instant. Test before shipping new components.
-- The eyebrow's pulsing dot is the only "always-on" animation. Keep it that way — adding more starts to feel busy.
+- All foreground transitions short (`120ms` for state changes, `200–250ms` for hover effects). No long fades.
+- The header glass is static — `backdrop-filter` itself doesn't transition; only `background`/`border-color` swap between idle and scrolled.
+- Ribbon drift uses an `8–15.5s` ease-in-out loop, six ribbons with delays evenly spread across phase so the motion never reads as a synchronized wave. The ribbons themselves are GPU-pinned (`will-change: transform` + `translateZ(0)`).
+- `prefers-reduced-motion: reduce` is honored everywhere — pulses, transforms, transitions, and the ribbon drift all collapse to instant. Test before shipping new components.
+- Foreground "always-on" motion is just the eyebrow's pulsing dot. Background ribbons live in a separate atmosphere channel — don't add new always-on animations to the foreground.
 
 ## Do's and Don'ts
 
@@ -172,4 +195,6 @@ Border `1px solid line`, focus state shifts border to `blue` + a 3px `blue` wash
 - ❌ **Don't** use solid white (`#fff`) — it breaks the warm-paper palette in light mode.
 - ❌ **Don't** introduce drop shadows with chromatic tints (e.g., blue glow). Shadows are for elevation only and should read as neutral darkening.
 - ❌ **Don't** mix radius scales on adjacent elements — keep the same scale level (e.g., card `md`, button-inside `sm`) consistent within a panel.
-- ❌ **Don't** use `backdrop-filter: blur()` for "glass" effects. The current direction is flat panels, not frosted glass — adding blur breaks the grid-substrate read.
+- ❌ **Don't** apply `backdrop-filter` to interior panels. Glass is reserved for the fixed header (where the ribbon motion needs to bleed through); panels are flat surfaces over the substrate.
+- ❌ **Don't** lift CTAs on hover with `translateY`. v2 hover model is darken + ring — the button stays planted while the ring "lights up" around it.
+- ❌ **Don't** add new always-on motion to the foreground. Atmosphere lives in `bg-stage`; the foreground stays still except for explicit user interaction.

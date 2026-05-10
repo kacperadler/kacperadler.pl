@@ -40,6 +40,9 @@ Portfolio Kacpra Adlera — Frontend Engineer (~5 lat, React/TS). Aktualnie prod
 - Nie pomijaj inline theme script w `<head>` — bez tego jest FOUC.
 - Nie wysyłaj do NocoDB form view innego payloadu niż `FormData` z polem `data` zawierającym JSON-string.
 - Nie zmieniaj brand-marka favicon ani phone-mock kolorów bez aktualizacji `DESIGN.md`.
+- Nie używaj `backdrop-filter` na panele wewnętrzne v2 — glass jest zarezerwowane dla fixed header'a (gdzie ribbons mają przebijać).
+- Nie używaj `translateY` na hover v2 CTA — button trzyma pozycję, hover sygnalizujemy ringiem + darken'em.
+- Nie dodawaj nowych always-on animacji do foreground'u v2 — atmosphere zostaje w `bg-stage`.
 
 ## Komendy
 
@@ -73,6 +76,9 @@ Pre-commit hook: `lint-staged` (ultracite fix dla TS/JS/JSON/CSS, prettier dla `
 `/v2` (noindex, sitemap-excluded) to staging dla redesignu. Source of truth wizualny: `DESIGN.md`.
 
 - Layout: `src/layouts/v2-layout.astro` — body z dot-grid bg na `--v2-bg`, panele w `--v2-panel`, radius `--v2-radius-*` ujawnia tło między blokami.
+- **Atmosphere layer** (fixed `.bg-stage` w v2-layout, `pointer-events: none`): 6 navy ribbons drift'ujących ±40px na 8–15.5s loop nad dot-grid'em. Ribbon to 0×120vh element którego paint pochodzi wyłącznie z `box-shadow`. `will-change: transform` + `translateZ(0)` w keyframach — bez tego kompozytor throttle'uje 0×0 elementy. Delay'e rozłożone `-i/n * duration` żeby nie czytało się jako fala. `prefers-reduced-motion` zatrzymuje drift.
+- **Liquid-glass header** (v2-scope override `body.v2-body .nav-wrap`): `--v2-panel` 55% (idle) / 75% (scrolled) + `backdrop-filter: blur(20px) saturate(160%)` + inset 1px top hairline (`light-dark()` 60%/5% white) jako "lit edge". `backdrop-filter` używamy WYŁĄCZNIE tu — panele wewnętrzne zostają flat.
+- **v2 hover model na CTA**: NIE `translateY` (button trzyma pozycję). Zamiast tego `--blue-wash` 4px ring + `color-mix(in srgb, var(--ink) 88%, black)` darken na `background`. Wszystkie tweeny `.nav-cta` synced na `0.25s ease`. Ring jest tym samym co `.active`, więc hover preview'uje stan "kliknięto".
 - Tokeny v2: dodatkowe `--v2-*` w `tokens.css` (additive — nie ruszamy v1 dopóki v2 nie wygra).
 - Sekcje: budujemy iteracyjnie (Faza 1 = hero, kolejne sesje = services / how-i-work / experience / contact).
 - Migracja → `/`: gdy v2 jest gotowe, `v2-layout` zlewa się z `base-layout`, `/v2` redirectuje na `/`, stare style usuwane.
