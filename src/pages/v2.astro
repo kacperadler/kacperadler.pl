@@ -11,6 +11,51 @@ import V2Layout from "@/layouts/v2-layout.astro";
  * content blocks become panels. */
 
 const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
+
+interface FlowStep {
+  badge: string;
+  description: string;
+  num: string;
+  title: string;
+}
+
+const steps: readonly FlowStep[] = [
+  {
+    num: "01",
+    title: "Zaczynamy od rozmowy.",
+    description:
+      "Krótkie spotkanie albo wymiana maili - co Ci wygodniej. Opowiadasz, co chcesz zbudować i po co; ja zadaję pytania, czasem niewygodne.",
+    badge: "~ 30 min",
+  },
+  {
+    num: "02",
+    title: "Plan i realna wycena.",
+    description:
+      "Po rozmowie dostajesz od mnie krótki dokument: co robimy, w jakiej kolejności, ile to zajmie i ile kosztuje. Bez ukrytych kosztów, bez niespodzianek w trakcie.",
+    badge: "2–3 dni",
+  },
+  {
+    num: "03",
+    title: "Budujemy krok po kroku.",
+    description:
+      "Pracuję małymi etapami - co tydzień widzisz coś, co działa, nie obrazek. Gdy coś idzie nie tak, łatwiej to zauważyć i poprawić.",
+    badge: "podział na etapy",
+  },
+  {
+    num: "04",
+    title: "Twój feedback idzie do kodu.",
+    description:
+      "Nie musisz znać się na technologii. Mówisz „to powinno być szybsze”, „tu brakuje jasności”, „zmieńmy kolejność” - ja tłumaczę to na konkretne zmiany i pokazuję efekt.",
+    badge: "na bieżąco",
+  },
+  {
+    num: "05",
+    title: "Wdrożenie i bieżący nadzór.",
+    description:
+      "Po wdrożeniu zostaje monitoring. Łapię błędy zanim staną się problemem, mierzę performance, przygotowuję poprawki. Twój produkt nie jest sam.",
+    badge: "+ nadzór",
+  },
+];
 ---
 
 <V2Layout title="v2 redesign">
@@ -68,6 +113,33 @@ const services = (await getCollection("services")).sort((a, b) => a.data.order -
             ))
           }
         </div>
+      </section>
+
+      <section class="how-block" id="how">
+        <header class="section-head">
+          <p class="eyebrow eyebrow-section">Proces</p>
+          <h2>
+            Od <em>rozmowy</em> do <em>kodu</em>.
+          </h2>
+          <p class="section-lede">
+            Prosty flow, bez ceremonii. Pięć kroków, dużo rozmowy, miejsce na Twój feedback.
+          </p>
+        </header>
+
+        <ol class="how-steps">
+          {
+            steps.map((step) => (
+              <li class="step-panel">
+                <header class="step-head">
+                  <span class="step-num">{step.num}</span>
+                  <h3>{step.title}</h3>
+                  <span class="step-badge">{step.badge}</span>
+                </header>
+                <p class="step-desc">{step.description}</p>
+              </li>
+            ))
+          }
+        </ol>
       </section>
     </div>
   </main>
@@ -202,6 +274,79 @@ const services = (await getCollection("services")).sort((a, b) => a.data.order -
     border-radius: var(--v2-radius-xs);
   }
 
+  /* How I work — five steps as a vertical column of panels. Same
+   * panel surface as services but full-width and stacked, so the
+   * grid bg shows through on the gaps. */
+  .how-block {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  .how-steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .step-panel {
+    padding: var(--v2-space-lg);
+    background: var(--v2-panel);
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-md);
+    transition: border-color 0.2s ease;
+  }
+
+  .step-panel:hover {
+    border-color: color-mix(in srgb, var(--blue) 30%, var(--v2-line));
+  }
+
+  .step-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .step-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--blue);
+    letter-spacing: 0.12em;
+  }
+
+  .step-panel h3 {
+    flex: 1;
+    margin: 0;
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .step-badge {
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    background: transparent;
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-xs);
+  }
+
+  .step-desc {
+    max-width: 70ch;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-2);
+  }
+
   .eyebrow {
     display: inline-flex;
     gap: 10px;
@@ -315,7 +460,8 @@ const services = (await getCollection("services")).sort((a, b) => a.data.order -
       border-radius: var(--v2-radius-md);
     }
 
-    .services-block {
+    .services-block,
+    .how-block {
       margin-top: var(--v2-space-xl);
     }
 
@@ -323,7 +469,8 @@ const services = (await getCollection("services")).sort((a, b) => a.data.order -
       grid-template-columns: 1fr;
     }
 
-    .service-panel {
+    .service-panel,
+    .step-panel {
       padding: var(--v2-space-md);
     }
   }
@@ -335,7 +482,8 @@ const services = (await getCollection("services")).sort((a, b) => a.data.order -
 
     .btn-primary,
     .btn-ghost,
-    .service-panel {
+    .service-panel,
+    .step-panel {
       transition: none;
     }
   }
