@@ -67,8 +67,11 @@ import { contactCta, primaryNav } from "@/data/navigation";
     height: 18px;
   }
 
-  /* nav-cta inside the sheet - re-styled to fill width and center. */
-  .nav-cta {
+  /* nav-cta inside the sheet - re-styled to fill width and center.
+   * Selector is `.sheet a.nav-cta` so this rule outranks the generic
+   * `.sheet a` block above (which would otherwise paint the text in
+   * --ink, identical to the button background = invisible label). */
+  .sheet a.nav-cta {
     display: inline-flex;
     gap: 8px;
     align-items: center;
@@ -84,7 +87,7 @@ import { contactCta, primaryNav } from "@/data/navigation";
     border-bottom: 0;
   }
 
-  .nav-cta :global(svg) {
+  .sheet a.nav-cta :global(svg) {
     width: 16px;
     height: 16px;
   }
