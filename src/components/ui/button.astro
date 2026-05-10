@@ -76,11 +76,34 @@ const classes = ["btn", `btn-${variant}`, size === "sm" && "btn-sm", extraClass]
   .btn :global(svg) {
     width: 14px;
     height: 14px;
-    transition: transform 0.2s ease;
   }
 
+  /* Arrow zawija się dookoła: wylatuje w prawo, fade'uje, teleportuje
+   * z prawej krawędzi na lewą podczas opacity 0, wraca do center.
+   * 0% i 100% są identyczne ze stanem spoczynkowym, więc po
+   * zakończeniu animacji nic nie wraca - strzałka po prostu
+   * "przeleciała" raz na każdy hover. */
   .btn:hover :global(svg) {
-    transform: translateX(3px);
+    animation: btn-arrow-cycle 0.45s ease;
+  }
+
+  @keyframes btn-arrow-cycle {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    49% {
+      opacity: 0;
+      transform: translateX(14px);
+    }
+    50% {
+      opacity: 0;
+      transform: translateX(-14px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
 
   .btn-primary {
@@ -124,6 +147,9 @@ const classes = ["btn", `btn-${variant}`, size === "sm" && "btn-sm", extraClass]
     .btn,
     .btn :global(svg) {
       transition: none;
+    }
+    .btn:hover :global(svg) {
+      animation: none;
     }
   }
 </style>
