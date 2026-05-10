@@ -331,6 +331,16 @@ const steps: readonly FlowStep[] = [
     isolation: isolate;
     -webkit-backdrop-filter: saturate(160%) blur(20px);
     backdrop-filter: saturate(160%) blur(20px);
+    transition: background 0.3s ease;
+  }
+
+  /* On hover both glass cards bump panel translucency 55% → 65% so the
+   * surface reads as "lit up" overall. The cool-blue tint comes from
+   * the ::before pseudo's flat blue layer (kicks in via opacity 0→1
+   * along with the cursor wash). */
+  .hero-status:hover,
+  .service-panel:hover {
+    background: color-mix(in srgb, var(--v2-panel) 65%, transparent);
   }
 
   /* Spotlight pattern shared by .hero-status (always glass, spotlight
@@ -356,17 +366,23 @@ const steps: readonly FlowStep[] = [
     transition: opacity 0.3s ease;
   }
 
-  /* Surface wash - 220px radius radial-gradient at (--mx, --my). Soft
-   * white at 4%, fades to transparent at 55% so the highlight reads
-   * as ambient lift, not a flashlight. */
+  /* Surface wash - 220px radius radial-gradient at (--mx, --my) layered
+   * over a flat navy tint (#2a4d7f, the darker --blue-2 light-mode
+   * value, kept literal because v2 dark-only resolves --blue-2 to a
+   * lighter shade). The radial-gradient is the cursor-follow ambient
+   * lift; the flat layer below tints the whole panel cool-navy when
+   * ::before fades in (opacity 0→1 on hover). One pseudo for both
+   * layers means the tint fades in smoothly along with the wash. */
   .hero-status::before,
   .service-panel::before {
     z-index: 0;
-    background: radial-gradient(
-      220px circle at var(--mx, 50%) var(--my, 50%),
-      color-mix(in srgb, white 4%, transparent),
-      transparent 55%
-    );
+    background:
+      radial-gradient(
+        220px circle at var(--mx, 50%) var(--my, 50%),
+        color-mix(in srgb, white 4%, transparent),
+        transparent 55%
+      ),
+      color-mix(in srgb, #2a4d7f 8%, transparent);
   }
 
   /* Border ring - navy gradient painted across the whole pseudo, then
@@ -531,7 +547,6 @@ const steps: readonly FlowStep[] = [
   }
 
   .service-panel:hover {
-    background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
     border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
     box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
     -webkit-backdrop-filter: saturate(160%) blur(20px);
