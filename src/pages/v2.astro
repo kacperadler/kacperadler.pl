@@ -1,13 +1,16 @@
 ---
+import { getCollection } from "astro:content";
 import { siteConfig } from "@/data/site-config";
 import V2Layout from "@/layouts/v2-layout.astro";
 
 /* /v2 - redesign track. noindex via V2Layout default, sitemap
  * exclusion lives in astro.config.ts.
  *
- * Faza 1 scope: hero only, in the new visual language (firecrawl-
- * style panel on grid bg). Other sections come in subsequent
- * iterations. */
+ * Faza 1: hero. Faza 2 (this commit): services as 3-panel grid.
+ * Section heads stay text-on-bg (the grid is the stage); only
+ * content blocks become panels. */
+
+const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <V2Layout title="v2 redesign">
@@ -37,6 +40,35 @@ import V2Layout from "@/layouts/v2-layout.astro";
           <a class="btn-ghost" href="#how">Jak pracuję</a>
         </div>
       </section>
+
+      <section class="services-block" id="services">
+        <header class="section-head">
+          <p class="eyebrow eyebrow-section">Usługi</p>
+          <h2>
+            Trzy obszary, w&nbsp;których <em>działam</em>.
+          </h2>
+          <p class="section-lede">
+            React i TypeScript jako fundament - reszta dobiera się pod konkretny projekt.
+          </p>
+        </header>
+
+        <div class="services-grid">
+          {
+            services.map((service, idx) => (
+              <article class="service-panel">
+                <div class="service-num">{String(idx + 1).padStart(2, "0")}</div>
+                <h3>{service.data.title}</h3>
+                <p>{service.data.description}</p>
+                <ul class="service-tags">
+                  {service.data.tags.map((tag) => (
+                    <li class="chip">{tag}</li>
+                  ))}
+                </ul>
+              </article>
+            ))
+          }
+        </div>
+      </section>
     </div>
   </main>
 </V2Layout>
@@ -59,6 +91,115 @@ import V2Layout from "@/layouts/v2-layout.astro";
     background: var(--v2-panel);
     border: 1px solid var(--v2-line);
     border-radius: var(--v2-radius-lg);
+  }
+
+  /* Section heads sit on the grid bg directly - they're the stage,
+   * not actors. Eyebrow + h2 + lede stack with the same vertical
+   * rhythm as v1 to keep brand voice. */
+  .services-block {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  .section-head {
+    max-width: 60ch;
+    margin: 0 auto var(--v2-space-lg);
+    text-align: center;
+  }
+
+  .eyebrow-section {
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .section-head h2 {
+    margin: 0 0 12px;
+    font-family: var(--display);
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  .section-lede {
+    max-width: 52ch;
+    margin: 0 auto;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  /* Three panels on desktop, single column from 880px down. Gap
+   * shows the dot grid through, which is the whole point. */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--v2-space-md);
+  }
+
+  .service-panel {
+    display: flex;
+    flex-direction: column;
+    padding: var(--v2-space-lg);
+    background: var(--v2-panel);
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-md);
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .service-panel:hover {
+    border-color: color-mix(in srgb, var(--blue) 35%, var(--v2-line));
+    transform: translateY(-2px);
+  }
+
+  .service-num {
+    margin-bottom: 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--blue);
+    letter-spacing: 0.12em;
+  }
+
+  .service-panel h3 {
+    margin: 0 0 10px;
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .service-panel p {
+    margin: 0 0 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  /* Tag chips are small mono badges, transparent bg with a thin
+   * border so they read as separate elements on the panel without
+   * fighting the panel's own border. */
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+    margin: auto 0 0;
+    list-style: none;
+  }
+
+  .chip {
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    background: transparent;
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-xs);
   }
 
   .eyebrow {
@@ -101,7 +242,8 @@ import V2Layout from "@/layouts/v2-layout.astro";
     text-wrap: balance;
   }
 
-  h1 em {
+  h1 em,
+  .section-head h2 em {
     font-style: normal;
     color: var(--blue);
   }
@@ -172,6 +314,18 @@ import V2Layout from "@/layouts/v2-layout.astro";
       padding: var(--v2-space-lg) var(--v2-space-md);
       border-radius: var(--v2-radius-md);
     }
+
+    .services-block {
+      margin-top: var(--v2-space-xl);
+    }
+
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .service-panel {
+      padding: var(--v2-space-md);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -180,7 +334,8 @@ import V2Layout from "@/layouts/v2-layout.astro";
     }
 
     .btn-primary,
-    .btn-ghost {
+    .btn-ghost,
+    .service-panel {
       transition: none;
     }
   }
