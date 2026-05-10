@@ -214,39 +214,10 @@ const ribbonStyles = ribbons.map((r, i) => {
     border-bottom-color: var(--v2-line);
   }
 
-  /* Brand mark + contact CTA pick up v2 radii so they harmonise with
-   * the rounded panels below. v1 keeps its hard square edges. */
+  /* Brand mark picks up v2 radius so it harmonises with the rounded
+   * panels below. The contact CTA inherits its radius + hover model
+   * directly from the canonical Button component. */
   body.v2-body .mark {
     border-radius: var(--v2-radius-sm);
-  }
-
-  /* Synchronizujemy wszystkie tweeny CTA na jednej krzywej, żeby
-   * przyciemnienie tła i blue-wash ring wjeżdżały razem zamiast
-   * z różną prędkością jak w v1. */
-  body.v2-body .nav-cta {
-    border-radius: var(--v2-radius-sm);
-    transition:
-      background 0.25s ease,
-      color 0.25s ease,
-      box-shadow 0.25s ease,
-      padding 0.25s ease,
-      font-size 0.25s ease;
-  }
-
-  /* Hover w v2 zapowiada stan aktywny — ten sam --blue-wash ring +
-   * lekkie przyciemnienie tła. color-mix(... black) darken'uje
-   * symetrycznie w light/dark (ink jest dark w light, light w
-   * dark — mix z black w obie strony idzie w "ciemniej"). Bez
-   * translateY (button trzyma pozycję, glass-podobnie). */
-  body.v2-body .nav-cta:hover {
-    background: color-mix(in srgb, var(--ink) 88%, black);
-    box-shadow: 0 0 0 4px var(--blue-wash);
-    transform: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    body.v2-body .nav-cta {
-      transition: none;
-    }
   }
 </style>

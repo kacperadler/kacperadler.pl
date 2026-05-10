@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import ContactForm from "@/components/contact/contact-form.astro";
 import ContactLink from "@/components/contact/contact-link.astro";
+import Button from "@/components/ui/button.astro";
 import { siteConfig } from "@/data/site-config";
 import V2Layout from "@/layouts/v2-layout.astro";
 import { roundedYearsLabel, totalYearsFloor, yearsUnit } from "@/lib/dates";
@@ -78,27 +79,52 @@ const steps: readonly FlowStep[] = [
   <main id="top" class="v2-main">
     <div class="v2-container">
       <section class="hero-panel">
-        <p class="eyebrow">
-          <span class="dot" aria-hidden="true"></span>
-          {siteConfig.role} · Polska
-        </p>
+        <div class="hero-grid">
+          <div class="hero-text">
+            <p class="eyebrow">
+              <span class="dot" aria-hidden="true"></span>
+              {siteConfig.role} · Polska
+            </p>
 
-        <h1>
-          Buduję <em>interfejsy</em> dla produktów,<br />
-          z których ludzie korzystają codziennie.
-        </h1>
+            <h1>
+              Buduję <em>interfejsy</em> dla produktów,<br />
+              z których ludzie korzystają codziennie.
+            </h1>
 
-        <p class="hero-sub">
-          Aplikacje webowe, narzędzia B2B i landing pages - od architektury po deploy. Pracuję w
-          sprintach, async, z zespołami produktowymi w PL/EU.
-        </p>
+            <p class="hero-sub">
+              Aplikacje webowe, narzędzia B2B i landing pages - od architektury po deploy. Pracuję w
+              sprintach, async, z zespołami produktowymi w PL/EU.
+            </p>
 
-        <div class="ctas">
-          <a class="btn-primary" href="#contact">
-            Porozmawiajmy
-            <span aria-hidden="true">→</span>
-          </a>
-          <a class="btn-ghost" href="#how">Jak pracuję</a>
+            <div class="ctas">
+              <Button variant="primary" href="#contact" icon="lucide:arrow-right">
+                Porozmawiajmy
+              </Button>
+              <Button variant="ghost" href="#how">Zobacz proces</Button>
+            </div>
+          </div>
+
+          <aside class="hero-status" aria-label="Stan obecny">
+            <span class="status-pill">
+              <span class="status-pill-dot" aria-hidden="true"></span>
+              Otwarty na nowe współprace
+            </span>
+
+            <dl class="status-rows">
+              <div class="status-row">
+                <dt class="status-label">Stack</dt>
+                <dd class="status-value">React · TypeScript · Astro</dd>
+              </div>
+              <div class="status-row">
+                <dt class="status-label">Teraz</dt>
+                <dd class="status-value">Frontend dev w&nbsp;ReX</dd>
+              </div>
+              <div class="status-row">
+                <dt class="status-label">Odpowiadam</dt>
+                <dd class="status-value">zwykle w&nbsp;24h</dd>
+              </div>
+            </dl>
+          </aside>
         </div>
       </section>
 
@@ -252,13 +278,92 @@ const steps: readonly FlowStep[] = [
     margin: 0 auto;
   }
 
-  /* Hero panel - the canonical "panel on grid" demo. Radius reveals
-   * the v2-bg dot grid at the corners. */
+  /* Hero - intentionally NO outer panel. The headline column floats
+   * directly on the dot-grid + ribbons (apptension/firecrawl read);
+   * only the status card opts into a surface, and that surface is
+   * glass so the ribbon motion bleeds through it like in the header. */
   .hero-panel {
-    padding: var(--v2-space-xl) var(--v2-space-lg);
-    background: var(--v2-panel);
-    border: 1px solid var(--v2-line);
-    border-radius: var(--v2-radius-lg);
+    padding: var(--v2-space-xl) 0;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: var(--v2-space-xl);
+    align-items: center;
+  }
+
+  .hero-text {
+    min-width: 0;
+  }
+
+  /* Status card - liquid glass, mirroring the header chrome. Translucent
+   * --v2-panel + backdrop-filter blur, lit-edge inset highlight, soft
+   * line border. Reads as "atmosphere-floating UI" rather than content
+   * panel. Future demo block can live in this slot with the same skin. */
+  .hero-status {
+    display: flex;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+    padding: var(--v2-space-lg);
+    background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
+    border: 1px solid color-mix(in srgb, var(--v2-line) 60%, transparent);
+    border-radius: var(--v2-radius-md);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  /* Static blue-wash pill - intentionally not pulsing. The hero
+   * eyebrow already carries the only foreground "live" signal. */
+  .status-pill {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    align-self: flex-start;
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-radius: var(--v2-radius-xs);
+  }
+
+  .status-pill-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--blue);
+    border-radius: var(--v2-radius-full);
+  }
+
+  .status-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0;
+  }
+
+  .status-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .status-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .status-value {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--ink);
   }
 
   /* Section heads sit on the grid bg directly - they're the stage,
@@ -705,47 +810,8 @@ const steps: readonly FlowStep[] = [
     align-items: center;
   }
 
-  .btn-primary {
-    display: inline-flex;
-    gap: 10px;
-    align-items: center;
-    padding: 14px 22px;
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 500;
-    color: light-dark(var(--paper), var(--paper-2));
-    letter-spacing: 0.04em;
-    background: var(--ink);
-    border-radius: var(--v2-radius-sm);
-    transition:
-      transform 0.12s ease,
-      box-shadow 0.2s ease;
-  }
-
-  .btn-primary:hover {
-    box-shadow: 0 8px 24px -12px rgba(20, 20, 22, 0.4);
-    transform: translateY(-1px);
-  }
-
-  .btn-ghost {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    padding: 14px 18px;
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--ink);
-    letter-spacing: 0.04em;
-    background: transparent;
-    border: 1px solid var(--v2-line);
-    border-radius: var(--v2-radius-sm);
-    transition: border-color 0.2s ease;
-  }
-
-  .btn-ghost:hover {
-    border-color: var(--ink);
-  }
+  /* Buttons live in the canonical Button component. The .ctas wrap
+   * just lays them out side-by-side. */
 
   @media (max-width: 880px) {
     .v2-main {
@@ -753,8 +819,17 @@ const steps: readonly FlowStep[] = [
     }
 
     .hero-panel {
-      padding: var(--v2-space-lg) var(--v2-space-md);
-      border-radius: var(--v2-radius-md);
+      padding: var(--v2-space-lg) 0;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: var(--v2-space-lg);
+      align-items: stretch;
+    }
+
+    .hero-status {
+      padding: var(--v2-space-md);
     }
 
     .services-block,
@@ -782,8 +857,6 @@ const steps: readonly FlowStep[] = [
       animation: none;
     }
 
-    .btn-primary,
-    .btn-ghost,
     .service-panel,
     .step-panel,
     .exp-panel {

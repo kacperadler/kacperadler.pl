@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import Button from "@/components/ui/button.astro";
 import { contactCta, primaryNav } from "@/data/navigation";
 import { siteConfig } from "@/data/site-config";
 ---
@@ -21,10 +22,15 @@ import { siteConfig } from "@/data/site-config";
   </div>
 
   <div class="nav-tail">
-    <a href={contactCta.href} class="nav-cta" data-nav-cta>
+    <Button
+      variant="primary"
+      size="sm"
+      href={contactCta.href}
+      icon="lucide:arrow-right"
+      data-nav-cta
+    >
       {contactCta.label}
-      <Icon name="lucide:arrow-right" aria-hidden="true" />
-    </a>
+    </Button>
 
     <button
       type="button"
@@ -138,39 +144,14 @@ import { siteConfig } from "@/data/site-config";
     align-items: center;
   }
 
-  .nav-cta {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    padding: 9px 16px;
-    font-family: var(--display);
-    font-size: 13px;
-    font-weight: 500;
-    color: light-dark(var(--paper), var(--paper-2));
-    letter-spacing: -0.01em;
-    background: var(--ink);
-    transition:
-      transform 0.12s ease,
-      background 0.2s ease,
-      color 0.2s ease,
-      padding 0.25s ease,
-      font-size 0.25s ease,
-      box-shadow 0.2s ease;
-  }
-
-  .nav-cta:hover {
-    transform: translateY(-1px);
-  }
-
-  .nav-cta.active {
+  /* Active state for the contact CTA - applied by nav-active.ts when
+   * the user scrolls into the contact section. Filled blue + ring tells
+   * the visitor "you've arrived". Targeted via [data-nav-cta] so the
+   * rule never leaks to other .btn-primary instances. */
+  :global([data-nav-cta].active) {
     color: light-dark(var(--paper), #0f1116);
     background: var(--blue);
     box-shadow: 0 0 0 4px var(--blue-wash);
-  }
-
-  .nav-cta :global(svg) {
-    width: 14px;
-    height: 14px;
   }
 
   .menu-btn {
@@ -201,9 +182,8 @@ import { siteConfig } from "@/data/site-config";
     height: 24px;
     font-size: 12px;
   }
-  :global(.nav-wrap.scrolled) .nav-cta {
+  :global(.nav-wrap.scrolled) :global([data-nav-cta]) {
     padding: 7px 13px;
-    font-size: 13px;
   }
 
   @media (max-width: 880px) {
@@ -220,8 +200,7 @@ import { siteConfig } from "@/data/site-config";
     .brand,
     .mark,
     .nav-links a,
-    .nav-links a::after,
-    .nav-cta {
+    .nav-links a::after {
       transition: none;
     }
   }

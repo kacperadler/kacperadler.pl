@@ -11,6 +11,6 @@ export const primaryNav: readonly NavLink[] = [
 ] as const;
 
 export const contactCta: NavLink = {
-  label: "Kontakt",
+  label: "Porozmawiajmy",
   href: "#contact",
 };

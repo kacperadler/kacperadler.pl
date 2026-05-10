@@ -163,13 +163,14 @@ The fixed header inherits the v1 markup but v2 paints it as semi-translucent gla
 - Border bottom is the `line` token at 60% in idle, full strength in scrolled — the chrome firms up once the hero is past.
 - Brand mark and contact CTA inherit `sm` radius so they harmonise with the panels below.
 
-Glass is reserved for this surface — interior panels stay flat over the substrate.
+Glass is reserved for **atmosphere-floating UI** — header chrome, the hero status card, and the ghost-button hover state all share this language. Content panels (services / how / experience / contact) stay flat over the substrate.
 
 ### Buttons
-- **Primary** — `ink` background, `paper` text, mono-uppercase label, `sm` radius. **Hover:** background darkens 12% toward black + a 4px `--blue-wash` ring (the same ring used in `.active`, so hover previews the "you arrived" state). The button does not lift — it stays planted, glass-style. All button transitions are unified at `0.25s ease`. One primary per screen.
-- **Ghost** — transparent, `ink` text, 1px `line` border, `sm` radius. For secondary action.
+- **Primary** — `ink` background, `paper` text, `sm` radius. **Hover:** background darkens 12% toward black + a 4px `--blue-wash` ring (the same ring used in `.active`, so hover previews the "you arrived" state). The button does not lift — it stays planted, glass-style. All button transitions are unified at `0.25s ease`. One primary per screen.
+- **Ghost** — transparent, `ink` text, 1px `line` border, `sm` radius. **Hover:** lifts into the same liquid-glass treatment as `.hero-status` / the header — translucent `panel`, soft border, lit-edge inset, `blur(20px) saturate(160%)`. Two glass surfaces, one hover vocabulary.
+- **Size variants** — `md` (default, hero / page-level CTAs, `14px 22px`) and `sm` (header CTA, `9px 16px`). Same family / letter-spacing / hover model — only padding differs.
 
-Avoid filled blue buttons — `blue` is for accent text, not buttons (collides with the eyebrow dot + `<em>` highlights).
+Buttons live in `src/components/ui/button.astro` (canonical). The header is the one place that uses the `Button` component itself; everywhere else the same component is rendered too. Avoid filled blue buttons — `blue` is for accent text, not buttons (collides with the eyebrow dot + `<em>` highlights).
 
 ### Eyebrow
 Small mono-uppercase label, `muted` color, often paired with a small blue dot (3-step shadow as a "live" indicator). Used at the start of every section to anchor it.
@@ -195,6 +196,6 @@ Border `1px solid line`, focus state shifts border to `blue` + a 3px `blue` wash
 - ❌ **Don't** use solid white (`#fff`) — it breaks the warm-paper palette in light mode.
 - ❌ **Don't** introduce drop shadows with chromatic tints (e.g., blue glow). Shadows are for elevation only and should read as neutral darkening.
 - ❌ **Don't** mix radius scales on adjacent elements — keep the same scale level (e.g., card `md`, button-inside `sm`) consistent within a panel.
-- ❌ **Don't** apply `backdrop-filter` to interior panels. Glass is reserved for the fixed header (where the ribbon motion needs to bleed through); panels are flat surfaces over the substrate.
+- ❌ **Don't** apply `backdrop-filter` to content panels (services / how / experience / contact). Glass is reserved for atmosphere-floating UI — header, hero status card, ghost button hover.
 - ❌ **Don't** lift CTAs on hover with `translateY`. v2 hover model is darken + ring — the button stays planted while the ring "lights up" around it.
 - ❌ **Don't** add new always-on motion to the foreground. Atmosphere lives in `bg-stage`; the foreground stays still except for explicit user interaction.

@@ -5,21 +5,32 @@ interface Props {
   class?: string;
   href?: string;
   icon?: string;
+  size?: "md" | "sm";
   type?: "button" | "submit" | "reset";
   variant: "primary" | "ghost";
 }
 
-const { variant, href, type = "button", icon, class: extraClass, ...rest } = Astro.props;
+const {
+  variant,
+  href,
+  type = "button",
+  icon,
+  size = "md",
+  class: extraClass,
+  ...rest
+} = Astro.props;
+
+const classes = ["btn", `btn-${variant}`, size === "sm" && "btn-sm", extraClass];
 ---
 
 {
   href ? (
-    <a href={href} class:list={["btn", `btn-${variant}`, extraClass]} {...rest}>
+    <a href={href} class:list={classes} {...rest}>
       <slot />
       {icon && <Icon aria-hidden="true" name={icon} />}
     </a>
   ) : (
-    <button class:list={["btn", `btn-${variant}`, extraClass]} type={type} {...rest}>
+    <button class:list={classes} type={type} {...rest}>
       <slot />
       {icon && <Icon aria-hidden="true" name={icon} />}
     </button>
@@ -27,23 +38,44 @@ const { variant, href, type = "button", icon, class: extraClass, ...rest } = Ast
 }
 
 <style>
+  /* Canonical button - vocabulary mirrors the header .nav-cta:
+   *   - --display family + tight letter-spacing
+   *   - --v2-radius-sm so the silhouette harmonises with v2 panels
+   *   - 0.25s ease unified transition covering bg/border/shadow +
+   *     backdrop-filter (so the ghost glass-up animates smoothly)
+   *
+   * Hover model:
+   *   - PRIMARY: 12% darken on bg + 4px --blue-wash ring (same ring
+   *     used by .nav-cta:hover, so the language is one). No translateY.
+   *   - GHOST: lifts into the same liquid-glass treatment as
+   *     .hero-status / the header chrome - translucent --v2-panel,
+   *     soft border, lit-edge inset, blur(20px) saturate(160%). Two
+   *     glass surfaces, one hover vocabulary.
+   *
+   * Header keeps a hand-written .nav-cta in nav.astro because it has
+   * the scrolled-state padding/font-size transitions baked in - those
+   * don't fit a static component. */
   .btn {
     display: inline-flex;
     gap: 8px;
     align-items: center;
-    padding: 13px 20px;
-    font-size: 15px;
+    font-family: var(--display);
+    font-size: 13px;
     font-weight: 500;
+    letter-spacing: -0.01em;
+    border-radius: var(--v2-radius-sm);
     transition:
-      transform 0.12s ease,
-      background 0.15s ease,
-      border-color 0.15s ease,
-      color 0.15s ease;
+      background 0.25s ease,
+      color 0.25s ease,
+      box-shadow 0.25s ease,
+      border-color 0.25s ease,
+      -webkit-backdrop-filter 0.25s ease,
+      backdrop-filter 0.25s ease;
   }
 
   .btn :global(svg) {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     transition: transform 0.2s ease;
   }
 
@@ -52,22 +84,40 @@ const { variant, href, type = "button", icon, class: extraClass, ...rest } = Ast
   }
 
   .btn-primary {
+    padding: 14px 22px;
     color: light-dark(var(--paper), var(--paper-2));
     background: var(--ink);
   }
 
   .btn-primary:hover {
-    transform: translateY(-1px);
+    background: color-mix(in srgb, var(--ink) 88%, black);
+    box-shadow: 0 0 0 4px var(--blue-wash);
   }
 
   .btn-ghost {
+    padding: 14px 18px;
     color: var(--ink);
-    border: 1px solid var(--line);
+    background: transparent;
+    border: 1px solid var(--v2-line);
   }
 
   .btn-ghost:hover {
-    background: var(--blue-wash);
-    border-color: var(--ink);
+    background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
+    border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  /* Compact variant for header CTA. Shrinks padding, keeps font-size /
+   * letter-spacing / hover model identical so the silhouette reads as
+   * the same family at a different scale. */
+  .btn-sm.btn-primary {
+    padding: 9px 16px;
+  }
+
+  .btn-sm.btn-ghost {
+    padding: 9px 14px;
   }
 
   @media (prefers-reduced-motion: reduce) {
