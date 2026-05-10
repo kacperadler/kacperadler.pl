@@ -5,7 +5,6 @@ import EuFunding from "@/components/layout/eu-funding.astro";
 import Footer from "@/components/layout/footer.astro";
 import Header from "@/components/layout/header.astro";
 import MobileSheet from "@/components/layout/mobile-sheet.astro";
-import ThemeFab from "@/components/theme/theme-fab.astro";
 import { siteConfig } from "@/data/site-config";
 import "@/styles/tokens.css";
 import "@/styles/global.css";
@@ -86,7 +85,6 @@ const ribbonStyles = ribbons.map((r, i) => {
     </div>
 
     <MobileSheet />
-    <ThemeFab />
   </body>
 </html>
 
@@ -100,7 +98,13 @@ const ribbonStyles = ribbons.map((r, i) => {
 </script>
 
 <style is:global>
+  /* v2 jest dark-only. color-scheme: dark wymusza w light-dark()
+   * po każdym CSS variable wybór ciemnej wartości, ignorując
+   * data-theme na <html> i prefers-color-scheme. v1 dalej obsługuje
+   * pełną triadę light/dark/system - po migracji v2 → / wywalimy
+   * resztę theming machinery globalnie. */
   body.v2-body {
+    color-scheme: dark;
     background: var(--v2-bg);
   }
 
