@@ -44,6 +44,9 @@ const experience = defineCollection({
     current: z.boolean().default(false),
     order: z.number().int().nonnegative(),
     location: z.string().optional(),
+    /* Optional override for the meta badge - replaces the default
+     * year-range pill. Used for one-off engagements like "Zlecenie". */
+    badge: z.string().optional(),
   }),
 });
 

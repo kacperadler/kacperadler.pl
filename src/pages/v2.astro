@@ -3,10 +3,10 @@ import { getCollection } from "astro:content";
 import type { ImageMetadata } from "astro";
 import { Icon } from "astro-icon/components";
 import apptensionLogo from "@/assets/experience/apptension.svg";
+import energiadirectLogo from "@/assets/experience/energiadirect.svg";
 import helpfindLogo from "@/assets/experience/helpfind.svg";
 import paylooLogo from "@/assets/experience/payloo.jpeg";
 import pwcLogo from "@/assets/experience/pwc.svg";
-import raltechLogo from "@/assets/experience/raltech.png";
 import rexLogo from "@/assets/experience/rex.svg";
 import ContactForm from "@/components/contact/contact-form.astro";
 import ContactLink from "@/components/contact/contact-link.astro";
@@ -29,11 +29,12 @@ const services = (await getCollection("services")).sort((a, b) => a.data.order -
  * empty cards. */
 const logoBySlug: Record<string, ImageMetadata> = {
   apptension: apptensionLogo,
+  energiadirect: energiadirectLogo,
   helpfind: helpfindLogo,
   payloo: paylooLogo,
   pwc: pwcLogo,
-  raltech: raltechLogo,
   rex: rexLogo,
+  /* raltech: logo czeka na poprawkę - tymczasowo zdjęte z wallu. */
 };
 
 const experience = (await getCollection("experience"))
@@ -230,6 +231,22 @@ const steps: readonly FlowStep[] = [
               const logo = logoBySlug[item.id] as ImageMetadata;
               const startYear = item.data.startDate.slice(0, 4);
               const endYear = item.data.endDate?.slice(0, 4);
+              // Badge label: current → "teraz"; badge override → that
+              // label; else year range. Filled (.exp-meta-now styling)
+              // when current OR badge override is set, otherwise the
+              // muted outline year range.
+              let metaLabel: string;
+              let metaFilled: boolean;
+              if (item.data.current) {
+                metaLabel = "teraz";
+                metaFilled = true;
+              } else if (item.data.badge) {
+                metaLabel = item.data.badge;
+                metaFilled = true;
+              } else {
+                metaLabel = `${startYear}–${endYear}`;
+                metaFilled = false;
+              }
               return (
                 <li class="exp-panel" data-spotlight>
                   <header class="exp-head">
@@ -242,13 +259,9 @@ const steps: readonly FlowStep[] = [
                         width={logo.width}
                       />
                     </div>
-                    {item.data.current ? (
-                      <span class="exp-meta exp-meta-now">teraz</span>
-                    ) : (
-                      <span class="exp-meta">
-                        {startYear}–{endYear}
-                      </span>
-                    )}
+                    <span class:list={["exp-meta", { "exp-meta-now": metaFilled }]}>
+                      {metaLabel}
+                    </span>
                   </header>
                   <h3>{item.data.company}</h3>
                   <div class="exp-role">{item.data.role}</div>
