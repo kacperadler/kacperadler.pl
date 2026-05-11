@@ -84,7 +84,7 @@ ${processBlock}
 
 ---
 
-## Doświadczenie i współprace
+## Współprace
 
 Frontend dla firm z różnych branż - od korporacji (PwC, Apptension) po Web3 side-projekty (Payloo) i mobile zlecenia (Energia Direct). Łącznie 5+ lat w branży.
 
