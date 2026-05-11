@@ -68,18 +68,52 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
 
 {
   /* Umami analytics, self-hosted at analytics.kacperadler.pl. PROD-only
-   so dev pageviews don't pollute the data; data-astro-rerun re-fires
-   on every ClientRouter view transition; data-do-not-track honours
-   visitors who set DNT in their browser. is:inline so Astro doesn't
-   try to bundle the external src. */
+   * so dev pageviews don't pollute the data.
+   *
+   * The script tag is injected via JS after window 'load' (via
+   * requestIdleCallback with a 2.5s timeout fallback) instead of being
+   * inlined in HTML head. That way the /api/send tracking ping happens
+   * AFTER FCP/LCP and stays off Lighthouse's critical path - the
+   * analytics roundtrip used to add ~270ms to "Maximum critical path
+   * latency" with the script tag in head. astro:page-load reload re-
+   * fires on every ClientRouter view transition (equivalent to the
+   * data-astro-rerun attribute on a static script tag).
+   *
+   * is:inline so Astro doesn't try to process the script src; the
+   * defer attribute on the injected tag keeps it non-blocking even
+   * after load. data-do-not-track lets visitors who set DNT opt out
+   * via Umami's own logic. */
   import.meta.env.PROD && (
     <script
-      data-astro-rerun
-      data-do-not-track="true"
-      data-website-id={siteConfig.analytics.umamiWebsiteId}
-      defer
+      set:html={`
+        (() => {
+          const src = ${JSON.stringify(`${siteConfig.analytics.umamiUrl}/script.js`)};
+          const id = ${JSON.stringify(siteConfig.analytics.umamiWebsiteId)};
+          let loaded = false;
+          function load() {
+            if (loaded) return;
+            loaded = true;
+            const s = document.createElement('script');
+            s.src = src;
+            s.defer = true;
+            s.dataset.websiteId = id;
+            s.dataset.doNotTrack = 'true';
+            document.head.appendChild(s);
+          }
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(load, { timeout: 2500 });
+          } else {
+            addEventListener('load', () => setTimeout(load, 1500));
+          }
+          // ClientRouter view transitions swap the DOM but keep window state.
+          // Umami's auto-init only runs once at first load, so subsequent
+          // navigations need a manual track() to register the pageview.
+          document.addEventListener('astro:page-load', () => {
+            if (loaded) window.umami?.track();
+          });
+        })();
+      `}
       is:inline
-      src={`${siteConfig.analytics.umamiUrl}/script.js`}
     />
   )
 }
