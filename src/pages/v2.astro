@@ -9,7 +9,6 @@ import paylooLogo from "@/assets/experience/payloo.jpeg";
 import pwcLogo from "@/assets/experience/pwc.svg";
 import rexLogo from "@/assets/experience/rex.svg";
 import ContactForm from "@/components/contact/contact-form.astro";
-import ContactLink from "@/components/contact/contact-link.astro";
 import Button from "@/components/ui/button.astro";
 import { siteConfig } from "@/data/site-config";
 import V2Layout from "@/layouts/v2-layout.astro";
@@ -276,41 +275,35 @@ const steps: readonly FlowStep[] = [
         <header class="section-head">
           <p class="eyebrow eyebrow-section">Kontakt</p>
           <h2>
-            Opowiedz mi, co <em>budujesz</em>.
+            Porozmawiajmy o&nbsp;Twoim <em>pomyśle</em>.
           </h2>
           <p class="section-lede">
-            Najlepiej mailem albo formularzem. Zwykle wracam tego samego dnia.
+            Napisz krótko: co budujesz, w jakim terminie i co Cię blokuje. Odpowiem w ciągu 24
+            godzin.
           </p>
         </header>
 
         <div class="contact-grid">
-          <aside class="contact-info-panel">
-            <div class="reply-badge">
-              <span class="reply-dot" aria-hidden="true"></span>
-              Odpowiadam zwykle w ciągu 24h
-            </div>
-            <div class="contact-links">
-              <ContactLink
-                icon="lucide:mail"
-                label="Email"
-                value={siteConfig.email}
-                href={`mailto:${siteConfig.email}`}
-              />
-              <ContactLink
-                icon="lucide:linkedin"
-                label="LinkedIn"
-                value="/in/kacperadler"
-                href={siteConfig.social.linkedin}
-                external
-              />
-            </div>
-            <p class="contact-lead">
-              Najchętniej zaczynam od maila - opisz projekt w 2–3 zdaniach, a wrócę z pytaniami albo
-              propozycją rozmowy.
-            </p>
-          </aside>
+          <div class="contact-links">
+            <a class="v2-contact-link" data-spotlight href={`mailto:${siteConfig.email}`}>
+              <Icon aria-hidden="true" class="v2-contact-icon" name="lucide:mail" />
+              <span class="v2-contact-label">Email</span>
+              <span class="v2-contact-value">{siteConfig.email}</span>
+            </a>
+            <a
+              class="v2-contact-link"
+              data-spotlight
+              href={siteConfig.social.linkedin}
+              rel="noopener"
+              target="_blank"
+            >
+              <Icon aria-hidden="true" class="v2-contact-icon" name="lucide:linkedin" />
+              <span class="v2-contact-label">LinkedIn</span>
+              <span class="v2-contact-value">/in/kacperadler</span>
+            </a>
+          </div>
 
-          <div class="contact-form-host">
+          <div class="contact-form-host" data-spotlight>
             <ContactForm />
           </div>
         </div>
@@ -388,18 +381,25 @@ const steps: readonly FlowStep[] = [
   .hero-status:hover,
   .service-panel:hover,
   .step-panel:hover,
-  .exp-panel:hover {
+  .exp-panel:hover,
+  .v2-contact-link:hover,
+  .contact-form-host:hover,
+  .contact-form-host:has(input[type="email"]:focus, textarea:focus),
+  .contact-form-host:has([data-state="success"]) {
     background: color-mix(in srgb, var(--v2-panel) 65%, transparent);
   }
 
   /* Spotlight pattern shared across all glass cards: .hero-status (always
-   * glass), .service-panel + .step-panel + .exp-panel (opaque idle,
-   * glass + spotlight on hover). Same gradient values, same opacity
-   * transition; only the surface treatment around the pseudos differs. */
+   * glass), .service-panel + .step-panel + .exp-panel + .v2-contact-link
+   * + .contact-form-host (opaque idle, glass + spotlight on hover). Same
+   * gradient values, same opacity transition; only the surface treatment
+   * around the pseudos differs. */
   .hero-status > *,
   .service-panel > *,
   .step-panel > *,
-  .exp-panel > * {
+  .exp-panel > *,
+  .v2-contact-link > *,
+  .contact-form-host > * {
     position: relative;
     z-index: 1;
   }
@@ -411,7 +411,11 @@ const steps: readonly FlowStep[] = [
   .step-panel::before,
   .step-panel::after,
   .exp-panel::before,
-  .exp-panel::after {
+  .exp-panel::after,
+  .v2-contact-link::before,
+  .v2-contact-link::after,
+  .contact-form-host::before,
+  .contact-form-host::after {
     position: absolute;
     inset: 0;
     pointer-events: none;
@@ -431,7 +435,9 @@ const steps: readonly FlowStep[] = [
   .hero-status::before,
   .service-panel::before,
   .step-panel::before,
-  .exp-panel::before {
+  .exp-panel::before,
+  .v2-contact-link::before,
+  .contact-form-host::before {
     z-index: 0;
     background:
       radial-gradient(
@@ -450,7 +456,9 @@ const steps: readonly FlowStep[] = [
   .hero-status::after,
   .service-panel::after,
   .step-panel::after,
-  .exp-panel::after {
+  .exp-panel::after,
+  .v2-contact-link::after,
+  .contact-form-host::after {
     z-index: 2;
     padding: 1px;
     background: radial-gradient(
@@ -475,7 +483,15 @@ const steps: readonly FlowStep[] = [
   .step-panel:hover::before,
   .step-panel:hover::after,
   .exp-panel:hover::before,
-  .exp-panel:hover::after {
+  .exp-panel:hover::after,
+  .v2-contact-link:hover::before,
+  .v2-contact-link:hover::after,
+  .contact-form-host:hover::before,
+  .contact-form-host:hover::after,
+  .contact-form-host:has(input[type="email"]:focus, textarea:focus)::before,
+  .contact-form-host:has(input[type="email"]:focus, textarea:focus)::after,
+  .contact-form-host:has([data-state="success"])::before,
+  .contact-form-host:has([data-state="success"])::after {
     opacity: 1;
   }
 
@@ -487,7 +503,11 @@ const steps: readonly FlowStep[] = [
     .step-panel::before,
     .step-panel::after,
     .exp-panel::before,
-    .exp-panel::after {
+    .exp-panel::after,
+    .v2-contact-link::before,
+    .v2-contact-link::after,
+    .contact-form-host::before,
+    .contact-form-host::after {
       transition: none;
     }
   }
@@ -991,85 +1011,141 @@ const steps: readonly FlowStep[] = [
     color: var(--ink-2);
   }
 
-  /* Contact — info panel on the left, ContactForm host on the right.
-   * Stretch keeps both panels at equal height regardless of content. */
+  /* Contact - vertical stack: contact-link cards in a 2-col row up
+   * top (quick grab), form below with max-width so it doesn't stretch
+   * to the full container. No outer wrappers - each link is its own
+   * glass card, the form host is the second card. */
   .contact-block {
     margin-top: var(--v2-space-2xl);
   }
 
   .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--v2-space-md);
-    align-items: stretch;
-  }
-
-  .contact-info-panel {
     display: flex;
     flex-direction: column;
     gap: var(--v2-space-md);
-    padding: var(--v2-space-lg);
+  }
+
+  /* Same max-width + centering as the form below so both stay
+   * visually aligned. auto-fill keeps it 2-col within the 720px width
+   * and falls back to 1 col on narrow screens without a media query. */
+  .contact-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--v2-space-md);
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* v2 contact link card - shares the glass-on-hover + spotlight vocab
+   * with services / steps / experience. Layout: icon, label (mono
+   * muted), value (ink) - same anatomy as the v1 ContactLink, just
+   * rebuilt inline so we can opt into data-spotlight without modding
+   * the v1 component. */
+  .v2-contact-link {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: var(--v2-space-md);
     background: var(--v2-panel);
     border: 1px solid var(--v2-line);
-    border-radius: var(--v2-radius-md);
-  }
-
-  .contact-lead {
-    max-width: 42ch;
-    margin: 0;
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--ink-2);
-  }
-
-  /* Reply badge - filled blue-wash pill, same vocab as the step
-   * number pill so brand-blue stays consistent across sections. */
-  .reply-badge {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    align-self: flex-start;
-    padding: 6px 12px;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--blue);
-    background: var(--blue-wash);
-    border-radius: var(--v2-radius-xs);
-  }
-
-  .reply-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--blue);
-    border-radius: var(--v2-radius-full);
-  }
-
-  .contact-links {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  /* ContactLink rows are imported as a v1 component; round their
-   * surfaces here so they match the v2 panel radius scale without
-   * forking the component. */
-  .contact-links :global(.contact-link) {
     border-radius: var(--v2-radius-sm);
+    isolation: isolate;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      -webkit-backdrop-filter 0.3s ease,
+      backdrop-filter 0.3s ease;
+  }
+
+  .v2-contact-link:hover {
+    border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  .v2-contact-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--blue);
+  }
+
+  .v2-contact-label {
+    margin-right: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .v2-contact-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
   }
 
   /* Form host - reuses v1's ContactForm via CSS variable inheritance.
-   * Overriding --card / --line / --paper inside the host swaps the
-   * surface tones for the v2 palette without forking the form
-   * component. The :global() rule reaches the inner .form node to
-   * give it the v2 radius (the form component itself has none).
-   * --paper override pushes input bg slightly darker than the panel
-   * so input fields stay visible against the lighter form surface. */
+   * Override --card / --line / --paper to swap surface tones for the
+   * v2 palette without forking the form component. The host now also
+   * acts as the visible card carrying the glass-on-hover treatment +
+   * spotlight pseudos (via shared selectors). The inner .form keeps
+   * its own radius; we add position:relative on it so it stacks above
+   * the pseudos painted on the host. */
   .contact-form-host {
     --card: var(--v2-panel);
     --line: var(--v2-line);
     --paper: var(--v2-bg);
+    position: relative;
     display: flex;
+    width: 100%;
+    max-width: 720px;
+    /* min-height tuned to the form's natural height so the success
+     * card (krótszy content) trzyma tę samą wysokość i strona nie
+     * skacze po wysłaniu. .form i .form-success-card mają flex: 1
+     * więc rozciągają się do tej wysokości. */
+    min-height: 490px;
+    margin: 0 auto;
+    border-radius: var(--v2-radius-md);
+    isolation: isolate;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transition:
+      background 0.3s ease,
+      box-shadow 0.3s ease,
+      -webkit-backdrop-filter 0.3s ease,
+      backdrop-filter 0.3s ease;
+  }
+
+  /* Glass aktywuje się na hover ORAZ gdy fokus jest w email/textarea -
+   * radio "Typ projektu" i submit/reset celowo wykluczone z :has().
+   * --card override na translucent value cascades do v1 .form (które
+   * używa background: var(--card)) - inaczej solid form bg zakrywa
+   * backdrop-filter hosta i efekt glass nie jest widoczny. */
+  .contact-form-host:hover,
+  .contact-form-host:has(input[type="email"]:focus, textarea:focus),
+  .contact-form-host:has([data-state="success"]) {
+    --card: color-mix(in srgb, var(--v2-panel) 65%, transparent);
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  /* Navy halo glow - aktywny przy tych samych triggerach co reszta
+   * efektu (hover na karcie / email focus / textarea focus / success
+   * state po wysłaniu). Radio "Typ projektu" i buttony celowo
+   * wykluczone - nie odpalają stanu. */
+  .contact-form-host:hover,
+  .contact-form-host:has(input[type="email"]:focus, textarea:focus),
+  .contact-form-host:has([data-state="success"]) {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--blue) 40%, transparent),
+      0 8px 48px color-mix(in srgb, var(--blue) 20%, transparent);
   }
 
   .contact-form-host :global(.contact-form-wrap) {
@@ -1185,15 +1261,13 @@ const steps: readonly FlowStep[] = [
       margin-top: var(--v2-space-xl);
     }
 
-    .services-grid,
-    .contact-grid {
+    .services-grid {
       grid-template-columns: 1fr;
     }
 
     .service-panel,
     .step-panel,
-    .exp-panel,
-    .contact-info-panel {
+    .exp-panel {
       padding: var(--v2-space-md);
     }
 
