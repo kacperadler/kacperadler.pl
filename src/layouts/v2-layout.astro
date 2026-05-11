@@ -232,6 +232,18 @@ const ribbonStyles = ribbons.map((r, i) => {
     backdrop-filter: saturate(160%) blur(20px);
   }
 
+  /* Mobile sheet pickup glass tak samo jak header / footer. 70% panel
+   * (mocniej niż header bo full-screen overlay potrzebuje lepszej
+   * czytelności tekstu nad ribbon'ami) + ten sam blur(20px). Ribbons
+   * z bg-stage drift'ują przez overlay - signature v2 atmosphere
+   * widoczna nawet w mobile menu. v1 sheet trzyma solid --paper. */
+  body.v2-body .sheet {
+    background: color-mix(in srgb, var(--v2-panel) 70%, transparent);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
   /* Brand mark picks up v2 radius so it harmonises with the rounded
    * panels below. The contact CTA inherits its radius + hover model
    * directly from the canonical Button component. */

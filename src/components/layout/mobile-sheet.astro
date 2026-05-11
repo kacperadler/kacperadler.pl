@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import Button from "@/components/ui/button.astro";
 import { contactCta, primaryNav } from "@/data/navigation";
 ---
 
@@ -8,44 +9,80 @@ import { contactCta, primaryNav } from "@/data/navigation";
     <Icon name="lucide:x" aria-hidden="true" />
   </button>
 
-  {
-    primaryNav.map((link) => (
-      <a data-sheet-link href={link.href}>
-        {link.label}
-      </a>
-    ))
-  }
+  <div class="sheet-content">
+    <span class="status-pill">
+      <span class="status-pill-dot" aria-hidden="true"></span>
+      Otwarty na nowe współprace
+    </span>
 
-  <a class="nav-cta" data-sheet-link href={contactCta.href}>
-    {contactCta.label}
-    <Icon name="lucide:arrow-right" aria-hidden="true" />
-  </a>
+    <nav class="sheet-nav" aria-label="Menu główne">
+      {
+        primaryNav.map((link) => (
+          <a class="sheet-link" data-sheet-link href={link.href}>
+            <span>{link.label}</span>
+            <Icon aria-hidden="true" name="lucide:arrow-right" />
+          </a>
+        ))
+      }
+    </nav>
+
+    <Button
+      class="sheet-cta"
+      data-sheet-link
+      href={contactCta.href}
+      icon="lucide:arrow-right"
+      size="md"
+      variant="primary"
+    >
+      {contactCta.label}
+    </Button>
+  </div>
 </div>
 
 <style>
+  /* Full-screen overlay. Zawsze renderowany w display: flex, ale w
+   * stanie zamkniętym ukryty przez opacity + visibility + transform.
+   * Dzięki temu transition działa w OBIE strony - open: fade-in +
+   * slide-up; close: fade-out + slide-down. Visibility kicks in
+   * immediately at open, ale na close ma `0s linear 0.3s` delay,
+   * żeby element zniknął z accessibility tree dopiero PO zakończeniu
+   * fade-out (inaczej snap'owałby). pointer-events: none gdy idle,
+   * żeby nie łapał klików spod overlay'u. v2-only glass treatment
+   * lives in v2-layout via body.v2-body .sheet override. */
   .sheet {
     position: fixed;
     inset: 0;
     z-index: 50;
-    display: none;
+    display: flex;
+    visibility: hidden;
     flex-direction: column;
-    gap: 4px;
-    padding: 80px 24px 24px;
+    padding: 80px 24px 32px;
+    pointer-events: none;
     background: var(--paper);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease,
+      visibility 0s linear 0.3s;
   }
 
   .sheet[data-mobile-sheet="open"] {
-    display: flex;
+    visibility: visible;
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease,
+      visibility 0s linear 0s;
   }
 
-  .sheet a {
-    padding: 10px 0;
-    font-family: var(--display);
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--ink);
-    letter-spacing: -0.01em;
-    border-bottom: 1px solid var(--line);
+  .sheet-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 24px;
   }
 
   .sheet-close {
@@ -60,6 +97,7 @@ import { contactCta, primaryNav } from "@/data/navigation";
     color: var(--ink);
     background: transparent;
     border: 1px solid var(--line);
+    border-radius: var(--v2-radius-sm);
   }
 
   .sheet-close :global(svg) {
@@ -67,28 +105,91 @@ import { contactCta, primaryNav } from "@/data/navigation";
     height: 18px;
   }
 
-  /* nav-cta inside the sheet - re-styled to fill width and center.
-   * Selector is `.sheet a.nav-cta` so this rule outranks the generic
-   * `.sheet a` block above (which would otherwise paint the text in
-   * --ink, identical to the button background = invisible label). */
-  .sheet a.nav-cta {
+  /* "Otwarty na nowe współprace" pill - lustro hero-status pill.
+   * Daje powitanie + signal "available" zaraz po otwarciu menu. */
+  .status-pill {
     display: inline-flex;
     gap: 8px;
     align-items: center;
-    justify-content: center;
-    padding: 14px 18px;
-    margin-top: 16px;
-    font-family: var(--display);
-    font-size: 16px;
+    align-self: flex-start;
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
     font-weight: 500;
-    color: light-dark(var(--paper), var(--paper-2));
-    letter-spacing: -0.01em;
-    background: var(--ink);
-    border-bottom: 0;
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-radius: var(--v2-radius-xs);
   }
 
-  .sheet a.nav-cta :global(svg) {
-    width: 16px;
-    height: 16px;
+  .status-pill-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--blue);
+    border-radius: var(--v2-radius-full);
+  }
+
+  /* Nav links jako "menu listing" - tytuł po lewej, strzałka po
+   * prawej. Strzałka idle muted, na hover ożywa do --blue i
+   * przesuwa się 4px w prawo. */
+  .sheet-nav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sheet-link {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    border-bottom: 1px solid var(--line);
+    transition: color 0.2s ease;
+  }
+
+  .sheet-link :global(svg) {
+    width: 18px;
+    height: 18px;
+    color: var(--muted);
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .sheet-link:hover :global(svg),
+  .sheet-link:focus-visible :global(svg) {
+    color: var(--blue);
+    transform: translateX(4px);
+  }
+
+  /* CTA: canonical Button, ale stretched do pełnej szerokości.
+   * margin-top: auto pcha go do dołu sheetu, niezależnie od liczby
+   * linków nav. */
+  .sheet-cta {
+    justify-content: center;
+    margin-top: auto;
+  }
+
+  /* Button is inline-flex by default - need to make it full-width
+   * inside the sheet without forking the canonical Button. */
+  :global(.sheet-cta) {
+    display: flex;
+    width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sheet,
+    .sheet[data-mobile-sheet="open"] {
+      transition: none;
+    }
+
+    .sheet-link,
+    .sheet-link :global(svg) {
+      transition: none;
+    }
   }
 </style>
