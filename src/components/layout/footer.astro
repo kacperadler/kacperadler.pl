@@ -6,59 +6,85 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <div class="container footer-row">
-    <a href="/#top" class="brand" aria-label={`${siteConfig.name} - Strona główna`}>
-      <span class="mark" aria-hidden="true">k</span>
-      <span><b>Kacper</b> <em>Adler</em></span>
-    </a>
+  <div class="container footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/#top" class="brand" aria-label={`${siteConfig.name} - Strona główna`}>
+          <span class="mark" aria-hidden="true">k</span>
+          <span><b>Kacper</b> <em>Adler</em></span>
+        </a>
+        <p class="brand-tagline">
+          Frontend Engineer. React, TypeScript, Astro - od architektury po deploy.
+        </p>
+      </div>
 
-    <div class="meta">© {year} · kacperadler.pl</div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4 class="footer-col-title">Informacje</h4>
+          <ul>
+            <li>
+              <a href="/polityka-prywatnosci">Polityka prywatności</a>
+            </li>
+            <li>
+              <a href="/regulamin">Regulamin</a>
+            </li>
+          </ul>
+        </div>
 
-    <div class="socials">
-      <a class="sico" href={`mailto:${siteConfig.email}`} aria-label="Email">
-        <Icon name="lucide:mail" />
-      </a>
-      <a
-        class="sico"
-        href={siteConfig.social.linkedin}
-        target="_blank"
-        rel="noopener"
-        aria-label="LinkedIn"
-      >
-        <Icon name="lucide:linkedin" />
-      </a>
-      <a
-        class="sico"
-        href={siteConfig.social.github}
-        target="_blank"
-        rel="noopener"
-        aria-label="GitHub"
-      >
-        <Icon name="lucide:github" />
-      </a>
+        <div class="footer-col">
+          <h4 class="footer-col-title">Kontakt</h4>
+          <ul>
+            <li>
+              <a href={`mailto:${siteConfig.email}`}>
+                <Icon aria-hidden="true" name="lucide:mail" />
+                <span>Email</span>
+              </a>
+            </li>
+            <li>
+              <a href={siteConfig.social.linkedin} rel="noopener" target="_blank">
+                <Icon aria-hidden="true" name="lucide:linkedin" />
+                <span>LinkedIn</span>
+              </a>
+            </li>
+            <li>
+              <a href={siteConfig.social.github} rel="noopener" target="_blank">
+                <Icon aria-hidden="true" name="lucide:github" />
+                <span>GitHub</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="container legal-row">
-    <a href="/polityka-prywatnosci">Polityka prywatności</a>
-    <span class="sep" aria-hidden="true">·</span>
-    <a href="/regulamin">Regulamin</a>
+    <div class="footer-bottom">
+      <span>© {year} · kacperadler.pl</span>
+    </div>
   </div>
 </footer>
 
 <style>
+  /* Two-zone footer: brand + tagline on the left, two columns of
+   * links on the right. Bottom row carries the copyright separated
+   * by a hairline. v2-only glass treatment lives in v2-layout via
+   * body.v2-body .site-footer override - v1 stays solid. */
   .site-footer {
-    padding: 36px 0;
+    padding: 56px 0 28px;
     margin-top: 24px;
     border-top: 1px solid var(--line);
   }
 
-  .footer-row {
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .footer-brand {
     display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 14px;
   }
 
   .brand {
@@ -89,71 +115,106 @@ const year = new Date().getFullYear();
   .brand b {
     font-weight: 500;
   }
+
   .brand em {
     font-style: normal;
     font-weight: 400;
     color: var(--muted);
   }
 
-  .meta {
-    font-family: var(--mono);
-    font-size: 12px;
+  .brand-tagline {
+    max-width: 38ch;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
     color: var(--muted);
-    letter-spacing: 0.04em;
   }
 
-  /* Legal links sit on their own row below the brand line - secondary
-   * priority, scannable but not competing with primary footer. */
-  .legal-row {
+  .footer-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .footer-col-title {
+    margin: 0 0 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .footer-col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .footer-col a {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+    color: var(--ink-2);
+    transition: color 0.2s ease;
+  }
+
+  .footer-col a :global(svg) {
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    transition: color 0.2s ease;
+  }
+
+  .footer-col a:hover {
+    color: var(--ink);
+  }
+
+  .footer-col a:hover :global(svg) {
+    color: var(--blue);
+  }
+
+  /* Copyright row sits below the grid, separated by a soft hairline.
+   * Single line on desktop, can wrap on small viewports. */
+  .footer-bottom {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
-    margin-top: 18px;
+    justify-content: space-between;
+    padding-top: 24px;
+    margin-top: 48px;
     font-family: var(--mono);
     font-size: 12px;
     color: var(--muted);
+    letter-spacing: 0.04em;
+    border-top: 1px solid var(--line);
   }
 
-  .legal-row a {
-    color: var(--muted);
-    transition: color 0.15s ease;
+  @media (max-width: 880px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .footer-cols {
+      gap: 24px;
+    }
+
+    .footer-bottom {
+      margin-top: 32px;
+    }
   }
 
-  .legal-row a:hover {
-    color: var(--ink);
-  }
-
-  .legal-row .sep {
-    color: var(--line);
-  }
-
-  .socials {
-    display: flex;
-    gap: 8px;
-  }
-
-  .sico {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    color: var(--ink-2);
-    background: var(--card);
-    border: 1px solid var(--line);
-    transition: all 0.15s ease;
-  }
-
-  .sico:hover {
-    color: light-dark(var(--paper), var(--paper-2));
-    background: var(--blue);
-    border-color: var(--blue);
-    transform: translateY(-2px);
-  }
-
-  .sico :global(svg) {
-    width: 16px;
-    height: 16px;
+  @media (prefers-reduced-motion: reduce) {
+    .footer-col a,
+    .footer-col a :global(svg) {
+      transition: none;
+    }
   }
 </style>

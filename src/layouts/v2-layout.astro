@@ -114,7 +114,7 @@ const ribbonStyles = ribbons.map((r, i) => {
   }
 
   /* Fixed stage holds the bg layers; nothing in here scrolls.
-   * No negative z-index — that would tuck this BEHIND body's
+   * No negative z-index - that would tuck this BEHIND body's
    * fallback bg paint. Leans on DOM order: stage comes before
    * .v2-shell, .v2-shell has position:relative + z-index:1, so
    * its stacking context paints on top. pointer-events:none lets
@@ -196,13 +196,13 @@ const ribbonStyles = ribbons.map((r, i) => {
     }
   }
 
-  /* Liquid-glass header — v2-scoped override of v1's .nav-wrap so
+  /* Liquid-glass header - v2-scoped override of v1's .nav-wrap so
    * v1 stays untouched. The animated ribbons behind need to bleed
    * through the chrome, so the surface is much more transparent
    * than v1 (55% panel vs 82% paper) and the blur is stronger so
    * the smear feels intentional rather than just "frosted". The
    * inset top hairline imitates the lit edge you get on iOS-style
-   * glass surfaces — subtle, but it sells depth. */
+   * glass surfaces - subtle, but it sells depth. */
   body.v2-body .nav-wrap {
     background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
     border-bottom: 1px solid color-mix(in srgb, var(--v2-line) 60%, transparent);
@@ -217,6 +217,19 @@ const ribbonStyles = ribbons.map((r, i) => {
   body.v2-body .nav-wrap.scrolled {
     background: color-mix(in srgb, var(--v2-panel) 75%, transparent);
     border-bottom-color: var(--v2-line);
+  }
+
+  /* Footer also picks up the liquid-glass treatment in v2 - parallels
+   * the header chrome at the other end of the page. Uses the same
+   * translucent --v2-panel + blur(20px) + lit-edge inset so the
+   * footer reads as part of the same atmosphere as the header.
+   * v1 footer keeps its solid surface. */
+  body.v2-body .site-footer {
+    background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--v2-line) 60%, transparent);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
   }
 
   /* Brand mark picks up v2 radius so it harmonises with the rounded
