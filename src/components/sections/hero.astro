@@ -8,21 +8,6 @@ import { siteConfig } from "@/data/site-config";
 <section class="hero" id="top">
   <div class="container hero-grid">
     <div class="hero-text">
-      <div class="hero-id">
-        <Image
-          src={meImage}
-          alt={`${siteConfig.name} - ${siteConfig.role}`}
-          class="hero-avatar"
-          width={96}
-          height={96}
-          loading="eager"
-        />
-        <p class="eyebrow hero-eyebrow">
-          <span>{siteConfig.role}</span>
-          <span>Polska</span>
-        </p>
-      </div>
-
       <h1>
         Buduję <em>interfejsy</em> dla produktów,<br />
         z których ludzie korzystają codziennie.
@@ -40,6 +25,23 @@ import { siteConfig } from "@/data/site-config";
     </div>
 
     <aside class="hero-status" aria-label="Stan obecny" data-spotlight>
+      <div class="status-id">
+        <Image
+          src={meImage}
+          alt={`${siteConfig.name} - ${siteConfig.role}`}
+          class="hero-avatar"
+          width={64}
+          height={64}
+          densities={[2, 3]}
+          quality={92}
+          loading="eager"
+        />
+        <p class="eyebrow status-eyebrow">
+          <span>{siteConfig.role}</span>
+          <span>Polska</span>
+        </p>
+      </div>
+
       <span class="status-pill">
         <span class="status-pill-dot" aria-hidden="true"></span>
         Otwarty na nowe współprace
@@ -82,30 +84,27 @@ import { siteConfig } from "@/data/site-config";
     min-width: 0;
   }
 
-  /* Avatar + 2-line eyebrow as the hero's identity block. Avatar reads as
-   * "who", eyebrow stacks role / location on the right side. Rendered at
-   * 96x96 so it stays crisp on retina; subtle blue-tinted ring ties it
-   * to the navy accent. */
-  .hero-id {
+  /* Identity block at the top of the status card - avatar + 2-line
+   * eyebrow (role / location). Turns the card into a vCard: who you
+   * are, then availability, then stack / current gig / response time. */
+  .status-id {
     display: flex;
     gap: 14px;
     align-items: center;
-    margin-bottom: 24px;
   }
 
   .hero-avatar {
-    width: 48px;
-    height: 48px;
+    width: 64px;
+    height: 64px;
     object-fit: cover;
     border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--v2-line));
     border-radius: var(--v2-radius-full);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   }
 
-  /* .eyebrow base is inline-flex row with a 10px gap (sized for the old
-   * dot + text variant). Override to column stack for the avatar layout
-   * and tighten the gap between role / location lines. */
-  .hero-eyebrow {
+  /* .eyebrow base is inline-flex row with a 10px gap. Override to column
+   * stack so role / location lines sit next to the avatar. */
+  .status-eyebrow {
     flex-direction: column;
     gap: 2px;
     align-items: flex-start;
