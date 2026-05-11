@@ -1,4 +1,47 @@
+# All crawlers, including AI agents and indexers, are welcome - this is a
+# public portfolio with no auth-gated content. Explicit per-bot allows
+# below cover the major LLM training / answer-engine crawlers in case any
+# user-agent default policy denies them.
+
 User-agent: *
+Allow: /
+
+# OpenAI - GPTBot trains models, OAI-SearchBot powers ChatGPT browsing /
+# Search, ChatGPT-User is the on-demand fetcher when a user shares a link.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic - ClaudeBot crawls for training, Claude-Web fetches on-demand.
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Google - Google-Extended covers Bard / Gemini training; Googlebot
+# handles classic indexing.
+User-agent: Google-Extended
+Allow: /
+
+# Perplexity AI's answer engine.
+User-agent: PerplexityBot
+Allow: /
+
+# Bytespider (TikTok / ByteDance) and Common Crawl - both heavily used
+# as training data sources.
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
 Allow: /
 
 Sitemap: https://kacperadler.pl/sitemap-index.xml
