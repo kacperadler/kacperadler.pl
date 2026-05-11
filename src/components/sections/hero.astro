@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import meImage from "@/assets/me.jpg";
 import Button from "@/components/ui/button.astro";
 import { siteConfig } from "@/data/site-config";
 ---
@@ -6,10 +8,20 @@ import { siteConfig } from "@/data/site-config";
 <section class="hero" id="top">
   <div class="container hero-grid">
     <div class="hero-text">
-      <p class="eyebrow">
-        <span class="dot" aria-hidden="true"></span>
-        {siteConfig.role} · Polska
-      </p>
+      <div class="hero-id">
+        <Image
+          src={meImage}
+          alt={`${siteConfig.name} - ${siteConfig.role}`}
+          class="hero-avatar"
+          width={96}
+          height={96}
+          loading="eager"
+        />
+        <p class="eyebrow hero-eyebrow">
+          <span>{siteConfig.role}</span>
+          <span>Polska</span>
+        </p>
+      </div>
 
       <h1>
         Buduję <em>interfejsy</em> dla produktów,<br />
@@ -68,6 +80,37 @@ import { siteConfig } from "@/data/site-config";
 
   .hero-text {
     min-width: 0;
+  }
+
+  /* Avatar + 2-line eyebrow as the hero's identity block. Avatar reads as
+   * "who", eyebrow stacks role / location on the right side. Rendered at
+   * 96x96 so it stays crisp on retina; subtle blue-tinted ring ties it
+   * to the navy accent. */
+  .hero-id {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .hero-avatar {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--v2-line));
+    border-radius: var(--v2-radius-full);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  }
+
+  /* .eyebrow base is inline-flex row with a 10px gap (sized for the old
+   * dot + text variant). Override to column stack for the avatar layout
+   * and tighten the gap between role / location lines. */
+  .hero-eyebrow {
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+    margin: 0;
+    line-height: 1.35;
   }
 
   h1 {

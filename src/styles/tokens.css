@@ -22,7 +22,7 @@
 :root {
   --ink: light-dark(#141416, #ece7dc);
   --ink-2: light-dark(#2a2a2f, #c8c3b8);
-  --muted: light-dark(#6b6b74, #8b8a84);
+  --muted: light-dark(#6b6b74, #9d9c95);
   --line: light-dark(rgba(20, 20, 22, 0.12), rgba(236, 231, 220, 0.14));
   --line-2: light-dark(rgba(20, 20, 22, 0.06), rgba(236, 231, 220, 0.07));
 

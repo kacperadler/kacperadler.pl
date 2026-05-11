@@ -133,9 +133,7 @@ button {
   color: var(--ink-2);
 }
 
-/* Mono-uppercase eyebrow label that opens every section. The animated dot
- * variant (with .dot child) is used only by hero - everywhere else the
- * eyebrow is a plain pill. */
+/* Mono-uppercase eyebrow label that opens every section. */
 .eyebrow {
   display: inline-flex;
   gap: 10px;
@@ -152,29 +150,6 @@ button {
 .eyebrow-section {
   justify-content: center;
   margin-bottom: 14px;
-}
-
-/* Pulsing blue dot - the only always-on foreground motion in the site.
- * Used inside the hero eyebrow to signal "live / available". */
-.eyebrow .dot {
-  width: 8px;
-  height: 8px;
-  background: var(--blue);
-  border-radius: var(--v2-radius-full);
-  box-shadow: 0 0 0 4px var(--blue-wash);
-  animation: eyebrow-pulse 2.4s ease-in-out infinite;
-}
-
-@keyframes eyebrow-pulse {
-  50% {
-    box-shadow: 0 0 0 8px transparent;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .eyebrow .dot {
-    animation: none;
-  }
 }
 
 /* Static blue-wash status pill, used in hero status card and mobile sheet
