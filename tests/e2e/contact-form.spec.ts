@@ -33,6 +33,16 @@ function readUmamiCalls(page: Page): Promise<TrackedEvent[]> {
   );
 }
 
+// Only the named `form-*` events the form code emits. Excludes pageview
+// pings from Umami auto-init and the astro:page-load handler so tests
+// can assert on the form-specific tracking surface in isolation.
+async function readFormEvents(page: Page): Promise<TrackedEvent[]> {
+  const all = await readUmamiCalls(page);
+  return all.filter(
+    (e) => typeof e.name === "string" && e.name.startsWith("form-")
+  );
+}
+
 test.describe("contact form", () => {
   test("empty submit marks all fields invalid", async ({ page }) => {
     await stubUmami(page);
@@ -64,9 +74,9 @@ test.describe("contact form", () => {
       page.locator("[data-contact-form] [data-form-error]")
     ).toBeHidden();
 
-    // Validation errors are silent - we don't want noise in Umami
-    // every time someone clicks submit on an empty form.
-    expect(await readUmamiCalls(page)).toEqual([]);
+    // Validation errors are silent - we don't want form-* noise in
+    // Umami every time someone clicks submit on an empty form.
+    expect(await readFormEvents(page)).toEqual([]);
   });
 
   test("invalid email is flagged, valid email clears on input", async ({
@@ -147,7 +157,7 @@ test.describe("contact form", () => {
 
     // Umami event fires on success with the project type so the
     // dashboard can break submissions down by category.
-    expect(await readUmamiCalls(page)).toEqual([
+    expect(await readFormEvents(page)).toEqual([
       { name: "form-submit", data: { type: "landing" } },
     ]);
 
@@ -245,7 +255,7 @@ test.describe("contact form", () => {
 
     // form-error event fires too, so the Umami dashboard surfaces
     // upstream failures as a separate signal from successful submits.
-    expect(await readUmamiCalls(page)).toEqual([
+    expect(await readFormEvents(page)).toEqual([
       { name: "form-error", data: { type: "webapp" } },
     ]);
   });
@@ -293,6 +303,6 @@ test.describe("contact form", () => {
 
     // form-honeypot event lets the Umami dashboard show how much bot
     // traffic is hitting the form without inflating form-submit.
-    expect(await readUmamiCalls(page)).toEqual([{ name: "form-honeypot" }]);
+    expect(await readFormEvents(page)).toEqual([{ name: "form-honeypot" }]);
   });
 });

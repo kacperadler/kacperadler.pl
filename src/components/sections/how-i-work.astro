@@ -1,7 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import Card from "@/components/ui/card.astro";
-import { processSteps as steps } from "@/data/process";
+import { processSteps } from "@/data/process";
 ---
 
 <section class="how" id="how">
@@ -19,7 +19,7 @@ import { processSteps as steps } from "@/data/process";
 
     <ol class="how-steps">
       {
-        steps.map((step) => (
+        processSteps.map((step) => (
           <li class="step-item">
             <div aria-hidden="true" class="step-marker">
               <span class="step-dot">{step.num}</span>
