@@ -1,0 +1,6 @@
+{
+  "title": "Wizytówki",
+  "description": "Strony wizytówkowe dla małych firm i jednoosobowych działalności - oferta, galeria realizacji ze zdjęciami, formularz kontaktowy, Google Maps. Szybki start i niski koszt utrzymania.",
+  "tags": ["Astro", "Tailwind", "SEO", "Hosting"],
+  "order": 5
+}
