@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <rect width="128" height="128" fill="#8eaed8"/>
-  <text x="64" y="92"
+  <rect width="128" height="128" rx="46" ry="46" fill="#8eaed8"/>
+  <text x="64" y="86"
     font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-    font-size="78"
+    font-size="60"
     font-weight="600"
     fill="#0f1116"
     text-anchor="middle">k</text>
