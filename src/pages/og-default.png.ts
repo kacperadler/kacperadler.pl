@@ -2,22 +2,32 @@ import path from "node:path";
 import sharp from "sharp";
 import { siteConfig } from "@/data/site-config";
 
-/* Build-time OG image (1200×630). Layout: paper background, photo
- * on the left occupying a 540px square slot, brand typography on the
- * right (name + role + tagline + url). System fonts in the SVG -
- * Geist isn't directly embeddable in sharp's SVG renderer (librsvg)
- * without extra tooling, and at OG thumbnail size the difference vs
- * the site is barely visible.
+/* Build-time OG image (1200×630). Layout: dark v2 substrate with a
+ * faint dot grid, photo on the left in a rounded panel (matches v2
+ * radius-md), brand typography on the right (eyebrow + name + line +
+ * tagline + url). System fonts in the SVG - Geist isn't directly
+ * embeddable in sharp's SVG renderer (librsvg) without extra tooling,
+ * and at OG thumbnail size the difference vs the site is barely
+ * visible.
  *
  * Astro builds this once at `bun run build` and writes to
  * dist/og-default.png. siteConfig.ogImage points at /og-default.png. */
 
 export const prerender = true;
 
-const PAPER = "#f6f3ec";
-const INK = "#141416";
-const INK_2 = "#2a2a2f";
-const BLUE = "#1e3a5f";
+/* v2 dark-mode palette. Lifted from tokens.css light-dark() dark
+ * sides; v2 is dark-only so OG follows the same default. */
+const BG = "#0a0c10";
+const INK = "#ece7dc";
+const INK_2 = "#c8c3b8";
+const BLUE = "#8eaed8";
+const LINE = "rgba(236, 231, 220, 0.1)";
+const GRID = "rgba(236, 231, 220, 0.06)";
+const ON_BLUE = "#0f1116";
+
+const PHOTO_SIZE = 540;
+const PHOTO_INSET = 45;
+const PHOTO_RADIUS = 16;
 
 const PROTOCOL_RX = /^https?:\/\//;
 
@@ -60,8 +70,20 @@ function wrapTagline(text: string): string[] {
 
 export async function GET(): Promise<Response> {
   const photoPath = path.resolve("./src/assets/me.jpg");
+
+  /* Round the photo corners via SVG mask + dest-in composite. Mask
+   * is a single rounded rect; sharp keeps photo pixels only where
+   * the mask has alpha. */
+  const photoMask = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${PHOTO_SIZE}" height="${PHOTO_SIZE}">
+      <rect width="${PHOTO_SIZE}" height="${PHOTO_SIZE}" rx="${PHOTO_RADIUS}" ry="${PHOTO_RADIUS}" fill="#fff" />
+    </svg>`
+  );
+
   const photoBuffer = await sharp(photoPath)
-    .resize(540, 540, { fit: "cover", position: "attention" })
+    .resize(PHOTO_SIZE, PHOTO_SIZE, { fit: "cover", position: "attention" })
+    .composite([{ input: photoMask, blend: "dest-in" }])
+    .png()
     .toBuffer();
 
   const name = escapeXml(siteConfig.name);
@@ -77,6 +99,33 @@ export async function GET(): Promise<Response> {
     )
     .join("");
 
+  /* Background layer: dark substrate + tiled 24px dot grid via SVG
+   * pattern. The dot color is rgba on cream so it reads as a faint
+   * texture on the dark bg - mirrors v2's signature dot grid. */
+  const backgroundLayer = `
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+  <defs>
+    <pattern id="dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="${GRID}" />
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="${BG}" />
+  <rect width="1200" height="630" fill="url(#dots)" />
+</svg>
+`.trim();
+
+  /* Photo border overlay - thin rounded stroke in LINE color matching
+   * the photo's rounded rect. Inset by 0.5px so the stroke sits on
+   * the photo edge cleanly. */
+  const photoBorder = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${PHOTO_SIZE}" height="${PHOTO_SIZE}">
+  <rect x="0.5" y="0.5" width="${PHOTO_SIZE - 1}" height="${PHOTO_SIZE - 1}" rx="${PHOTO_RADIUS}" ry="${PHOTO_RADIUS}" fill="none" stroke="${LINE}" stroke-width="1" />
+</svg>
+`.trim();
+
+  /* Foreground overlay: text column + brand mark. Position matches
+   * v2 typography hierarchy: big display name → eyebrow mono blue →
+   * accent line → tagline → url. */
   const overlay = `
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
   <style>
@@ -86,10 +135,10 @@ export async function GET(): Promise<Response> {
     .tag { fill: ${INK_2}; }
     .url { fill: ${BLUE}; font-weight: 500; }
     .mark-bg { fill: ${BLUE}; }
-    .mark-ch { fill: ${PAPER}; font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 600; }
+    .mark-ch { fill: ${ON_BLUE}; font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 600; }
   </style>
 
-  <rect class="mark-bg" x="1132" y="40" width="36" height="36" />
+  <rect class="mark-bg" x="1132" y="40" width="36" height="36" rx="6" ry="6" />
   <text class="mark-ch" x="1144" y="65" font-size="18">k</text>
 
   <text class="display" x="640" y="270" font-size="84">${name}</text>
@@ -107,11 +156,13 @@ export async function GET(): Promise<Response> {
       width: 1200,
       height: 630,
       channels: 4,
-      background: PAPER,
+      background: BG,
     },
   })
     .composite([
-      { input: photoBuffer, top: 45, left: 45 },
+      { input: Buffer.from(backgroundLayer), top: 0, left: 0 },
+      { input: photoBuffer, top: PHOTO_INSET, left: PHOTO_INSET },
+      { input: Buffer.from(photoBorder), top: PHOTO_INSET, left: PHOTO_INSET },
       { input: Buffer.from(overlay), top: 0, left: 0 },
     ])
     .png({ compressionLevel: 9 })
