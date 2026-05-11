@@ -1,5 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
+import Button from "@/components/ui/button.astro";
+import Input from "@/components/ui/input.astro";
+import Textarea from "@/components/ui/textarea.astro";
 
 interface ProjectType {
   label: string;
@@ -19,13 +22,13 @@ const projectTypes: readonly ProjectType[] = [
   <form class="form" data-contact-form novalidate>
     <div class="field" data-field="email">
       <label for="contact-email">Twój email</label>
-      <input
-        type="email"
+      <Input
+        autocomplete="email"
         id="contact-email"
         name="email"
         placeholder="twoj@email.pl"
-        autocomplete="email"
         required
+        type="email"
       />
       <span class="err">Podaj prawidłowy adres email.</span>
     </div>
@@ -47,11 +50,12 @@ const projectTypes: readonly ProjectType[] = [
 
     <div class="field" data-field="message">
       <label for="contact-message">Wiadomość</label>
-      <textarea
+      <Textarea
         id="contact-message"
         name="message"
         placeholder="Opisz krótko, o co chodzi - zakres, deadline, jeśli znane. 2–3 zdania wystarczą, żeby zacząć rozmowę."
-        required></textarea>
+        required
+      />
       <span class="err">Dodaj krótki opis projektu.</span>
     </div>
 
@@ -73,10 +77,15 @@ const projectTypes: readonly ProjectType[] = [
     </div>
 
     <div class="submit-row">
-      <button type="submit" class="btn-submit" data-submit data-state="idle">
-        <span class="t">Wyślij wiadomość</span>
-        <Icon name="lucide:arrow-right" aria-hidden="true" />
-      </button>
+      <Button
+        data-state="idle"
+        data-submit
+        icon="lucide:arrow-right"
+        type="submit"
+        variant="primary"
+      >
+        Wyślij wiadomość
+      </Button>
     </div>
   </form>
 
@@ -86,7 +95,9 @@ const projectTypes: readonly ProjectType[] = [
     </div>
     <h3>Wiadomość wysłana</h3>
     <p>Dzięki! Odezwę się tego samego dnia, najpóźniej w ciągu 24h.</p>
-    <button type="button" class="btn-reset" data-form-reset> Wyślij kolejną wiadomość </button>
+    <Button data-form-reset size="sm" type="button" variant="ghost">
+      Wyślij kolejną wiadomość
+    </Button>
   </div>
 </div>
 
@@ -141,42 +152,14 @@ const projectTypes: readonly ProjectType[] = [
     letter-spacing: 0.12em;
   }
 
-  .field input,
-  .field textarea {
-    padding: 12px 14px;
-    font-family: var(--sans);
-    font-size: 15px;
-    font-weight: 400;
-    color: var(--ink);
-    resize: vertical;
-    outline: none;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    transition:
-      border-color 0.15s ease,
-      box-shadow 0.15s ease;
-  }
-
-  .field textarea {
-    min-height: 130px;
-    line-height: 1.55;
-  }
-
-  .field input::placeholder,
-  .field textarea::placeholder {
-    color: var(--muted);
-    opacity: 0.7;
-  }
-
-  .field input:focus,
-  .field textarea:focus {
-    background: var(--paper);
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px var(--blue-wash);
-  }
-
-  .field[data-invalid] input,
-  .field[data-invalid] textarea {
+  /* Email + Message inputs are rendered by <Input> / <Textarea> -
+   * see src/components/ui/input.astro and textarea.astro. They carry
+   * their own base styling + focus state. The invalid border-color
+   * comes from the parent [data-field][data-invalid] wrapper here via
+   * :global() because the input/textarea are in a different Astro
+   * style scope (different scope hash). */
+  .field[data-invalid] :global(.v2-input),
+  .field[data-invalid] :global(.v2-textarea) {
     border-color: #c44545;
   }
 
@@ -242,35 +225,11 @@ const projectTypes: readonly ProjectType[] = [
     margin-top: auto;
   }
 
-  .btn-submit {
-    display: inline-flex;
-    gap: 10px;
-    align-items: center;
-    padding: 12px 22px;
-    font-size: 14px;
-    font-weight: 500;
-    color: light-dark(var(--paper), var(--paper-2));
-    background: var(--ink);
-    transition:
-      transform 0.12s ease,
-      opacity 0.15s ease;
-  }
-
-  .btn-submit:hover {
-    transform: translateY(-1px);
-  }
-
-  .btn-submit:disabled,
-  .btn-submit[data-state="submitting"] {
-    cursor: not-allowed;
-    opacity: 0.6;
-    transform: none;
-  }
-
-  .btn-submit :global(svg) {
-    width: 14px;
-    height: 14px;
-  }
+  /* Submit + reset buttons are rendered by the canonical Button component
+   * (variant="primary" for submit, variant="ghost" size="sm" for reset).
+   * State machine still drives them via [data-submit] / [data-form-reset]
+   * + the [disabled] / [data-state="submitting"] hooks - Button has the
+   * dim + cursor:not-allowed style baked in. */
 
   /* Inline server-error banner above submit-row. Hidden by default,
    * revealed when the wrapper enters error-submit state. */
@@ -353,29 +312,8 @@ const projectTypes: readonly ProjectType[] = [
     color: var(--ink-2);
   }
 
-  .btn-reset {
-    padding: 10px 18px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--ink);
-    background: transparent;
-    border: 1px solid var(--line);
-    transition:
-      border-color 0.15s ease,
-      color 0.15s ease;
-  }
-
-  .btn-reset:hover {
-    color: var(--blue);
-    border-color: var(--blue);
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .field input,
-    .field textarea,
-    .radio span,
-    .btn-submit,
-    .btn-reset {
+    .radio span {
       transition: none;
     }
   }

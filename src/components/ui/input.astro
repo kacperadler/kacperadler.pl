@@ -1,0 +1,48 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/* v2 input field. Extends native HTMLInputElement attrs so the caller
+ * can pass id / name / type / placeholder / required / autocomplete
+ * exactly like a native <input>. Visual treatment matches the v2 form
+ * palette: --paper bg, --line border, --v2-radius-sm corners, blue
+ * focus ring. Invalid state is driven by the parent [data-field
+ * data-invalid] wrapper in ContactForm via :global() override. */
+type Props = HTMLAttributes<"input">;
+
+const { class: extraClass, ...rest } = Astro.props;
+---
+
+<input class:list={["v2-input", extraClass]} {...rest} />
+
+<style>
+  .v2-input {
+    padding: 12px 14px;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ink);
+    outline: none;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--v2-radius-sm);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .v2-input::placeholder {
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .v2-input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-wash);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-input {
+      transition: none;
+    }
+  }
+</style>

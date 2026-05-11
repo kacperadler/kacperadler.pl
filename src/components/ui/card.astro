@@ -1,0 +1,60 @@
+---
+/* v2 content card - shared "idle solid panel, hover glass-up" shape
+ * used by Services / How-i-work / Experience. Hero-status, v2-contact-link
+ * and contact-form-host have unique paints (always-glass / row layout /
+ * --card swap) and keep their own classes.
+ *
+ * Adds the .v2-card class (base panel CSS) plus optional `data-spotlight`
+ * - on by default so spotlight pseudos defined in global.css activate.
+ * `tag` lets the caller pick the semantic wrapper (article / li / div).
+ * `class` passes through so sections add their own modifiers (extra padding,
+ * flex-direction, etc.). All other props forward to the rendered element. */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"article"> {
+  spotlight?: boolean;
+  tag?: "article" | "li" | "div";
+}
+
+const { tag = "article", spotlight = true, class: extraClass, ...rest } = Astro.props;
+const Tag = tag;
+const dataAttrs = spotlight ? { "data-spotlight": true } : {};
+---
+
+<Tag class:list={["v2-card", extraClass]} {...dataAttrs} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .v2-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: var(--v2-space-lg);
+    background: var(--v2-panel);
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-md);
+    isolation: isolate;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      -webkit-backdrop-filter 0.3s ease,
+      backdrop-filter 0.3s ease;
+  }
+
+  .v2-card:hover {
+    border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-card {
+      transition: none;
+    }
+  }
+</style>

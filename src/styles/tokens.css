@@ -1,10 +1,7 @@
-/* Design tokens. Theme model:
- *   - default (no [data-theme]): follow system via prefers-color-scheme
- *   - [data-theme="light"]: forced light
- *   - [data-theme="dark"]:  forced dark
- *
- * light-dark() resolves against the active color-scheme; setting
- * color-scheme on the root node is what makes it work. */
+/* Design tokens. Site is dark-only after the v2 migration: `color-scheme: dark`
+ * on :root locks every `light-dark()` call to its dark value, so the light
+ * values below act as documentation of what the palette would look like in
+ * light mode but never render. Future cleanup can drop the pairs entirely. */
 
 @font-face {
   font-family: "Geist";
@@ -28,33 +25,36 @@
   --muted: light-dark(#6b6b74, #8b8a84);
   --line: light-dark(rgba(20, 20, 22, 0.12), rgba(236, 231, 220, 0.14));
   --line-2: light-dark(rgba(20, 20, 22, 0.06), rgba(236, 231, 220, 0.07));
+
+  /* Surface tokens reused by the v1 contact form via CSS variable inheritance.
+   * --paper is the input surface; --card is the form card bg (overridden to
+   * --v2-panel on .contact-form-host); --paper-2 is the button text color. */
   --paper: light-dark(#f6f3ec, #0f1116);
   --paper-2: light-dark(#efeadd, #161922);
   --card: light-dark(#ffffff, #171a22);
+
+  /* Brand accent - the only chromatic color in the palette. */
   --blue: light-dark(#1e3a5f, #8eaed8);
   --blue-2: light-dark(#2a4d7f, #b4c8e6);
   --blue-wash: light-dark(rgba(30, 58, 95, 0.08), rgba(142, 174, 216, 0.1));
 
+  /* Typography stacks. */
   --display: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
   --sans: "Geist", system-ui, -apple-system, sans-serif;
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
 
   --container: 1160px;
 
-  /* ─── v2 redesign track (additive - see DESIGN.md, page /v2). ────
-   * Grid base + elevated panels: --v2-bg is the darker substrate
-   * with a faint dot-grid laid on top, --v2-panel sits ~1 step
-   * lighter (light mode) / ~1 step lighter (dark mode) so the panel
-   * radius reveals --v2-bg between blocks. Blue accent stays in sync
-   * with v1 so the brand doesn't drift while we iterate. */
+  /* Surface palette: --v2-bg is the substrate behind everything, --v2-panel
+   * sits one step lighter so the panel radius reveals the substrate between
+   * blocks. --v2-grid is the dot-grid tint painted on top of the substrate. */
   --v2-bg: light-dark(#ebe7df, #0a0c10);
   --v2-panel: light-dark(#f6f3ec, #14171c);
   --v2-panel-elevated: light-dark(#fbf9f5, #1a1e26);
   --v2-grid: light-dark(rgba(20, 20, 22, 0.05), rgba(236, 231, 220, 0.045));
   --v2-line: light-dark(rgba(20, 20, 22, 0.1), rgba(236, 231, 220, 0.1));
 
-  /* Radius scale - tweak any of these and every v2 component picks
-   * it up; pinned to a "medium" feel (Vercel/Stripe-style). */
+  /* Radius scale - tweak any of these and every component picks it up. */
   --v2-radius-xs: 6px;
   --v2-radius-sm: 10px;
   --v2-radius-md: 16px;
@@ -68,13 +68,5 @@
   --v2-space-lg: 32px;
   --v2-space-xl: 64px;
   --v2-space-2xl: 96px;
-  color-scheme: light dark;
-}
-
-[data-theme="light"] {
-  color-scheme: light;
-}
-
-[data-theme="dark"] {
   color-scheme: dark;
 }

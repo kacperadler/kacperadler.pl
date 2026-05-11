@@ -5,16 +5,10 @@ import Hero from "@/components/sections/hero.astro";
 import HowIWork from "@/components/sections/how-i-work.astro";
 import Services from "@/components/sections/services.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
-
-// Projects section disabled until real case-studies land. Re-enable by
-// uncommenting the import + <Projects /> below, restoring "Realizacje"
-// in data/navigation.ts, and switching the hero secondary CTA back to
-// #projects. Component, content collection, and CSS stay intact.
-// import Projects from "@/components/sections/projects.astro";
 ---
 
 <BaseLayout>
-  <main id="top">
+  <main>
     <Hero />
     <Services />
     <HowIWork />
@@ -22,3 +16,15 @@ import BaseLayout from "@/layouts/base-layout.astro";
     <Contact />
   </main>
 </BaseLayout>
+
+<style>
+  main {
+    padding: 48px 0 96px;
+  }
+
+  @media (max-width: 880px) {
+    main {
+      padding: 32px 0 64px;
+    }
+  }
+</style>

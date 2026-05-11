@@ -1,113 +1,83 @@
 ---
 import Button from "@/components/ui/button.astro";
-import Chip from "@/components/ui/chip.astro";
-import PhoneMock from "@/components/ui/phone-mock.astro";
 import { siteConfig } from "@/data/site-config";
-
-interface HeroChip {
-  highlighted?: boolean;
-  label: string;
-}
-
-const chips: readonly HeroChip[] = [
-  { label: "React", highlighted: true },
-  { label: "React Native", highlighted: true },
-  { label: "TypeScript", highlighted: true },
-  { label: "Next.js" },
-  { label: "Tailwind" },
-  { label: "React Query" },
-  { label: "Zustand" },
-  { label: "Angular" },
-  { label: "MCP" },
-  { label: "LLM" },
-];
 ---
 
-<section class="hero reveal">
-  <div class="container">
-    <div class="hero-grid">
-      <div class="hero-text">
-        <div class="eyebrow">
-          <span class="dot" aria-hidden="true"></span>
-          {siteConfig.role} · Polska
-        </div>
+<section class="hero" id="top">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">
+        <span class="dot" aria-hidden="true"></span>
+        {siteConfig.role} · Polska
+      </p>
 
-        <h1>
-          Buduję <em>interfejsy</em> dla produktów,<br />
-          z których ludzie korzystają codziennie.
-        </h1>
+      <h1>
+        Buduję <em>interfejsy</em> dla produktów,<br />
+        z których ludzie korzystają codziennie.
+      </h1>
 
-        <p class="hero-sub">
-          Aplikacje webowe, narzędzia B2B i landing pages - od architektury po deploy. Pracuję w
-          sprintach, async, z zespołami produktowymi w PL/EU.
-        </p>
+      <p class="hero-sub">
+        Aplikacje mobilne, webowe, narzędzia B2B i landing pages - od architektury po deploy.
+        Pracuję w sprintach, async, z zespołami produktowymi w PL/EU.
+      </p>
 
-        <div class="hero-ctas">
-          <Button variant="primary" href="#contact" icon="lucide:arrow-right">
-            Porozmawiajmy
-          </Button>
-          <Button variant="ghost" href="#how">Jak pracuję</Button>
-        </div>
-
-        <div class="hero-stack" aria-label="Technologie">
-          {chips.map((c) => <Chip highlighted={c.highlighted}>{c.label}</Chip>)}
-        </div>
-      </div>
-
-      <div class="hero-mock">
-        <PhoneMock />
+      <div class="ctas">
+        <Button variant="primary" href="#contact" icon="lucide:arrow-right">Porozmawiajmy</Button>
+        <Button variant="ghost" href="#how">Zobacz proces</Button>
       </div>
     </div>
+
+    <aside class="hero-status" aria-label="Stan obecny" data-spotlight>
+      <span class="status-pill">
+        <span class="status-pill-dot" aria-hidden="true"></span>
+        Otwarty na nowe współprace
+      </span>
+
+      <dl class="status-rows">
+        <div class="status-row">
+          <dt class="status-label">Stack</dt>
+          <dd class="status-value">React · TypeScript · Astro</dd>
+        </div>
+        <div class="status-row">
+          <dt class="status-label">Teraz</dt>
+          <dd class="status-value">Frontend dev w&nbsp;ReX</dd>
+        </div>
+        <div class="status-row">
+          <dt class="status-label">Odpowiadam</dt>
+          <dd class="status-value">zwykle w&nbsp;24h</dd>
+        </div>
+      </dl>
+    </aside>
   </div>
 </section>
 
 <style>
+  /* Hero - no outer panel. The headline column floats directly on the dot
+   * grid + ribbons; only the status card opts into a glass surface that
+   * lets the ribbon motion bleed through it like the header chrome. */
   .hero {
-    position: relative;
-    padding: 80px 0 60px;
-    overflow: hidden;
+    padding: var(--v2-space-xl) 0;
   }
 
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-    gap: 56px;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: var(--v2-space-xl);
     align-items: center;
   }
 
-  .eyebrow {
-    display: inline-flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 20px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-
-  .dot {
-    width: 8px;
-    height: 8px;
-    background: var(--blue);
-    border-radius: 50%;
-    box-shadow: 0 0 0 4px var(--blue-wash);
-    animation: pulse 2.4s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    50% {
-      box-shadow: 0 0 0 8px transparent;
-    }
+  .hero-text {
+    min-width: 0;
   }
 
   h1 {
-    margin: 0 0 22px;
+    max-width: 22ch;
+    margin: 0 0 24px;
     font-family: var(--display);
-    font-size: 56px;
+    font-size: clamp(36px, 5.5vw, 60px);
     font-weight: 500;
     line-height: 1.04;
+    color: var(--ink);
     letter-spacing: -0.035em;
     text-wrap: balance;
   }
@@ -118,55 +88,81 @@ const chips: readonly HeroChip[] = [
   }
 
   .hero-sub {
-    max-width: 52ch;
-    margin: 0 0 28px;
+    max-width: 56ch;
+    margin: 0 0 32px;
     font-size: 18px;
     line-height: 1.55;
     color: var(--ink-2);
   }
 
-  .hero-ctas {
+  .ctas {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
     align-items: center;
   }
 
-  .hero-stack {
+  /* Status card - liquid glass, mirroring the header chrome. Always-on
+   * glass (translucent panel + blur + lit-edge inset). The spotlight
+   * pseudos live in global.css and pickup via data-spotlight. */
+  .hero-status {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 32px;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+    padding: var(--v2-space-lg);
+    background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
+    border: 1px solid color-mix(in srgb, var(--v2-line) 60%, transparent);
+    border-radius: var(--v2-radius-md);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    isolation: isolate;
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+    transition: background 0.3s ease;
   }
 
-  .hero-mock {
+  .status-rows {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0;
+  }
+
+  .status-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .status-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .status-value {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--ink);
   }
 
   @media (max-width: 880px) {
     .hero {
-      padding: 48px 0 32px;
+      padding: var(--v2-space-lg) 0;
     }
 
     .hero-grid {
       grid-template-columns: 1fr;
-      gap: 32px;
+      gap: var(--v2-space-lg);
+      align-items: stretch;
     }
 
-    .hero-mock {
-      grid-row: 1;
-    }
-
-    h1 {
-      font-size: 40px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .dot {
-      animation: none;
+    .hero-status {
+      padding: var(--v2-space-md);
     }
   }
 </style>

@@ -1,9 +1,11 @@
 ---
-import SectionHead from "@/components/ui/section-head.astro";
+import { Icon } from "astro-icon/components";
+import Card from "@/components/ui/card.astro";
 
 interface FlowStep {
   badge: string;
   description: string;
+  icon: string;
   num: string;
   title: string;
 }
@@ -11,35 +13,40 @@ interface FlowStep {
 const steps: readonly FlowStep[] = [
   {
     num: "01",
-    title: "Zaczynamy od rozmowy.",
+    icon: "lucide:messages-square",
+    title: "Rozmowa",
     description:
       "Krótkie spotkanie albo wymiana maili - co Ci wygodniej. Opowiadasz, co chcesz zbudować i po co; ja zadaję pytania, czasem niewygodne.",
     badge: "~ 30 min",
   },
   {
     num: "02",
-    title: "Plan i realna wycena.",
+    icon: "lucide:clipboard-list",
+    title: "Plan i wycena",
     description:
-      "Po rozmowie dostajesz od mnie krótki dokument: co robimy, w jakiej kolejności, ile to zajmie i ile kosztuje. Bez ukrytych kosztów, bez niespodzianek w trakcie.",
+      "Po rozmowie dostajesz krótki dokument: co robimy, w jakiej kolejności, ile to zajmie i ile kosztuje. Bez ukrytych kosztów, bez niespodzianek w trakcie.",
     badge: "2–3 dni",
   },
   {
     num: "03",
-    title: "Budujemy krok po kroku.",
+    icon: "lucide:code",
+    title: "Realizacja",
     description:
       "Pracuję małymi etapami - co tydzień widzisz coś, co działa, nie obrazek. Gdy coś idzie nie tak, łatwiej to zauważyć i poprawić.",
     badge: "podział na etapy",
   },
   {
     num: "04",
-    title: "Twój feedback idzie do kodu.",
+    icon: "lucide:message-circle",
+    title: "Feedback i iteracje",
     description:
       "Nie musisz znać się na technologii. Mówisz „to powinno być szybsze”, „tu brakuje jasności”, „zmieńmy kolejność” - ja tłumaczę to na konkretne zmiany i pokazuję efekt.",
     badge: "na bieżąco",
   },
   {
     num: "05",
-    title: "Wdrożenie i bieżący nadzór.",
+    icon: "lucide:rocket",
+    title: "Wdrożenie i opieka",
     description:
       "Po wdrożeniu zostaje monitoring. Łapię błędy zanim staną się problemem, mierzę performance, przygotowuję poprawki. Twój produkt nie jest sam.",
     badge: "+ nadzór",
@@ -47,247 +54,215 @@ const steps: readonly FlowStep[] = [
 ];
 ---
 
-<section class="block reveal" id="how">
+<section class="how" id="how">
   <div class="container">
-    <SectionHead
-      label="Proces"
-      lede="Prosty flow, bez ceremonii. Pięć kroków, dużo rozmowy, miejsce na Twój feedback."
-    >
-      Od <em>rozmowy</em> do <em>kodu</em>.
-    </SectionHead>
+    <header class="section-head">
+      <p class="eyebrow eyebrow-section">Proces</p>
+      <h2>
+        Od <em>rozmowy</em> do <em>produktu</em>.
+      </h2>
+      <p class="section-lede">
+        Biorąc pod uwagę Twoje potrzeby, skupiam się na znalezieniu najlepszego rozwiązania dla
+        Ciebie.
+      </p>
+    </header>
 
-    <div class="how-timeline">
-      <header class="how-head">
-        <span>proces.mdc</span>
-        <span class="dot-row" aria-hidden="true"><i></i><i></i><i></i></span>
-      </header>
-
-      <div class="how-track">
-        {
-          steps.map((step, idx) => (
-            <article class="step" data-side={idx % 2 === 0 ? "left" : "right"}>
-              <div class="step-card">
-                <header class="step-head">
-                  <span class="step-num">{step.num}</span>
-                  <h3>{step.title}</h3>
-                  <span class="step-badge">{step.badge}</span>
-                </header>
-                <p>{step.description}</p>
-              </div>
-            </article>
-          ))
-        }
-      </div>
-
-      <footer class="how-foot">
-        <span>status</span>
-        <span class="how-foot-meta">{steps.length} kroków</span>
-      </footer>
-    </div>
+    <ol class="how-steps">
+      {
+        steps.map((step) => (
+          <li class="step-item">
+            <div aria-hidden="true" class="step-marker">
+              <span class="step-dot">{step.num}</span>
+            </div>
+            <Card class="step-panel">
+              <header class="step-head">
+                <Icon aria-hidden="true" class="step-icon" name={step.icon} />
+                <h3>{step.title}</h3>
+                <span class="step-badge">{step.badge}</span>
+              </header>
+              <p class="step-desc">{step.description}</p>
+            </Card>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </section>
 
 <style>
-  .how-timeline {
+  /* How I work - vertical timeline. Each li is a 2-col grid: 56px marker
+   * rail with a numbered glass dot + connector line, 1fr panel that uses
+   * the standard glass-on-hover treatment. Reads as roadmap. */
+  .how {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  .how-steps {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    background: light-dark(var(--card), var(--paper-2));
-    border: 1px solid var(--line);
+    gap: var(--v2-space-md);
+    padding: 0;
+    margin: 0;
+    list-style: none;
   }
 
-  .how-head,
-  .how-foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 28px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+  .step-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: var(--v2-space-md);
+    align-items: stretch;
   }
 
-  .how-head {
-    border-bottom: 1px solid var(--line-2);
-  }
-
-  .how-foot {
-    border-top: 1px solid var(--line-2);
-  }
-
-  .how-foot-meta {
-    font-weight: 500;
-    color: var(--blue);
-  }
-
-  .dot-row {
-    display: inline-flex;
-    gap: 4px;
-  }
-
-  .dot-row i {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: var(--line);
-    border-radius: 50%;
-  }
-
-  /* ===== Timeline track ===== */
-
-  .how-track {
+  /* Marker column - holds the numbered dot + connector line down to the
+   * next dot. Last item's connector is hidden. The line is a top→bottom
+   * blue gradient, suggesting flow forward. */
+  .step-marker {
     position: relative;
     display: flex;
-    flex-direction: column;
-    gap: 28px;
-    padding: 36px 28px;
+    justify-content: center;
   }
 
-  .how-track::before {
+  .step-marker::before {
     position: absolute;
-    top: 36px;
-    bottom: 36px;
+    top: 48px;
+    bottom: calc(-1 * var(--v2-space-md));
     left: 50%;
+    width: 2px;
     content: "";
-    border-left: 1.5px dashed var(--line);
+    background: linear-gradient(
+      color-mix(in srgb, var(--blue) 50%, transparent),
+      color-mix(in srgb, var(--blue) 20%, transparent)
+    );
     transform: translateX(-50%);
   }
 
-  .step {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 56px;
+  .step-item:last-child .step-marker::before {
+    display: none;
   }
 
-  /* Generic .step-card rules first to keep specificity ascending. */
-  .step-card {
+  /* Numbered glass dot - lights up via :has() when its sibling panel is
+   * hovered. Backdrop-blur lets the ribbons show through subtly. */
+  .step-dot {
     position: relative;
-    padding: 18px 22px;
-    background: var(--paper);
-    border: 1px solid var(--line-2);
+    z-index: 1;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--blue);
+    letter-spacing: -0.01em;
+    background: color-mix(in srgb, var(--v2-panel) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--v2-line));
+    border-radius: var(--v2-radius-full);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     transition:
-      transform 0.2s ease,
-      background 0.2s ease,
-      border-color 0.2s ease;
+      background 0.3s ease,
+      border-color 0.3s ease;
   }
 
-  /* Dot anchored to the centre line, vertically centred against the card. */
-  .step-card::before {
-    position: absolute;
-    top: 50%;
-    width: 12px;
-    height: 12px;
-    margin-top: -6px;
-    content: "";
-    background: var(--paper);
-    border: 2px solid var(--blue);
-    border-radius: 50%;
-    transition:
-      background 0.2s ease,
-      box-shadow 0.2s ease;
+  .step-item:has(.step-panel:hover) .step-dot {
+    background: color-mix(in srgb, var(--blue) 18%, var(--v2-panel));
+    border-color: color-mix(in srgb, var(--blue) 80%, transparent);
   }
 
-  .step-card:hover {
-    background: var(--blue-wash);
-    border-color: var(--blue);
-    transform: translateY(-1px);
-  }
-
-  .step-card:hover::before {
-    background: var(--blue);
-    box-shadow: 0 0 0 5px var(--blue-wash);
-  }
-
-  /* Side-specific overrides come after the generic rules. */
-  .step[data-side="left"] .step-card {
-    grid-column: 1;
-  }
-
-  .step[data-side="right"] .step-card {
-    grid-column: 2;
-  }
-
-  .step[data-side="left"] .step-card::before {
-    right: -34px;
-  }
-
-  .step[data-side="right"] .step-card::before {
-    left: -34px;
-  }
+  /* Panel base + glass-on-hover come from the <Card> component. */
 
   .step-head {
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
-    align-items: baseline;
-    margin-bottom: 8px;
+    align-items: center;
+    margin-bottom: 12px;
   }
 
-  .step-num {
-    font-family: var(--mono);
-    font-size: 12px;
+  .step-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
     color: var(--blue);
-    letter-spacing: 0.1em;
   }
 
-  .step-card h3 {
+  .step-panel h3 {
     flex: 1;
     margin: 0;
     font-family: var(--display);
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 500;
+    line-height: 1.2;
     color: var(--ink);
     letter-spacing: -0.02em;
   }
 
   .step-badge {
-    padding: 3px 8px;
+    padding: 4px 10px;
     font-family: var(--mono);
-    font-size: 10px;
-    color: var(--blue);
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-    background: var(--blue-wash);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    background: transparent;
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-xs);
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease;
   }
 
-  .step-card p {
+  /* On panel hover badge swaps to "active" filled blue-wash - same vocab
+   * as .status-pill and the current-role badge. */
+  .step-panel:hover .step-badge {
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-color: transparent;
+  }
+
+  .step-desc {
+    max-width: 70ch;
     margin: 0;
-    font-size: 14px;
-    line-height: 1.55;
-    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-2);
   }
 
   @media (max-width: 880px) {
-    .how-track {
-      padding: 28px 20px 28px 44px;
+    .how {
+      margin-top: var(--v2-space-xl);
     }
 
-    .how-track::before {
-      top: 28px;
-      bottom: 28px;
-      left: 16px;
-      transform: none;
+    .step-panel {
+      padding: var(--v2-space-md);
     }
 
-    .step {
-      grid-template-columns: 1fr;
-      gap: 0;
+    /* Compact rail on mobile - 40px col / 36px dot keeps the timeline
+     * affordance without eating too much horizontal space. */
+    .step-item {
+      grid-template-columns: 40px 1fr;
+      gap: 12px;
     }
 
-    .step[data-side="left"] .step-card,
-    .step[data-side="right"] .step-card {
-      grid-column: 1;
+    .step-dot {
+      width: 36px;
+      height: 36px;
+      font-size: 13px;
     }
 
-    .step[data-side="left"] .step-card::before,
-    .step[data-side="right"] .step-card::before {
-      right: auto;
-      left: -34px;
+    .step-marker::before {
+      top: 36px;
+      bottom: -12px;
     }
   }
 
-  /* prefers-reduced-motion handled globally in global.css (universal selector
-   * sets transition-duration: 0.01ms !important). No per-component override
-   * needed. */
+  @media (prefers-reduced-motion: reduce) {
+    .step-dot,
+    .step-badge {
+      transition: none;
+    }
+  }
 </style>

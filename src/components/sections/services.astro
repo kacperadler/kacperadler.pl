@@ -1,33 +1,39 @@
 ---
 import { getCollection } from "astro:content";
-import SectionHead from "@/components/ui/section-head.astro";
-import Tag from "@/components/ui/tag.astro";
+import Card from "@/components/ui/card.astro";
 
 const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<section class="block reveal" id="services">
+<section class="services" id="services">
   <div class="container">
-    <SectionHead
-      label="Usługi"
-      lede="React i TypeScript jako fundament - reszta dobiera się pod konkretny projekt."
-    >
-      Trzy obszary, w których <em>działam</em>
-    </SectionHead>
+    <header class="section-head">
+      <p class="eyebrow eyebrow-section">Usługi</p>
+      <h2>
+        Obszary w&nbsp;których <em>działam</em>.
+      </h2>
+      <p class="section-lede">
+        Moje doświadczenie pozwala mi na pracę w wielu technologiach<br />i projektach.
+      </p>
+    </header>
 
-    <div class="services">
+    <div class="services-grid">
       {
         services.map((service, idx) => (
-          <article class="service">
-            <div class="num">{String(idx + 1).padStart(2, "0")}</div>
-            <h3>{service.data.title}</h3>
+          <Card class="service-panel">
+            <header class="service-head">
+              <h3>{service.data.title}</h3>
+              <span aria-hidden="true" class="service-num">
+                {String(idx + 1).padStart(2, "0")}
+              </span>
+            </header>
             <p>{service.data.description}</p>
-            <div class="tags">
+            <ul class="service-tags">
               {service.data.tags.map((tag) => (
-                <Tag>{tag}</Tag>
+                <li class="chip">{tag}</li>
               ))}
-            </div>
-          </article>
+            </ul>
+          </Card>
         ))
       }
     </div>
@@ -36,77 +42,102 @@ const services = (await getCollection("services")).sort((a, b) => a.data.order -
 
 <style>
   .services {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  /* 2x2 grid on desktop, single column from 880px down. Gap shows the dot
+   * grid through, which is the whole point. */
+  .services-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--v2-space-md);
+  }
+
+  /* Panel base + glass-on-hover come from the <Card> component; the
+   * .service-panel class only carries section-specific bits (title row,
+   * ghost number, tags). */
+
+  /* Title row - h3 on the left, ghost number on the right at same baseline. */
+  .service-head {
+    display: flex;
     gap: 16px;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 10px;
   }
 
-  .service {
-    position: relative;
-    padding: 28px 26px;
-    overflow: hidden;
-    background: var(--card);
-    border: 1px solid var(--line);
-    transition:
-      transform 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .service::before {
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 2px;
-    content: "";
-    background: linear-gradient(90deg, var(--blue), transparent);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-  }
-
-  .service:hover {
-    border-color: color-mix(in srgb, var(--blue) 40%, var(--line));
-    transform: translateY(-2px);
-  }
-
-  .service:hover::before {
-    opacity: 1;
-  }
-
-  .num {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--blue);
-    letter-spacing: 0.1em;
-  }
-
-  h3 {
-    margin: 8px 0 12px;
+  .service-panel h3 {
+    margin: 0;
     font-family: var(--display);
     font-size: 22px;
     font-weight: 500;
+    line-height: 1.2;
+    color: var(--ink);
     letter-spacing: -0.02em;
   }
 
-  p {
-    margin: 0 0 18px;
-    font-size: 15px;
+  /* Ghost number - large display digit anchored to the right of the title
+   * row, faded so it reads as background label rather than competing. */
+  .service-num {
+    flex-shrink: 0;
+    font-family: var(--display);
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1;
     color: var(--muted);
+    letter-spacing: -0.02em;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
   }
 
-  .tags {
+  .service-panel:hover .service-num {
+    opacity: 0.6;
+  }
+
+  .service-panel p {
+    margin: 0 0 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  /* Tag chips - mono badges, transparent bg with a thin border so they
+   * read as separate elements on the panel without fighting the border. */
+  .service-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    padding: 0;
+    margin: auto 0 0;
+    list-style: none;
+  }
+
+  .chip {
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    background: transparent;
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-xs);
   }
 
   @media (max-width: 880px) {
     .services {
+      margin-top: var(--v2-space-xl);
+    }
+
+    .services-grid {
       grid-template-columns: 1fr;
+    }
+
+    .service-panel {
+      padding: var(--v2-space-md);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .service,
-    .service::before {
+    .service-num {
       transition: none;
     }
   }

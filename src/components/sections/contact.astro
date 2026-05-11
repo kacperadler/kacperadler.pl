@@ -1,94 +1,210 @@
 ---
+import { Icon } from "astro-icon/components";
 import ContactForm from "@/components/contact/contact-form.astro";
-import ContactLink from "@/components/contact/contact-link.astro";
-import SectionHead from "@/components/ui/section-head.astro";
 import { siteConfig } from "@/data/site-config";
 ---
 
-<section class="block reveal" id="contact">
+<section class="contact" id="contact">
   <div class="container">
-    <div class="contact">
-      <div class="contact-info">
-        <SectionHead
-          label="Kontakt"
-          lede="Najlepiej mailem albo formularzem. Zwykle wracam tego samego dnia."
+    <header class="section-head">
+      <p class="eyebrow eyebrow-section">Kontakt</p>
+      <h2>
+        Porozmawiajmy o&nbsp;Twoim <em>pomyśle</em>.
+      </h2>
+      <p class="section-lede">
+        Napisz krótko: co budujesz, w jakim terminie i co Cię blokuje. Odpowiem w ciągu 24 godzin.
+      </p>
+    </header>
+
+    <div class="contact-grid">
+      <div class="contact-links">
+        <a class="v2-contact-link" data-spotlight href={`mailto:${siteConfig.email}`}>
+          <Icon aria-hidden="true" class="v2-contact-icon" name="lucide:mail" />
+          <span class="v2-contact-label">Email</span>
+          <span class="v2-contact-value">{siteConfig.email}</span>
+        </a>
+        <a
+          class="v2-contact-link"
+          data-spotlight
+          href={siteConfig.social.linkedin}
+          rel="noopener"
+          target="_blank"
         >
-          Opowiedz mi, co <em>budujesz</em>.
-        </SectionHead>
-
-        <p class="lead">
-          Najchętniej zaczynam od maila - opisz projekt w 2–3 zdaniach, a wrócę z pytaniami albo
-          propozycją rozmowy.
-        </p>
-        <div class="reply">Odpowiadam zwykle w ciągu 24h</div>
-
-        <div class="contact-links">
-          <ContactLink
-            icon="lucide:mail"
-            label="Email"
-            value={siteConfig.email}
-            href={`mailto:${siteConfig.email}`}
-          />
-          <ContactLink
-            icon="lucide:linkedin"
-            label="LinkedIn"
-            value="/in/kacperadler"
-            href={siteConfig.social.linkedin}
-            external
-          />
-        </div>
+          <Icon aria-hidden="true" class="v2-contact-icon" name="lucide:linkedin" />
+          <span class="v2-contact-label">LinkedIn</span>
+          <span class="v2-contact-value">/in/kacperadler</span>
+        </a>
       </div>
 
-      <ContactForm />
+      <div class="contact-form-host" data-spotlight>
+        <ContactForm />
+      </div>
     </div>
   </div>
 </section>
 
 <style>
+  /* Contact - vertical stack: 2 contact-link cards in a row up top (quick
+   * grab), form below with max-width so it doesn't stretch to the full
+   * container. No outer wrappers - each link is its own glass card, the
+   * form host is the second card. */
   .contact {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-    align-items: stretch;
+    margin-top: var(--v2-space-2xl);
   }
 
-  .lead {
-    max-width: 42ch;
-    margin: 0;
-    font-size: 17px;
-    color: var(--ink-2);
-  }
-
-  .reply {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    padding: 6px 12px;
-    margin-top: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--blue);
-    background: var(--blue-wash);
-  }
-
-  .reply::before {
-    width: 6px;
-    height: 6px;
-    content: "";
-    background: var(--blue);
-    border-radius: 50%;
-  }
-
-  .contact-links {
+  .contact-grid {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 28px;
+    gap: var(--v2-space-md);
+  }
+
+  /* Same max-width + centering as the form below so both stay visually
+   * aligned. auto-fill keeps it 2-col within the 720px width and falls
+   * back to 1 col on narrow screens without a media query. */
+  .contact-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--v2-space-md);
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* Contact link card - shares the glass-on-hover + spotlight vocab with
+   * services / steps / experience. Layout: icon, label (mono muted),
+   * value (ink). */
+  .v2-contact-link {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: var(--v2-space-md);
+    background: var(--v2-panel);
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-sm);
+    isolation: isolate;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      -webkit-backdrop-filter 0.3s ease,
+      backdrop-filter 0.3s ease;
+  }
+
+  .v2-contact-link:hover {
+    border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  .v2-contact-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--blue);
+  }
+
+  .v2-contact-label {
+    margin-right: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .v2-contact-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* Form host - reuses ContactForm via CSS variable inheritance. Override
+   * --card / --line / --paper to swap surface tones for the v2 palette
+   * without forking the form. The host acts as the visible card carrying
+   * the glass-on-hover treatment + spotlight pseudos (shared globals).
+   * min-height locks the height so the success card doesn't make the
+   * page jump after submit (.form and .form-success-card have flex:1). */
+  .contact-form-host {
+    --card: var(--v2-panel);
+    --line: var(--v2-line);
+    --paper: var(--v2-bg);
+    position: relative;
+    display: flex;
+    width: 100%;
+    max-width: 720px;
+    min-height: 490px;
+    margin: 0 auto;
+    border-radius: var(--v2-radius-md);
+    /* Explicit "zero" state for box-shadow and backdrop-filter so the
+     * hover transition has values to interpolate between on BOTH sides
+     * (without this, browsers may snap from `none` → values instead of
+     * animating, producing a sequential "glass first, glow second"
+     * flicker). The spotlight ::after pseudo already paints a navy ring
+     * at the cursor position on hover, so the box-shadow keeps only the
+     * soft outer halo - no 1px ring layer (which used to expand the
+     * bounding box by 1px and produce a "glass shrinks" optical effect). */
+    box-shadow: 0 0 0 0 transparent;
+    isolation: isolate;
+    -webkit-backdrop-filter: saturate(100%) blur(0);
+    backdrop-filter: saturate(100%) blur(0);
+    transition:
+      background 0.3s ease,
+      box-shadow 0.3s ease,
+      -webkit-backdrop-filter 0.3s ease,
+      backdrop-filter 0.3s ease;
+  }
+
+  /* Glass aktywuje się na hover ORAZ gdy fokus jest w email/textarea -
+   * radio "Typ projektu" i submit/reset celowo wykluczone z :has().
+   *   - --card swap na translucent panel: form bg staje się przezroczyste
+   *     i backdrop-filter hosta przebija (efekt glass)
+   *   - --line swap na navy mix: inner form border ożywa na całym obwodzie
+   *     (uzupełnia spotlight ::after który świeci tylko at-cursor)
+   *   - backdrop-filter + box-shadow halo: blur ribbons + soft navy glow
+   * Wszystkie wartości interpolują od explicit zero state (saturate 100%
+   * blur 0, transparent shadow) zdefiniowanego w idle, więc browser nie
+   * snap'uje. */
+  .contact-form-host:hover,
+  .contact-form-host:has(input[type="email"]:focus, textarea:focus),
+  .contact-form-host:has([data-state="success"]) {
+    --card: color-mix(in srgb, var(--v2-panel) 65%, transparent);
+    --line: color-mix(in srgb, var(--blue) 55%, transparent);
+    box-shadow: 0 8px 60px color-mix(in srgb, var(--blue) 28%, transparent);
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(20px);
+  }
+
+  .contact-form-host :global(.contact-form-wrap) {
+    width: 100%;
+  }
+
+  .contact-form-host :global(.form),
+  .contact-form-host :global(.form-success-card) {
+    border-radius: var(--v2-radius-md);
+    /* Inner form picks up the --card / --line cascading change on hover;
+     * without these transitions the bg and border would snap (CSS variable
+     * changes are instant) while host's backdrop-filter ramps up over 0.3s,
+     * producing a sequenced flicker. */
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  /* Form internals that are NOT rendered by v2 components (Input /
+   * Textarea / Button bring their own radius) need rounding here to
+   * read v2-native instead of sharp-cornered. */
+  .contact-form-host :global(.radio span),
+  .contact-form-host :global(.form-error) {
+    border-radius: var(--v2-radius-sm);
   }
 
   @media (max-width: 880px) {
     .contact {
-      grid-template-columns: 1fr;
+      margin-top: var(--v2-space-xl);
     }
   }
 </style>

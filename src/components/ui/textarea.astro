@@ -1,0 +1,49 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/* v2 textarea. Mirrors Input.astro - same paint + focus ring - plus
+ * a 130px min-height and tighter line-height for multi-line copy.
+ * Extends native HTMLTextAreaElement attrs so id / name / placeholder
+ * / required / etc. pass through unchanged. */
+type Props = HTMLAttributes<"textarea">;
+
+const { class: extraClass, ...rest } = Astro.props;
+---
+
+<textarea class:list={["v2-textarea", extraClass]} {...rest}></textarea>
+
+<style>
+  .v2-textarea {
+    min-height: 130px;
+    padding: 12px 14px;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--v2-radius-sm);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .v2-textarea::placeholder {
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .v2-textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-wash);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-textarea {
+      transition: none;
+    }
+  }
+</style>

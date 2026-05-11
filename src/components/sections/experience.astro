@@ -1,139 +1,207 @@
 ---
 import { getCollection } from "astro:content";
-import SectionHead from "@/components/ui/section-head.astro";
-import { roundedYearsLabel, totalYearsFloor, yearsUnit } from "@/lib/dates";
+import type { ImageMetadata } from "astro";
+import apptensionLogo from "@/assets/experience/apptension.svg";
+import energiadirectLogo from "@/assets/experience/energiadirect.svg";
+import helpfindLogo from "@/assets/experience/helpfind.svg";
+import paylooLogo from "@/assets/experience/payloo.jpg";
+import pwcLogo from "@/assets/experience/pwc.svg";
+import rexLogo from "@/assets/experience/rex.svg";
+import Card from "@/components/ui/card.astro";
 
-const all = (await getCollection("experience")).sort((a, b) => a.data.order - b.data.order);
-const items = all.slice(0, 4);
+/* Logo wall ("Współpracowałem z"). logoBySlug maps content collection ids
+ * (filename without .json) to imported image assets. Entries without a
+ * matching logo are filtered out so we never render empty cards. */
+const logoBySlug: Record<string, ImageMetadata> = {
+  apptension: apptensionLogo,
+  energiadirect: energiadirectLogo,
+  helpfind: helpfindLogo,
+  payloo: paylooLogo,
+  pwc: pwcLogo,
+  rex: rexLogo,
+};
 
-// Section title shows total years from earliest startDate across the
-// FULL collection (not the displayed slice) - total tenure is the
-// honest signal.
-const earliestStart = all
-  .map((i) => i.data.startDate)
-  .sort()
-  .at(0);
-const totalYears = earliestStart ? totalYearsFloor(earliestStart) : 0;
+const experience = (await getCollection("experience"))
+  .filter((item) => Boolean(logoBySlug[item.id]))
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 
-<section class="block reveal" id="experience">
+<section class="experience" id="experience">
   <div class="container">
-    <SectionHead
-      label="Doświadczenie"
-      lede="Cztery firmy, jedna pasja: frontend dla zespołów produktowych."
-    >
-      {`~ ${totalYears} ${yearsUnit(totalYears)} w `}<em>branży frontendowej</em>.
-    </SectionHead>
+    <header class="section-head">
+      <p class="eyebrow eyebrow-section">Współprace</p>
+      <h2>
+        Realizacje i&nbsp;<em>współprace</em>.
+      </h2>
+      <p class="section-lede">
+        Tworzyłem projekty i współpracowałem z firmami z różnych branż - od korporacji po
+        side-projekty.
+      </p>
+    </header>
 
-    <div class="timeline">
+    <ul class="exp-list">
       {
-        items.map((item) => (
-          <div class:list={["t-item", { now: item.data.current }]}>
-            <div class="t-head">
+        experience.map((item) => {
+          // Filter above guarantees logo exists; assert for TS.
+          const logo = logoBySlug[item.id] as ImageMetadata;
+          const startYear = item.data.startDate.slice(0, 4);
+          const endYear = item.data.endDate?.slice(0, 4);
+          // Badge label: current → "teraz"; badge override → that label; else
+          // year range. Filled (.exp-meta-now styling) when current OR badge
+          // override is set, otherwise the muted outline year range.
+          let metaLabel: string;
+          let metaFilled: boolean;
+          if (item.data.current) {
+            metaLabel = "teraz";
+            metaFilled = true;
+          } else if (item.data.badge) {
+            metaLabel = item.data.badge;
+            metaFilled = true;
+          } else {
+            metaLabel = `${startYear}–${endYear}`;
+            metaFilled = false;
+          }
+          return (
+            <Card class="exp-panel" tag="li">
+              <header class="exp-head">
+                <div class="exp-logo-wrap">
+                  <img
+                    alt={item.data.company}
+                    class="exp-logo"
+                    height={logo.height}
+                    src={logo.src}
+                    width={logo.width}
+                  />
+                </div>
+                <span class:list={["exp-meta", { "exp-meta-now": metaFilled }]}>{metaLabel}</span>
+              </header>
               <h3>{item.data.company}</h3>
-              {item.data.current ? (
-                <span class="meta meta-now">teraz</span>
-              ) : (
-                <span class="meta">
-                  {roundedYearsLabel(item.data.startDate, item.data.endDate)}
-                </span>
-              )}
-            </div>
-            <div class="t-role">{item.data.role}</div>
-            <p class="t-desc">
-              {item.data.location && <strong class="t-location">{item.data.location}.</strong>}
-              {item.data.description}
-            </p>
-          </div>
-        ))
+              <div class="exp-role">{item.data.role}</div>
+              <p class="exp-desc">{item.data.description}</p>
+            </Card>
+          );
+        })
       }
-    </div>
+    </ul>
   </div>
 </section>
 
 <style>
-  .timeline {
-    position: relative;
-    padding-left: 36px;
+  /* Experience - "Współpracowałem z" logo wall. Cards reuse the standard
+   * glass-on-hover + spotlight treatment. Logo is grayscale + dimmed idle,
+   * snaps to full color + opacity 1 on hover so the brand identifies on
+   * engagement. Mix of SVG and raster (jpeg/png) sources both respond to
+   * the filter. */
+  .experience {
+    margin-top: var(--v2-space-2xl);
   }
 
-  .timeline::before {
-    position: absolute;
-    top: 8px;
-    bottom: 8px;
-    left: 9px;
-    content: "";
-    border-left: 1.5px dashed var(--line);
-  }
-
-  .t-item {
-    position: relative;
-    padding: 14px 0 22px;
-  }
-
-  .t-item::before {
-    position: absolute;
-    top: 22px;
-    left: -32px;
-    width: 10px;
-    height: 10px;
-    content: "";
-    background: var(--paper);
-    border: 2px solid var(--blue);
-    border-radius: 50%;
-    transition: background 0.2s ease;
-  }
-
-  .t-item.now::before {
-    background: var(--blue);
-    box-shadow: 0 0 0 5px var(--blue-wash);
-  }
-
-  .t-head {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-
-  .t-head h3 {
+  .exp-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--v2-space-md);
+    padding: 0;
     margin: 0;
+    list-style: none;
+  }
+
+  /* Panel base + glass-on-hover come from the <Card> component. */
+
+  .exp-head {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    margin-bottom: 16px;
+  }
+
+  /* Logo wrap is a flex container with fixed height - the img keeps its
+   * aspect ratio via max-height + width:auto. Grayscale + 0.6 opacity
+   * idle gives the unified "logo wall" feel; hover snaps to full color. */
+  .exp-logo-wrap {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: 32px;
+  }
+
+  .exp-logo {
+    width: auto;
+    max-width: 140px;
+    max-height: 32px;
+    opacity: 0.6;
+    filter: grayscale(100%);
+    transition:
+      filter 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  .exp-panel:hover .exp-logo {
+    opacity: 1;
+    filter: grayscale(0%);
+  }
+
+  .exp-meta {
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    background: transparent;
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-xs);
+  }
+
+  /* Filled badge - "teraz" for current role, or whatever the entry's
+   * `badge` field overrides to (e.g., "Zlecenie"). Same blue-wash vocab
+   * as the hero status-pill. */
+  .exp-meta-now {
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-color: transparent;
+  }
+
+  .exp-panel h3 {
+    margin: 0 0 4px;
     font-family: var(--display);
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 500;
+    line-height: 1.2;
+    color: var(--ink);
     letter-spacing: -0.02em;
   }
 
-  .t-head .meta {
+  .exp-role {
+    margin-bottom: 12px;
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--muted);
+    font-weight: 500;
+    color: var(--blue);
     letter-spacing: 0.02em;
   }
 
-  .t-head .meta-now {
-    color: var(--blue);
-  }
-
-  .t-role {
-    margin-top: 2px;
+  .exp-desc {
+    flex: 1;
+    margin: 0;
     font-size: 14px;
-    font-weight: 500;
-    color: var(--blue);
-  }
-
-  .t-desc {
-    max-width: 68ch;
-    margin: 10px 0 0;
-    font-size: 15px;
     line-height: 1.6;
     color: var(--ink-2);
   }
 
-  .t-location {
-    margin-right: 4px;
-    font-weight: 500;
-    color: var(--ink);
+  @media (max-width: 880px) {
+    .experience {
+      margin-top: var(--v2-space-xl);
+    }
+
+    .exp-panel {
+      padding: var(--v2-space-md);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .exp-logo {
+      transition: none;
+    }
   }
 </style>
