@@ -18,7 +18,7 @@ Niniejszy regulamin określa zasady korzystania ze strony internetowej **kacpera
 
 ## 2. Charakter serwisu
 
-Serwis ma charakter **informacyjny** — przedstawia portfolio oraz ofertę usług programistycznych Usługodawcy. Korzystanie z Serwisu jest bezpłatne i nie wymaga rejestracji ani zakładania konta.
+Serwis ma charakter **informacyjny** - przedstawia portfolio oraz ofertę usług programistycznych Usługodawcy. Korzystanie z Serwisu jest bezpłatne i nie wymaga rejestracji ani zakładania konta.
 
 Serwis nie jest sklepem internetowym, platformą sprzedażową ani narzędziem do zawierania umów. Wszelkie ustalenia dotyczące współpracy odbywają się indywidualnie poza Serwisem (mailem, telefonicznie, w drodze podpisanej umowy).
 
@@ -45,7 +45,7 @@ Szczegółowe zasady przetwarzania danych osobowych podanych w formularzu opisuj
 
 Treści tekstowe, kod źródłowy, grafiki oraz inne materiały zamieszczone w Serwisie są chronione prawem autorskim i pozostają **własnością Usługodawcy** lub jego licencjodawców.
 
-Wykorzystywanie ich w jakimkolwiek innym kontekście (publikacja, modyfikacja, wykorzystanie komercyjne) wymaga uprzedniej, pisemnej zgody Usługodawcy. Wyjątkiem są fragmenty udostępniane przez Usługodawcę publicznie na otwartych licencjach (np. GitHub) — w ich przypadku obowiązują warunki konkretnej licencji.
+Wykorzystywanie ich w jakimkolwiek innym kontekście (publikacja, modyfikacja, wykorzystanie komercyjne) wymaga uprzedniej, pisemnej zgody Usługodawcy. Wyjątkiem są fragmenty udostępniane przez Usługodawcę publicznie na otwartych licencjach (np. GitHub) - w ich przypadku obowiązują warunki konkretnej licencji.
 
 ## 6. Wyłączenie odpowiedzialności
 
@@ -65,7 +65,7 @@ Odpowiedź zostanie udzielona drogą mailową w terminie do **14 dni** od otrzym
 
 ## 8. Zmiany regulaminu
 
-Usługodawca zastrzega sobie prawo do aktualizacji regulaminu — na przykład w związku z rozwojem Serwisu lub zmianami w przepisach. Aktualna wersja zawsze znajduje się pod tym adresem; data ostatniej aktualizacji widoczna jest na początku dokumentu.
+Usługodawca zastrzega sobie prawo do aktualizacji regulaminu - na przykład w związku z rozwojem Serwisu lub zmianami w przepisach. Aktualna wersja zawsze znajduje się pod tym adresem; data ostatniej aktualizacji widoczna jest na początku dokumentu.
 
 ## 9. Postanowienia końcowe
 

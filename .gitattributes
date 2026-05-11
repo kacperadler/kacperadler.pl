@@ -1,7 +1,7 @@
 # Auto-detect text files and normalize EOL to LF on commit.
 * text=auto eol=lf
 
-# Binary assets — keep diffs out of the way.
+# Binary assets - keep diffs out of the way.
 *.woff2 binary
 *.woff binary
 *.ttf binary
@@ -15,5 +15,5 @@
 *.avif binary
 *.pdf binary
 
-# Generated lockfile — collapse in PR review and exclude from language stats.
+# Generated lockfile - collapse in PR review and exclude from language stats.
 bun.lock linguist-generated=true

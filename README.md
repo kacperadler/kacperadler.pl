@@ -1,6 +1,6 @@
 # kacperadler.pl
 
-Portfolio Kacpra Adlera — Frontend Engineer (~5 lat, React/TS).
+Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS).
 
 Migracja prototypu (`example.html`) do produkcyjnego Astro 6 hostowanego na Cloudflare Pages.
 
@@ -10,16 +10,16 @@ Migracja prototypu (`example.html`) do produkcyjnego Astro 6 hostowanego na Clou
 ## Stack
 
 - **[Astro 6](https://docs.astro.build)** (TypeScript strict, kontent collections)
-- **Vanilla CSS** + scoped `<style>` w `.astro` — theming `light | dark | system` przez `light-dark()` + `color-scheme`, jeden akcent (navy)
-- **[Ultracite](https://www.ultracite.ai/)** (Biome 2) — lint + format dla TS/JS/JSON/CSS
-- **[Prettier](https://prettier.io)** + `prettier-plugin-astro` — formatowanie `*.astro` (Biome ich nie obsługuje natywnie)
-- **[Husky](https://typicode.github.io/husky/)** + **lint-staged** — pre-commit hooks
+- **Vanilla CSS** + scoped `<style>` w `.astro` - theming `light | dark | system` przez `light-dark()` + `color-scheme`, jeden akcent (navy)
+- **[Ultracite](https://www.ultracite.ai/)** (Biome 2) - lint + format dla TS/JS/JSON/CSS
+- **[Prettier](https://prettier.io)** + `prettier-plugin-astro` - formatowanie `*.astro` (Biome ich nie obsługuje natywnie)
+- **[Husky](https://typicode.github.io/husky/)** + **lint-staged** - pre-commit hooks
 - Self-hosted **[Geist](https://vercel.com/font)** Variable woff2 (SIL OFL 1.1, GDPR-friendly)
 - Hosting: **[Cloudflare Pages](https://pages.cloudflare.com)** (static, hybrid pod real form w Fazie 9)
 
 ## Wymagania
 
-- **[bun](https://bun.sh) ≥ 1.3** (Node 22+ jeśli wracasz do node-only flow — `astro check` działa w node ekosystemie)
+- **[bun](https://bun.sh) ≥ 1.3** (Node 22+ jeśli wracasz do node-only flow - `astro check` działa w node ekosystemie)
 
 ## Setup
 
@@ -48,8 +48,8 @@ Projekt zawiera config dla VS Code (`.vscode/`) i Zed (`.zed/`). Format-on-save 
 | `bun dev`         | Astro dev server                                                     |
 | `bun run build`   | Production build do `dist/`                                          |
 | `bun run preview` | Preview prod build                                                   |
-| `bun run check`   | `astro check` — type-check `.astro`                                  |
-| `bun run lint`    | `ultracite check` — lint Biome (TS/JS/JSON/CSS)                      |
+| `bun run check`   | `astro check` - type-check `.astro`                                  |
+| `bun run lint`    | `ultracite check` - lint Biome (TS/JS/JSON/CSS)                      |
 | `bun run format`  | `ultracite fix` + `prettier --write '**/*.astro'`                    |
 | `bun astro ...`   | passthrough do Astro CLI (`bun astro add`, `bun astro sync`, …)      |
 
@@ -73,7 +73,7 @@ GitHub Actions (`.github/workflows/ci.yml`) na `push` / `pull_request` do `main`
 6. `bunx prettier --check '**/*.astro'`
 7. `bun run build`
 
-Dependabot (`.github/dependabot.yml`) — bun + github-actions weekly, minor + patch zgrupowane w 1 PR.
+Dependabot (`.github/dependabot.yml`) - bun + github-actions weekly, minor + patch zgrupowane w 1 PR.
 
 ## Struktura
 

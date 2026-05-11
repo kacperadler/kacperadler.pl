@@ -1,6 +1,6 @@
-/* Spotlight cursor effect — tracks pointer over [data-spotlight]
+/* Spotlight cursor effect - tracks pointer over [data-spotlight]
  * elements and exposes the position as --mx / --my CSS variables
- * (in percent). The visual treatment lives in CSS — radial-gradient
+ * (in percent). The visual treatment lives in CSS - radial-gradient
  * backgrounds positioned at var(--mx) var(--my). pointermove is
  * rAF-throttled so we don't fire setProperty more than once per frame.
  *

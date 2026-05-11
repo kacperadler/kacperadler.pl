@@ -41,7 +41,7 @@
 
   --container: 1160px;
 
-  /* ─── v2 redesign track (additive — see DESIGN.md, page /v2). ────
+  /* ─── v2 redesign track (additive - see DESIGN.md, page /v2). ────
    * Grid base + elevated panels: --v2-bg is the darker substrate
    * with a faint dot-grid laid on top, --v2-panel sits ~1 step
    * lighter (light mode) / ~1 step lighter (dark mode) so the panel

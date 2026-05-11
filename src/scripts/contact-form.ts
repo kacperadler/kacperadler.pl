@@ -1,10 +1,10 @@
 /* Contact form state machine.
  *
  * State lives on two elements:
- *   - [data-contact-wrap] — drives the visible UX block (form vs.
+ *   - [data-contact-wrap] - drives the visible UX block (form vs.
  *     success card vs. error banner). Values:
  *       idle | submitting | error-validation | error-submit | success
- *   - [data-submit] button — drives button styling; mirrors the
+ *   - [data-submit] button - drives button styling; mirrors the
  *     wrapper state but maps both error variants to "error".
  *
  * Submit flow: validate client-side, drop silently if the honeypot
