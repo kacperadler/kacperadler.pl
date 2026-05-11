@@ -30,27 +30,29 @@ import { siteConfig } from "@/data/site-config";
           src={meImage}
           alt={`${siteConfig.name} - ${siteConfig.role}`}
           class="hero-avatar"
-          width={64}
-          height={64}
+          width={96}
+          height={96}
           densities={[2, 3]}
           quality={92}
           loading="eager"
         />
-        <p class="eyebrow status-eyebrow">
-          <span>{siteConfig.role}</span>
-          <span>Polska</span>
-        </p>
+        <div class="status-id-text">
+          <p class="status-name">{siteConfig.name}</p>
+          <p class="eyebrow status-eyebrow">
+            <span>{siteConfig.role}</span>
+            <span>Polska</span>
+          </p>
+          <span class="status-pill">
+            <span class="status-pill-dot" aria-hidden="true"></span>
+            Otwarty na nowe współprace
+          </span>
+        </div>
       </div>
-
-      <span class="status-pill">
-        <span class="status-pill-dot" aria-hidden="true"></span>
-        Otwarty na nowe współprace
-      </span>
 
       <dl class="status-rows">
         <div class="status-row">
           <dt class="status-label">Stack</dt>
-          <dd class="status-value">React · TypeScript · Astro</dd>
+          <dd class="status-value">React Native · TypeScript · Astro</dd>
         </div>
         <div class="status-row">
           <dt class="status-label">Teraz</dt>
@@ -94,16 +96,40 @@ import { siteConfig } from "@/data/site-config";
   }
 
   .hero-avatar {
-    width: 64px;
-    height: 64px;
+    width: 96px;
+    height: 96px;
     object-fit: cover;
     border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--v2-line));
     border-radius: var(--v2-radius-full);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   }
 
+  /* Text column next to the avatar - name on top in display font + ink
+   * color, role / location below as the muted eyebrow vocab, status
+   * pill as the trailing availability signal. Pill gets a slightly
+   * bigger gap so it reads as its own band, not as a 4th eyebrow row. */
+  .status-id-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .status-id-text .status-pill {
+    margin-top: 4px;
+  }
+
+  .status-name {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
   /* .eyebrow base is inline-flex row with a 10px gap. Override to column
-   * stack so role / location lines sit next to the avatar. */
+   * stack so role / location lines sit under the name. */
   .status-eyebrow {
     flex-direction: column;
     gap: 2px;
