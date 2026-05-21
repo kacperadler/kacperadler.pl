@@ -1,0 +1,6 @@
+{
+  "title": "Szablony email",
+  "description": "Szablony wiadomości transakcyjnych i marketingowych - welcome, password reset, newslettery. Komponentowo w React Email, render do HTML działającego w Gmailu, Outlooku i na mobile.",
+  "tags": ["React Email", "React", "TypeScript", "HTML"],
+  "order": 6
+}
