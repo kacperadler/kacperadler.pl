@@ -7,6 +7,25 @@ import icon from "astro-icon";
 /** @param {string} path */
 const r = (path) => fileURLToPath(new URL(path, import.meta.url));
 
+/* The component catalogue is a dev tool: `astro dev` serves it at /ui, the
+ * production build never sees it (no dist/ui/, no sitemap entry). The page
+ * lives in src/pages/_ui/, which Astro skips when it collects routes, and
+ * this integration routes it only for the dev server. */
+/** @type {import("astro").AstroIntegration} */
+const uiCatalogue = {
+  hooks: {
+    "astro:config:setup": ({ command, injectRoute }) => {
+      if (command === "dev") {
+        injectRoute({
+          entrypoint: "./src/pages/_ui/index.astro",
+          pattern: "/ui",
+        });
+      }
+    },
+  },
+  name: "ui-catalogue",
+};
+
 // https://astro.build/config
 export default defineConfig({
   // Astro 7 defaults to 'jsx' whitespace rules, which drop the space between
@@ -18,7 +37,7 @@ export default defineConfig({
   // astro-icon 1.2 has no option to skip local icons and warns when iconDir is
   // missing. All icons come from @iconify-json/lucide, so point it at an existing
   // folder with no SVGs (src/styles) and the local collection stays empty.
-  integrations: [icon({ iconDir: "src/styles" }), sitemap()],
+  integrations: [icon({ iconDir: "src/styles" }), sitemap(), uiCatalogue],
   site: "https://kacperadler.pl",
 
   vite: {

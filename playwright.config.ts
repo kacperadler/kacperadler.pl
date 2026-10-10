@@ -34,6 +34,14 @@ const PORT = process.env.E2E_PORT
 process.env.E2E_PORT = String(PORT);
 const BASE_URL = `http://localhost:${PORT}`;
 
+// The component catalogue (/ui) exists only on `astro dev`, so its specs run
+// against a dev server of this tree on a second port, found and passed to the
+// workers the same way: specs read E2E_DEV_PORT.
+const DEV_PORT = process.env.E2E_DEV_PORT
+  ? Number(process.env.E2E_DEV_PORT)
+  : await freePort(0);
+process.env.E2E_DEV_PORT = String(DEV_PORT);
+
 export default defineConfig({
   forbidOnly: !!process.env.CI,
   fullyParallel: true,
@@ -61,13 +69,28 @@ export default defineConfig({
   // preview of this project holds the lock, so Playwright sees the process exit.
   // Playwright owns the process and kills it after the run. It never reuses a
   // server it did not start: one already on PORT fails the run instead.
-  webServer: {
-    command: `bun run build && bun run preview -- --port ${PORT} --ignore-lock`,
-    reuseExistingServer: false,
-    stderr: "pipe",
-    stdout: "ignore",
-    timeout: 120_000,
-    url: BASE_URL,
-  },
+  //
+  // The dev server starts after the build (Playwright starts the servers in
+  // order), so the two never write .astro/ at the same time. --ignore-lock
+  // keeps `astro dev` in the foreground too and lets it run next to the
+  // `bun dev` of the main checkout.
+  webServer: [
+    {
+      command: `bun run build && bun run preview -- --port ${PORT} --ignore-lock`,
+      reuseExistingServer: false,
+      stderr: "pipe",
+      stdout: "ignore",
+      timeout: 120_000,
+      url: BASE_URL,
+    },
+    {
+      command: `bun run dev -- --port ${DEV_PORT} --ignore-lock`,
+      reuseExistingServer: false,
+      stderr: "pipe",
+      stdout: "ignore",
+      timeout: 120_000,
+      url: `http://localhost:${DEV_PORT}/ui`,
+    },
+  ],
   workers: process.env.CI ? 1 : undefined,
 });
