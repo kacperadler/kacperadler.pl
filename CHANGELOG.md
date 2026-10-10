@@ -13,6 +13,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0028 Case studies in MDX: collection, list and page (6feb382)
 - KA0036 Kacper is a software engineer, not a frontend engineer (a8f5655)
 - KA0037 Component catalogue at /ui (140ac4d)
+- KA0038 Design proposals at /ui/proposal/<id> (4d48281)
 
 ### Fixed
 

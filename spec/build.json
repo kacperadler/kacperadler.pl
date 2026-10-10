@@ -303,9 +303,9 @@
   {
     "id": "KA0038",
     "title": "Design proposals at /ui/proposal/<id>",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0038-design-proposals-at-ui-proposal-id/ticket.md",
-    "updated": "2026-10-10T16:33:28.773Z",
+    "updated": "2026-10-10T16:53:52.537Z",
     "after": [
       "KA0037"
     ]
