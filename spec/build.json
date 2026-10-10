@@ -547,9 +547,9 @@
   {
     "id": "KA0069",
     "title": "The landing page in minimal brutalism",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0069-the-landing-page-in-minimal-brutalism/ticket.md",
-    "updated": "2026-10-10T18:31:07.910Z",
+    "updated": "2026-10-10T19:26:38.210Z",
     "after": [
       "KA0068"
     ]
@@ -560,5 +560,22 @@
     "status": "planning",
     "path": "spec/features/KA0070-under-reduced-motion-the-mobile-sheet-opens-without-focus-on-its-close-button/ticket.md",
     "updated": "2026-10-10T19:26:17.205Z"
+  },
+  {
+    "id": "KA0071",
+    "title": "Minimal brutalism components: the human's first round of fixes",
+    "status": "planned",
+    "path": "spec/features/KA0071-minimal-brutalism-components-the-human-s-first-round-of-fixes/ticket.md",
+    "updated": "2026-10-10T19:43:57.894Z",
+    "after": [
+      "KA0069"
+    ]
+  },
+  {
+    "id": "KA0072",
+    "title": "A signature of Kacper's own in the minimal brutalism style",
+    "status": "planning",
+    "path": "spec/features/KA0072-a-signature-of-kacper-s-own-in-the-minimal-brutalism-style/ticket.md",
+    "updated": "2026-10-10T19:43:38.860Z"
   }
 ]
