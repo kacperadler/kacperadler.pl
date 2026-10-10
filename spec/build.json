@@ -2,9 +2,9 @@
   {
     "id": "KA0001",
     "title": "Onboarding: vision and criteria for kacperadler.pl",
-    "status": "done",
+    "status": "review",
     "path": "spec/features/KA0001-onboarding-vision-and-criteria-for-kacperadler-pl/ticket.md",
-    "updated": "2026-10-10T12:14:40.685Z"
+    "updated": "2026-10-10T12:20:17.545Z"
   },
   {
     "id": "KA0002",
@@ -19,8 +19,8 @@
   {
     "id": "KA0003",
     "title": "Update dependencies, Astro to the newest release",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0003-update-dependencies-astro-to-the-newest-release/ticket.md",
-    "updated": "2026-10-10T12:19:41.309Z"
+    "updated": "2026-10-10T12:19:42.013Z"
   }
 ]
