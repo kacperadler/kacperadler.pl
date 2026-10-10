@@ -102,6 +102,7 @@ html[data-proposal="brutalist"] {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 [data-proposal="brutalist"][data-proposal] .brand b {
@@ -660,6 +661,23 @@ html[data-proposal="brutalist"] {
   [data-proposal="brutalist"] .hero-grid,
   [data-proposal="brutalist"] .contact-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* The uppercase brand and CTA are wider than the baseline's: keep the
+   * header row on one line at 390px. */
+  [data-proposal="brutalist"] .nav .brand {
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+
+  [data-proposal="brutalist"] .nav .btn-sm {
+    padding: 9px 10px;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  [data-proposal="brutalist"] .nav .btn-icon {
+    flex-shrink: 0;
   }
 }
 
