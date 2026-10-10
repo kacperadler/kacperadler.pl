@@ -1,0 +1,399 @@
+/* .prose - typography for long-form copy, ported as plain CSS from the
+ * default (base size) styles of @tailwindcss/typography: sizes, spacing,
+ * weights and line-heights are its values, the colors are our tokens (its
+ * `invert` palette mapped onto the dark page). No Tailwind dependency.
+ *
+ * Differences from the plugin, on purpose:
+ *   - no `not-prose` escape hatch;
+ *   - Tailwind's preflight is not loaded here, so the resets the plugin relies
+ *     on (zero margins, borders, collapsed tables, mono code font) are
+ *     written out per element below.
+ *
+ * Loaded only by the component catalogue (src/pages/_ui/), which is not part
+ * of the production build. The legal pages keep their own .prose, scoped in
+ * src/layouts/legal-layout.astro. */
+
+.prose {
+  --prose-body: var(--ink-2);
+  --prose-headings: var(--ink);
+  --prose-lead: var(--muted);
+  --prose-links: var(--blue);
+  --prose-bold: var(--ink);
+  --prose-counters: var(--muted);
+  --prose-bullets: var(--muted);
+  --prose-hr: var(--line);
+  --prose-quotes: var(--ink);
+  --prose-quote-borders: var(--line);
+  --prose-captions: var(--muted);
+  --prose-kbd: var(--ink);
+  --prose-kbd-shadows: var(--line);
+  --prose-code: var(--ink);
+  --prose-pre-code: var(--ink-2);
+  --prose-pre-bg: var(--paper);
+  --prose-th-borders: var(--line);
+  --prose-td-borders: var(--line-2);
+  max-width: 65ch;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--prose-body);
+}
+
+.prose :where(p) {
+  margin: 1.25em 0;
+}
+
+.prose :where([class~="lead"]) {
+  margin: 1.2em 0;
+  font-size: 1.25em;
+  line-height: 1.6;
+  color: var(--prose-lead);
+}
+
+.prose :where(a) {
+  font-weight: 500;
+  color: var(--prose-links);
+  text-decoration: underline;
+}
+
+.prose :where(strong) {
+  font-weight: 600;
+  color: var(--prose-bold);
+}
+
+.prose :where(a strong, blockquote strong, thead th strong) {
+  color: inherit;
+}
+
+.prose :where(ol) {
+  padding-inline-start: 1.625em;
+  margin: 1.25em 0;
+  list-style-type: decimal;
+}
+
+.prose :where(ol[type="A" s]) {
+  list-style-type: upper-alpha;
+}
+
+.prose :where(ol[type="a" s]) {
+  list-style-type: lower-alpha;
+}
+
+.prose :where(ol[type="I" s]) {
+  list-style-type: upper-roman;
+}
+
+.prose :where(ol[type="i" s]) {
+  list-style-type: lower-roman;
+}
+
+.prose :where(ol[type="1"]) {
+  list-style-type: decimal;
+}
+
+.prose :where(ul) {
+  padding-inline-start: 1.625em;
+  margin: 1.25em 0;
+  list-style-type: disc;
+}
+
+.prose :where(li) {
+  margin: 0.5em 0;
+}
+
+.prose :where(ol > li, ul > li) {
+  padding-inline-start: 0.375em;
+}
+
+.prose :where(ol > li)::marker {
+  font-weight: 400;
+  color: var(--prose-counters);
+}
+
+.prose :where(ul > li)::marker {
+  color: var(--prose-bullets);
+}
+
+.prose :where(.prose > ul > li p) {
+  margin: 0.75em 0;
+}
+
+.prose
+  :where(.prose > ul > li > p:first-child, .prose > ol > li > p:first-child) {
+  margin-top: 1.25em;
+}
+
+.prose
+  :where(.prose > ul > li > p:last-child, .prose > ol > li > p:last-child) {
+  margin-bottom: 1.25em;
+}
+
+.prose :where(ul ul, ul ol, ol ul, ol ol) {
+  margin: 0.75em 0;
+}
+
+.prose :where(dl) {
+  margin: 1.25em 0;
+}
+
+.prose :where(dt) {
+  margin-top: 1.25em;
+  font-weight: 600;
+  color: var(--prose-headings);
+}
+
+.prose :where(dd) {
+  padding-inline-start: 1.625em;
+  margin: 0.5em 0 0;
+}
+
+.prose :where(hr) {
+  height: 0;
+  margin: 3em 0;
+  border: 0;
+  border-top: 1px solid var(--prose-hr);
+}
+
+.prose :where(blockquote) {
+  padding-inline-start: 1em;
+  margin: 1.6em 0;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--prose-quotes);
+  quotes: "\201C" "\201D" "\2018" "\2019";
+  border-inline-start: 0.25rem solid var(--prose-quote-borders);
+}
+
+.prose :where(blockquote p:first-of-type)::before {
+  content: open-quote;
+}
+
+.prose :where(blockquote p:last-of-type)::after {
+  content: close-quote;
+}
+
+.prose :where(h1, h2, h3, h4) {
+  color: var(--prose-headings);
+}
+
+.prose :where(h1) {
+  margin: 0 0 0.8888889em;
+  font-size: 2.25em;
+  font-weight: 800;
+  line-height: 1.1111111;
+}
+
+.prose :where(h2) {
+  margin: 2em 0 1em;
+  font-size: 1.5em;
+  font-weight: 700;
+  line-height: 1.3333333;
+}
+
+.prose :where(h3) {
+  margin: 1.6em 0 0.6em;
+  font-size: 1.25em;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.prose :where(h4) {
+  margin: 1.5em 0 0.5em;
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.prose :where(h1 strong) {
+  font-weight: 900;
+  color: inherit;
+}
+
+.prose :where(h2 strong) {
+  font-weight: 800;
+  color: inherit;
+}
+
+.prose :where(h3 strong, h4 strong) {
+  font-weight: 700;
+  color: inherit;
+}
+
+.prose :where(img, video) {
+  margin: 2em 0;
+}
+
+.prose :where(picture) {
+  display: block;
+  margin: 2em 0;
+}
+
+.prose :where(picture > img) {
+  margin: 0;
+}
+
+.prose :where(kbd) {
+  padding: 0.1875em 0.375em;
+  font-family: inherit;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: var(--prose-kbd);
+  border-radius: 0.3125rem;
+  box-shadow:
+    0 0 0 1px var(--prose-kbd-shadows),
+    0 3px 0 var(--prose-kbd-shadows);
+}
+
+.prose :where(code) {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--prose-code);
+}
+
+.prose :where(code)::before,
+.prose :where(code)::after {
+  content: "`";
+}
+
+.prose
+  :where(
+    a code,
+    h1 code,
+    h2 code,
+    h3 code,
+    h4 code,
+    blockquote code,
+    thead th code
+  ) {
+  color: inherit;
+}
+
+.prose :where(h2 code) {
+  font-size: 0.875em;
+}
+
+.prose :where(h3 code) {
+  font-size: 0.9em;
+}
+
+.prose :where(pre) {
+  padding: 0.8571429em 1.1428571em;
+  margin: 1.7142857em 0;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.875em;
+  font-weight: 400;
+  line-height: 1.7142857;
+  color: var(--prose-pre-code);
+  background-color: var(--prose-pre-bg);
+  border-radius: 0.375rem;
+}
+
+.prose :where(pre code) {
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.prose :where(pre code)::before,
+.prose :where(pre code)::after {
+  content: none;
+}
+
+.prose :where(table) {
+  width: 100%;
+  margin: 2em 0;
+  font-size: 0.875em;
+  line-height: 1.7142857;
+  text-indent: 0;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+.prose :where(thead) {
+  border-bottom: 1px solid var(--prose-th-borders);
+}
+
+.prose :where(thead th) {
+  padding: 0 0.5714286em 0.5714286em;
+  font-weight: 600;
+  vertical-align: bottom;
+  color: var(--prose-headings);
+}
+
+.prose :where(thead th:first-child) {
+  padding-inline-start: 0;
+}
+
+.prose :where(thead th:last-child) {
+  padding-inline-end: 0;
+}
+
+.prose :where(tbody tr) {
+  border-bottom: 1px solid var(--prose-td-borders);
+}
+
+.prose :where(tbody tr:last-child) {
+  border-bottom-width: 0;
+}
+
+.prose :where(tbody td) {
+  vertical-align: baseline;
+}
+
+.prose :where(tfoot) {
+  border-top: 1px solid var(--prose-th-borders);
+}
+
+.prose :where(tfoot td) {
+  vertical-align: top;
+}
+
+.prose :where(tbody td, tfoot td) {
+  padding: 0.5714286em;
+}
+
+.prose :where(tbody td:first-child, tfoot td:first-child) {
+  padding-inline-start: 0;
+}
+
+.prose :where(tbody td:last-child, tfoot td:last-child) {
+  padding-inline-end: 0;
+}
+
+.prose :where(th, td) {
+  text-align: start;
+}
+
+.prose :where(figure) {
+  margin: 2em 0;
+}
+
+.prose :where(figure > *) {
+  margin: 0;
+}
+
+.prose :where(figcaption) {
+  margin-top: 0.8571429em;
+  font-size: 0.875em;
+  line-height: 1.4285714;
+  color: var(--prose-captions);
+}
+
+.prose :where(hr + *, h2 + *, h3 + *, h4 + *) {
+  margin-top: 0;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose > :last-child {
+  margin-bottom: 0;
+}
