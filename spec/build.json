@@ -633,5 +633,15 @@
     "status": "in-progress",
     "path": "spec/features/KA0079-blueprint-the-cell-tag-is-unreadable-on-hover/ticket.md",
     "updated": "2026-10-10T21:09:58.224Z"
+  },
+  {
+    "id": "KA0080",
+    "title": "Design proposal: blueprint drawn on scroll",
+    "status": "planned",
+    "path": "spec/features/KA0080-design-proposal-blueprint-drawn-on-scroll/ticket.md",
+    "updated": "2026-10-10T21:13:23.740Z",
+    "after": [
+      "KA0079"
+    ]
   }
 ]
