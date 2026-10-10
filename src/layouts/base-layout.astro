@@ -18,6 +18,9 @@ interface Props {
   description?: string;
   noindex?: boolean;
   ogImage?: string;
+  /** Design proposal id (dev pages under /ui/proposal only): set as
+   * data-proposal on <html>, the scope its CSS overrides under. */
+  proposal?: string;
   title?: string;
 }
 
@@ -27,7 +30,7 @@ interface Ribbon {
   variant: "accent" | "wash";
 }
 
-const { title, description, ogImage, noindex } = Astro.props;
+const { title, description, ogImage, noindex, proposal } = Astro.props;
 
 /* Six navy ribbons drift over the dot grid. Each is a 0×120vh element
  * whose entire paint comes from box-shadow (see .ribbon CSS). Phase delays
@@ -53,7 +56,7 @@ const ribbonStyles = ribbons.map((r, i) => {
 ---
 
 <!doctype html>
-<html lang={siteConfig.lang}>
+<html data-proposal={proposal} lang={siteConfig.lang}>
   <head>
     <BaseHead
       description={description}

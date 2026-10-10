@@ -1,0 +1,10 @@
+{
+  "description": "Obecny design strony, bez zmian - punkt odniesienia dla pozostałych kierunków.",
+  "name": "Baseline",
+  "references": [
+    {
+      "label": "kacperadler.pl",
+      "url": "https://kacperadler.pl/"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+---
+/* /ui/proposal/<id> - one design proposal applied to a copy of the home
+ * page and to the whole component catalogue. A dev tool: astro.config.mjs
+ * routes it for `astro dev` only.
+ *
+ * The proposal's CSS is inlined in <body>, after every component style in
+ * <head>, so a [data-proposal="<id>"] rule wins a tie with a scoped
+ * component selector; <html data-proposal> (BaseLayout) is the scope. */
+import Contact from "@/components/sections/contact.astro";
+import Experience from "@/components/sections/experience.astro";
+import Hero from "@/components/sections/hero.astro";
+import HowIWork from "@/components/sections/how-i-work.astro";
+import Services from "@/components/sections/services.astro";
+import BaseLayout from "@/layouts/base-layout.astro";
+import { loadProposals, type Proposal } from "@/lib/proposals";
+import Catalogue from "../catalogue.astro";
+import Switcher from "./switcher.astro";
+
+export function getStaticPaths() {
+  return loadProposals().map((entry) => ({
+    params: { id: entry.id },
+    props: { proposal: entry },
+  }));
+}
+
+interface Props {
+  proposal: Proposal;
+}
+
+const { proposal } = Astro.props;
+---
+
+<BaseLayout
+  description={proposal.description}
+  noindex
+  proposal={proposal.id}
+  title={`Propozycja: ${proposal.name}`}
+>
+  <style data-proposal-css is:inline set:html={proposal.css} />
+  <Switcher current={proposal} proposals={loadProposals()} />
+  <main>
+    {/* The home page's sections, in the order of src/pages/index.astro. */}
+    <div class="proposal-home">
+      <Hero />
+      <Services />
+      <HowIWork />
+      <Experience />
+      <Contact />
+    </div>
+    <Catalogue />
+  </main>
+</BaseLayout>
+
+<style>
+  /* The padding of <main> on the home page. */
+  .proposal-home {
+    padding: 48px 0 96px;
+  }
+
+  @media (max-width: 880px) {
+    .proposal-home {
+      padding: 32px 0 64px;
+    }
+  }
+</style>
