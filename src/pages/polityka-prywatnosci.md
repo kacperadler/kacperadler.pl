@@ -2,7 +2,7 @@
 layout: "@/layouts/legal-layout.astro"
 title: Polityka prywatności
 description: Jak przetwarzam Twoje dane przesyłane przez kacperadler.pl - zakres, podstawa prawna, retencja i Twoje prawa wynikające z RODO.
-lastUpdated: "2026-05-10"
+lastUpdated: "2026-10-10"
 ---
 
 ## 1. Administrator danych
@@ -34,7 +34,7 @@ Strona korzysta z self-hostowanego, prywatnościowego narzędzia statystyk **Uma
 - typ urządzenia, system operacyjny i typ przeglądarki (kategoryczne, np. „mobile / iOS / Safari" - bez wersji szczegółowej),
 - przybliżony kraj pochodzenia (na podstawie adresu IP, bez geolokalizacji ścisłej).
 
-Umami **nie zapisuje plików cookies, `localStorage` ani żadnych innych identyfikatorów w Twojej przeglądarce**. Adres IP używany jest jednorazowo do anonimowego hashowania sesji po stronie serwera i nie jest przechowywany. Nie ma śledzenia między stronami, nie ma profilowania, nie ma identyfikacji indywidualnych użytkowników.
+Umami **nie zapisuje plików cookies ani żadnych innych danych czy identyfikatorów w Twojej przeglądarce**. Adres IP używany jest jednorazowo do anonimowego hashowania sesji po stronie serwera i nie jest przechowywany. Nie ma śledzenia między stronami, nie ma profilowania, nie ma identyfikacji indywidualnych użytkowników.
 
 Jeśli Twoja przeglądarka wysyła nagłówek „Do Not Track", Umami pomija Twoją wizytę całkowicie.
 
@@ -42,7 +42,7 @@ Podstawą prawną zbierania tych statystyk jest **art. 6 ust. 1 lit. f RODO** - 
 
 ### Inne
 
-Strona zapisuje w Twojej przeglądarce wyłącznie preferencję motywu kolorystycznego (klucz `ka:theme` w `localStorage`) - to dane techniczne, nie identyfikują Cię i nigdy nie są przesyłane na serwer. Nie korzystam z zewnętrznych systemów analitycznych ani marketingowych (Google Analytics, Meta Pixel itp.), nie używam plików cookies w jakimkolwiek celu.
+Strona nie zapisuje w Twojej przeglądarce żadnych danych - ani plików cookies, ani wpisów w pamięci przeglądarki. Nie korzystam z zewnętrznych systemów analitycznych ani marketingowych (Google Analytics, Meta Pixel itp.).
 
 ## 3. W jakim celu i na jakiej podstawie prawnej
 
@@ -88,7 +88,7 @@ Aby skorzystać z któregokolwiek z tych praw, napisz do mnie na **kontakt@kacpe
 
 Strona **nie używa plików cookies** w jakimkolwiek celu - ani technicznym, ani analitycznym, ani marketingowym. Również narzędzie statystyk Umami (opisane w sekcji 2) działa bez cookies - sesjonizacja odbywa się w pełni po stronie serwera, w sposób anonimowy.
 
-Korzystam z mechanizmu `localStorage` przeglądarki wyłącznie do zapamiętania Twojej preferencji motywu (klucz `ka:theme`, wartości `light` / `dark` lub brak wpisu dla trybu systemowego). Dane te są przechowywane lokalnie w Twojej przeglądarce, nie identyfikują Cię i nigdy nie są przesyłane na serwer. Możesz je w każdej chwili usunąć przez ustawienia przeglądarki.
+Strona nie korzysta też z innych mechanizmów pamięci przeglądarki (np. pamięci lokalnej czy sesyjnej) - nie zapisuje w Twojej przeglądarce żadnych danych.
 
 ## 8. Bezpieczeństwo
 
