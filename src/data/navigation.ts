@@ -4,13 +4,13 @@ export interface NavLink {
 }
 
 export const primaryNav: readonly NavLink[] = [
-  { label: "Usługi", href: "#services" },
+  { href: "#services", label: "Usługi" },
   // Realizacje disabled until real case-studies land - restore { label: "Realizacje", href: "#projects" } when ready.
-  { label: "Proces", href: "#how" },
-  { label: "Współprace", href: "#experience" },
+  { href: "#how", label: "Proces" },
+  { href: "#experience", label: "Współprace" },
 ] as const;
 
 export const contactCta: NavLink = {
-  label: "Porozmawiajmy",
   href: "#contact",
+  label: "Porozmawiajmy",
 };

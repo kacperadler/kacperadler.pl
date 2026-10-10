@@ -9,8 +9,7 @@ import { siteConfig } from "@/data/site-config";
   <div class="container hero-grid">
     <div class="hero-text">
       <h1>
-        Buduję <em>interfejsy</em> dla produktów,<br />
-        z których ludzie korzystają codziennie.
+        Buduję <em>interfejsy</em> dla produktów,<br /> z których ludzie korzystają codziennie.
       </h1>
 
       <p class="hero-sub">
@@ -19,22 +18,22 @@ import { siteConfig } from "@/data/site-config";
       </p>
 
       <div class="ctas">
-        <Button variant="primary" href="#contact" icon="lucide:arrow-right">Porozmawiajmy</Button>
-        <Button variant="ghost" href="#how">Zobacz proces</Button>
+        <Button href="#contact" icon="lucide:arrow-right" variant="primary">Porozmawiajmy</Button>
+        <Button href="#how" variant="ghost">Zobacz proces</Button>
       </div>
     </div>
 
-    <aside class="hero-status" aria-label="Stan obecny" data-spotlight>
+    <aside aria-label="Stan obecny" class="hero-status" data-spotlight>
       <div class="status-id">
         <Image
-          src={meImage}
           alt={`${siteConfig.name} - ${siteConfig.role}`}
           class="hero-avatar"
-          width={96}
-          height={96}
           densities={[2, 3]}
-          quality={92}
+          height={96}
           loading="eager"
+          quality={92}
+          src={meImage}
+          width={96}
         />
         <div class="status-id-text">
           <p class="status-name">{siteConfig.name}</p>
@@ -43,7 +42,7 @@ import { siteConfig } from "@/data/site-config";
             <span>Polska</span>
           </p>
           <span class="status-pill">
-            <span class="status-pill-dot" aria-hidden="true"></span>
+            <span aria-hidden="true" class="status-pill-dot"></span>
             Otwarty na nowe współprace
           </span>
         </div>

@@ -82,7 +82,7 @@ export async function GET(): Promise<Response> {
 
   const photoBuffer = await sharp(photoPath)
     .resize(PHOTO_SIZE, PHOTO_SIZE, { fit: "cover", position: "attention" })
-    .composite([{ input: photoMask, blend: "dest-in" }])
+    .composite([{ blend: "dest-in", input: photoMask }])
     .png()
     .toBuffer();
 
@@ -153,17 +153,17 @@ export async function GET(): Promise<Response> {
 
   const png = await sharp({
     create: {
-      width: 1200,
-      height: 630,
-      channels: 4,
       background: BG,
+      channels: 4,
+      height: 630,
+      width: 1200,
     },
   })
     .composite([
-      { input: Buffer.from(backgroundLayer), top: 0, left: 0 },
-      { input: photoBuffer, top: PHOTO_INSET, left: PHOTO_INSET },
-      { input: Buffer.from(photoBorder), top: PHOTO_INSET, left: PHOTO_INSET },
-      { input: Buffer.from(overlay), top: 0, left: 0 },
+      { input: Buffer.from(backgroundLayer), left: 0, top: 0 },
+      { input: photoBuffer, left: PHOTO_INSET, top: PHOTO_INSET },
+      { input: Buffer.from(photoBorder), left: PHOTO_INSET, top: PHOTO_INSET },
+      { input: Buffer.from(overlay), left: 0, top: 0 },
     ])
     .png({ compressionLevel: 9 })
     .toBuffer();

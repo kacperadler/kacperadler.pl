@@ -29,48 +29,47 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
 ---
 
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="generator" content={Astro.generator} />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
+<meta content={Astro.generator} name="generator" />
 
 <title>{fullTitle}</title>
-<meta name="description" content={description} />
-<link rel="canonical" href={canonical} />
+<meta content={description} name="description" />
+<link href={canonical} rel="canonical" />
 
 {noindex && <meta content="noindex, nofollow" name="robots" />}
 
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="icon" href="/favicon.ico" sizes="any" />
+<link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+<link href="/favicon.ico" rel="icon" sizes="any" />
 
-<meta name="theme-color" content="#0a0c10" />
+<meta content="#0a0c10" name="theme-color" />
 
-<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
+<link as="font" crossorigin href="/fonts/Geist-Variable.woff2" rel="preload" type="font/woff2" />
 <link
-  rel="preload"
-  href="/fonts/GeistMono-Variable.woff2"
   as="font"
-  type="font/woff2"
   crossorigin
+  href="/fonts/GeistMono-Variable.woff2"
+  rel="preload"
+  type="font/woff2"
 />
 
-<meta property="og:type" content="website" />
-<meta property="og:title" content={fullTitle} />
-<meta property="og:description" content={description} />
-<meta property="og:url" content={canonical} />
-<meta property="og:image" content={ogImageUrl} />
-<meta property="og:locale" content={siteConfig.locale.replace("-", "_")} />
-<meta property="og:site_name" content={siteConfig.name} />
+<meta content="website" property="og:type" />
+<meta content={fullTitle} property="og:title" />
+<meta content={description} property="og:description" />
+<meta content={canonical} property="og:url" />
+<meta content={ogImageUrl} property="og:image" />
+<meta content={siteConfig.locale.replace("-", "_")} property="og:locale" />
+<meta content={siteConfig.name} property="og:site_name" />
 
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={fullTitle} />
-<meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={ogImageUrl} />
+<meta content="summary_large_image" name="twitter:card" />
+<meta content={fullTitle} name="twitter:title" />
+<meta content={description} name="twitter:description" />
+<meta content={ogImageUrl} name="twitter:image" />
 
-<link rel="sitemap" href="/sitemap-index.xml" />
+<link href="/sitemap-index.xml" rel="sitemap" />
 
-<script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
-<script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
-<script is:inline set:html={JSON.stringify(profServiceSchema)} type="application/ld+json" />
-
+<script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
+<script type="application/ld+json" is:inline set:html={JSON.stringify(websiteSchema)} />
+<script type="application/ld+json" is:inline set:html={JSON.stringify(profServiceSchema)} />
 {
   /* Umami analytics, self-hosted at analytics.kacperadler.pl. PROD-only
    * so dev pageviews don't pollute the data.
@@ -90,6 +89,7 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
    * via Umami's own logic. */
   import.meta.env.PROD && (
     <script
+      is:inline
       set:html={`
         (() => {
           const src = ${JSON.stringify(`${siteConfig.analytics.umamiUrl}/script.js`)};
@@ -118,7 +118,6 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
           });
         })();
       `}
-      is:inline
     />
   )
 }

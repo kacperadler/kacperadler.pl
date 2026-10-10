@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 // Mobile sheet only renders the hamburger below 880px - run these tests
 // at a phone-sized viewport to make the trigger interactive.
-test.use({ viewport: { width: 375, height: 812 } });
+test.use({ viewport: { height: 812, width: 375 } });
 
 test.describe("mobile sheet", () => {
   test("hamburger opens sheet, X closes it", async ({ page }) => {

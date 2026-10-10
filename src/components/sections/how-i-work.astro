@@ -8,9 +8,7 @@ import { processSteps } from "@/data/process";
   <div class="container">
     <header class="section-head">
       <p class="eyebrow eyebrow-section">Proces</p>
-      <h2>
-        Od <em>rozmowy</em> do <em>produktu</em>.
-      </h2>
+      <h2>Od <em>rozmowy</em> do <em>produktu</em>.</h2>
       <p class="section-lede">
         Biorąc pod uwagę Twoje potrzeby, skupiam się na znalezieniu najlepszego rozwiązania dla
         Ciebie.
@@ -18,23 +16,19 @@ import { processSteps } from "@/data/process";
     </header>
 
     <ol class="how-steps">
-      {
-        processSteps.map((step) => (
-          <li class="step-item">
-            <div aria-hidden="true" class="step-marker">
-              <span class="step-dot">{step.num}</span>
-            </div>
-            <Card class="step-panel">
-              <header class="step-head">
-                <Icon aria-hidden="true" class="step-icon" name={step.icon} />
-                <h3>{step.title}</h3>
-                <span class="step-badge">{step.badge}</span>
-              </header>
-              <p class="step-desc">{step.description}</p>
-            </Card>
-          </li>
-        ))
-      }
+      {processSteps.map((step) => <li class="step-item">
+        <div aria-hidden="true" class="step-marker">
+          <span class="step-dot">{step.num}</span>
+        </div>
+        <Card class="step-panel">
+          <header class="step-head">
+            <Icon aria-hidden="true" class="step-icon" name={step.icon} />
+            <h3>{step.title}</h3>
+            <span class="step-badge">{step.badge}</span>
+          </header>
+          <p class="step-desc">{step.description}</p>
+        </Card>
+      </li>)}
     </ol>
   </div>
 </section>
