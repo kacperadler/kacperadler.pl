@@ -256,6 +256,7 @@ button {
 .service-panel:hover,
 .step-panel:hover,
 .exp-panel:hover,
+.case-panel:hover,
 .v2-contact-link:hover,
 .contact-form-host:hover,
 .contact-form-host:has(input[type="email"]:focus, textarea:focus),
@@ -267,6 +268,7 @@ button {
 .service-panel > *,
 .step-panel > *,
 .exp-panel > *,
+.case-panel > *,
 .v2-contact-link > *,
 .contact-form-host > * {
   position: relative;
@@ -280,7 +282,9 @@ button {
 .step-panel::before,
 .step-panel::after,
 .exp-panel::before,
+.case-panel::before,
 .exp-panel::after,
+.case-panel::after,
 .v2-contact-link::before,
 .v2-contact-link::after,
 .contact-form-host::before,
@@ -301,6 +305,7 @@ button {
 .service-panel::before,
 .step-panel::before,
 .exp-panel::before,
+.case-panel::before,
 .v2-contact-link::before,
 .contact-form-host::before {
   z-index: 0;
@@ -321,6 +326,7 @@ button {
 .service-panel::after,
 .step-panel::after,
 .exp-panel::after,
+.case-panel::after,
 .v2-contact-link::after,
 .contact-form-host::after {
   z-index: 2;
@@ -347,7 +353,9 @@ button {
 .step-panel:hover::before,
 .step-panel:hover::after,
 .exp-panel:hover::before,
+.case-panel:hover::before,
 .exp-panel:hover::after,
+.case-panel:hover::after,
 .v2-contact-link:hover::before,
 .v2-contact-link:hover::after,
 .contact-form-host:hover::before,
@@ -359,6 +367,37 @@ button {
   opacity: 1;
 }
 
+/* "Zobacz realizację →" - the link from a card to its case study, on the
+ * "Z kim pracowałem" cards and the /realizacje/ list. Pinned to the card's
+ * bottom-left; the arrow nudges right on hover. */
+.case-link {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  align-self: flex-start;
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--blue);
+  letter-spacing: 0.02em;
+}
+
+.case-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.case-link svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.25s ease;
+}
+
+.case-link:hover svg {
+  transform: translateX(3px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-status::before,
   .hero-status::after,
@@ -368,10 +407,13 @@ button {
   .step-panel::after,
   .exp-panel::before,
   .exp-panel::after,
+  .case-panel::before,
+  .case-panel::after,
   .v2-contact-link::before,
   .v2-contact-link::after,
   .contact-form-host::before,
-  .contact-form-host::after {
+  .contact-form-host::after,
+  .case-link svg {
     transition: none;
   }
 }

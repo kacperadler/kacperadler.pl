@@ -80,7 +80,7 @@ const caseStudies = await caseStudiesByExperience();
           <h3>{item.data.company}</h3>
           <div class="exp-role">{item.data.role}</div>
           <p class="exp-desc">{item.data.description}</p>
-          {caseStudy && <a class="exp-link" href={caseStudyPath(caseStudy)}>
+          {caseStudy && <a class="case-link" href={caseStudyPath(caseStudy)}>
             Zobacz realizację<span class="sr-only"> - {item.data.company}</span>
             <Icon aria-hidden="true" name="lucide:arrow-right" />
           </a>}
@@ -193,34 +193,6 @@ const caseStudies = await caseStudiesByExperience();
     color: var(--ink-2);
   }
 
-  .exp-link {
-    display: inline-flex;
-    gap: 6px;
-    align-items: center;
-    align-self: flex-start;
-    margin-top: 16px;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--blue);
-    letter-spacing: 0.02em;
-  }
-
-  .exp-link:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .exp-link :global(svg) {
-    width: 14px;
-    height: 14px;
-    transition: transform 0.25s ease;
-  }
-
-  .exp-link:hover :global(svg) {
-    transform: translateX(3px);
-  }
-
   @media (max-width: 880px) {
     .experience {
       margin-top: var(--v2-space-xl);
@@ -232,8 +204,7 @@ const caseStudies = await caseStudiesByExperience();
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .exp-logo,
-    .exp-link :global(svg) {
+    .exp-logo {
       transition: none;
     }
   }

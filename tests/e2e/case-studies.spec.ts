@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
@@ -9,6 +11,13 @@ test.use({ contextOptions: { reducedMotion: "reduce" } });
 
 const SITE = "https://kacperadler.pl";
 const CASE_STUDY_PATH = /^\/realizacje\/[a-z0-9-]+\/$/;
+const LIST_PATH = "/realizacje/";
+const NAV_LABELS = ["Usługi", "Realizacje", "Proces", "Współprace"];
+const NAV_LABELS_WITHOUT_LIST = ["Usługi", "Proces", "Współprace"];
+// Built by the webServer command with E2E_FIXTURES=none (playwright.config.ts).
+const NO_CASE_STUDIES = fileURLToPath(
+  new URL("../../dist-no-case-studies/", import.meta.url)
+);
 
 interface LinkedEntry {
   company: string;
@@ -19,11 +28,11 @@ async function linkedEntries(page: Page): Promise<LinkedEntry[]> {
   await page.goto("/");
   return page
     .locator("#experience .exp-panel")
-    .filter({ has: page.locator("a.exp-link") })
+    .filter({ has: page.locator("a.case-link") })
     .evaluateAll((cards) =>
       cards.map((card) => ({
         company: card.querySelector("h3")?.textContent?.trim() ?? "",
-        href: card.querySelector("a.exp-link")?.getAttribute("href") ?? "",
+        href: card.querySelector("a.case-link")?.getAttribute("href") ?? "",
       }))
     );
 }
@@ -100,5 +109,108 @@ test.describe("case studies", () => {
       expect(llms).toContain(`[${company}](${SITE}${href})`);
       expect(llmsFull).toContain(`**Strona**: ${SITE}${href}`);
     }
+  });
+
+  test("the Realizacje menu entry opens the list, which links every case study", async ({
+    page,
+  }) => {
+    const entries = await linkedEntries(page);
+    expect(entries.length).toBeGreaterThan(0);
+
+    await expect(page.locator(".nav-links [data-nav-link]")).toHaveText(
+      NAV_LABELS
+    );
+    await page
+      .locator(".nav-links")
+      .getByRole("link", { exact: true, name: "Realizacje" })
+      .click();
+    await expect(page).toHaveURL(LIST_PATH);
+
+    await expect(page).toHaveTitle("Realizacje - Kacper Adler");
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      `${SITE}${LIST_PATH}`
+    );
+    await expect(
+      page.locator(".nav-links").getByRole("link", { name: "Realizacje" })
+    ).toHaveAttribute("aria-current", "page");
+
+    const cards = page.locator(".case-panel");
+    await expect(cards).toHaveCount(entries.length);
+    for (const { company, href } of entries) {
+      const card = cards.filter({
+        has: page.getByRole("heading", { exact: true, name: company }),
+      });
+      // biome-ignore lint/performance/noAwaitInLoops: one card at a time
+      await expect(card.locator(".case-role")).not.toBeEmpty();
+      await expect(card.locator(".case-period")).not.toBeEmpty();
+      await expect(card.locator(".case-summary")).not.toBeEmpty();
+      await expect(
+        card.getByRole("link", { name: `Zobacz realizację - ${company}` })
+      ).toHaveAttribute("href", href);
+    }
+
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+      .analyze();
+    expect(results.violations).toEqual([]);
+
+    // Section links lead back to the home page sections from here.
+    await page
+      .locator(".nav-links")
+      .getByRole("link", { name: "Współprace" })
+      .click();
+    await expect(page).toHaveURL("/#experience");
+  });
+
+  test("the mobile menu has Realizacje and it opens the list", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 812, width: 375 });
+    await page.goto("/");
+    await page.locator("[data-menu-open]").click();
+
+    const sheetLinks = page.locator("#mobile-sheet .sheet-link");
+    await expect(sheetLinks).toHaveText(NAV_LABELS);
+    await sheetLinks.filter({ hasText: "Realizacje" }).click();
+    await expect(page).toHaveURL(LIST_PATH);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  });
+
+  test("the list page is in the sitemap and in llms.txt", async ({
+    request,
+  }) => {
+    const sitemap = await (await request.get("/sitemap-0.xml")).text();
+    const llms = await (await request.get("/llms.txt")).text();
+    const llmsFull = await (await request.get("/llms-full.txt")).text();
+    expect(sitemap).toContain(`<loc>${SITE}${LIST_PATH}</loc>`);
+    expect(llms).toContain(`Lista: ${SITE}${LIST_PATH}`);
+    expect(llmsFull).toContain(`Lista: ${SITE}${LIST_PATH}`);
+  });
+});
+
+test.describe("no case studies", () => {
+  test("builds neither the list page nor the Realizacje menu entry", async ({
+    page,
+  }) => {
+    const file = (path: string) => `${NO_CASE_STUDIES}${path}`;
+    expect(existsSync(file("index.html"))).toBe(true);
+    expect(existsSync(file("realizacje"))).toBe(false);
+
+    const sitemap = readFileSync(file("sitemap-0.xml"), "utf8");
+    expect(sitemap).not.toContain("/realizacje/");
+    for (const llms of ["llms.txt", "llms-full.txt"]) {
+      expect(readFileSync(file(llms), "utf8")).not.toContain("Realizacje");
+    }
+
+    // The built HTML read straight from disk: the menus as rendered.
+    await page.goto(pathToFileURL(file("index.html")).href);
+    await expect(page.locator(".nav-links [data-nav-link]")).toHaveText(
+      NAV_LABELS_WITHOUT_LIST
+    );
+    await expect(page.locator("#mobile-sheet .sheet-link")).toHaveText(
+      NAV_LABELS_WITHOUT_LIST
+    );
+    await expect(page.locator("a.case-link")).toHaveCount(0);
   });
 });

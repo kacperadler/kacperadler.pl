@@ -37,17 +37,23 @@ const experience = defineCollection({
   }),
 });
 
-/* E2E builds (E2E_FIXTURES=1, set by playwright.config.ts) read the sample
- * case study in tests/fixtures/case-studies while src/content/case-studies
- * holds none, so the page and the link from "Z kim pracowałem" are tested
- * before real content exists. Once a real .mdx lands, e2e runs against it
- * and the fixture is ignored; production builds never read it. */
+/* E2E builds (playwright.config.ts) pick the case studies with E2E_FIXTURES:
+ * "1" reads the sample in tests/fixtures/case-studies while
+ * src/content/case-studies holds none, so the pages, the list and the menu
+ * entry are tested before real content exists (once a real .mdx lands, e2e
+ * runs against it); "none" reads the empty tests/fixtures/no-case-studies,
+ * the state where neither the list nor the menu entry is built. Production
+ * builds never read either. */
 const caseStudiesDir = "./src/content/case-studies";
-const caseStudiesBase =
+let caseStudiesBase = caseStudiesDir;
+if (process.env.E2E_FIXTURES === "none") {
+  caseStudiesBase = "./tests/fixtures/no-case-studies";
+} else if (
   process.env.E2E_FIXTURES === "1" &&
   !readdirSync(caseStudiesDir).some((file) => file.endsWith(".mdx"))
-    ? "./tests/fixtures/case-studies"
-    : caseStudiesDir;
+) {
+  caseStudiesBase = "./tests/fixtures/case-studies";
+}
 
 const caseStudies = defineCollection({
   // The glob loader takes the entry id from `slug`, so it is the URL:

@@ -1,6 +1,8 @@
 /* Active nav link tracking via IntersectionObserver - no scroll
- * listener. Each [data-nav-link] points to a #section-id; the section
- * that's most-visible gets `.active` on its corresponding link.
+ * listener. A [data-nav-link] to a section of this page ("/#how" on the
+ * home page) is tracked: the section that's most-visible gets `.active` on
+ * its link. Page links ("/realizacje/") are left alone; nav.astro marks
+ * the current one at build time.
  *
  * Special case from the prototype: when the user is in the contact
  * section, ALL primary links lose `.active` and the contact CTA
@@ -79,25 +81,28 @@ function teardown(): void {
   contactCta = null;
 }
 
+/* The section a link points at on this page: "/#how" on the home page is
+ * #how. Links to other pages (or sections of other pages) have none. */
+function sectionFor(link: HTMLAnchorElement | null): Element | null {
+  if (!link?.hash || link.pathname !== window.location.pathname) {
+    return null;
+  }
+  return document.getElementById(link.hash.slice(1));
+}
+
 function init(): void {
   teardown();
 
   const links = document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]");
   for (const link of links) {
-    const href = link.getAttribute("href");
-    if (!href?.startsWith("#")) {
-      continue;
-    }
-    const section = document.querySelector(href);
+    const section = sectionFor(link);
     if (section) {
       sectionToLink.set(section, link);
     }
   }
 
   contactCta = document.querySelector<HTMLAnchorElement>("[data-nav-cta]");
-  contactSection = contactCta?.getAttribute("href")?.startsWith("#")
-    ? document.querySelector(contactCta.getAttribute("href") ?? "")
-    : null;
+  contactSection = sectionFor(contactCta);
 
   observer = new IntersectionObserver(
     (entries) => {

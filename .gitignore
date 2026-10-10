@@ -1,5 +1,6 @@
-# build output
+# build output (dist-no-case-studies: e2e build without case studies)
 dist/
+dist-no-case-studies/
 # generated types
 .astro/
 

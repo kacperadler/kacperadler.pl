@@ -54,7 +54,9 @@ export async function GET(): Promise<Response> {
     .join("\n");
 
   const caseStudiesBlock =
-    caseStudies.length > 0 ? `## Realizacje\n\n${caseStudyList}\n\n` : "";
+    caseStudies.length > 0
+      ? `## Realizacje\n\nLista: ${siteConfig.url}/realizacje/\n\n${caseStudyList}\n\n`
+      : "";
 
   const body = `# ${siteConfig.name} - ${siteConfig.role}
 

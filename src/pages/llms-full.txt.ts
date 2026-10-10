@@ -83,7 +83,7 @@ ${(c.body ?? "").trim().replace(/^(#{1,4}) /gm, "##$1 ")}`
     caseStudies.length > 0
       ? `## Realizacje
 
-Opisy wybranych współprac: kontekst, moja rola, stack i efekt.
+Opisy wybranych współprac: kontekst, moja rola, stack i efekt. Lista: ${siteConfig.url}/realizacje/
 
 ${caseStudyEntries}
 

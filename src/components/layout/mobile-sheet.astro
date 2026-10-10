@@ -2,6 +2,8 @@
 import { Icon } from "astro-icon/components";
 import Button from "@/components/ui/button.astro";
 import { contactCta, primaryNav } from "@/data/navigation";
+
+const links = await primaryNav();
 ---
 
 <div
@@ -24,7 +26,7 @@ import { contactCta, primaryNav } from "@/data/navigation";
     </span>
 
     <nav aria-label="Menu główne" class="sheet-nav">
-      {primaryNav.map((link) => <a class="sheet-link" data-sheet-link href={link.href}>
+      {links.map((link) => <a class="sheet-link" data-sheet-link href={link.href}>
         <span>{link.label}</span>
         <Icon aria-hidden="true" name="lucide:arrow-right" />
       </a>)}
