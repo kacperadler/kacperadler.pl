@@ -106,10 +106,22 @@ const path = Astro.url.pathname;
     }
   }
 
+  /* Narrow phones: the CTA drops its arrow so brand, CTA and menu fit one
+   * row; where they still do not (a wider fallback font before Geist loads,
+   * a 320px screen) the tail wraps under the brand instead of pushing the
+   * page sideways. */
   @media (max-width: 400px) {
-    .mb-nav,
     .mb-nav-tail {
       gap: 8px;
+    }
+
+    .mb-nav {
+      flex-wrap: wrap;
+      gap: 12px 8px;
+    }
+
+    .mb-nav-tail :global(.mb-btn-icon-end) {
+      display: none;
     }
   }
 </style>

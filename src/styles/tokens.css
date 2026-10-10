@@ -1,5 +1,5 @@
 /* Design tokens. The site is dark-only (`color-scheme: dark` on :root), so
- * every color below has a single dark value. */
+ * every color below has a single dark value. DESIGN.md describes each. */
 
 @font-face {
   font-family: "Geist";
@@ -21,20 +21,10 @@
   --ink: #ece7dc;
   --ink-2: #c8c3b8;
   --muted: #9d9c95;
-  --line: rgba(236, 231, 220, 0.14);
-  --line-2: rgba(236, 231, 220, 0.07);
-
-  /* Surface tokens reused by the contact form via CSS variable inheritance.
-   * --paper is the input surface; --card is the form card bg (overridden to
-   * --v2-panel on .contact-form-host); --paper-2 is the button text color. */
-  --paper: #0f1116;
-  --paper-2: #161922;
-  --card: #171a22;
 
   /* Brand accent - the only chromatic color in the palette. */
   --blue: #8eaed8;
   --blue-2: #b4c8e6;
-  --blue-wash: rgba(142, 174, 216, 0.1);
 
   /* Error - form validation and the send-error banner. Warm coral that sits
    * with the warm ink; 6.15:1 on --v2-panel, 6.7:1 on --v2-bg (WCAG AA
@@ -43,34 +33,36 @@
   --error: #e07a70;
 
   /* Typography stacks. */
-  --display: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
   --sans: "Geist", system-ui, -apple-system, sans-serif;
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
 
   --container: 1160px;
 
-  /* Surface palette: --v2-bg is the substrate behind everything, --v2-panel
-   * sits one step lighter so the panel radius reveals the substrate between
-   * blocks. --v2-grid is the dot-grid tint painted on top of the substrate. */
+  /* Surfaces: --v2-bg is the substrate behind everything, --v2-panel and
+   * --v2-panel-elevated are the raised and lit cell. --v2-line is the
+   * hairline tint. */
   --v2-bg: #0a0c10;
   --v2-panel: #14171c;
   --v2-panel-elevated: #1a1e26;
-  --v2-grid: rgba(236, 231, 220, 0.045);
   --v2-line: rgba(236, 231, 220, 0.1);
 
-  /* Radius scale - tweak any of these and every component picks it up. */
-  --v2-radius-xs: 6px;
-  --v2-radius-sm: 10px;
-  --v2-radius-md: 16px;
-  --v2-radius-lg: 24px;
-  --v2-radius-full: 9999px;
-
-  /* 8px-base spacing scale, mirrors the DESIGN.md spec. */
-  --v2-space-xs: 4px;
-  --v2-space-sm: 8px;
+  /* Spacing scale, mirrors the DESIGN.md spec. */
   --v2-space-md: 16px;
   --v2-space-lg: 32px;
   --v2-space-xl: 64px;
   --v2-space-2xl: 96px;
+
+  /* Minimal brutalism:
+   *   --mb-rule     the 1px ink rule that draws a cell
+   *   --mb-hair     the hairline for dividers inside a cell and the page edges
+   *   --mb-shift    the offset of the one hard shadow (the default button, the
+   *                 contact form while it is being filled in)
+   *   --mb-snap     every state change: short and linear, a switch, not a drift
+   *   --mb-display  headlines in heavy Geist; Geist Mono stays for labels */
+  --mb-rule: var(--ink);
+  --mb-hair: var(--v2-line);
+  --mb-shift: 4px;
+  --mb-snap: 0.12s linear;
+  --mb-display: var(--sans);
   color-scheme: dark;
 }

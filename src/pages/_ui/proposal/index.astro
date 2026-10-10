@@ -1,8 +1,11 @@
 ---
 /* /ui/proposal - every design proposal in src/styles/proposals/ with its
- * one-line description and a link to its page. A dev tool: astro.config.mjs
- * routes it for `astro dev` only. */
-import Link from "@/components/ui/link.astro";
+ * one-line description and a link to its page, as a cell table. A dev
+ * tool: astro.config.mjs routes it for `astro dev` only. The page has no
+ * form, so BaseLayout's contact-form.ts has nothing to send. */
+import Card from "@/components/mb/card.astro";
+import CellGrid from "@/components/mb/cell-grid.astro";
+import Link from "@/components/mb/link.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
 import { loadProposals } from "@/lib/proposals";
 
@@ -17,7 +20,9 @@ const proposals = loadProposals();
   <main class="proposals" id="top">
     <div class="container">
       <header class="proposals-head">
-        <p class="eyebrow">Narzędzie deweloperskie · tylko astro dev</p>
+        <p class="proposals-kicker">
+          Narzędzie deweloperskie · tylko astro dev
+        </p>
         <h1>Propozycje designu</h1>
         <p class="proposals-lede">
           Każda propozycja pokazuje kopię strony głównej i cały katalog
@@ -28,18 +33,18 @@ const proposals = loadProposals();
         </p>
       </header>
 
-      <ul class="proposals-list">
+      <CellGrid min="320px" tag="ul">
         {proposals.map((proposal) => (
-          <li class="proposals-item">
+          <Card tag="li">
             <h2>
               <Link href={`/ui/proposal/${proposal.id}`} variant="inline">
                 {proposal.name}
               </Link>
             </h2>
             <p>{proposal.description}</p>
-          </li>
+          </Card>
         ))}
-      </ul>
+      </CellGrid>
     </div>
   </main>
 </BaseLayout>
@@ -51,46 +56,42 @@ const proposals = loadProposals();
 
   .proposals-head {
     max-width: 70ch;
+    padding-top: var(--v2-space-md);
     margin-bottom: var(--v2-space-xl);
+    border-top: 1px solid var(--mb-rule);
+  }
+
+  .proposals-kicker {
+    margin: 0 0 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
   }
 
   .proposals-head h1 {
     margin: 0 0 16px;
-    font-family: var(--display);
-    font-size: clamp(32px, 4vw, 44px);
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
+    font-family: var(--mb-display);
+    font-size: clamp(32px, 4.6vw, 54px);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
   }
 
   .proposals-lede,
-  .proposals-item p {
+  .proposals li p {
     margin: 0;
     font-size: 15px;
     line-height: 1.6;
     color: var(--ink-2);
   }
 
-  .proposals-list {
-    display: grid;
-    gap: var(--v2-space-md);
-    padding: 0;
-    margin: 0;
-    list-style: none;
-  }
-
-  .proposals-item {
-    padding: var(--v2-space-lg);
-    background: var(--v2-panel);
-    border: 1px solid var(--v2-line);
-    border-radius: var(--v2-radius-md);
-  }
-
-  .proposals-item h2 {
+  h2 {
     margin: 0 0 8px;
-    font-family: var(--display);
+    font-family: var(--mb-display);
     font-size: 24px;
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    letter-spacing: -0.035em;
   }
 </style>

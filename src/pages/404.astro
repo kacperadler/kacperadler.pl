@@ -1,23 +1,21 @@
 ---
-import Button from "@/components/ui/button.astro";
+import Button from "@/components/mb/button.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
 ---
 
 <BaseLayout noindex title="Strona nie znaleziona">
-  <main class="not-found" id="top">
+  <main class="mb-not-found" id="top">
     <div class="container">
-      <div class="not-found-inner">
-        <div class="code">404</div>
+      <div class="mb-not-found-inner">
+        <div class="mb-not-found-code">404</div>
         <h1>Tej strony nie ma.</h1>
         <p>
           Może adres się zmienił, może literówka, może w ogóle jej nie było. Tak
           czy siak - strona główna ma to, czego szukasz.
         </p>
-        <div class="ctas">
-          <Button href="/" icon="lucide:arrow-right" variant="primary"
-            >Strona główna</Button
-          >
-          <Button href="/#contact" variant="ghost">Napisz do mnie</Button>
+        <div class="mb-not-found-ctas">
+          <Button href="/" iconEnd="lucide:arrow-right">Strona główna</Button>
+          <Button href="/#contact" variant="outline">Napisz do mnie</Button>
         </div>
       </div>
     </div>
@@ -25,35 +23,39 @@ import BaseLayout from "@/layouts/base-layout.astro";
 </BaseLayout>
 
 <style>
-  .not-found {
+  .mb-not-found {
     display: flex;
     align-items: center;
-    justify-content: center;
     min-height: calc(100vh - 240px);
-    padding: 80px 0;
+    padding: var(--v2-space-xl) 0;
   }
 
-  .not-found-inner {
+  .mb-not-found .container {
+    width: 100%;
+  }
+
+  .mb-not-found-inner {
     max-width: 56ch;
-    margin: 0 auto;
-    text-align: center;
+    padding-top: var(--v2-space-md);
+    border-top: 1px solid var(--mb-rule);
   }
 
-  .code {
-    margin-bottom: 18px;
+  .mb-not-found-code {
+    margin-bottom: var(--v2-space-lg);
     font-family: var(--mono);
-    font-size: 14px;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--blue);
-    letter-spacing: 0.2em;
+    letter-spacing: 0.14em;
   }
 
   h1 {
     margin: 0 0 16px;
-    font-family: var(--display);
+    font-family: var(--mb-display);
     font-size: clamp(36px, 5vw, 56px);
-    font-weight: 500;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
     text-wrap: balance;
   }
 
@@ -64,10 +66,9 @@ import BaseLayout from "@/layouts/base-layout.astro";
     color: var(--ink-2);
   }
 
-  .ctas {
+  .mb-not-found-ctas {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    justify-content: center;
   }
 </style>

@@ -12,7 +12,7 @@ import type { HTMLAttributes } from "astro/types";
  * [data-invalid] on the enclosing <Field> or aria-invalid on the input.
  * Native input attributes (name / value / checked / disabled) pass through.
  *
- * `state` forces a look on the catalogue page (/ui/mb): "hover" on the
+ * `state` forces a look on the catalogue page (/ui): "hover" on the
  * label, "focus-visible" on the input. */
 interface Props extends Omit<HTMLAttributes<"input">, "type"> {
   label: string;

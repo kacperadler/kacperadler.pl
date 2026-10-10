@@ -15,8 +15,10 @@ import Link from "../link.astro";
 import SectionHead from "../section-head.astro";
 
 /* Experience (#experience): the logo wall as a cell table, three cells a
- * row on the desktop. Logos stay grey until their cell is hovered. Data,
- * badges and case study links as in sections/experience.astro. */
+ * row on the desktop. Logos stay grey until their cell is hovered. The
+ * badge is "teraz" for the current role, the entry's own `badge` field
+ * (e.g. "Zlecenie"), or the year range; an entry with a case study links
+ * to it. */
 const logoBySlug: Record<string, ImageMetadata> = {
   apptension: apptensionLogo,
   energiadirect: energiadirectLogo,

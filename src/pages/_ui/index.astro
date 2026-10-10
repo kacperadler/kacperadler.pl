@@ -1,28 +1,61 @@
 ---
-/* /ui - the component catalogue (catalogue.astro) in the current design,
- * with links to the design proposals and to the minimal brutalism
- * components (/ui/mb). astro.config.mjs routes it for `astro dev` only. */
-import Link from "@/components/ui/link.astro";
-import BaseLayout from "@/layouts/base-layout.astro";
+/* /ui - the component catalogue (catalogue.astro): every component in
+ * src/components/mb/ with its variants and states, and the link to the
+ * design proposals (/ui/proposal). A dev tool: astro.config.mjs routes it
+ * for `astro dev` only.
+ *
+ * Its own document, not BaseLayout: BaseHead with noindex, the site's
+ * tokens and global styles, the page frame. The only script is
+ * mobile-sheet.ts - never contact-form.ts (which BaseLayout loads), which
+ * would POST the forms here to the production NocoDB; the form states are
+ * forced instead. */
+
+import BaseHead from "@/components/layout/base-head.astro";
+import Link from "@/components/mb/link.astro";
+import PageFrame from "@/components/mb/page-frame.astro";
+import { siteConfig } from "@/data/site-config";
+import "@/styles/tokens.css";
+import "@/styles/global.css";
 import Catalogue from "./catalogue.astro";
 ---
 
-<BaseLayout
-  description="Katalog komponentów strony - narzędzie deweloperskie."
-  noindex
-  title="Katalog komponentów"
->
-  <main id="top">
-    <nav aria-label="Propozycje designu" class="container ui-proposals">
-      <Link href="/ui/proposal" variant="nav">Propozycje designu</Link>
-      <Link href="/ui/mb" variant="nav">Minimal brutalism</Link>
-    </nav>
-    <Catalogue />
-  </main>
-</BaseLayout>
+<!doctype html>
+<html lang={siteConfig.lang}>
+  <head>
+    <BaseHead
+      description="Katalog komponentów - narzędzie deweloperskie."
+      noindex
+      title="Katalog komponentów"
+    />
+  </head>
+  <body>
+    <PageFrame>
+      <main id="top">
+        <nav aria-label="Propozycje designu" class="container ui-proposals">
+          <Link href="/ui/proposal" variant="nav">Propozycje designu</Link>
+        </nav>
+        <Catalogue />
+      </main>
+    </PageFrame>
+  </body>
+</html>
+
+<script>
+  import "@/scripts/mobile-sheet.ts";
+</script>
 
 <style>
+  main {
+    padding: 0 0 96px;
+  }
+
   .ui-proposals {
-    padding-top: var(--v2-space-lg);
+    padding-top: var(--v2-space-md);
+  }
+
+  @media (max-width: 880px) {
+    main {
+      padding-bottom: 64px;
+    }
   }
 </style>
