@@ -605,5 +605,19 @@
       "KA0072",
       "KA0071"
     ]
+  },
+  {
+    "id": "KA0076",
+    "title": "Signature proposal: editorial",
+    "status": "planned",
+    "path": "spec/features/KA0076-signature-proposal-editorial/ticket.md",
+    "updated": "2026-10-10T20:44:40.031Z"
+  },
+  {
+    "id": "KA0077",
+    "title": "Signature proposal: live-grid",
+    "status": "planned",
+    "path": "spec/features/KA0077-signature-proposal-live-grid/ticket.md",
+    "updated": "2026-10-10T20:44:40.471Z"
   }
 ]
