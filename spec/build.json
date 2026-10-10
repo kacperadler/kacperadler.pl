@@ -564,9 +564,9 @@
   {
     "id": "KA0071",
     "title": "Minimal brutalism components: the human's first round of fixes",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0071-minimal-brutalism-components-the-human-s-first-round-of-fixes/ticket.md",
-    "updated": "2026-10-10T20:44:57.893Z",
+    "updated": "2026-10-10T20:49:53.702Z",
     "after": [
       "KA0069"
     ]

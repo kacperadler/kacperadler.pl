@@ -34,3 +34,4 @@ Out:
 ## Decisions
 
 - 2026-10-10: The coordinator: split from KA0072 so the branch can merge; approved with KA0072; merge after PASS.
+- 2026-10-10: The coordinator: the ticking "Jesteś tu" clock stays in this dev-only proposal so the human can judge it (hidden under reduced motion); if live-grid is chosen, the human decides between it and a static time zone before it reaches the live site (AGENTS.md: no always-on animation).
