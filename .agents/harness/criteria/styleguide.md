@@ -4,7 +4,7 @@ The conventions live in the repository; read them there, this file does not copy
 
 - `AGENTS.md`: `## Stack` (with `### Integracje runtime`), `## Konwencje`, `## Don't`, `## Komendy`, `## Hosting`, `## Wygląd`, `## Struktura`.
 - `DESIGN.md`: the tokens in the frontmatter, `## Components`, `## Motion`, `## Do's and Don'ts`. Read it before touching anything visual.
-- `project-plan.md` is history: its phases are closed and its plan sections describe what was intended then. `DESIGN.md` still names `/v2`, `v2.astro`, `body.v2-body` and the theme toggle in places (KA0002 findings, F1). Where a doc disagrees with the code, the code is right.
+- `project-plan.md` is history: its phases are closed and its plan sections describe what was intended then. Where a doc disagrees with the code, the code is right.
 
 What follows is only what those files do not say.
 
@@ -33,4 +33,4 @@ What follows is only what those files do not say.
 - Em-dashes (U+2014), anywhere: copy, docs, comments, generated text. Never add one.
 - English user-facing copy.
 - Cookies, third-party scripts or trackers.
-- Reviving the theming machinery (`data-theme`, a theme toggle, light values) that `project-plan.md` and `DESIGN.md` still describe.
+- Reviving the theming machinery (`data-theme`, a theme toggle, light values) that `project-plan.md` still describes.

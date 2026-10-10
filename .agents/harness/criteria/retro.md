@@ -7,7 +7,7 @@ Across recent jobs here, what keeps costing time or review rounds, and which cha
 ## A pattern
 
 - The same thing in at least two jobs, not one bad run.
-- Typical here: a worker trusting stale text in `DESIGN.md` or the history in `project-plan.md` (`/v2`, `v2-layout`, theming) over the code; e2e specs in `tests/e2e/` breaking on copy changes; `bun run test:e2e` failing on the environment (no `bun` on PATH, a missing Playwright browser) rather than on the code; a branch failing review for an em-dash or for skipping the `DESIGN.md` update.
+- Typical here: a worker trusting the history in `project-plan.md` (`/v2`, `v2-layout`, theming) over the code; e2e specs in `tests/e2e/` breaking on copy changes; `bun run test:e2e` failing on the environment (no `bun` on PATH, a missing Playwright browser) rather than on the code; a branch failing review for an em-dash or for skipping the `DESIGN.md` update.
 
 ## A good proposal
 

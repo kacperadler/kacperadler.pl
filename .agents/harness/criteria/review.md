@@ -36,7 +36,7 @@ As `.agents/harness/criteria/styleguide.md` says, with `AGENTS.md` `## Konwencje
 
 ## Not reasons to FAIL
 
-- Stale text in `DESIGN.md` the branch did not touch (KA0002 findings, F1), or in the history parts of `project-plan.md`.
+- Stale text in the history parts of `project-plan.md`.
 - Outdated dependencies (KA0003).
 - `npm test` failing because `package.json` has no `test` script (KA0001 findings, F1).
 - Em-dashes already in files, on lines the branch did not add.
