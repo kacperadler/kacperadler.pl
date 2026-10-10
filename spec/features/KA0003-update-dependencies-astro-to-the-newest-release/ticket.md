@@ -37,3 +37,4 @@ Out:
 
 - 2026-10-10: The human (onboarding answer 11): update the packages and bump Astro, no Dependabot PR was merged.
 - 2026-10-10: The human: KA0003 has no budget limit (h continue --budget 0).
+- 2026-10-10: The human: "KA0003 OK": TypeScript stays on 6.x (astro check does not support 7 yet), the only package bun outdated may list; merge after a PASS.

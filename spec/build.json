@@ -17,9 +17,9 @@
   {
     "id": "KA0003",
     "title": "Update dependencies, Astro to the newest release",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0003-update-dependencies-astro-to-the-newest-release/ticket.md",
-    "updated": "2026-10-10T12:36:34.915Z"
+    "updated": "2026-10-10T12:39:30.979Z"
   },
   {
     "id": "KA0004",
