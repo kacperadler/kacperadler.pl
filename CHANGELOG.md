@@ -12,6 +12,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 
 ### Fixed
 
+- KA0004 Harness gap: no `test` script, so `npm test` fails (a6bd5fb)
 - KA0009 The privacy policy says the site stores a theme preference in `localStorage` (8a20178)
 - KA0015 The mobile menu has no accessible name (c12cd49)
 - KA0016 The e2e suite cannot start Astro 7 preview: it detaches (2f475d1)
