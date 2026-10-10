@@ -39,11 +39,11 @@ export async function GET(): Promise<Response> {
       } else {
         period = `${startYear}–${endYear}`;
       }
-      return `- **${item.data.company}** (${period}) — ${item.data.role}`;
+      return `- **${item.data.company}** (${period}) - ${item.data.role}`;
     })
     .join("\n");
 
-  const body = `# ${siteConfig.name} — ${siteConfig.role}
+  const body = `# ${siteConfig.name} - ${siteConfig.role}
 
 > ${siteConfig.tagline} ${siteConfig.description}
 

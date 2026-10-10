@@ -58,7 +58,7 @@ ${item.data.description}`;
     })
     .join("\n\n");
 
-  const body = `# ${siteConfig.name} — ${siteConfig.role}
+  const body = `# ${siteConfig.name} - ${siteConfig.role}
 
 > ${siteConfig.tagline}
 
@@ -104,9 +104,9 @@ Najszybciej przez formularz na ${siteConfig.url}#contact (odpowiadam w ciągu 24
 
 Trzy rzeczy które przyspieszają rozmowę:
 
-1. **Co budujesz** — kontekst produktu, problem który rozwiązuje, gdzie obecnie jesteś (pomysł / MVP / produkcja).
-2. **W jakim terminie** — kiedy chcesz wystartować i ile czasu masz na realizację. Pomaga oszacować dostępność i scope.
-3. **Co Cię blokuje** — najtrudniejszy element, niepewność techniczna, brak rąk do roboty. Mów wprost - łatwiej wycenić rzeczywiste potrzeby.
+1. **Co budujesz** - kontekst produktu, problem który rozwiązuje, gdzie obecnie jesteś (pomysł / MVP / produkcja).
+2. **W jakim terminie** - kiedy chcesz wystartować i ile czasu masz na realizację. Pomaga oszacować dostępność i scope.
+3. **Co Cię blokuje** - najtrudniejszy element, niepewność techniczna, brak rąk do roboty. Mów wprost - łatwiej wycenić rzeczywiste potrzeby.
 
 2-3 zdania wystarczą żeby zacząć rozmowę. Reszta przychodzi w pytaniach z mojej strony.
 `;
