@@ -170,8 +170,8 @@ Background `panel`, border `1px solid line` (≈10% ink). Radius `lg`. Default p
 ### Atmosphere chrome (liquid glass)
 A common glass paint - translucent `panel` (55–70%) + `backdrop-filter: saturate(160%) blur(20px)` + inset 1px top hairline (`light-dark()` 60% white / 5% white) + soft border at 60% `line` - is used in two modes across v2:
 
-- **Always-on atmosphere chrome** — header, footer, mobile sheet overlay (70% opacity for full-screen readability), and the hero `.hero-status` card. These read as "UI floating above the substrate" and let the ribbon drift bleed through.
-- **On hover / focus for content cards** — services / how-i-work steps / experience tiles / contact-link cards / contact-form host pick up the same paint as a hover (and focus, for the form) state. Ghost buttons follow the same hover model.
+- **Always-on atmosphere chrome** - header, footer, mobile sheet overlay (70% opacity for full-screen readability), and the hero `.hero-status` card. These read as "UI floating above the substrate" and let the ribbon drift bleed through.
+- **On hover / focus for content cards** - services / how-i-work steps / experience tiles / contact-link cards / contact-form host pick up the same paint as a hover (and focus, for the form) state. Ghost buttons follow the same hover model.
 
 Content cards stay solid `panel` when idle. Glass kicks in only on engagement, so the page reads as solid + structured at rest and atmospheric when interacted with. The hairline border-bottom (or border-color drop to 60% `line`) firms up the chrome edge once a section becomes "fixed UI" (e.g., header on scroll).
 
@@ -180,16 +180,16 @@ The header also gets a scrolled state: `panel` at 75% + full-strength border to 
 ### Process timeline
 Vertical "roadmap" pattern used in the How-I-Work section. Each `.step-item` is a 2-column grid: 56px rail (`40px` on mobile) + 1fr panel.
 
-- **Rail**: holds a numbered glass `.step-dot` (48px circle, `panel` 70% mix + `backdrop-blur(10px)` + `blue` 35% border). When the sibling `.step-panel` is hovered (`:has(.step-panel:hover)`), the dot brightens — bg mixes to `blue` 18%, border bumps to `blue` 80%.
+- **Rail**: holds a numbered glass `.step-dot` (48px circle, `panel` 70% mix + `backdrop-blur(10px)` + `blue` 35% border). When the sibling `.step-panel` is hovered (`:has(.step-panel:hover)`), the dot brightens - bg mixes to `blue` 18%, border bumps to `blue` 80%.
 - **Connector line**: a 2px gradient (top-`blue` 50% → bottom-`blue` 20%) drawn as `::before` on `.step-marker`. Spans from below the dot to the next row's gap, hidden on the last item.
 - **Panel**: reuses the standard card glass-on-hover + spotlight. Step head row contains a lucide icon (per-step), title, and duration badge. Badge swaps from outlined muted to filled `blue-wash` (matching `.status-pill`) on hover.
 
 ### Logo wall
 Used in Experience to render the `Współpracowałem z` cards. Grid `auto-fill, minmax(280px, 1fr)` - 3 cols desktop, 2 mid, 1 mobile, no manual breakpoints. Each card has:
 
-- Logo image at the top (grayscale + opacity 0.6 idle, full color + opacity 1 on hover — uniform wall feel that rewards engagement).
+- Logo image at the top (grayscale + opacity 0.6 idle, full color + opacity 1 on hover - uniform wall feel that rewards engagement).
 - Company name (`display` 18px), role (mono blue 12px), description (sans 14px).
-- Optional `badge` field on the data entry overrides the default year-range pill — used for engagements like `"Zlecenie"`. Filled `blue-wash` styling, same vocab as `.status-pill` and the current-role `teraz` pill.
+- Optional `badge` field on the data entry overrides the default year-range pill - used for engagements like `"Zlecenie"`. Filled `blue-wash` styling, same vocab as `.status-pill` and the current-role `teraz` pill.
 
 ### Buttons
 - **Primary** - `ink` background, `paper` text, `sm` radius. **Hover:** background darkens 12% toward black + a 4px `--blue-wash` ring (the same ring used in `.active`, so hover previews the "you arrived" state). The button does not lift - it stays planted, glass-style. Arrow icon (`lucide:arrow-right` via `icon` prop) cycles through a translateX + opacity:0 teleport on hover so it appears to "fly through" rather than reverse. All button transitions are unified at `0.25s ease`. One primary per screen.

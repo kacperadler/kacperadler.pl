@@ -24,19 +24,20 @@ Agents and the human read docs that say what the code does, under our standards:
 ## Done means
 
 - `CLAUDE.md` becomes `AGENTS.md` (git mv, so history stays), its content describing the site as it is now: v2 at `/`, dark-only, no theming; no file still points at `CLAUDE.md`.
-- `README.md` and `project-plan.md` say production runs on Dokploy (Dockerfile + nginx); Cloudflare Pages appears only as a possible later move. `project-plan.md` marks the phases as history; the ticket is the unit of scope.
+- `README.md` and `project-plan.md` say production runs on Dokploy (Dockerfile + nginx); Cloudflare Pages is not mentioned as a host; `wrangler.toml` and any other Cloudflare-only config are removed. `project-plan.md` marks the phases as history; the ticket is the unit of scope.
 - No em-dash added anywhere.
 - `bun run lint`, `bun run check`, `bunx prettier --check "**/*.astro"`, `bun run build` and `bun run test:e2e` pass.
 
 ## Scope
 
 In:
-- `CLAUDE.md` → `AGENTS.md`, `README.md`, `project-plan.md`, other agent config that names `CLAUDE.md` (`.claude/`).
+- `CLAUDE.md` → `AGENTS.md`, `README.md`, `project-plan.md`, `wrangler.toml` (removed), other agent config that names `CLAUDE.md` (`.claude/`).
 
 Out:
-- `wrangler.toml` stays while a move to Cloudflare Pages is still considered.
 - Any site code.
 
 ## Decisions
 
 - 2026-10-10: The human (onboarding answers 5, 6): update the docs to the code, Dokploy is production for now (Cloudflare Pages considered later), and follow our standards, e.g. CLAUDE.md → AGENTS.md.
+- 2026-10-10: The human: the whole project is built on Dokploy, Cloudflare Pages is no longer considered.
+- 2026-10-10: The human: no CLAUDE.md; AGENTS.md only (Claude Code reads it, and the agents run through omp, which reads AGENTS.md). Merge approved.

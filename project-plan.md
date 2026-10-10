@@ -1,6 +1,13 @@
 # kacperadler.pl - plan projektu
 
-Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro hostowanego na Cloudflare Pages, gotowego pod rozwój o blog.
+Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro, gotowego pod rozwój o blog.
+
+> **Ten dokument to historia.** Fazy 0-8 są zamknięte i nowych nie dopisujemy. Od KA0001 jednostką pracy jest ticket (`spec/features/<id>/ticket.md`), kierunek wyznacza `spec/vision.md`, a aktualny stan kodu opisuje `AGENTS.md`. Co się zmieniło od czasu planu:
+>
+> - Redesign v2 wylądował pod `/` (commit `6e1b55e`): `/v2`, `v2-layout` i cała theming machinery (`data-theme`, theme toggle, inline theme script) są usunięte. Strona jest dark-only.
+> - Produkcja stoi na **Dokploy** (własny serwer): `Dockerfile` (bun build → nginx) + `nginx.conf`. Cloudflare Pages nie jest rozważany.
+> - Formularz wysyła do NocoDB (public shared form view); kierunek: leady w SQLite przez API route z adapterem Node. Faza 9 (Astro Actions + Resend) porzucona.
+> - Analytics: Umami self-hosted.
 
 ---
 
@@ -10,7 +17,7 @@ Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro h
 - **Lepsze fundamenty** niż prototyp: brak FOUC, lepsze a11y, IntersectionObserver zamiast scroll listenera, structured data, OG, sitemap
 - **Gotowe pod blog** - content collections + layouty + RSS + ClientRouter zaprojektowane od początku
 - **Lighthouse 100/100/100/100** na home (cel mierzalny przed deployem)
-- **Hosting: Cloudflare Pages** (start jako static, hybrid później pod prawdziwy form)
+- **Hosting: Dokploy** - statyczny `dist/` serwowany przez nginx z obrazu Docker
 
 ---
 
@@ -41,13 +48,10 @@ Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro h
 - **`@playwright/test`** - E2E: theme persist, nav active, form validation, mobile sheet
 
 ### Hosting
-- **Cloudflare Pages** - statyczny deploy z gita, auto preview per branch
-- **`wrangler`** (dev dependency) - lokalny preview + przyszłe Functions
+- **Dokploy** (self-hosted) - `Dockerfile` multi-stage (`oven/bun` build → `nginx:alpine`) + `nginx.conf`, port 80 za Traefikiem z Let's Encrypt
 
-### Później (Faza 7+)
-- **`@astrojs/cloudflare`** - adapter pod hybrid SSR
-- **Resend** lub **Plunk** - wysyłka maila z formularza
-- **`partytown`** - analytics off-main-thread (gdy dojdzie GA/Plausible)
+### Później
+- **`@astrojs/node`** - adapter tylko pod API route lead-store (SQLite, `prerender = false`); reszta strony zostaje statyczna (`spec/vision.md`)
 
 ---
 
@@ -56,20 +60,22 @@ Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro h
 | Decyzja | Wybór | Uzasadnienie |
 |---|---|---|
 | CSS approach | **Vanilla CSS + scoped `<style>` w `.astro`** | Design oparty na CSS variables + `light-dark()`; Tailwind/SCSS nie dodałyby wartości |
-| Theming | **`light \| dark \| system` przez `light-dark()` + `color-scheme`** | "system" za free przez `prefers-color-scheme`, brak duplikacji w :root vs `[data-theme="dark"]`; jeden akcent (navy) |
+| Theming | ~~**`light \| dark \| system` przez `light-dark()` + `color-scheme`**~~ → **dark-only** (`6e1b55e`) | `color-scheme: dark` na `:root` blokuje `light-dark()` na wartości ciemnej; jeden akcent (navy) |
 | Naming convention plików | **kebab-case** | Decyzja właściciela; importy w PascalCase działają normalnie |
-| FOUC prevention | **Inline script w `<head>`, `data-theme` na `<html>` tylko gdy forced** | Synchronicznie przed paint, system mode = brak atrybutu = @media |
+| FOUC prevention | ~~**Inline script w `<head>`, `data-theme` na `<html>` tylko gdy forced**~~ - usunięte razem z theming (`6e1b55e`) | Bez przełącznika motywu nie ma czego synchronizować przed paint |
 | Active section | **IntersectionObserver z rootMargin** | Tańszy i bardziej deterministyczny niż scroll listener |
-| Form (na teraz) | **Mock + `console.info` payload + state machine na buttonie** | Bez wysyłki; gotowe do podpięcia Action |
-| Form (potem) | **Astro Actions + Zod + Resend** | Walidacja shared client/server, type-safe |
-| Hosting (start) | **CF Pages static** (bez adaptera) | Zero coldstart, najszybszy TTFB; form i tak mockowany |
-| Hosting (potem) | **CF Pages + `@astrojs/cloudflare` w hybrid mode** | Jak będzie real form: home/blog static, `/actions/contact` jako Function |
+| Form (start) | **Mock + `console.info` payload + state machine na buttonie** | Bez wysyłki; zastąpione przez NocoDB |
+| Form (teraz) | **NocoDB public shared form view** (`FormData` z polem `data` = JSON), honeypot | Self-hosted, bez backendu w repo |
+| Form (kierunek) | **SQLite na serwerze Dokploy przez API route z adapterem Node** | Jedyny wyjątek od statycznego buildu (`spec/vision.md`) |
+| Hosting | **Dokploy: `Dockerfile` (bun build → nginx) + `nginx.conf`** | Własny serwer, kontrola nad headerami i cache, statyczny `dist/` |
 | Fonts | **Self-hosted Geist (variable woff2 w `public/fonts`)** | -1 preconnect, -50ms FCP, GDPR-friendly |
 | Icons | **`astro-icon` + lucide** | Sprite, tree-shake, mniejszy HTML |
 
 ---
 
-## 4. Struktura katalogów
+## 4. Struktura katalogów (plan z Fazy 0)
+
+Aktualna struktura: `AGENTS.md`, sekcja Struktura.
 
 ```
 kacperadler.pl/
@@ -154,7 +160,6 @@ kacperadler.pl/
 ├── biome.json                       # generowany przez ultracite init
 ├── .prettierrc                      # tylko dla *.astro
 ├── tsconfig.json                    # strict + path aliases
-├── wrangler.toml
 ├── package.json
 ├── .gitignore
 ├── .nvmrc                           # Node 20
@@ -192,7 +197,7 @@ type FormState = 'idle' | 'submitting' | 'success' | 'error';
 - Mock: `console.info('[contact]', payload)` + setTimeout, gotowe do zamiany na `actions.contact()`
 - CSS: `.btn-submit[data-state="success"]` - wizualny feedback
 
-### Theme - anty-FOUC + 3-state (nowość vs prototyp)
+### Theme - anty-FOUC + 3-state (usunięte w `6e1b55e`, strona jest dark-only)
 
 Model: `light | dark | system`. CSS używa `light-dark()` + `color-scheme: light dark` na `:root`. Kiedy user wymusi `light` lub `dark`, JS ustawia `data-theme` na `<html>`, co zmienia `color-scheme` i tym samym `light-dark()`. Tryb `system` = brak atrybutu = `prefers-color-scheme` rządzi automatycznie.
 
@@ -213,7 +218,9 @@ Inline w `<head>` przed pierwszym paint:
 
 ---
 
-## 6. Plan implementacji - fazy
+## 6. Fazy (historia)
+
+Fazy 0-8 są zamknięte; dalsza praca idzie ticketami w `spec/features/`, nie fazami.
 
 ### Faza 0 - scaffolding
 - [x] `bun create astro@latest` (Empty + TypeScript strict) - pre-existing
@@ -223,7 +230,7 @@ Inline w `<head>` przed pierwszym paint:
 - [x] Husky + lint-staged: pre-commit `lint-staged` + `astro check`
 - [x] tsconfig path aliases: `@/components`, `@/layouts`, `@/lib`, `@/scripts`, `@/styles`, `@/data`, `@/content`, `@/stores`, `@/assets`
 - [x] Skrypty w `package.json`: `dev`, `build`, `preview`, `astro`, `check`, `lint`, `format`, `test`
-- [x] `wrangler.toml` (CF Pages config od początku)
+- [x] ~~`wrangler.toml`~~ - usunięty w KA0002 (hosting na Dokploy)
 - [x] `astro.config.mjs` - `site` URL + vite alias mirror
 
 ### Faza 1 - fundamenty
@@ -277,7 +284,7 @@ Inline w `<head>` przed pierwszym paint:
 - [x] Heading hierarchy linear (h1 → h2 → h3) - fix `h4 → h3` w how-i-work step-cards po Lighthouse a11y findingu
 - [x] **Lighthouse mobile 100/100/100/100** - Performance / A11y / Best Practices / SEO. Cel z sekcji 9 osiągnięty.
 - [→ F7] **axe-core audit przez Playwright** - odłożone do F7 razem z E2E setupem (jeden wspólny `bun add -D @playwright/test @axe-core/playwright`)
-- [→ post-deploy] Re-run Lighthouse z prawdziwej domeny po podpięciu CF Pages - sanity check na real network / brotli / CDN edge (zwykle wynik *lepszy* niż localhost)
+- [→ post-deploy] Re-run Lighthouse z prawdziwej domeny po deployu na Dokploy - sanity check na real network / gzip / cache headers (zwykle wynik *lepszy* niż localhost)
 
 ### Faza 7 - copy improvement ✅ DONE
 
@@ -299,35 +306,22 @@ Cross-section consistency audit (literówki, ton, PL/EN mix) - ogarnięte at the
 *(Wcześniej Faza 7 - po copy improvement, żeby E2E asserts trafiały od razu w finalną treść.)*
 
 - [→ F9] ~~Vitest unit: `validators.ts`~~ - odłożone, `lib/validators.ts` powstaje dopiero w F9 razem z Zod schematem real form action. Teraz nic do testowania jednostkowo.
-- [ ] **Playwright E2E** (`tests/e2e/*.spec.ts`):
-  - theme persist (set dark → reload → still dark; system mode → no `data-theme`)
-  - nav active scroll (scrollIntoView per section → odpowiedni link `.active` + `aria-current`)
+- [x] **Playwright E2E** (`tests/e2e/*.spec.ts`):
+  - nav active scroll (scrollIntoView per section → odpowiedni link `.active`) + click na link
   - contact CTA przejmuje active w sekcji `#contact`
-  - mobile sheet open/close (hamburger click → `data-mobile-sheet="open"`; Escape close)
-  - timeline expand/collapse (button click → `.expanded` toggle + button label swap)
-  - contact form: invalid email → `data-invalid`; valid submit → `data-state="success"` + `data-show` na `.form-success`
-  - skip-to-content link → focus reveals, click jumps to `#top`
-- [ ] **axe-core a11y test** w Playwright (`@axe-core/playwright`) - runuje się jako jeden test w E2E suite, na wszystkich stronach (`/`, `/404`)
-- [ ] **CI workflow update** (`.github/workflows/ci.yml`):
-  - dodać job `e2e` z `bun playwright install --with-deps chromium` + `bun playwright test`
-  - main job sekwencja: lint → check → prettier → build → e2e
-- [ ] **Cloudflare Pages**:
-  - Connect repo na CF dashboard
-  - Build cmd: `bun run build`, output dir: `dist`
-  - Env: `BUN_VERSION=1.3` + `PUBLIC_SITE_URL=https://kacperadler.pl`
-  - Preview deploys per PR (`*.pages.dev`)
-- [ ] **Custom domain** `kacperadler.pl` + DNS (CNAME → `kacperadler-pl.pages.dev`) + auto SSL
+  - mobile sheet open/close (hamburger, X, Escape z powrotem fokusu, auto-close po linku)
+  - contact form: puste pola, invalid email, success, reset, błąd upstream, honeypot (NocoDB stubowany przez `page.route`)
+  - skip-to-content link → focus reveals, Enter skacze do `#top`
+  - ~~theme persist~~ - spec usunięty razem z theming (`6e1b55e`); ~~timeline expand/collapse~~ - collapsible wyleciał w Fazie 7
+- [x] **axe-core a11y test** (`tests/e2e/a11y.spec.ts`, `@axe-core/playwright`) - `/` i 404, WCAG 2.1 AA
+- [x] **CI workflow** (`.github/workflows/ci.yml`): job `build` (lint → check → prettier → build) + job `e2e` (Playwright chromium z cache)
+- [x] **Deploy na Dokploy**: `Dockerfile` + `nginx.conf` w repo, container port 80, domena `kacperadler.pl` przez Traefik z Let's Encrypt
 - [ ] **Post-deploy Lighthouse re-run** z prawdziwej domeny (sanity check)
 
-### Faza 9 (przyszłość) - real form submit
-- [ ] `bun astro add cloudflare` → `output: 'hybrid'` (lub server)
-- [ ] `actions/index.ts` - `contact` action z Zod + Resend
-- [ ] `lib/validators.ts` - schemat Zod współdzielony client/server
-- [ ] Honeypot field + rate limit (CF KV)
-- [ ] `scripts/contact-form.ts` - zamiana `console.info` mock na `actions.contact()`
-- [ ] Sentry / CF Logpush dla błędów
+### Faza 9 - real form submit (porzucona)
+Plan z Astro Actions + Resend nie wszedł. Formularz wysyła do NocoDB (public shared form view, honeypot, eventy Umami `form-submit` / `form-error` / `form-honeypot`). Kierunek z `spec/vision.md`: leady w SQLite na serwerze Dokploy przez API route z adapterem Node, jako ticket.
 
-### Faza 10 (przyszłość) - blog
+### Faza 10 (przyszłość, jako tickety) - blog
 - [ ] `bun astro add mdx` → `@astrojs/mdx` integration
 - [ ] `pages/blog/index.astro` - lista z `getCollection('blog')`, sortowanie po `pubDate`
 - [ ] `pages/blog/[slug].astro` - render MDX, TOC, prev/next
@@ -338,52 +332,29 @@ Cross-section consistency audit (literówki, ton, PL/EN mix) - ogarnięte at the
 
 ---
 
-## 7. Cloudflare Pages - deployment
+## 7. Deployment - Dokploy
 
-### Start (Faza 8) - static deploy
+1. Dokploy (własny serwer) buduje obraz z `Dockerfile` w repo:
+   - stage `build`: `oven/bun:1.3.13-alpine`, `apk add fontconfig ttf-dejavu` (polskie diakrytyki w OG image), `bun install --frozen-lockfile`, `bun run build`
+   - stage `serve`: `nginx:1.27-alpine` z `nginx.conf` i `dist/`
+2. `nginx.conf`: gzip, security headers przez jeden zestaw `add_header` (Cache-Control z `map`, bo `add_header` nie dziedziczy między poziomami), immutable cache dla `/_astro/` i fontów, `/404.html` jako error page
+3. Container port **80**, routing przez Traefik w Dokploy, certyfikat Let's Encrypt dla `kacperadler.pl`
 
-1. Push repo na GitHub (`main`)
-2. Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git
-3. Build settings:
-   - Framework preset: **Astro**
-   - Build command: `bun run build`
-   - Build output: `dist`
-   - Build runtime: `BUN_VERSION=1.3` (env var)
-4. Environment variables (Production):
-   - `PUBLIC_SITE_URL=https://kacperadler.pl`
-5. Custom domain: kacperadler.pl + auto SSL
-6. Preview deploys: każdy PR dostaje URL `*.pages.dev`
-
-### `wrangler.toml` (od początku w repo)
-```toml
-name = "kacperadler-pl"
-compatibility_date = "2026-04-01"
-pages_build_output_dir = "./dist"
-```
-
-### Migracja do hybrid (Faza 9)
+Lokalny test obrazu:
 ```bash
-pnpm astro add cloudflare
-```
-```js
-// astro.config.mjs
-export default defineConfig({
-  adapter: cloudflare(),
-  output: 'hybrid',  // home/blog statyczne, akcje on-demand
-});
-// pages/index.astro: export const prerender = true;
-// actions/index.ts: bez prerender - działa jako Function
+docker build -t kacperadler-pl-test .
+docker run --rm -p 8089:80 kacperadler-pl-test
 ```
 
 ---
 
-## 8. Otwarte decyzje (do potwierdzenia w trakcie / przed startem)
+## 8. Decyzje otwarte w czasie planu (rozstrzygnięte)
 
-- **OG image generator** - statyczny PNG czy on-the-fly (Satori)? Default: statyczny do czasu blogu, potem Satori per post
-- **Email obfuscation** - Cloudflare email-decode tag jest aktywny w prototypie. Pominąć (bot odporność i tak słaba) czy zachować przez CF?
-- **Analytics** - Plausible, Cloudflare Web Analytics, czy nic? Default: CF Web Analytics (free, privacy-first, zero JS)
-- **Real form provider** - Resend (3000 maili/mc free), Plunk, czy Formspree? Default: Resend gdy dojdzie Faza 9
-- **Czy hostować case-studies projektów na osobnych podstronach?** `pages/projects/[slug].astro` - natywne dla content collection. Default: TAK, w Fazie 4 dodać podstrony
+- **OG image generator** - statyczny PNG generowany w buildzie (`src/pages/og-default.png.ts`, sharp + SVG); per-post OG wróci z blogiem
+- **Email obfuscation** - pominięte; email w zwykłym `mailto:`
+- **Analytics** - Umami self-hosted (`analytics.kacperadler.pl`), bez cookies, tylko PROD
+- **Real form provider** - NocoDB self-hosted; kierunek: SQLite przez API route (`spec/vision.md`)
+- **Czy hostować case-studies projektów na osobnych podstronach?** - sekcja Projects schowana do czasu realnych case studies; wrócą jako Markdown/MDX w content collections (`spec/vision.md`)
 
 ---
 
@@ -392,19 +363,17 @@ export default defineConfig({
 Przed deployem produkcyjnym:
 - [ ] Lighthouse mobile: Performance ≥95, A11y 100, Best Practices 100, SEO 100
 - [ ] CLS < 0.05, LCP < 2s, INP < 200ms (na 4G)
-- [ ] Brak FOUC theme przy pierwszym wejściu w light/dark
+- [ ] ~~Brak FOUC theme przy pierwszym wejściu w light/dark~~ - nieaktualne, strona jest dark-only
 - [ ] Działa bez JS (graceful degradation): treść widoczna, linki działają, form pokazuje natywną walidację
 - [ ] `prefers-reduced-motion` szanowane wszędzie
 - [ ] Keyboard nav: Tab przez wszystkie interaktywne, focus visible, Esc zamyka mobile sheet
-- [ ] Screen reader: nav, form, theme toggle mają sensowne labele
+- [ ] Screen reader: nav, form mają sensowne labele
 - [ ] Test na realnym mobilnym device (iOS Safari, Android Chrome)
 
 ---
 
-## 10. Następny krok
+## 10. Co dalej
 
-**Faza 0–7 - DONE.** Lighthouse mobile 100×4 ✅. Copy zsynchronizowany z siteConfig, em-dashes wycięte (anti-AI-detection), Experience timeline z auto-liczonym tenure, Projects schowane do realnych case-studies.
+**Fazy 0-8 - DONE.** Lighthouse mobile 100×4 ✅, E2E + axe w CI, produkcja na Dokploy.
 
-Następnie: **Faza 8 - testy + deploy** (Playwright E2E + axe-core + CI test job + Cloudflare Pages connect).
-
-Potem: **Faza 9** real form submit → **Faza 10** blog.
+Dalsza praca idzie ticketami w `spec/features/<id>/ticket.md`; kierunki (oferta, lead store w SQLite, case studies, blog) są w `spec/vision.md`.

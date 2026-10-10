@@ -2,16 +2,16 @@
   {
     "id": "KA0001",
     "title": "Onboarding: vision and criteria for kacperadler.pl",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0001-onboarding-vision-and-criteria-for-kacperadler-pl/ticket.md",
-    "updated": "2026-10-10T12:14:40.685Z"
+    "updated": "2026-10-10T12:24:05.359Z"
   },
   {
     "id": "KA0002",
     "title": "Docs match the code and the harness standards (AGENTS.md)",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0002-docs-match-the-code-and-the-harness-standards-agents-md/ticket.md",
-    "updated": "2026-10-10T12:19:41.116Z",
+    "updated": "2026-10-10T12:43:01.976Z",
     "after": [
       "KA0001"
     ]
@@ -19,8 +19,74 @@
   {
     "id": "KA0003",
     "title": "Update dependencies, Astro to the newest release",
-    "status": "planned",
+    "status": "review",
     "path": "spec/features/KA0003-update-dependencies-astro-to-the-newest-release/ticket.md",
-    "updated": "2026-10-10T12:19:41.309Z"
+    "updated": "2026-10-10T12:39:30.979Z"
+  },
+  {
+    "id": "KA0004",
+    "title": "Harness gap: no `test` script, so `npm test` fails",
+    "status": "planned",
+    "path": "spec/features/KA0004-harness-gap-no-test-script-so-npm-test-fails/ticket.md",
+    "updated": "2026-10-10T12:28:08.232Z",
+    "after": [
+      "KA0003"
+    ]
+  },
+  {
+    "id": "KA0005",
+    "title": "The dropped email-templates offer is still on the site",
+    "status": "merged",
+    "path": "spec/features/KA0005-the-dropped-email-templates-offer-is-still-on-the-site/ticket.md",
+    "updated": "2026-10-10T12:36:50.511Z"
+  },
+  {
+    "id": "KA0006",
+    "title": "Em-dashes left in generated text and docs",
+    "status": "merged",
+    "path": "spec/features/KA0006-em-dashes-left-in-generated-text-and-docs/ticket.md",
+    "updated": "2026-10-10T12:40:40.002Z"
+  },
+  {
+    "id": "KA0007",
+    "title": "Em-dash left in the KA0001 review record",
+    "status": "dropped",
+    "path": "spec/features/KA0007-em-dash-left-in-the-ka0001-review-record/ticket.md",
+    "updated": "2026-10-10T12:42:50.796Z"
+  },
+  {
+    "id": "KA0008",
+    "title": "`DESIGN.md` still describes `/v2` and the theme toggle",
+    "status": "planning",
+    "path": "spec/features/KA0008-design-md-still-describes-v2-and-the-theme-toggle/ticket.md",
+    "updated": "2026-10-10T12:43:01.970Z"
+  },
+  {
+    "id": "KA0009",
+    "title": "The privacy policy says the site stores a theme preference in `localStorage`",
+    "status": "planning",
+    "path": "spec/features/KA0009-the-privacy-policy-says-the-site-stores-a-theme-preference-in-localstorage/ticket.md",
+    "updated": "2026-10-10T12:43:01.972Z"
+  },
+  {
+    "id": "KA0010",
+    "title": "Code comments still point at `v2-layout` and `body.v2-body`",
+    "status": "planning",
+    "path": "spec/features/KA0010-code-comments-still-point-at-v2-layout-and-body-v2-body/ticket.md",
+    "updated": "2026-10-10T12:43:01.973Z"
+  },
+  {
+    "id": "KA0011",
+    "title": "Claude Code may no longer load the agent conventions",
+    "status": "dropped",
+    "path": "spec/features/KA0011-claude-code-may-no-longer-load-the-agent-conventions/ticket.md",
+    "updated": "2026-10-10T12:43:23.947Z"
+  },
+  {
+    "id": "KA0012",
+    "title": "`@/stores` path alias with no `src/stores`",
+    "status": "planning",
+    "path": "spec/features/KA0012-stores-path-alias-with-no-src-stores/ticket.md",
+    "updated": "2026-10-10T12:43:01.975Z"
   }
 ]
