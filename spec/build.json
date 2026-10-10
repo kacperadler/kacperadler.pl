@@ -637,9 +637,9 @@
   {
     "id": "KA0080",
     "title": "Design proposal: blueprint drawn on scroll",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0080-design-proposal-blueprint-drawn-on-scroll/ticket.md",
-    "updated": "2026-10-10T21:13:23.740Z",
+    "updated": "2026-10-10T21:57:26.380Z",
     "after": [
       "KA0079"
     ]

@@ -28,6 +28,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0072 A signature of Kacper's own in the minimal brutalism style (890ae8d)
 - KA0076 Signature proposal: editorial (8d3181c)
 - KA0077 Signature proposal: live-grid (06004dd)
+- KA0080 Design proposal: blueprint drawn on scroll (a7c100d)
 
 ### Fixed
 
