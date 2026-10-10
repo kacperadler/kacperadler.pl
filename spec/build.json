@@ -164,8 +164,8 @@
   {
     "id": "KA0022",
     "title": "contact-form e2e spec fails now and then in parallel runs",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0022-contact-form-e2e-spec-fails-now-and-then-in-parallel-runs/ticket.md",
-    "updated": "2026-10-10T13:22:29.384Z"
+    "updated": "2026-10-10T14:02:46.145Z"
   }
 ]
