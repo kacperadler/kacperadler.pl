@@ -57,9 +57,9 @@
   {
     "id": "KA0008",
     "title": "`DESIGN.md` still describes `/v2` and the theme toggle",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0008-design-md-still-describes-v2-and-the-theme-toggle/ticket.md",
-    "updated": "2026-10-10T12:53:20.472Z"
+    "updated": "2026-10-10T12:55:37.070Z"
   },
   {
     "id": "KA0009",
@@ -92,22 +92,25 @@
   {
     "id": "KA0013",
     "title": "astro-icon 1.2 warns on every build about a missing `src/icons`",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0013-astro-icon-1-2-warns-on-every-build-about-a-missing-src-icons/ticket.md",
-    "updated": "2026-10-10T12:50:16.727Z"
+    "updated": "2026-10-10T12:56:21.861Z"
   },
   {
     "id": "KA0014",
     "title": "`@types/node` 26 typechecks against a newer Node than CI and Docker run",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0014-types-node-26-typechecks-against-a-newer-node-than-ci-and-docker-run/ticket.md",
-    "updated": "2026-10-10T12:50:16.729Z"
+    "updated": "2026-10-10T12:56:22.462Z",
+    "after": [
+      "KA0004"
+    ]
   },
   {
     "id": "KA0015",
     "title": "The mobile menu has no accessible name",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0015-the-mobile-menu-has-no-accessible-name/ticket.md",
-    "updated": "2026-10-10T12:50:34.599Z"
+    "updated": "2026-10-10T12:56:22.261Z"
   }
 ]

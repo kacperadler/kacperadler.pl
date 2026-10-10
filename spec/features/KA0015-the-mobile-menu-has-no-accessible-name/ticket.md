@@ -34,3 +34,4 @@ Out:
 ## Decisions
 
 - 2026-10-10: Source: review note on KA0003 (2026-10-10-review-deps-and-astro-7-3f9b93b9's first review); waits for the human's approval.
+- 2026-10-10: The human approved it.
