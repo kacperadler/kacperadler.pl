@@ -28,7 +28,6 @@ export default defineConfig({
         "@/layouts": r("./src/layouts"),
         "@/lib": r("./src/lib"),
         "@/scripts": r("./src/scripts"),
-        "@/stores": r("./src/stores"),
         "@/styles": r("./src/styles"),
       },
     },
