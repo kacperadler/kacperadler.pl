@@ -1,0 +1,26 @@
+{
+  "description": "Spokojny, firmowy kierunek: jeden dopracowany grotesk (Inter) w wyraźnej hierarchii, nagłówki wyrównane do lewej i ciche karty z delikatną głębią zamiast szkła, poświaty i dryfujących wstęg. Ruch ograniczony do zmian koloru i cienia, a granat z palety oznacza tylko to, co aktywne, klikalne albo ważne.",
+  "name": "Professional",
+  "references": [
+    {
+      "label": "Stripe",
+      "url": "https://stripe.com/"
+    },
+    {
+      "label": "Linear",
+      "url": "https://linear.app/"
+    },
+    {
+      "label": "IBM Carbon Design System",
+      "url": "https://carbondesignsystem.com/"
+    },
+    {
+      "label": "Sentry",
+      "url": "https://sentry.io/"
+    },
+    {
+      "label": "Inter (Rasmus Andersson)",
+      "url": "https://rsms.me/inter/"
+    }
+  ]
+}
