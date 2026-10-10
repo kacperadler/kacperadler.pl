@@ -41,3 +41,12 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - What: The Dockerfile does `COPY . .` (line 22) in the build stage. `.dockerignore` lists `.vscode/` and `.claude/` but not `.zed/`, and does not exclude `spec/` or `.agents/`; its `*.md` matches root files only, so `spec/**/*.md` and `.agents/**/*.md` go into the build context. Only `dist/` reaches the nginx image (line 36), so the result is a larger build context and a cache bust on every ticket edit, not a different image [INFERENCE: not measured with `docker build`].
 - Suggestion: list `.zed/`, `spec/` and `.agents/` in `.dockerignore` and check with `docker build -t kacperadler-pl-test .`, as `AGENTS.md` asks for Docker changes.
 - Status: fixed in c8d227d
+
+## F5. e2e failed once with ERR_CONNECTION_REFUSED next to a docker build
+
+- Kind: risk
+- Found by: 2026-10-10-review-one-formatter-no-c7863e8a (review), 2026-10-10
+- Where: `playwright.config.ts` (webServer)
+- What: 2 of 20 tests got `ERR_CONNECTION_REFUSED` right after a concurrent `docker build`; a rerun passed 20/20.
+- Suggestion: none yet.
+- Status: dropped (seen once under heavy host load; reopen if `h merge` or CI hits it)

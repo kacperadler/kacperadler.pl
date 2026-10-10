@@ -178,9 +178,9 @@
   {
     "id": "KA0024",
     "title": "Drop editor and agent configs, Biome formats .astro instead of Prettier",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0024-drop-editor-and-agent-configs-biome-formats-astro-instead-of-prettier/ticket.md",
-    "updated": "2026-10-10T14:53:59.842Z"
+    "updated": "2026-10-10T14:57:43.132Z"
   },
   {
     "id": "KA0025",
@@ -197,7 +197,7 @@
     "title": "Offer: AI agents, automation, Claude Code and Codex training",
     "status": "review",
     "path": "spec/features/KA0026-offer-ai-agents-automation-claude-code-and-codex-training/ticket.md",
-    "updated": "2026-10-10T14:53:01.516Z"
+    "updated": "2026-10-10T14:57:03.201Z"
   },
   {
     "id": "KA0027",
@@ -209,9 +209,9 @@
   {
     "id": "KA0028",
     "title": "Case studies in MDX: collection, list and page",
-    "status": "review",
+    "status": "in-progress",
     "path": "spec/features/KA0028-case-studies-in-mdx-instead-of-placeholder-projects/ticket.md",
-    "updated": "2026-10-10T14:53:23.077Z"
+    "updated": "2026-10-10T14:56:10.244Z"
   },
   {
     "id": "KA0029",
