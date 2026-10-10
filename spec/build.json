@@ -296,9 +296,9 @@
   {
     "id": "KA0037",
     "title": "Component catalogue at /ui",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0037-component-catalogue-at-ui/ticket.md",
-    "updated": "2026-10-10T15:28:40.333Z"
+    "updated": "2026-10-10T16:32:42.757Z"
   },
   {
     "id": "KA0038",
@@ -418,5 +418,33 @@
     "status": "planning",
     "path": "spec/features/KA0051-the-h1-tagline-og-tagline-and-status-card-stack-still-describe-only-frontend-work/ticket.md",
     "updated": "2026-10-10T15:18:23.528Z"
+  },
+  {
+    "id": "KA0052",
+    "title": "Inputs, textarea and radio have no disabled style",
+    "status": "planning",
+    "path": "spec/features/KA0052-inputs-textarea-and-radio-have-no-disabled-style/ticket.md",
+    "updated": "2026-10-10T16:32:42.745Z"
+  },
+  {
+    "id": "KA0053",
+    "title": "The site's .prose and the ported .prose are two typography sources",
+    "status": "planning",
+    "path": "spec/features/KA0053-the-site-s-prose-and-the-ported-prose-are-two-typography-sources/ticket.md",
+    "updated": "2026-10-10T16:32:42.751Z"
+  },
+  {
+    "id": "KA0054",
+    "title": "Patterns not yet in the catalogue",
+    "status": "planning",
+    "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
+    "updated": "2026-10-10T16:32:42.753Z"
+  },
+  {
+    "id": "KA0055",
+    "title": "Case study pages repeat the badge and tag markup",
+    "status": "planning",
+    "path": "spec/features/KA0055-case-study-pages-repeat-the-badge-and-tag-markup/ticket.md",
+    "updated": "2026-10-10T16:32:42.754Z"
   }
 ]

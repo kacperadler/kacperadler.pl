@@ -12,6 +12,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0026 Offer: AI agents, automation, Claude Code and Codex training (7453229)
 - KA0028 Case studies in MDX: collection, list and page (6feb382)
 - KA0036 Kacper is a software engineer, not a frontend engineer (a8f5655)
+- KA0037 Component catalogue at /ui (140ac4d)
 
 ### Fixed
 
