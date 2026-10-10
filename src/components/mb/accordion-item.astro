@@ -1,0 +1,134 @@
+---
+import { Icon } from "astro-icon/components";
+
+/* One item of an <Accordion>: the row (`title` and a chevron) and the
+ * content in the slot.
+ *   open      the item starts open
+ *   disabled  the row is plain text that cannot be focused or opened, the
+ *             content is not rendered
+ * The chevron turns with --mb-snap; the content snaps open, with no height
+ * animation. The `data-mb-accordion-item` marker is where <Accordion>
+ * writes the shared `name`. */
+interface Props {
+  disabled?: boolean;
+  open?: boolean;
+  title: string;
+}
+
+const { disabled = false, open = false, title } = Astro.props;
+---
+
+{disabled ? (
+  <div class="mb-accordion-item mb-accordion-item-disabled">
+    <div aria-disabled="true" class="mb-accordion-trigger">
+      <span>{title}</span>
+      <Icon
+        aria-hidden="true"
+        class="mb-accordion-chevron"
+        name="lucide:chevron-down"
+      />
+    </div>
+  </div>
+) : (
+  <details class="mb-accordion-item" data-mb-accordion-item open={open}>
+    <summary class="mb-accordion-trigger">
+      <span>{title}</span>
+      <Icon
+        aria-hidden="true"
+        class="mb-accordion-chevron"
+        name="lucide:chevron-down"
+      />
+    </summary>
+    <div class="mb-accordion-content">
+      <slot />
+    </div>
+  </details>
+)}
+
+<style>
+  .mb-accordion-item {
+    border-bottom: 1px solid var(--mb-hair);
+  }
+
+  :global(.mb-accordion-bordered) > .mb-accordion-item {
+    padding: 0 16px;
+  }
+
+  :global(.mb-accordion-bordered) > .mb-accordion-item:last-child {
+    border-bottom: 0;
+  }
+
+  .mb-accordion-trigger {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    font-family: var(--mb-display);
+    font-size: 16px;
+    font-weight: 650;
+    line-height: 1.35;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .mb-accordion-trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .mb-accordion-trigger:is(:hover, [data-state="hover"]) span {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--blue);
+    text-underline-offset: 4px;
+  }
+
+  .mb-accordion-trigger :global(.mb-accordion-chevron) {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--ink-2);
+    transition: transform var(--mb-snap);
+  }
+
+  .mb-accordion-item-disabled .mb-accordion-trigger {
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .mb-accordion-item-disabled .mb-accordion-trigger span {
+    text-decoration: none;
+  }
+
+  .mb-accordion-item-disabled :global(.mb-accordion-chevron) {
+    color: var(--muted);
+  }
+
+  .mb-accordion-item[open] :global(.mb-accordion-chevron) {
+    color: var(--blue);
+    transform: rotate(180deg);
+  }
+
+  .mb-accordion-content {
+    padding: 0 0 16px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .mb-accordion-content :global(p) {
+    margin: 0 0 8px;
+  }
+
+  .mb-accordion-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-accordion-trigger :global(.mb-accordion-chevron) {
+      transition: none;
+    }
+  }
+</style>

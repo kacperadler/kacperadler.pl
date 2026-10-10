@@ -1,0 +1,59 @@
+---
+/* Cell grid: cells (<Card>s or anything with an ink rule) collapse into one
+ * ruled table - no gap, every cell pulled 1px up and left over its
+ * neighbour so two cells share one rule, the grid padded 1px back so the
+ * outer frame stays inside it.
+ *   columns  a fixed count on wide screens, one column at 880px and below;
+ *            with two columns an odd last cell spans the row
+ *   min      without `columns`: as many columns as fit cells of this width
+ *            (wrapped in min(100%, ...), so a narrow screen never scrolls)
+ * `tag` picks the element (a list of cells is a ul / ol). */
+interface Props {
+  class?: string;
+  columns?: number;
+  min?: string;
+  tag?: "div" | "ul" | "ol";
+}
+
+const { columns, min = "280px", tag = "div", class: extraClass } = Astro.props;
+const Tag = tag;
+const template = columns
+  ? `repeat(${columns}, minmax(0, 1fr))`
+  : `repeat(auto-fill, minmax(min(100%, ${min}), 1fr))`;
+---
+
+<Tag
+  style={`--mb-cell-columns: ${template}`}
+  class:list={[
+    "mb-cell-grid",
+    { "mb-cell-grid-fixed": columns, "mb-cell-grid-pair": columns === 2 },
+    extraClass,
+  ]}
+>
+  <slot />
+</Tag>
+
+<style>
+  .mb-cell-grid {
+    display: grid;
+    grid-template-columns: var(--mb-cell-columns);
+    gap: 0;
+    padding: 1px 0 0 1px;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mb-cell-grid > :global(*) {
+    margin: -1px 0 0 -1px;
+  }
+
+  .mb-cell-grid-pair > :global(:last-child:nth-child(odd)) {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 880px) {
+    .mb-cell-grid-fixed {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

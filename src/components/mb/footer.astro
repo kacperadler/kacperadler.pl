@@ -1,0 +1,165 @@
+---
+import { siteConfig } from "@/data/site-config";
+import Brand from "./brand.astro";
+import Link from "./link.astro";
+
+/* Footer: the solid substrate under an ink rule. The brand and tagline
+ * left, two link columns right (one column at 880px and below), the
+ * copyright under a hairline. */
+const year = new Date().getFullYear();
+---
+
+<footer class="mb-footer">
+  <div class="container">
+    <div class="mb-footer-grid">
+      <div class="mb-footer-brand">
+        <Brand size="lg" />
+        <p class="mb-footer-tagline">
+          {siteConfig.role}. React, TypeScript, Astro - od architektury po
+          deploy.
+        </p>
+      </div>
+
+      <div class="mb-footer-cols">
+        <div>
+          <h3 class="mb-footer-title">Informacje</h3>
+          <ul>
+            <li>
+              <Link href="/polityka-prywatnosci" variant="footer"
+                >Polityka prywatności</Link
+              >
+            </li>
+            <li>
+              <Link href="/regulamin" variant="footer">Regulamin</Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="mb-footer-title">Kontakt</h3>
+          <ul>
+            <li>
+              <Link
+                href={`mailto:${siteConfig.email}`}
+                icon="lucide:mail"
+                variant="footer"
+              >
+                Email
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={siteConfig.social.linkedin}
+                icon="lucide:linkedin"
+                rel="noopener"
+                target="_blank"
+                variant="footer"
+              >
+                LinkedIn
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={siteConfig.social.github}
+                icon="lucide:github"
+                rel="noopener"
+                target="_blank"
+                variant="footer"
+              >
+                GitHub
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-footer-bottom">
+      <span>© {year} · kacperadler.pl</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .mb-footer {
+    padding: 56px 0 28px;
+    margin-top: 24px;
+    background: var(--v2-bg);
+    border-top: 1px solid var(--mb-rule);
+  }
+
+  .mb-footer-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+
+  .mb-footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .mb-footer-tagline {
+    max-width: 38ch;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .mb-footer-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .mb-footer-title {
+    margin: 0 0 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .mb-footer-cols ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mb-footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 24px;
+    margin-top: 48px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-2);
+    letter-spacing: 0.04em;
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  @media (max-width: 880px) {
+    .mb-footer-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 32px;
+    }
+
+    .mb-footer-cols {
+      gap: 24px;
+    }
+
+    .mb-footer-bottom {
+      margin-top: 32px;
+    }
+  }
+</style>

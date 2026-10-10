@@ -1,0 +1,297 @@
+---
+import { Icon } from "astro-icon/components";
+import Alert from "./alert.astro";
+import Button from "./button.astro";
+import Field from "./field.astro";
+import Input from "./input.astro";
+import Radio from "./radio.astro";
+import Textarea from "./textarea.astro";
+
+/* Contact form: one ruled sheet holding the form or, once sent, the success
+ * card. The hooks are scripts/contact-form.ts's, as in
+ * contact/contact-form.astro: [data-contact-wrap] (its data-state: idle |
+ * submitting | error-validation | error-submit | success),
+ * [data-contact-form], [data-field], [data-submit], [data-form-error],
+ * [data-form-success], [data-form-reset], the "website" honeypot.
+ *
+ * The sheet fills in on hover; while the email or the message is being
+ * written in (and after it is sent) it carries the hard blue shadow, like
+ * the default button. The radios are left out of that on purpose, so a
+ * click on a project type does not flicker it. min-height keeps the page
+ * from jumping when the success card replaces the form.
+ *
+ * For the catalogue (/ui/mb), which shows every state at once:
+ *   state       the wrapper's starting data-state, with the fields, the
+ *               banner and the submit button as the script would leave them
+ *   forceFocus  the email field in its focus look ([data-state="focus"])
+ *   idPrefix    prefixes every id, so several forms fit on one page */
+type FormState =
+  | "idle"
+  | "submitting"
+  | "error-validation"
+  | "error-submit"
+  | "success";
+
+interface Props {
+  forceFocus?: boolean;
+  idPrefix?: string;
+  state?: FormState;
+}
+
+const {
+  forceFocus = false,
+  idPrefix = "contact",
+  state = "idle",
+} = Astro.props;
+
+const projectTypes = [
+  { label: "AI i automatyzacje", value: "ai" },
+  { label: "Aplikacja webowa", value: "webapp" },
+  { label: "Landing page", value: "landing" },
+  { label: "Aplikacja mobilna", value: "mobile" },
+  { label: "Narzędzie wewn.", value: "tool" },
+  { label: "Inne", value: "other" },
+] as const;
+
+const invalid = state === "error-validation";
+const submitting = state === "submitting";
+const submitState =
+  state === "error-validation" || state === "error-submit" ? "error" : state;
+const id = (name: string) => `${idPrefix}-${name}`;
+---
+
+<div class="mb-contact-form" data-contact-wrap data-state={state}>
+  <form class="mb-form" data-contact-form novalidate>
+    <Field
+      errorMessage="Podaj prawidłowy adres email."
+      for={id("email")}
+      invalid={invalid}
+      label="Twój email"
+      name="email"
+    >
+      <Input
+        autocomplete="email"
+        data-state={forceFocus ? "focus" : undefined}
+        id={id("email")}
+        name="email"
+        placeholder="twoj@email.pl"
+        required
+        type="email"
+      />
+    </Field>
+
+    <Field
+      errorMessage="Wybierz typ projektu."
+      invalid={invalid}
+      label="Typ projektu"
+      name="type"
+    >
+      <div aria-label="Typ projektu" class="mb-radios" role="radiogroup">
+        {projectTypes.map((option) => (
+          <Radio
+            label={option.label}
+            name="type"
+            value={option.value}
+            variant="choice"
+          />
+        ))}
+      </div>
+    </Field>
+
+    <Field
+      errorMessage="Dodaj krótki opis projektu."
+      for={id("message")}
+      invalid={invalid}
+      label="Wiadomość"
+      name="message"
+    >
+      <Textarea
+        id={id("message")}
+        name="message"
+        placeholder="Opisz krótko, o co chodzi - zakres, deadline, jeśli znane. 2–3 zdania wystarczą, żeby zacząć rozmowę."
+        required
+      />
+    </Field>
+
+    <!--
+      Honeypot - bots fill every field, humans don't see this one. The
+      submit handler drops the request if it's non-empty. aria-hidden +
+      tabindex=-1 keeps it out of the keyboard tab order and screen
+      reader output; the off-screen position keeps it out of view.
+    -->
+    <div aria-hidden="true" class="mb-hp">
+      <label for={id("website")}>Strona WWW (zostaw puste)</label>
+      <input
+        autocomplete="off"
+        id={id("website")}
+        name="website"
+        tabindex="-1"
+        type="text"
+      >
+    </div>
+
+    <Alert data-form-error variant="destructive">
+      Coś poszło nie tak. Spróbuj ponownie za chwilę albo napisz mailem na
+      <a href="mailto:kontakt@kacperadler.pl">kontakt@kacperadler.pl</a>.
+    </Alert>
+
+    <div class="mb-submit-row">
+      <Button
+        aria-busy={submitting ? "true" : undefined}
+        data-state={submitState}
+        data-submit
+        disabled={submitting}
+        iconEnd="lucide:arrow-right"
+        type="submit"
+      >
+        Wyślij wiadomość
+      </Button>
+    </div>
+  </form>
+
+  <div
+    aria-live="polite"
+    class="mb-form-success"
+    data-form-success
+    role="status"
+  >
+    <div aria-hidden="true" class="mb-success-mark">
+      <Icon name="lucide:check" />
+    </div>
+    <h3>Wiadomość wysłana</h3>
+    <p>Dzięki! Odezwę się tego samego dnia, najpóźniej w ciągu 24h.</p>
+    <Button data-form-reset size="sm" variant="outline">
+      Wyślij kolejną wiadomość
+    </Button>
+  </div>
+</div>
+
+<style>
+  .mb-contact-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 490px;
+    background: var(--v2-bg);
+    border: 1px solid var(--mb-rule);
+    transition:
+      background-color var(--mb-snap),
+      box-shadow var(--mb-snap);
+  }
+
+  .mb-contact-form:hover {
+    background: var(--v2-panel);
+  }
+
+  .mb-contact-form:is(
+    :has(:global(input[type="email"]:is(:focus, [data-state="focus"]))),
+    :has(:global(textarea:is(:focus, [data-state="focus"]))),
+    [data-state="success"]
+  ) {
+    background: var(--v2-panel);
+    box-shadow: var(--mb-shift) var(--mb-shift) 0 var(--blue);
+  }
+
+  .mb-form {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+  }
+
+  .mb-contact-form[data-state="success"] .mb-form {
+    display: none;
+  }
+
+  .mb-hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .mb-radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mb-form :global([data-form-error]) {
+    display: none;
+  }
+
+  .mb-contact-form[data-state="error-submit"] :global([data-form-error]) {
+    display: grid;
+  }
+
+  .mb-submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: auto;
+  }
+
+  .mb-form-success {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 28px;
+    text-align: center;
+  }
+
+  .mb-contact-form[data-state="success"] .mb-form-success {
+    display: flex;
+  }
+
+  .mb-success-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    color: var(--v2-bg);
+    background: var(--blue);
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-success-mark :global(svg) {
+    width: 24px;
+    height: 24px;
+  }
+
+  .mb-form-success h3 {
+    margin: 4px 0 0;
+    font-family: var(--mb-display);
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.035em;
+  }
+
+  .mb-form-success p {
+    max-width: 36ch;
+    margin: 0 0 12px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 480px) {
+    .mb-form {
+      padding: 20px 16px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-contact-form {
+      transition: none;
+    }
+  }
+</style>

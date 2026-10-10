@@ -1,0 +1,63 @@
+---
+import { siteConfig } from "@/data/site-config";
+
+/* The brand: a square blue "k" mark beside "Kacper Adler" in heavy Geist,
+ * linking to the top of the home page. `size` "sm" sits in the header,
+ * "lg" in the footer. */
+interface Props {
+  size?: "sm" | "lg";
+}
+
+const { size = "sm" } = Astro.props;
+---
+
+<a
+  aria-label={`${siteConfig.name} - Strona główna`}
+  href="/#top"
+  class:list={["mb-brand", `mb-brand-${size}`]}
+>
+  <span aria-hidden="true" class="mb-mark">k</span>
+  <span><b>Kacper</b> <em>Adler</em></span>
+</a>
+
+<style>
+  .mb-brand {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    font-family: var(--mb-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+
+  .mb-brand-lg {
+    font-size: 22px;
+  }
+
+  .mb-mark {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--v2-bg);
+    background: var(--blue);
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-brand b {
+    font-weight: 800;
+  }
+
+  .mb-brand em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+</style>

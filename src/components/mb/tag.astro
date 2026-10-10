@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/* Tag (tech chip on a service card): mono in a square muted frame, in its
+ * own case (not caps), so a row of tags reads apart from the badges. `as`
+ * picks the element: "li" inside a tag list, "span" anywhere else. */
+interface Props extends HTMLAttributes<"span"> {
+  as?: "li" | "span";
+}
+
+const { as = "span", class: extraClass, ...rest } = Astro.props;
+const Tag = as;
+---
+
+<Tag class:list={["mb-tag", extraClass]} {...rest}><slot /></Tag>
+
+<style>
+  .mb-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ink-2);
+    border: 1px solid var(--muted);
+  }
+</style>

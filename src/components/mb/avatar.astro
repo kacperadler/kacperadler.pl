@@ -1,0 +1,162 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { Icon } from "astro-icon/components";
+
+/* Avatar: a square in a 1px ink rule.
+ *   - `src` as ImageMetadata goes through <Image> (a missing local file
+ *     fails the build); a string is a plain <img>;
+ *   - without `src` the initials in `fallback` stand in. Which one shows is
+ *     decided at build time: there is no runtime switch when an image fails
+ *     to load (a broken remote URL shows its alt text);
+ *   - `badge`: "dot" (a blue square) or an Iconify name, at the bottom right.
+ * Sizes: sm 32, default 48, lg 96 px (the hero status card). */
+interface Props {
+  alt: string;
+  badge?: string;
+  class?: string;
+  fallback?: string;
+  size?: "sm" | "default" | "lg";
+  src?: ImageMetadata | string;
+}
+
+const {
+  alt,
+  badge,
+  fallback,
+  size = "default",
+  src,
+  class: extraClass,
+} = Astro.props;
+
+const pixels = { default: 48, lg: 96, sm: 32 }[size];
+---
+
+<span class:list={["mb-avatar", `mb-avatar-${size}`, extraClass]}>
+  {typeof src === "string" && (
+    <img
+      alt={alt}
+      class="mb-avatar-image"
+      height={pixels}
+      loading="lazy"
+      src={src}
+      width={pixels}
+    />
+  )}
+  {src && typeof src !== "string" && (
+    <Image
+      alt={alt}
+      class="mb-avatar-image"
+      densities={[2, 3]}
+      height={pixels}
+      quality={92}
+      src={src}
+      width={pixels}
+    />
+  )}
+  {!src && (
+    <span aria-label={alt} class="mb-avatar-fallback" role="img">
+      <span aria-hidden="true">{fallback}</span>
+    </span>
+  )}
+  {badge && (
+    <span
+      aria-hidden="true"
+      class:list={[
+        "mb-avatar-badge",
+        { "mb-avatar-badge-icon": badge !== "dot" },
+      ]}
+    >
+      {badge !== "dot" && <Icon name={badge} />}
+    </span>
+  )}
+</span>
+
+<style>
+  .mb-avatar {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: var(--v2-panel-elevated);
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-avatar-sm {
+    width: 32px;
+    height: 32px;
+  }
+
+  .mb-avatar-lg {
+    width: 96px;
+    height: 96px;
+  }
+
+  .mb-avatar :global(.mb-avatar-image) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mb-avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .mb-avatar-sm .mb-avatar-fallback {
+    font-size: 11px;
+  }
+
+  .mb-avatar-lg .mb-avatar-fallback {
+    font-size: 28px;
+  }
+
+  .mb-avatar-badge {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
+    color: var(--v2-bg);
+    background: var(--blue);
+    border: 2px solid var(--v2-bg);
+  }
+
+  .mb-avatar-badge-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mb-avatar-badge :global(svg) {
+    width: 10px;
+    height: 10px;
+  }
+
+  .mb-avatar-lg .mb-avatar-badge {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mb-avatar-lg .mb-avatar-badge-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .mb-avatar-lg .mb-avatar-badge :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+</style>

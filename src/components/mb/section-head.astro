@@ -1,0 +1,98 @@
+---
+/* Section head: a two-column row under an ink rule - the headline (default
+ * slot) left, the lede (slot "lede") right, bottom-aligned - under a
+ * numbered mono label ("01 / Usługi"). One column at 880px and below.
+ *   - The number is the `mb-section` counter: <PageFrame> resets it, every
+ *     head counts one up. It is generated content with empty alt text, so
+ *     screen readers read the label alone.
+ *   - <em> in the headline: ink, struck under with a thick blue rule.
+ *   - `as` picks the heading level (h2 by default). */
+interface Props {
+  as?: "h1" | "h2" | "h3";
+  label: string;
+}
+
+const { as = "h2", label } = Astro.props;
+const Heading = as;
+---
+
+<header class="mb-section-head">
+  <p class="mb-section-label">{label}</p>
+  <Heading class="mb-section-title"><slot /></Heading>
+  {Astro.slots.has("lede") && (
+    <p class="mb-section-lede">
+      <slot name="lede" />
+    </p>
+  )}
+</header>
+
+<style>
+  .mb-section-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    column-gap: var(--v2-space-xl);
+    align-items: end;
+    padding-top: var(--v2-space-md);
+    margin: 0 0 var(--v2-space-lg);
+    counter-increment: mb-section;
+    border-top: 1px solid var(--mb-rule);
+  }
+
+  .mb-section-label {
+    display: flex;
+    grid-column: 1 / -1;
+    gap: 10px;
+    margin: 0 0 var(--v2-space-lg);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .mb-section-label::before {
+    color: var(--blue);
+    content: counter(mb-section, decimal-leading-zero) " /" / "";
+  }
+
+  .mb-section-title {
+    margin: 0;
+    font-family: var(--mb-display);
+    font-size: clamp(32px, 4.6vw, 54px);
+    font-weight: 800;
+    line-height: 1.02;
+    color: var(--ink);
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+
+  .mb-section-title :global(em) {
+    font-style: normal;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 0.1em;
+    text-decoration-color: var(--blue);
+    text-decoration-skip-ink: none;
+    text-underline-offset: 0.08em;
+  }
+
+  .mb-section-lede {
+    max-width: 48ch;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 880px) {
+    .mb-section-head {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--v2-space-md);
+    }
+
+    .mb-section-label {
+      margin-bottom: 0;
+    }
+  }
+</style>

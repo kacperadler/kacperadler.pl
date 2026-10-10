@@ -1,0 +1,64 @@
+---
+import EuFunding from "@/components/layout/eu-funding.astro";
+import Footer from "./footer.astro";
+import Header from "./header.astro";
+import MobileSheet from "./mobile-sheet.astro";
+import "./tokens.css";
+
+/* Page frame: what goes straight inside <body>. The solid substrate with
+ * two hairlines at the container's edges (fixed pseudo-elements, gone once
+ * the viewport is narrower than the container), the skip link to #top
+ * (global.css's .skip-link), the header, the page in the slot, the footer,
+ * the EU funding band, and the mobile sheet as a sibling of the frame, so
+ * scripts/mobile-sheet.ts can make the frame inert while the sheet is open.
+ * The frame resets the `mb-section` counter <SectionHead> numbers from.
+ * The page loads scripts/mobile-sheet.ts itself. */
+---
+
+<div class="mb-frame">
+  <a class="skip-link" href="#top">Przejdź do treści</a>
+  <Header />
+  <slot />
+  <Footer />
+  <EuFunding />
+</div>
+
+<MobileSheet />
+
+<style>
+  .mb-frame {
+    counter-reset: mb-section;
+  }
+
+  .mb-frame::before,
+  .mb-frame::after {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+    width: 1px;
+    pointer-events: none;
+    content: "";
+    background: var(--mb-hair);
+  }
+
+  .mb-frame::before {
+    left: calc(50% - var(--container) / 2);
+  }
+
+  .mb-frame::after {
+    right: calc(50% - var(--container) / 2);
+  }
+
+  @media (max-width: 1160px) {
+    .mb-frame::before,
+    .mb-frame::after {
+      display: none;
+    }
+  }
+
+  :global(::selection) {
+    color: var(--v2-bg);
+    background: var(--blue);
+  }
+</style>

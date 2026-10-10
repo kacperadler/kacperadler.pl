@@ -1,0 +1,41 @@
+---
+/* Label: the mono caps label of a form control. A <label> when it points at
+ * a control (`for`), otherwise a <span> (a group labelled by its own
+ * aria-label). `disabled` mutes it with its control. */
+interface Props {
+  class?: string;
+  disabled?: boolean;
+  for?: string;
+  id?: string;
+}
+
+const { class: extraClass, disabled = false, for: forId, id } = Astro.props;
+const classes = ["mb-label", { "mb-label-disabled": disabled }, extraClass];
+---
+
+{forId ? (
+  <label class:list={classes} for={forId} id={id}>
+    <slot />
+  </label>
+) : (
+  <span class:list={classes} id={id}>
+    <slot />
+  </span>
+)}
+
+<style>
+  .mb-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .mb-label-disabled {
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+</style>

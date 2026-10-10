@@ -1,0 +1,44 @@
+---
+/* Separator: a hairline, horizontal or vertical (a vertical one stretches
+ * to its flex or grid row). `decorative` (the default) hides it from
+ * assistive tech with role="none"; otherwise it is an <hr> (a separator)
+ * with its aria-orientation. */
+interface Props {
+  class?: string;
+  decorative?: boolean;
+  orientation?: "horizontal" | "vertical";
+}
+
+const {
+  decorative = true,
+  orientation = "horizontal",
+  class: extraClass,
+} = Astro.props;
+const classes = ["mb-separator", `mb-separator-${orientation}`, extraClass];
+---
+
+{decorative ? (
+  <div class:list={classes} role="none" />
+) : (
+  <hr aria-orientation={orientation} class:list={classes}>
+)}
+
+<style>
+  .mb-separator {
+    flex-shrink: 0;
+    margin: 0;
+    background: var(--mb-hair);
+    border: 0;
+  }
+
+  .mb-separator-horizontal {
+    width: 100%;
+    height: 1px;
+  }
+
+  .mb-separator-vertical {
+    align-self: stretch;
+    width: 1px;
+    min-height: 1em;
+  }
+</style>

@@ -1,0 +1,194 @@
+---
+import { Icon } from "astro-icon/components";
+
+/* Pagination: nav[aria-label="Paginacja"] with plain links (no JavaScript).
+ *   - pages: the first, the last, and the current one with its neighbours;
+ *     a gap of more than one page becomes an ellipsis;
+ *   - the current page is the outline cell (aria-current="page"), the rest
+ *     ghost cells;
+ *   - variant "numbers": "Poprzednia" / "Następna" with their chevrons;
+ *     "icons": the chevrons alone, named for assistive tech;
+ *   - on the first (last) page the previous (next) cell is inert text.
+ * `href(page)` builds each link. The row wraps instead of scrolling. */
+interface Props {
+  current: number;
+  href: (page: number) => string;
+  total: number;
+  variant?: "numbers" | "icons";
+}
+
+const { current, href, total, variant = "numbers" } = Astro.props;
+
+const shown = [
+  ...new Set(
+    [1, current - 1, current, current + 1, total].filter(
+      (page) => page >= 1 && page <= total
+    )
+  ),
+].sort((a, b) => a - b);
+
+type Cell = { kind: "page"; page: number } | { kind: "gap"; key: string };
+const cells: Cell[] = [];
+for (const page of shown) {
+  const previous = cells.at(-1);
+  if (previous?.kind === "page" && page - previous.page === 2) {
+    cells.push({ kind: "page", page: page - 1 });
+  } else if (previous?.kind === "page" && page - previous.page > 2) {
+    cells.push({ key: `gap-${page}`, kind: "gap" });
+  }
+  cells.push({ kind: "page", page });
+}
+
+const icons = variant === "icons";
+const ends = [
+  {
+    href: current > 1 ? href(current - 1) : undefined,
+    icon: "lucide:chevron-left",
+    label: "Poprzednia",
+    srLabel: "Poprzednia strona",
+  },
+  {
+    href: current < total ? href(current + 1) : undefined,
+    icon: "lucide:chevron-right",
+    label: "Następna",
+    srLabel: "Następna strona",
+  },
+] as const;
+const [previousEnd, nextEnd] = ends;
+---
+
+<nav aria-label="Paginacja" class="mb-pagination">
+  <ul>
+    <li>
+      {previousEnd.href ? (
+        <a
+          aria-label={icons ? previousEnd.srLabel : undefined}
+          class="mb-page mb-page-end"
+          href={previousEnd.href}
+        >
+          <Icon aria-hidden="true" name={previousEnd.icon} />
+          {!icons && previousEnd.label}
+        </a>
+      ) : (
+        <span aria-disabled="true" class="mb-page mb-page-end mb-page-inert">
+          <Icon aria-hidden="true" name={previousEnd.icon} />
+          {icons ? (
+            <span class="sr-only">{previousEnd.srLabel}</span>
+          ) : (
+            previousEnd.label
+          )}
+        </span>
+      )}
+    </li>
+    {cells.map((cell) =>
+      cell.kind === "gap" ? (
+        <li aria-hidden="true" class="mb-page mb-page-gap">
+          <Icon name="lucide:ellipsis" />
+        </li>
+      ) : (
+        <li>
+          <a
+            aria-current={cell.page === current ? "page" : undefined}
+            aria-label={`Strona ${cell.page}`}
+            class:list={[
+              "mb-page",
+              { "mb-page-current": cell.page === current },
+            ]}
+            href={href(cell.page)}
+          >
+            {cell.page}
+          </a>
+        </li>
+      )
+    )}
+    <li>
+      {nextEnd.href ? (
+        <a
+          aria-label={icons ? nextEnd.srLabel : undefined}
+          class="mb-page mb-page-end"
+          href={nextEnd.href}
+        >
+          {!icons && nextEnd.label}
+          <Icon aria-hidden="true" name={nextEnd.icon} />
+        </a>
+      ) : (
+        <span aria-disabled="true" class="mb-page mb-page-end mb-page-inert">
+          {icons ? (
+            <span class="sr-only">{nextEnd.srLabel}</span>
+          ) : (
+            nextEnd.label
+          )}
+          <Icon aria-hidden="true" name={nextEnd.icon} />
+        </span>
+      )}
+    </li>
+  </ul>
+</nav>
+
+<style>
+  .mb-pagination ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mb-page {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-2);
+    border: 1px solid transparent;
+    transition:
+      background-color var(--mb-snap),
+      border-color var(--mb-snap),
+      color var(--mb-snap);
+  }
+
+  .mb-page :global(svg) {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  .mb-page-end {
+    font-family: var(--mb-display);
+    font-size: 14px;
+    letter-spacing: -0.015em;
+  }
+
+  a.mb-page:is(:hover, [data-state="hover"]) {
+    color: var(--ink);
+    background: var(--v2-panel-elevated);
+  }
+
+  .mb-page-current {
+    color: var(--ink);
+    border-color: var(--mb-rule);
+  }
+
+  .mb-page-inert,
+  .mb-page-gap {
+    color: var(--muted);
+  }
+
+  .mb-page-inert {
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-page {
+      transition: none;
+    }
+  }
+</style>
