@@ -31,9 +31,10 @@ In:
 - `astro.config.mjs`, `src/pages/api/`, the contact form script, `src/data/site-config.ts`, `Dockerfile`, `nginx.conf`, `package.json`, `tests/e2e/contact-form.spec.ts`, `AGENTS.md` and `README.md` lines about the form.
 
 Out:
-- A panel to read leads, notifications by mail.
+- A panel to read leads.
 
 ## Decisions
 
 - 2026-10-10: The human: focus on developing KA first; remove `.claude`, `.vscode`, `.zed`; with Biome, Prettier is not needed; look over the repo for what to clean and what to keep; drop `project-plan.md`, turn what is left into tickets, and improve `README.md`.
-- 2026-10-10: Needs from the human before it starts: how he reads the leads (sqlite on the server is enough, or a notification), and whether the Dokploy app may get a volume.
+- 2026-10-10: The human: the Dokploy app may get a volume for the database; add a notification about a new lead.
+- 2026-10-10: Waits for the notification channel (Telegram or e-mail) before it starts.

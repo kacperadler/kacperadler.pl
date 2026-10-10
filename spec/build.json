@@ -178,9 +178,9 @@
   {
     "id": "KA0024",
     "title": "Drop editor and agent configs, Biome formats .astro instead of Prettier",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0024-drop-editor-and-agent-configs-biome-formats-astro-instead-of-prettier/ticket.md",
-    "updated": "2026-10-10T14:32:09.677Z"
+    "updated": "2026-10-10T14:32:15.881Z"
   },
   {
     "id": "KA0025",
@@ -195,9 +195,9 @@
   {
     "id": "KA0026",
     "title": "Offer: AI agents, automation, Claude Code and Codex training",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0026-offer-ai-agents-automation-claude-code-and-codex-training/ticket.md",
-    "updated": "2026-10-10T14:31:31.540Z"
+    "updated": "2026-10-10T14:40:42.517Z"
   },
   {
     "id": "KA0027",
@@ -208,10 +208,10 @@
   },
   {
     "id": "KA0028",
-    "title": "Case studies in MDX instead of placeholder projects",
-    "status": "planning",
+    "title": "Case studies in MDX: collection, list and page",
+    "status": "planned",
     "path": "spec/features/KA0028-case-studies-in-mdx-instead-of-placeholder-projects/ticket.md",
-    "updated": "2026-10-10T14:31:31.937Z"
+    "updated": "2026-10-10T14:40:42.715Z"
   },
   {
     "id": "KA0029",
@@ -219,6 +219,66 @@
     "status": "planning",
     "path": "spec/features/KA0029-blog-in-mdx/ticket.md",
     "updated": "2026-10-10T14:32:09.480Z",
+    "after": [
+      "KA0028"
+    ]
+  },
+  {
+    "id": "KA0030",
+    "title": "Case study: PwC Polska",
+    "status": "planning",
+    "path": "spec/features/KA0030-case-study-pwc-polska/ticket.md",
+    "updated": "2026-10-10T14:40:41.326Z",
+    "after": [
+      "KA0028"
+    ]
+  },
+  {
+    "id": "KA0031",
+    "title": "Case study: Apptension",
+    "status": "planning",
+    "path": "spec/features/KA0031-case-study-apptension/ticket.md",
+    "updated": "2026-10-10T14:40:41.523Z",
+    "after": [
+      "KA0028"
+    ]
+  },
+  {
+    "id": "KA0032",
+    "title": "Case study: Payloo",
+    "status": "planning",
+    "path": "spec/features/KA0032-case-study-payloo/ticket.md",
+    "updated": "2026-10-10T14:40:41.725Z",
+    "after": [
+      "KA0028"
+    ]
+  },
+  {
+    "id": "KA0033",
+    "title": "Case study: Helpfind",
+    "status": "planning",
+    "path": "spec/features/KA0033-case-study-helpfind/ticket.md",
+    "updated": "2026-10-10T14:40:41.921Z",
+    "after": [
+      "KA0028"
+    ]
+  },
+  {
+    "id": "KA0034",
+    "title": "Case study: Energia Direct",
+    "status": "planning",
+    "path": "spec/features/KA0034-case-study-energia-direct/ticket.md",
+    "updated": "2026-10-10T14:40:42.118Z",
+    "after": [
+      "KA0028"
+    ]
+  },
+  {
+    "id": "KA0035",
+    "title": "Case study: ReX Recruitment Exchange",
+    "status": "planning",
+    "path": "spec/features/KA0035-case-study-rex-recruitment-exchange/ticket.md",
+    "updated": "2026-10-10T14:40:42.315Z",
     "after": [
       "KA0028"
     ]
