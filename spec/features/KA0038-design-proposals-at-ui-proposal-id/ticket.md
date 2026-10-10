@@ -42,3 +42,4 @@ Out:
 - 2026-10-10: The coordinator: Tailwind stays out (vision, Not the goal); the prose typography is ported as plain CSS from @tailwindcss/typography's default values, no Tailwind dependency. /ui pages are a dev tool: not in the production build.
 - 2026-10-10: After KA0037.
 - 2026-10-10: The human: merge what passes review and run on autopilot; he only sees the design proposals to confirm or reject the direction (merge after PASS).
+- 2026-10-10: The human: no screenshots; he clicks through all proposals at once on the dev server from links.

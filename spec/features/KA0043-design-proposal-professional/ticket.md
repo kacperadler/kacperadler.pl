@@ -26,7 +26,7 @@ The human sees how the site looks in a professional direction (a direction the h
 
 - `src/styles/proposals/professional/` with its CSS and `meta.json` (name "Professional", a two-sentence description, references); `/ui/proposal/professional` renders the catalogue and the home copy in it; colors only from the site's palette; any new font self-hosted with its license.
 - Every component and state of the catalogue is styled deliberately in this direction, not left at the default; text contrast meets WCAG AA (axe zero on the proposal page).
-- Screenshots of `/ui/proposal/professional` (catalogue and home, desktop and mobile, viewport-high slices) and a short note on the choices made, in the final message.
+- The proposal is reachable at `/ui/proposal/professional` on the dev server, and the final message gives a short note on the choices made; no screenshots are sent to the human.
 - `bun run lint`, `bun run check`, `bun run build` and `bun run test:e2e` pass.
 
 ## Scope
@@ -44,3 +44,4 @@ Out:
 - 2026-10-10: After KA0038.
 - 2026-10-10: The human: proposals are made with Opus (h spawn --model anthropic/claude-opus-5-5).
 - 2026-10-10: The human: merge what passes review and run on autopilot; he only sees the design proposals to confirm or reject the direction (merge after PASS).
+- 2026-10-10: The human: no screenshots; he clicks through all proposals at once on the dev server (agent:4321) from links.
