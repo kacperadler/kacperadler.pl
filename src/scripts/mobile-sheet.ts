@@ -7,9 +7,14 @@
  * mobile-sheet.astro keys on it. Synced ARIA: aria-expanded on the
  * trigger, aria-hidden on the sheet itself.
  *
+ * The sheet is a modal dialog: while it is open every other child of
+ * <body> is `inert`, focus starts on the close button and Tab wraps
+ * between the first and last control inside. Every user close (X,
+ * link, Escape) returns focus to the trigger.
+ *
  * Click + keydown listeners are document-level (event delegation +
- * one keydown for Escape), so they survive ClientRouter swaps with
- * no re-binding. */
+ * one keydown for Escape / Tab), so they survive ClientRouter swaps
+ * with no re-binding. */
 
 function getSheet(): HTMLElement | null {
   // Look up by id, not by [data-mobile-sheet]: the attribute is removed
@@ -26,6 +31,12 @@ function isOpen(sheet: HTMLElement): boolean {
   return sheet.dataset.mobileSheet === "open";
 }
 
+function getFocusables(sheet: HTMLElement): HTMLElement[] {
+  return Array.from(
+    sheet.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")
+  );
+}
+
 function setOpen(sheet: HTMLElement, open: boolean): void {
   if (open) {
     sheet.dataset.mobileSheet = "open";
@@ -34,6 +45,14 @@ function setOpen(sheet: HTMLElement, open: boolean): void {
   }
   sheet.setAttribute("aria-hidden", open ? "false" : "true");
 
+  // Everything behind the modal leaves the tab order and the
+  // accessibility tree while it is open.
+  for (const child of Array.from(document.body.children)) {
+    if (child !== sheet && child instanceof HTMLElement) {
+      child.inert = open;
+    }
+  }
+
   const button = getOpenButton();
   if (button) {
     button.setAttribute("aria-expanded", open ? "true" : "false");
@@ -41,6 +60,38 @@ function setOpen(sheet: HTMLElement, open: boolean): void {
 
   // Lock body scroll while the overlay is up.
   document.body.style.overflow = open ? "hidden" : "";
+}
+
+function openSheet(sheet: HTMLElement): void {
+  setOpen(sheet, true);
+  sheet.querySelector<HTMLElement>("[data-menu-close]")?.focus();
+}
+
+function closeSheet(sheet: HTMLElement): void {
+  // setOpen first: the trigger is inert while the sheet is open and
+  // would refuse focus.
+  setOpen(sheet, false);
+  getOpenButton()?.focus({ preventScroll: true });
+}
+
+// Wrap Tab at the edges of the sheet. `inert` already keeps the page out,
+// but without the wrap Tab from the last control leaves the document.
+function trapTab(sheet: HTMLElement, event: KeyboardEvent): void {
+  const focusables = getFocusables(sheet);
+  const [first] = focusables;
+  const last = focusables.at(-1);
+  if (!(first && last)) {
+    return;
+  }
+  const active = document.activeElement;
+  const inside = active instanceof Node && sheet.contains(active);
+  if (event.shiftKey && (!inside || active === first)) {
+    event.preventDefault();
+    last.focus();
+  } else if (!(event.shiftKey || (inside && active !== last))) {
+    event.preventDefault();
+    first.focus();
+  }
 }
 
 document.addEventListener("click", (event) => {
@@ -53,29 +104,33 @@ document.addEventListener("click", (event) => {
   }
 
   if (event.target.closest("[data-menu-open]")) {
-    setOpen(sheet, true);
+    openSheet(sheet);
     return;
   }
 
   if (event.target.closest("[data-menu-close]")) {
-    setOpen(sheet, false);
+    closeSheet(sheet);
     return;
   }
 
   // Anchor links inside the sheet auto-close it after clicking.
   if (isOpen(sheet) && event.target.closest("[data-sheet-link]")) {
-    setOpen(sheet, false);
+    closeSheet(sheet);
   }
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape") {
+  if (event.key !== "Escape" && event.key !== "Tab") {
     return;
   }
   const sheet = getSheet();
-  if (sheet && isOpen(sheet)) {
-    setOpen(sheet, false);
-    getOpenButton()?.focus();
+  if (!(sheet && isOpen(sheet))) {
+    return;
+  }
+  if (event.key === "Escape") {
+    closeSheet(sheet);
+  } else {
+    trapTab(sheet, event);
   }
 });
 

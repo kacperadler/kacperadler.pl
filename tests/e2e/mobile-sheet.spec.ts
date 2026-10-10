@@ -27,6 +27,41 @@ test.describe("mobile sheet", () => {
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
   });
 
+  test("open sheet takes focus, keeps Tab inside, and X returns it to the trigger", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const sheet = page.locator("#mobile-sheet");
+    const trigger = page.locator("[data-menu-open]");
+    const close = page.locator("[data-menu-close]");
+    const pageShell = page.locator(".page-shell");
+
+    await trigger.click();
+
+    await expect(close).toBeFocused();
+    await expect(pageShell).toHaveJSProperty("inert", true);
+
+    // One full lap forward: each press moves to the next control of the
+    // sheet in DOM order, and the press after the last one wraps back to
+    // the close button instead of leaving for the page.
+    const controls = await sheet.locator("a[href], button").all();
+    for (const control of [...controls.slice(1), close]) {
+      // biome-ignore lint/performance/noAwaitInLoops: key presses must run in order
+      await page.keyboard.press("Tab");
+      await expect(control).toBeFocused();
+    }
+
+    // Shift+Tab from the first control wraps to the last one, not the page.
+    await page.keyboard.press("Shift+Tab");
+    await expect(sheet.locator(".sheet-cta")).toBeFocused();
+
+    await close.click();
+
+    await expect(trigger).toBeFocused();
+    await expect(pageShell).toHaveJSProperty("inert", false);
+  });
+
   test("Escape closes the sheet and returns focus to trigger", async ({
     page,
   }) => {
@@ -56,6 +91,8 @@ test.describe("mobile sheet", () => {
     await page.click('[data-sheet-link][href="#services"]');
 
     await expect(sheet).toHaveAttribute("aria-hidden", "true");
+    await expect(trigger).toBeFocused();
+    await expect(page.locator(".page-shell")).toHaveJSProperty("inert", false);
   });
 
   test("open sheet is a dialog named 'Menu mobilne' with no axe violations", async ({
