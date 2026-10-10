@@ -1,39 +1,37 @@
 ---
 version: alpha
 name: kacperadler.pl
-description: Portfolio site of Kacper Adler, dark only - grid-based layout with elevated panels on a darker substrate, medium radius scale, restrained accent palette built around a single navy blue.
+description: Portfolio site of Kacper Adler, dark only - minimal brutalism, a ruled sheet of square cells drawn with 1px ink rules on a solid substrate, heavy Geist headlines, Geist Mono labels, one navy-blue accent.
 colors:
   ink: "#ece7dc"
   ink-2: "#c8c3b8"
   muted: "#9d9c95"
-  paper: "#0f1116"
-  paper-2: "#161922"
   base: "#0a0c10"
   panel: "#14171c"
   panel-elevated: "#1a1e26"
   blue: "#8eaed8"
   blue-2: "#b4c8e6"
-  on-blue: "#0f1116"
+  on-blue: "#0a0c10"
   error: "#e07a70"
 typography:
   display-xl:
-    fontFamily: Geist Mono
-    fontSize: 60px
-    fontWeight: 500
-    lineHeight: 1.04
-    letterSpacing: -0.035em
+    fontFamily: Geist
+    fontSize: 70px
+    fontWeight: 800
+    lineHeight: 0.98
+    letterSpacing: -0.055em
   display-lg:
-    fontFamily: Geist Mono
-    fontSize: 44px
-    fontWeight: 500
-    lineHeight: 1.06
-    letterSpacing: -0.03em
+    fontFamily: Geist
+    fontSize: 54px
+    fontWeight: 800
+    lineHeight: 1.02
+    letterSpacing: -0.045em
   display-md:
-    fontFamily: Geist Mono
-    fontSize: 28px
-    fontWeight: 500
-    lineHeight: 1.15
-    letterSpacing: -0.02em
+    fontFamily: Geist
+    fontSize: 20px
+    fontWeight: 750
+    lineHeight: 1.2
+    letterSpacing: -0.035em
   body-lg:
     fontFamily: Geist
     fontSize: 18px
@@ -43,12 +41,12 @@ typography:
     fontFamily: Geist
     fontSize: 16px
     fontWeight: 400
-    lineHeight: 1.6
+    lineHeight: 1.55
   body-sm:
     fontFamily: Geist
     fontSize: 14px
     fontWeight: 400
-    lineHeight: 1.55
+    lineHeight: 1.6
   label-mono:
     fontFamily: Geist Mono
     fontSize: 12px
@@ -56,233 +54,152 @@ typography:
     lineHeight: 1
     letterSpacing: 0.14em
 rounded:
-  xs: 6px
-  sm: 10px
-  md: 16px
-  lg: 24px
-  full: 9999px
+  none: 0px
 spacing:
-  xs: 4px
-  sm: 8px
   md: 16px
   lg: 32px
   xl: 64px
   2xl: 96px
 components:
-  panel:
-    backgroundColor: "{colors.panel}"
-    rounded: "{rounded.lg}"
+  cell:
+    backgroundColor: "{colors.base}"
+    rounded: "{rounded.none}"
     padding: "{spacing.lg}"
-  panel-elevated:
-    backgroundColor: "{colors.panel-elevated}"
-    rounded: "{rounded.lg}"
-    padding: "{spacing.lg}"
-  button-primary:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.paper-2}"
-    typography: "{typography.label-mono}"
-    rounded: "{rounded.sm}"
-    padding: "14px 22px"
-  button-ghost:
+  button-default:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.on-blue}"
+    rounded: "{rounded.none}"
+    padding: "0 18px"
+  button-outline:
     backgroundColor: transparent
     textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    padding: "0 18px"
+  section-label:
     typography: "{typography.label-mono}"
-    rounded: "{rounded.sm}"
-    padding: "14px 18px"
-  eyebrow:
-    typography: "{typography.label-mono}"
-    textColor: "{colors.muted}"
+    textColor: "{colors.ink-2}"
 ---
 
 ## Overview
 
-`kacperadler.pl` is a grid-driven, panel-based layout. The visitor sees a darker substrate (`base`) painted with a faint dot grid; content lives on lighter "panels" with medium radius, so the corners of every block reveal the grid pattern around them. The grid + panel rhythm borrows from `firecrawl.dev`; on top of it sit two atmosphere layers - navy ribbons drifting behind the substrate, and a liquid-glass treatment shared by the header / footer / mobile sheet / hero status card (always-on) and every content card (on hover / focus). Each card carries a cursor-follow spotlight effect with a navy ring around the perimeter. Atmosphere registers only in peripheral vision; content stays the focus.
+`kacperadler.pl` is minimal brutalism: a ruled sheet. Content sits in cells drawn with 1px `ink` rules that share their edges, on a solid `base` substrate. Two hairlines run down the page at the container's edges. Headlines are heavy Geist with tight negative tracking, labels Geist Mono. There are no rounded corners, no glass, no gradients, no drifting background: a hovered cell lights up from inside and moves nothing, and every state change is a short linear switch.
 
-There is one design, served at `/`, and it is dark only.
+There is one design, served at `/`, and it is dark only. Its components live in `src/components/mb/`, are shown with every variant and state at `/ui` (`bun dev` only), and every production page is built from them.
 
 ## Dark only
 
-`color-scheme: dark` on `:root` (`src/styles/tokens.css`) fixes the page to dark: there is no theme switch and no second palette. The YAML frontmatter above lists the values that render. The CSS custom properties behind the color tokens:
+`color-scheme: dark` on `:root` (`src/styles/tokens.css`) fixes the page to dark: there is no theme switch and no second palette. The frontmatter lists the values that render. The CSS custom properties behind them:
 
-| Token            | CSS property           | Value     |
-| ---------------- | ---------------------- | --------- |
-| `base`           | `--v2-bg`              | `#0a0c10` |
-| `panel`          | `--v2-panel`           | `#14171c` |
-| `panel-elevated` | `--v2-panel-elevated`  | `#1a1e26` |
-| `ink`            | `--ink`                | `#ece7dc` |
-| `ink-2`          | `--ink-2`              | `#c8c3b8` |
-| `muted`          | `--muted`              | `#9d9c95` |
-| `paper`          | `--paper`              | `#0f1116` |
-| `paper-2`        | `--paper-2`            | `#161922` |
-| `blue`           | `--blue`               | `#8eaed8` |
-| `blue-2`         | `--blue-2`             | `#b4c8e6` |
+| Token            | CSS property          | Value                    |
+| ---------------- | --------------------- | ------------------------ |
+| `base`           | `--v2-bg`             | `#0a0c10`                |
+| `panel`          | `--v2-panel`          | `#14171c`                |
+| `panel-elevated` | `--v2-panel-elevated` | `#1a1e26`                |
+| `ink`            | `--ink`               | `#ece7dc`                |
+| `ink-2`          | `--ink-2`             | `#c8c3b8`                |
+| `muted`          | `--muted`             | `#9d9c95`                |
+| `blue`           | `--blue`              | `#8eaed8`                |
+| `blue-2`         | `--blue-2`            | `#b4c8e6`                |
+| `error`          | `--error`             | `#e07a70`                |
+| hairline         | `--v2-line`           | `rgba(236, 231, 220, 0.1)` |
 
-`on-blue` has no property of its own: text on a `blue` fill (header and footer CTA states) is the literal `#0f1116`, the `paper` value. The `--v2-` prefix on surface, radius and spacing properties is left over from the redesign that now lives at `/`; it names no separate version.
+`on-blue` has no property of its own: text on a `blue` or `error` block is `base` (`--v2-bg`), 8.5:1 and 6.7:1. The `--v2-` prefix is left over from an earlier redesign; it names no separate version.
+
+The minimal brutalism vocabulary, in the same file:
+
+| Token          | Value                 | Use                                                     |
+| -------------- | --------------------- | ------------------------------------------------------- |
+| `--mb-rule`    | `var(--ink)`          | the 1px rule that draws a cell                          |
+| `--mb-hair`    | `var(--v2-line)`      | dividers inside a cell, the page edges, disabled frames |
+| `--mb-shift`   | `4px`                 | the hard shadow offset (3px on `sm`, 2px on `xs`)       |
+| `--mb-snap`    | `0.12s linear`        | every transition                                        |
+| `--mb-display` | `var(--sans)` (Geist) | headlines                                               |
 
 ## Colors
 
-- **`base` (`#0a0c10`):** the substrate. Always sits behind everything else; never used as panel background. The dot grid (`grid` token, ~4.5% `ink`) is painted on top of `base` to give the layout its rhythm.
-- **`panel` (`#14171c`):** primary surface for content blocks. ~1 shade lighter than `base`, so the radius reads as a literal cut-out.
-- **`panel-elevated` (`#1a1e26`):** secondary surface, used for emphasis (CTAs, hero, featured cards). ~1 step lighter again.
-- **`ink` / `ink-2` / `muted`:** triadic text scale. `ink` is for headlines and primary text, `ink-2` for body copy, `muted` for metadata, eyebrows, captions.
-- **`blue` (`#8eaed8`):** the **only** chromatic accent. Used for: link color, primary-button hover ring, eyebrow status dot, `<em>` highlights inside headings. One accent enforces the brand mark - never reach for a second hue.
-- **`error` (`#e07a70`):** a warm coral, for form errors only (the invalid field border, the error line under it, the send-error banner). Not an accent: it never decorates. Reaches WCAG AA on the form surfaces: 6.15:1 on `panel`, 6.7:1 on `base`.
+- **`base` (`#0a0c10`):** the substrate and the idle fill of every cell. Solid: no dot grid, no gradient.
+- **`panel` (`#14171c`):** the flat surface: disabled and loading controls, the proposal bar on `/ui/proposal/<id>`.
+- **`panel-elevated` (`#1a1e26`):** the raised surface - the secondary button and badge - and a lit cell: the fill of a hovered card, under a 3px `blue` top rule.
+- **`ink` / `ink-2` / `muted`:** `ink` draws the rules and sets headlines and primary text, `ink-2` body copy and labels, `muted` idle form frames, tags and disabled text (6.5:1 on `panel`, never lowered opacity).
+- **`blue` (`#8eaed8`):** the **only** chromatic accent: the default button and badge, the underline under `<em>` in a headline, the section counter, the hover rule of a cell, active nav links, focus rings. `blue-2` is the default button's hover.
+- **`error` (`#e07a70`):** form errors and the destructive variants only (the invalid frame, the error line, the send-error banner). Not an accent: it never decorates. 6.15:1 on `panel`, 6.7:1 on `base`.
 
 ## Typography
 
-Two faces, both variable woff2:
+Two faces, both self-hosted variable woff2:
 
-- **Geist Mono** (the `display` and `mono` token) - used for headlines (`display-*`), eyebrows, button labels, monospace UI noise (badges, chips, status pills). The mono headline is the strongest brand signal - it reads "tech, precise, opinionated".
-- **Geist** (the `sans` token, alias `body-*`) - running prose, form fields, descriptions.
+- **Geist** (`--sans`, `--mb-display`) - headlines at 700-800 with tight negative tracking (`display-*`), button labels at 650, running prose, form fields.
+- **Geist Mono** (`--mono`) - uppercase labels (`label-mono`: the section label, field labels, status rows), badges, tags, the footer copyright.
 
-Headings use negative letter-spacing (~ -0.02em to -0.035em) to feel typeset; body keeps default spacing. `text-wrap: balance` on every `h1`/`h2` so wraps don't leave orphans.
+`text-wrap: balance` on headlines. `<em>` in a headline stays `ink`, struck under with a thick (0.1em) `blue` underline.
 
 ## Layout
 
-- **Container:** max-width `1160px`, horizontal padding `var(--v2-space-md)` (16px) on mobile, lifting on wider viewports through panel padding.
-- **Grid:** dot grid background (1px circle every 24px) is a `radial-gradient` on `.bg-stage` in `src/layouts/base-layout.astro`. Don't replace it with full lines - the dots feel calmer and don't fight the panel borders.
-- **Panel rhythm:** every section is a single panel (or 2-3 stacked panels) sitting in the container with vertical gaps showing the bg through. Breathing room between panels matters - lean toward `--v2-space-lg` (32px) gap minimum.
-- **Radius scale (medium):** `xs 6 / sm 10 / md 16 / lg 24 / full`. `lg` is for hero / large content panels; `md` for cards/forms; `sm` for buttons; `xs` for chips/badges; `full` for pills and the welcome-screen mark icon.
-
-## Atmosphere
-
-A fixed `.bg-stage` (`position: fixed`, `inset: 0`, `pointer-events: none`) in `src/layouts/base-layout.astro` sits behind every page and holds the moving layers:
-
-- **Dot grid** painted as a `radial-gradient` on top of `base` (1px circle every 24px).
-- **Six navy ribbons** - 0×120vh elements whose entire paint comes from `box-shadow` (the box itself has no width). Each rotates 6–18° and drifts ±40px on an 8–15.5s ease-in-out loop. Phases are spread evenly across the cycle (`-i/n * duration`) so the field reads as multidirectional drift, never a synchronized push. Saturation: `accent` ribbons mix `blue` 35–55% with transparent, `wash` ribbons mix `blue-2`/`blue` 20–30%.
-- **GPU pinning:** every ribbon has `will-change: transform` and the keyframe transforms include `translateZ(0)`. Without this the compositor throttles 0×0 elements (their bounding box never visibly changes).
-- **Edge fades:** two radial fade layers (bottom horizontal, bottom-left vertical) collapse the field back to `base` near the viewport edges so ribbons dissolve instead of clipping.
-
-`prefers-reduced-motion: reduce` stops the drift entirely; the static composition still reads.
-
-## Spotlight
-
-Every content card (services / how-i-work steps / experience tiles / contact-link cards / hero-status / contact-form host) shares a cursor-follow spotlight effect:
-
-- `src/scripts/spotlight.ts` binds to `[data-spotlight]` elements, tracks `pointermove`, and sets `--mx` / `--my` CSS variables (as %) on the element. rAF-throttled so we never fire `setProperty` more than once per frame.
-- Two pseudo-elements per card: `::before` is a soft white wash radial-gradient (`white` 4%) layered over a flat navy tint (`#2a4d7f` 8%); `::after` is a navy radial-gradient (`blue` 50%) masked via `mask-composite: exclude` down to a 1px ring around the perimeter.
-- Both pseudos fade in via `opacity: 0 → 1` on `:hover` (and via `:has(...focus)` / `[data-state='success']` for the contact form host).
-- The card's bg also bumps from solid `panel` to `panel` 65% mix on hover, so backdrop-filter blur becomes visible behind the translucent surface - that's where the "glass-up" feeling comes from.
-- `prefers-reduced-motion: reduce` skips the spotlight binding entirely (no var updates, no opacity transition).
-
-The shared selector group lives in `src/styles/global.css` and keys on `.v2-card` (the `<Card>` component) plus the cards with their own paint (`.hero-status`, `.v2-contact-link`, `.contact-form-host`) - a new card should use `<Card>`; a card that cannot means adding its selector to that group and dropping `data-spotlight` on the markup.
+- **Container:** max-width `1160px` (`--container`), 16px side padding. `page-frame.astro` draws a fixed 1px `--mb-hair` line down each edge of the container width; below 1160px they are gone.
+- **Sections:** each opens with `section-head.astro` - an `ink` rule, the numbered mono label (`01 / Usługi`, a CSS counter the frame resets), then the headline left and the lede right, bottom-aligned; one column at 880px and below. Sections are `--v2-space-2xl` (96px) apart, 64px on mobile.
+- **Cells:** `cell-grid.astro` collapses cells into one ruled table - no gap, every cell pulled 1px over its neighbour so two cells share one rule. Fixed columns (services: 2, one column at 880px; an odd last cell spans the row) or as many as fit a minimum width (experience, case studies: 320px).
+- **No radius:** every corner is square. A new component sets `border-radius: 0` on native controls that carry a UA radius.
 
 ## Components
 
-Every component lives in `src/components/ui/` and is shown, with each variant and state, by the catalogue at `/ui` (`bun dev` only). States there are forced with `[data-state="hover" | "focus-visible" | "focus"]`, `.active` and `disabled`; each component declares those selectors next to its real `:hover` / `:focus`, so changing a state means changing one rule.
-
-### Panel (default surface)
-Background `panel`, border `1px solid line` (≈10% ink). Radius `lg`. Default padding `lg`. Use `panel-elevated` only for the single most important block per screen (hero, primary card).
-
-### Atmosphere chrome (liquid glass)
-A common glass paint - translucent `panel` (55–70%) + `backdrop-filter: saturate(160%) blur(20px)` + inset 1px top hairline (white at 5%) + soft border at 60% `line` - is used in two modes:
-
-- **Always-on atmosphere chrome** - header, footer, mobile sheet overlay (70% opacity for full-screen readability), and the hero `.hero-status` card. These read as "UI floating above the substrate" and let the ribbon drift bleed through.
-- **On hover / focus for content cards** - services / how-i-work steps / experience tiles / contact-link cards / contact-form host pick up the same paint as a hover (and focus, for the form) state. Ghost buttons follow the same hover model.
-
-Content cards stay solid `panel` when idle. Glass kicks in only on engagement, so the page reads as solid + structured at rest and atmospheric when interacted with. The hairline border-bottom (or border-color drop to 60% `line`) firms up the chrome edge once a section becomes "fixed UI" (e.g., header on scroll).
-
-The header also gets a scrolled state: `panel` at 75% + full-strength border to feel anchored after the hero. Brand mark and contact CTA inherit `sm` radius so they harmonise with the panels below.
-
-### Process timeline
-Vertical "roadmap" pattern used in the How-I-Work section. Each `.step-item` is a 2-column grid: 56px rail (`40px` on mobile) + 1fr panel.
-
-- **Rail**: holds a numbered glass `.step-dot` (48px circle, `panel` 70% mix + `backdrop-blur(10px)` + `blue` 35% border). When the sibling `.step-panel` is hovered (`:has(.step-panel:hover)`), the dot brightens - bg mixes to `blue` 18%, border bumps to `blue` 80%.
-- **Connector line**: a 2px gradient (top-`blue` 50% → bottom-`blue` 20%) drawn as `::before` on `.step-marker`. Spans from below the dot to the next row's gap, hidden on the last item.
-- **Panel**: reuses the standard card glass-on-hover + spotlight. Step head row contains a lucide icon (per-step), title, and duration badge. Badge swaps from outlined muted to filled `blue-wash` (matching `.status-pill`) on hover.
-
-### Logo wall
-Used in Experience to render the `Współpracowałem z` cards. Grid `auto-fill, minmax(280px, 1fr)` - 3 cols desktop, 2 mid, 1 mobile, no manual breakpoints. Each card has:
-
-- Logo image at the top (grayscale + opacity 0.6 idle, full color + opacity 1 on hover - uniform wall feel that rewards engagement).
-- Company name (`display` 18px), role (mono blue 12px), description (sans 14px).
-- Optional `badge` field on the data entry overrides the default year-range badge - used for engagements like `"Zlecenie"`. `<Badge>` (`ui/badge.astro`): `outline` for the year range, `filled` (`blue-wash`, same vocab as `<StatusPill>`) for `teraz` and the override. The process step badge is `outline` with `fillOnCardHover`.
-- An entry with a case study (`experience` field on a `caseStudies` entry) ends with a `Zobacz realizację` link (`.case-link`): mono 12px `blue`, `lucide:arrow-right` that shifts 3px right on hover, underline on hover; the company name is in its accessible name. Entries without one render without it.
-
-### Case study page
-`/realizacje/<slug>/`: same 70ch column as the legal pages. Header: `blue` eyebrow `Realizacja`, display h1 (company), summary lede (sans 18px), then a facts list (role, period, stack chips) between two `v2-line` rules. The MDX body uses the shared `.prose` styles from `global.css` (also used by the legal pages). Closes with a primary `Napisz do mnie` and a ghost `Wszystkie współprace`.
-
-### Case study list
-`/realizacje/`, built only when a case study exists (the `Realizacje` menu entry too). Centred `section-head` with an h1, then the logo-wall grid (`auto-fill, minmax(280px, 1fr)`) of `<Card>`s with class `case-panel` (in the shared spotlight selectors): period pill (outline, like the year-range pill), company (`display` 18px), role (mono blue 12px), summary (sans 14px), and the same `Zobacz realizację` link (`.case-link` in `global.css`, shared with the logo wall). In the menu, `Realizacje` is `.active` on `/realizacje/` and the case study pages, with `aria-current="page"` on the list itself.
-
-### Badge, tag, status pill
-- **Badge** - mono 11px, `xs` radius, `outline` (muted text, `line` border) or `filled` (`blue` on `blue-wash`).
-- **Tag** (`ui/tag.astro`) - the service-card tech chips: mono 11px, `ink-2`, transparent with a `line` border.
-- **Status pill** (`ui/status-pill.astro`) - `blue-wash` pill with a 6px dot; hero status card and mobile sheet.
-
-### Links
-`ui/link.astro`: `inline` (blue, underlined, offset 3px), `nav` (header; a 1.5px `blue` underline scales in on hover and stays while `.active`), `footer` (muted list link; an optional leading icon turns `blue` on hover).
-
-### Buttons
-- **Primary** - `ink` background, `paper-2` text, `sm` radius. **Hover:** background darkens 12% toward black + a 4px `--blue-wash` ring (the same ring used in `.active`, so hover previews the "you arrived" state). The button does not lift - it stays planted, glass-style. Arrow icon (`lucide:arrow-right` via `icon` prop) cycles through a translateX + opacity:0 teleport on hover so it appears to "fly through" rather than reverse. All button transitions are unified at `0.25s ease`. One primary per screen.
-- **Ghost** - transparent, `ink` text, 1px `line` border, `sm` radius. **Hover:** lifts into the same liquid-glass treatment as `.hero-status` / the header - translucent `panel`, soft border, lit-edge inset, `blur(20px) saturate(160%)`. Two glass surfaces, one hover vocabulary.
-- **Size variants** - `md` (default, hero / page-level CTAs, `14px 22px`) and `sm` (header CTA, `9px 16px`). Same family / letter-spacing / hover model - only padding differs.
-
-Buttons live in `src/components/ui/button.astro` (canonical). Used by: header CTA (with `data-nav-cta` so `nav-active.ts` can toggle `.active`), hero CTAs, mobile sheet CTA. Avoid filled blue buttons - `blue` is for accent text, not buttons (collides with the eyebrow dot + `<em>` highlights).
-
-### Eyebrow
-Small mono-uppercase label, `muted` color, often paired with a small blue dot (3-step shadow as a "live" indicator). Used at the start of every section to anchor it.
-
-### Form fields
-Border `1px solid line`, focus state shifts border to `blue` + a 3px `blue` wash. Errors flip the border to `error` and show a 12px `error` line under the field. Same radius (`sm`) as buttons. `ui/field.astro` carries the mono label and the error line around `<Input>`, `<Textarea>` or a group of `<Radio>` (a pill: checked = `blue` on `blue-wash` with a `blue` border, keyboard focus = 2px `blue` ring).
-
-## Motion
-
-- All foreground transitions short (`120ms` for state changes, `200–300ms` for hover / focus effects). No long fades.
-- Atmosphere chrome (header / footer / mobile sheet / hero-status) keeps its glass paint static - `backdrop-filter` itself doesn't transition; only `background` / `border-color` swap when state changes (e.g., header `idle ↔ scrolled`, mobile sheet `closed ↔ open`).
-- Content cards transition `background` + `border-color` + `box-shadow` + `backdrop-filter` together on a unified `0.3s ease` curve so the glass paint and spotlight pseudos arrive in sync.
-- Mobile sheet opens / closes with a fade + slide-up (`opacity` + `transform: translateY(8px → 0)` over `0.3s`). Visibility is delayed-toggled so the element only leaves the accessibility tree after the exit fade.
-- Contact form gets a focus glow when an email input or textarea has focus (1px navy ring + 48px navy shadow). Radio buttons inside the form are excluded via explicit `:has(input[type='email']:focus, textarea:focus)` so clicking a radio doesn't flicker the glow off.
-- Ribbon drift uses an `8–15.5s` ease-in-out loop, six ribbons with delays evenly spread across phase so the motion never reads as a synchronized wave. The ribbons themselves are GPU-pinned (`will-change: transform` + `translateZ(0)`).
-- `prefers-reduced-motion: reduce` is honored everywhere - pulses, transforms, transitions, sheet animations, ribbon drift, and spotlight binding all collapse to instant or skip entirely. Test before shipping new components.
-- Foreground "always-on" motion is just the eyebrow's pulsing dot. Background ribbons live in a separate atmosphere channel - don't add new always-on animations to the foreground.
-
-## Do's and Don'ts
-
-- ✅ **Do** keep the dot-grid bg uninterrupted across the page - it's the thread that ties every panel together.
-- ✅ **Do** use `panel-elevated` for at most one block per screen.
-- ✅ **Do** give a new color token a single value, the one the dark page renders - there is no second palette to pair it with.
-- ✅ **Do** route radius through `--v2-radius-*` tokens. Tweaking the scale should be a 5-line edit in `tokens.css`.
-- ❌ **Don't** add a second accent color. Navy is the only chromatic element.
-- ❌ **Don't** use solid white (`#fff`) - text tops out at the warm `ink` (`#ece7dc`), and pure white glares against the dark substrate. The EU funding band under the footer is the one exception: its logos need a white ground.
-- ❌ **Don't** introduce drop shadows with chromatic tints (e.g., blue glow). Shadows are for elevation only and should read as neutral darkening.
-- ❌ **Don't** mix radius scales on adjacent elements - keep the same scale level (e.g., card `md`, button-inside `sm`) consistent within a panel.
-- ❌ **Don't** make content panels always-glass. Atmosphere chrome (header / footer / mobile sheet / hero-status) is always glass; content cards opt into glass via the shared `:hover` (and `:has(...focus)` for the form) selectors. Always-on glass on a card breaks the "solid at rest, atmospheric on engagement" rhythm.
-- ❌ **Don't** lift CTAs on hover with `translateY`. The hover model is darken + ring - the button stays planted while the ring "lights up" around it.
-- ❌ **Don't** add new always-on motion to the foreground. Atmosphere lives in `bg-stage`; the foreground stays still except for explicit user interaction.
-- ❌ **Don't** re-implement the spotlight pseudo pattern per card. Extend the shared selector group in `src/styles/global.css` and add `data-spotlight` to the markup instead.
-
-## Minimal brutalism (`src/components/mb/`, `/ui/mb`)
-
-The direction the site moves to. Its components are built in `src/components/mb/` and shown at `/ui/mb` (`bun dev` only): the home page's sections composed from them, then every component with its variants, sizes and states forced as on `/ui`. No production page imports them yet; KA0069 switches the landing over, and from then on this section describes the site.
-
-**Vocabulary.** A ruled sheet: content sits in cells drawn with 1px ink rules that share their edges, the page is framed by two hairlines at the container's edges (fixed pseudo-elements of `page-frame.astro`, gone below the container width), headlines are heavy Geist (700-800, tight negative tracking), labels Geist Mono. No radius, no glass, no spotlight, no dot grid, no ribbons. A hovered cell lights up from inside (`panel-elevated` under a 3px `blue` top rule) and moves nothing. The one hard offset shadow marks what the visitor acts on: the default button (ink) and the contact form while the email or the message is being written in, or after it is sent (blue). Every state change is a short linear switch, never a drift.
-
-**Tokens.** `src/components/mb/tokens.css`, built only from the palette above (`tokens.css` stays as it is):
-
-| Token          | Value               | Use                                                    |
-| -------------- | ------------------- | ------------------------------------------------------ |
-| `--mb-rule`    | `var(--ink)`        | the 1px rule that draws a cell                         |
-| `--mb-hair`    | `var(--v2-line)`    | dividers inside a cell, the page edges, disabled frames |
-| `--mb-shift`   | `4px`               | the hard shadow offset (3px on `sm`, 2px on `xs`)      |
-| `--mb-snap`    | `0.12s linear`      | every transition                                       |
-| `--mb-display` | `var(--sans)` (Geist) | headlines                                            |
-
-Text on a `blue` or `error` block is `base` (`#0a0c10`): 8.5:1 and 6.7:1. Disabled text is `muted` on `panel` (6.5:1), never lowered opacity.
-
-**Variants.** Names and sets follow shadcn/ui; the components are Astro with plain scoped CSS (no React, Base UI, Tailwind or shadcn). shadcn's sub-components are named slots (card `image` / `title` / `description` / `action` / `footer`, alert `title` / `action`); breadcrumb and pagination take data props.
+Every component is one `.astro` file in `src/components/mb/` with scoped CSS, shown with each variant and state at `/ui`. States there are forced with `[data-state="hover" | "focus-visible" | "focus"]`, `.active` and `disabled`; each component declares those selectors next to its real `:hover` / `:focus`, so changing a state means changing one rule. Names and sets follow shadcn/ui (Astro and plain CSS, no React, Base UI, Tailwind or shadcn); shadcn's sub-components are named slots (card `image` / `title` / `description` / `action` / `footer`, alert `title` / `action`), breadcrumb and pagination take data props.
 
 | Component | Variants and sizes |
 | --------- | ------------------ |
-| `button` | `default` (blue block, ink rule, hard shadow; `.active` an ink block), `secondary`, `outline`, `ghost`, `destructive`, `link`; sizes `xs` 28 / `sm` 36 / `default` 44 / `lg` 52px and the square `icon-xs` / `icon-sm` / `icon` / `icon-lg` (need `aria-label`); `iconStart` / `iconEnd`, `href`, `loading` |
-| `badge` | `default`, `secondary`, `outline`, `destructive`, `ghost`, `link`; icons, `href`, `fillOnCellHover` |
-| `alert` | `default`, `destructive` |
+| `button` | `default` (blue block, ink rule, hard ink shadow; hover `blue-2` and the shadow 2px further; `.active` an ink block with no shadow), `secondary`, `outline`, `ghost`, `destructive`, `link`; sizes `xs` 28 / `sm` 36 / `default` 44 / `lg` 52px and the square `icon-xs` / `icon-sm` / `icon` / `icon-lg` (need `aria-label`); `iconStart` / `iconEnd` (nudges 3px right on hover), `href`, `loading` |
+| `badge` | `default` (`teraz`, `Zlecenie`), `secondary`, `outline` (year range, step duration), `destructive`, `ghost`, `link`; icons, `href`, `fillOnCellHover` |
+| `alert` | `default`, `destructive` (the send-error banner) |
 | `avatar`, `avatar-group` | `sm` / `default` / `lg` (32 / 48 / 96px); image or initials (decided at build time), `badge`, "+N" count |
 | `radio` | `default` (a square), `choice` (the contact form chip) |
 | `checkbox`, `input`, `textarea`, `label`, `field`, `field-set`, `separator`, `spinner` | shadcn's states; `field` orientation `vertical` / `horizontal` / `responsive` |
 | `accordion`, `accordion-item` | `single` / `multiple`, plain / `bordered`; native `<details>` |
 | `breadcrumb`, `pagination` | chevron / slash, collapse; numbers / icons |
 | `card`, `cell-grid` | `default` / `sm`; cells share their rules |
-| not in shadcn | `link` (`inline` / `nav` / `footer` / `case`), `tag`, `status-pill`, `section-head` ("01 /" counter, headline left, lede right), `prose`, `brand`, `header`, `footer`, `mobile-sheet`, `page-frame`, `contact-form`, `sections/*` |
+| not in shadcn | `link` (`inline` / `nav` / `footer` / `case`), `tag`, `status-pill`, `section-head`, `prose`, `brand`, `header`, `footer`, `mobile-sheet`, `page-frame`, `contact-form`, `sections/*` |
 
-**From `ui/` to `mb/` (KA0069).** Swap the imports and rename: button `primary` → `default`, `ghost` → `outline`, `md` → `default` (`sm` stays), `icon` → `iconEnd`; badge `filled` → `default`, `fillOnCardHover` → `fillOnCellHover`; radio → `variant="choice"`; card → `card` (content in the default slot or the named slots). The script hooks are the same: `data-field`, `data-invalid`, `data-submit`, `data-contact-wrap`, `data-contact-form`, `data-form-error`, `data-form-success`, `data-form-reset`, `data-nav-wrap`, `data-nav-cta`, `data-nav-link`, `data-menu-open`, `data-menu-close`, `data-sheet-link`, `id="mobile-sheet"`. Until then the section copy exists twice (`sections/` and `mb/sections/`): a copy edit touches both.
+### Page frame
+`page-frame.astro` goes straight inside `<body>`: the edge hairlines, the skip link, `header.astro` (sticky on the substrate under an `ink` rule: brand, nav links, the `sm` contact CTA; below 880px the menu button instead of the links; at 400px and below the CTA drops its arrow and the row wraps rather than scroll sideways), the page, `footer.astro` (under an `ink` rule: brand and tagline, two link columns, the copyright under a hairline), the EU funding band (`layout/eu-funding.astro`, white - its logos need a white ground) and, as a sibling, `mobile-sheet.astro` (the full-screen menu on the substrate, switched in with an opacity snap). `BaseLayout` wraps every production page in it; `/ui` and `/ui/proposal/<id>` are their own documents around it, without `contact-form.ts`.
+
+### Cells
+`card.astro` is a cell: `base` fill in a 1px `ink` rule, 32px padding (16px on `sm`). Hover lights it from inside - `panel-elevated` under a 3px `blue` top rule - and moves nothing; a service number turns `blue`, an experience logo goes from grey to colour, a `fillOnCellHover` badge fills. The hero status card and the case study facts are framed tables of `label | value` rows under hairlines.
+
+### Hard shadow
+The one hard offset shadow (`--mb-shift`, no blur) marks what the visitor acts on: the default button (`ink`), and the contact form sheet while the email or the message is being written in, or after it is sent (`blue`). The project-type chips are left out of that on purpose, so a click on one does not flicker it.
+
+### Links
+`inline` (ink text over a 2px `blue` underline; hover `blue` text), `nav` (an ink bar snaps in under it on hover; `.active` is a `blue` bar under `blue` text), `footer` (`ink-2`, underlined on hover, an optional leading icon turns `blue`), `case` ("Zobacz realizację": heavy ink text over a `blue` underline, the arrow after it nudges 3px right; the company name is in its accessible name).
+
+### Form fields
+Idle: a `muted` frame. Focus: an `ink` frame and the hard `blue` shadow. Invalid (`[data-invalid]` on the field or `aria-invalid`): a coral frame and a mono error line behind a coral rule. Disabled: a flat `panel`. The script hooks are `contact-form.ts`'s: `data-contact-wrap` (`data-state`: `idle | submitting | error-validation | error-submit | success`), `data-contact-form`, `data-field`, `data-invalid`, `data-submit`, `data-form-error`, `data-form-success`, `data-form-reset`, the `website` honeypot.
+
+### Prose
+`prose.astro` (`mb-prose`) sets Markdown / MDX bodies - legal pages, case studies: the rhythm of @tailwindcss/typography at 65ch, heavy Geist headings with h2 under an `ink` rule, `blue` square bullets and mono counters, the quote behind a `blue` rule, code in a hairline box, the table fully ruled. A `<pre>` scrolls in its own box and table cells wrap, so neither widens the page.
+
+### Pages
+- **Legal pages** (`legal-layout.astro`): a section head with the h1 (label `Informacja prawna`, lede `Ostatnia aktualizacja: <date>`), then the prose.
+- **Case study** (`/realizacje/<slug>/`): a section head with the company as h1 and the summary as lede, the facts table (role, period, stack as tags), the MDX body in prose, then a default `Napisz do mnie` and an outline `Wszystkie współprace` under an `ink` rule.
+- **Case study list** (`/realizacje/`, built only when a case study exists, the `Realizacje` menu entry too): a section head with the h1, then a cell grid of cards as on the experience wall - period badge (outline), company, role (mono `blue`), summary, the `case` link. In the menu, `Realizacje` is `.active` on the list and the case study pages, with `aria-current="page"` on the list itself.
+- **404**: an `ink` rule, the mono `404` in `blue`, the heavy h1, a default and an outline button.
+
+## Design proposals
+
+`/ui/proposal` (`bun dev` only) lists the directions in `src/styles/proposals/<id>/`; `/ui/proposal/<id>` shows a copy of the home page and the whole `/ui` catalogue with the proposal's CSS on top, scoped under `html[data-proposal="<id>"]`. `baseline` is this design with no overrides - the reference a new direction (KA0072) is drawn on and compared against. A proposal keeps the palette above and may change fonts, type scale, rules, borders, shadows, spacing and shapes; adopting one means moving its rules into `tokens.css` and the components, and updating this file.
+
+## Motion
+
+- Every state change is `--mb-snap` (`0.12s linear`): a switch, not a drift. Nothing slides, lifts or fades over time; accordions snap open with no height animation, the mobile sheet switches in with an opacity snap.
+- Hover never moves an element: buttons deepen their shadow, cells light from inside, links swap colour or underline.
+- No always-on motion: no ambient background, no pulsing dots. The spinner turns only while a form is being sent.
+- `prefers-reduced-motion: reduce` collapses every transition and animation (`global.css`) and stops the spinner; each animated component has its own reduced-motion block. The mobile sheet sets `transition-property: none` on its children there, so focus reaches the close button the moment it opens.
+
+## Do's and Don'ts
+
+- ✅ **Do** draw a cell with `--mb-rule` and let neighbours share it through `cell-grid.astro`.
+- ✅ **Do** give a new color token a single value, the one the dark page renders - there is no second palette to pair it with.
+- ✅ **Do** use `--mb-snap` for every transition and add a reduced-motion block next to it.
+- ❌ **Don't** round a corner. Not on cells, buttons, chips, avatars or inputs.
+- ❌ **Don't** add glass (`backdrop-filter`), gradients, a dot grid or ambient motion; the substrate stays solid and still.
+- ❌ **Don't** add a second accent color. Navy is the only chromatic element.
+- ❌ **Don't** use solid white (`#fff`) - text tops out at the warm `ink` (`#ece7dc`). The EU funding band is the one exception: its logos need a white ground.
+- ❌ **Don't** add soft or chromatic drop shadows. The only shadow is the hard `--mb-shift` offset on what the visitor acts on.
+- ❌ **Don't** move a hovered element (`translateY` and the like). State shows in fill, rule and shadow.
