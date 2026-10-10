@@ -616,9 +616,9 @@
   {
     "id": "KA0077",
     "title": "Signature proposal: live-grid",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0077-signature-proposal-live-grid/ticket.md",
-    "updated": "2026-10-10T20:44:40.471Z"
+    "updated": "2026-10-10T21:11:43.852Z"
   },
   {
     "id": "KA0078",
@@ -630,8 +630,8 @@
   {
     "id": "KA0079",
     "title": "Blueprint: the cell tag is unreadable on hover",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0079-blueprint-the-cell-tag-is-unreadable-on-hover/ticket.md",
-    "updated": "2026-10-10T21:09:50.440Z"
+    "updated": "2026-10-10T21:09:58.224Z"
   }
 ]
