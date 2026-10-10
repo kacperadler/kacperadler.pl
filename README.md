@@ -81,13 +81,13 @@ src/
 ├── content/{services,experience,case-studies,blog}/
 ├── data/                  # site-config, navigation, process
 ├── layouts/               # base-layout, legal-layout
-├── pages/                 # index, 404, legal *.md, realizacje/[slug], og-default.png.ts, llms*.txt.ts
+├── pages/                 # index, 404, legal *.md, realizacje/{[slug],[...index]}, og-default.png.ts, llms*.txt.ts
 ├── scripts/               # vanilla TS, ładowane przez <script>
 ├── styles/                # tokens.css, global.css
 ├── lib/                   # seo, dates, case-studies
 └── assets/
 tests/e2e/                 # Playwright specs
-tests/fixtures/            # przykładowy case study dla buildu e2e (E2E_FIXTURES=1)
+tests/fixtures/            # case studies dla buildów e2e: przykładowy (E2E_FIXTURES=1) i pusty (E2E_FIXTURES=none)
 ```
 
 Path aliasy: `@/components`, `@/layouts`, `@/lib`, `@/scripts`, `@/styles`, `@/data`, `@/content`, `@/assets`.

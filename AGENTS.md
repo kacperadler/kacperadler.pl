@@ -17,7 +17,7 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 - **Ultracite (Biome)** - lint + format dla TS/JS/JSON/CSS
 - **Prettier + prettier-plugin-astro** - formatowanie `*.astro` (Biome je lintuje, ale nie formatuje). `astroCompressHTML` w `.prettierrc` musi zgadzać się z `compressHTML` w `astro.config.mjs`, inaczej format zmienia render.
 - **Content Collections** (Zod, `src/content.config.ts`) dla services / experience (JSON) oraz caseStudies / blog (MDX)
-- **Case studies** (`@astrojs/mdx`) - `src/content/case-studies/<id>.mdx`, strona `/realizacje/<slug>/` (`src/pages/realizacje/[slug].astro`), opcjonalne pole `experience` linkuje wpis w "Z kim pracowałem" (jeden case study na wpis, nieistniejący wpis wywala build). Build e2e (`E2E_FIXTURES=1`, ustawiane w `playwright.config.ts`) czyta `tests/fixtures/case-studies`, dopóki `src/content/case-studies` nie ma żadnego `.mdx`.
+- **Case studies** (`@astrojs/mdx`) - `src/content/case-studies/<id>.mdx`, strona `/realizacje/<slug>/` (`src/pages/realizacje/[slug].astro`), lista `/realizacje/` (`src/pages/realizacje/[...index].astro`) i pozycja "Realizacje" w menu (`primaryNav()` w `src/data/navigation.ts`) - obie budowane tylko, gdy istnieje choć jeden case study, opcjonalne pole `experience` linkuje wpis w "Z kim pracowałem" (jeden case study na wpis, nieistniejący wpis wywala build). Build e2e (`E2E_FIXTURES=1`, ustawiane w `playwright.config.ts`) czyta `tests/fixtures/case-studies`, dopóki `src/content/case-studies` nie ma żadnego `.mdx`; ten sam run buduje też `dist-no-case-studies/` z `E2E_FIXTURES=none` (pusty `tests/fixtures/no-case-studies`) dla stanu bez case studies.
 - **Markdown pages** dla treści statycznej (polityka prywatności, regulamin) - `src/pages/*.md` z `layout: "@/layouts/legal-layout.astro"`
 
 ### Integracje runtime
@@ -89,7 +89,7 @@ Source of truth wizualny: `DESIGN.md`. Stan w kodzie:
 - **Liquid-glass paint** (`--v2-panel` 55-70% + `backdrop-filter: blur(20px) saturate(160%)` + inset 1px top hairline) używamy w dwóch trybach:
   - **Always-on atmosphere chrome**: header (`.nav-wrap`), footer (`.site-footer`), mobile sheet (`.sheet`, 70%) - globalne override'y na dole `base-layout.astro`; plus panel `.hero-status`.
   - **On hover / focus dla content cards**: services / how steps / experience tiles / contact-link / contact-form host - solid `--v2-panel` idle, glass-up na `:hover` (i `:has(...focus)` dla forma) przez shared spotlight selectors. Plus `.btn-ghost:hover` (canonical Button).
-- **Spotlight effect** - wszystkie content cards mają wspólny cursor-follow pattern. `src/scripts/spotlight.ts` bind'uje się do `[data-spotlight]`, śledzi pointer (rAF-throttled) i ustawia `--mx` / `--my` jako %. Dwa pseudo'sy na karcie: `::before` to white wash radial-gradient + flat navy tint (`#2a4d7f` 8%); `::after` to navy gradient masked via `mask-composite: exclude` do 1px obwodu. Oba fade'ują `opacity: 0 → 1` na hover. Shared selectors w `src/styles/global.css` obejmują `.hero-status, .service-panel, .step-panel, .exp-panel, .v2-contact-link, .contact-form-host`. `prefers-reduced-motion: reduce` skip'uje binding.
+- **Spotlight effect** - wszystkie content cards mają wspólny cursor-follow pattern. `src/scripts/spotlight.ts` bind'uje się do `[data-spotlight]`, śledzi pointer (rAF-throttled) i ustawia `--mx` / `--my` jako %. Dwa pseudo'sy na karcie: `::before` to white wash radial-gradient + flat navy tint (`#2a4d7f` 8%); `::after` to navy gradient masked via `mask-composite: exclude` do 1px obwodu. Oba fade'ują `opacity: 0 → 1` na hover. Shared selectors w `src/styles/global.css` obejmują `.hero-status, .service-panel, .step-panel, .exp-panel, .case-panel, .v2-contact-link, .contact-form-host`. `prefers-reduced-motion: reduce` skip'uje binding.
 - **Contact form focus state** - `.contact-form-host:has(input[type='email']:focus, textarea:focus)` aktywuje glass + spotlight tak samo jak hover, plus navy halo (`box-shadow: 0 8px 60px` z `--blue` 28%) i navy `--line` na wewnętrznej ramce. Radio "Typ projektu" celowo wykluczone z `:has()` żeby kliknięcie radio nie zgaszało stanu. Success state (`[data-state='success']`) trigger'uje to samo. `min-height: 490px` na hostcie lockuje wysokość żeby strona nie skakała przy submit.
 - **UI primitives** w `src/components/ui/`: `button.astro`, `card.astro` (idle solid → hover glass, domyślnie `data-spotlight`), `input.astro` (`.v2-input`), `textarea.astro` (`.v2-textarea`). Używaj ich przed pisaniem nowego komponentu.
 - **Canonical Button** - `button.astro` jest jedynym source'em CTA. Variants `primary | ghost`, sizes `md | sm` (sm = header). Primary hover: `--blue-wash` 4px ring + 12% darken + arrow icon fly-through cycle (translateX z opacity 0 dla "teleport" iluzji, bez rewind on hover-out). Ghost hover: glass. Stan `data-state="submitting"` pokazuje CSS-only spinner. Wszystkie transition'y `0.25s ease`. Używany w: header (z `data-nav-cta` żeby `nav-active.ts` mógł włączyć `.active`), hero CTAs, mobile sheet CTA, contact form, 404.
@@ -105,14 +105,14 @@ src/
 ├── content.config.ts      # Zod schemas collections
 ├── data/                  # site-config, navigation, process
 ├── layouts/               # base-layout, legal-layout
-├── pages/                 # index, 404, *.md (legal), realizacje/[slug], og-default.png.ts, llms.txt.ts, llms-full.txt.ts
+├── pages/                 # index, 404, *.md (legal), realizacje/{[slug],[...index]}, og-default.png.ts, llms.txt.ts, llms-full.txt.ts
 ├── scripts/               # vanilla TS: contact-form, mobile-sheet, nav-active, nav-scroll, spotlight
 ├── styles/                # tokens.css, global.css
 ├── lib/                   # seo, dates, case-studies
 └── assets/                # me.jpg (OG), experience/ logotypy, logotyp_fundusze_eu.png
 
 tests/e2e/       # Playwright specs (a11y, case-studies, contact-form, mobile-sheet, nav-active, services-grid, skip-link)
-tests/fixtures/  # przykładowy case study dla buildu e2e
+tests/fixtures/  # case studies dla buildów e2e: przykładowy i pusty
 spec/            # vision.md + tickets (spec/features/<id>/)
 .agents/harness/ # kryteria review / audit / retro + styleguide
 Dockerfile, nginx.conf  # produkcja na Dokploy
