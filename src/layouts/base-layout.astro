@@ -55,7 +55,12 @@ const ribbonStyles = ribbons.map((r, i) => {
 <!doctype html>
 <html lang={siteConfig.lang}>
   <head>
-    <BaseHead description={description} noindex={noindex} ogImage={ogImage} title={title} />
+    <BaseHead
+      description={description}
+      noindex={noindex}
+      ogImage={ogImage}
+      title={title}
+    />
     <ClientRouter />
   </head>
   <body>
@@ -108,7 +113,11 @@ const ribbonStyles = ribbons.map((r, i) => {
     overflow: hidden;
     pointer-events: none;
     background-color: var(--v2-bg);
-    background-image: radial-gradient(circle at 1px 1px, var(--v2-grid) 1px, transparent 0);
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      var(--v2-grid) 1px,
+      transparent 0
+    );
     background-size: 24px 24px;
   }
 
