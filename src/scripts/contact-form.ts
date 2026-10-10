@@ -90,8 +90,8 @@ function readPayload(form: HTMLFormElement): ContactPayload {
   const data = new FormData(form);
   return {
     email: String(data.get("email") ?? "").trim(),
-    type: String(data.get("type") ?? "").trim(),
     message: String(data.get("message") ?? "").trim(),
+    type: String(data.get("type") ?? "").trim(),
   };
 }
 
@@ -125,15 +125,15 @@ async function submitToNocodb(payload: ContactPayload): Promise<boolean> {
     "data",
     JSON.stringify({
       Email: payload.email,
-      Type: payload.type,
       Message: payload.message,
+      Type: payload.type,
     })
   );
 
   try {
     const res = await fetch(siteConfig.nocodbFormUrl, {
-      method: "POST",
       body,
+      method: "POST",
     });
     return res.ok;
   } catch (err) {

@@ -12,43 +12,43 @@ export interface ProcessStep {
 
 export const processSteps: readonly ProcessStep[] = [
   {
-    num: "01",
-    icon: "lucide:messages-square",
-    title: "Rozmowa",
+    badge: "~ 30 min",
     description:
       "Krótkie spotkanie albo wymiana maili - co Ci wygodniej. Opowiadasz, co chcesz zbudować i po co; ja zadaję pytania, czasem niewygodne.",
-    badge: "~ 30 min",
+    icon: "lucide:messages-square",
+    num: "01",
+    title: "Rozmowa",
   },
   {
-    num: "02",
-    icon: "lucide:clipboard-list",
-    title: "Plan i wycena",
+    badge: "2–3 dni",
     description:
       "Po rozmowie dostajesz krótki dokument: co robimy, w jakiej kolejności, ile to zajmie i ile kosztuje. Bez ukrytych kosztów, bez niespodzianek w trakcie.",
-    badge: "2–3 dni",
+    icon: "lucide:clipboard-list",
+    num: "02",
+    title: "Plan i wycena",
   },
   {
-    num: "03",
-    icon: "lucide:code",
-    title: "Realizacja",
+    badge: "podział na etapy",
     description:
       "Pracuję małymi etapami - co tydzień widzisz coś, co działa, nie obrazek. Gdy coś idzie nie tak, łatwiej to zauważyć i poprawić.",
-    badge: "podział na etapy",
+    icon: "lucide:code",
+    num: "03",
+    title: "Realizacja",
   },
   {
-    num: "04",
-    icon: "lucide:message-circle",
-    title: "Feedback i iteracje",
+    badge: "na bieżąco",
     description:
       "Nie musisz znać się na technologii. Mówisz „to powinno być szybsze”, „tu brakuje jasności”, „zmieńmy kolejność” - ja tłumaczę to na konkretne zmiany i pokazuję efekt.",
-    badge: "na bieżąco",
+    icon: "lucide:message-circle",
+    num: "04",
+    title: "Feedback i iteracje",
   },
   {
-    num: "05",
-    icon: "lucide:rocket",
-    title: "Wdrożenie i opieka",
+    badge: "+ nadzór",
     description:
       "Po wdrożeniu zostaje monitoring. Łapię błędy zanim staną się problemem, mierzę performance, przygotowuję poprawki. Twój produkt nie jest sam.",
-    badge: "+ nadzór",
+    icon: "lucide:rocket",
+    num: "05",
+    title: "Wdrożenie i opieka",
   },
 ];

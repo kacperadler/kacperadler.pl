@@ -10,13 +10,13 @@ import logoFunduszeEu from "@/assets/logotyp_fundusze_eu.png";
 const PROJECT_URL = "https://krotoszyn.praca.gov.pl/projekty-efs";
 ---
 
-<aside class="eu-funding" aria-label="Informacja o dofinansowaniu">
+<aside aria-label="Informacja o dofinansowaniu" class="eu-funding">
   <div class="eu-inner">
     <Image
-      src={logoFunduszeEu}
       alt="Fundusze Europejskie dla Wielkopolski · Rzeczpospolita Polska · Dofinansowane przez Unię Europejską · Samorząd Województwa Wielkopolskiego"
       class="eu-logos"
       loading="lazy"
+      src={logoFunduszeEu}
     />
     <p class="eu-text">
       Niniejszy podmiot powstał dzięki współfinansowaniu ze środków Europejskiego Funduszu
@@ -25,7 +25,7 @@ const PROJECT_URL = "https://krotoszyn.praca.gov.pl/projekty-efs";
     </p>
     <p class="eu-meta">
       Więcej o projekcie:
-      <a href={PROJECT_URL} target="_blank" rel="noopener">{PROJECT_URL}</a>
+      <a href={PROJECT_URL} rel="noopener" target="_blank">{PROJECT_URL}</a>
     </p>
     <p class="eu-tags">#FunduszeUE #FunduszeEuropejskie</p>
   </div>

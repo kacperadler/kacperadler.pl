@@ -1,6 +1,6 @@
 # kacperadler.pl
 
-Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS). Statyczny build Astro 6, produkcyjnie na Dokploy (Dockerfile + nginx).
+Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS). Statyczny build Astro 7, produkcyjnie na Dokploy (Dockerfile + nginx).
 
 > Wizja: [`spec/vision.md`](./spec/vision.md)
 > Konwencje pracy z agentami: [`AGENTS.md`](./AGENTS.md)
@@ -9,7 +9,7 @@ Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS). Statyczny build 
 
 ## Stack
 
-- **[Astro 6](https://docs.astro.build)** (TypeScript strict, content collections, output static)
+- **[Astro 7](https://docs.astro.build)** (TypeScript strict, content collections, output static)
 - **Vanilla CSS** + scoped `<style>` w `.astro` - dark-only (`color-scheme: dark` w `tokens.css`), jeden akcent (navy)
 - **[Ultracite](https://www.ultracite.ai/)** (Biome 2) - lint + format dla TS/JS/JSON/CSS
 - **[Prettier](https://prettier.io)** + `prettier-plugin-astro` - formatowanie `*.astro` (Biome ich nie obsługuje natywnie)
@@ -95,7 +95,7 @@ Path aliasy: `@/components`, `@/layouts`, `@/lib`, `@/scripts`, `@/styles`, `@/d
 
 Dokploy na własnym serwerze:
 
-- Build type: **Dockerfile** z repo - multi-stage `oven/bun:1.3.13-alpine` (`bun install --frozen-lockfile` + `bun run build`) → `nginx:1.27-alpine` serwuje `dist/`
+- Build type: **Dockerfile** z repo - multi-stage `oven/bun:1.4.3-alpine` (`bun install --frozen-lockfile` + `bun run build`) → `nginx:1.30-alpine` serwuje `dist/`
 - `nginx.conf`: gzip, security headers, cache rules (immutable dla `/_astro/` i fontów)
 - Container port **80**, routing przez Traefik w Dokploy z certyfikatem Let's Encrypt
 

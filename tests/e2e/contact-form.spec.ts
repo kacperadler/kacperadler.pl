@@ -20,7 +20,7 @@ async function stubUmami(page: Page): Promise<void> {
       tracked;
     window.umami = {
       track: (name: string, data?: Record<string, unknown>) => {
-        tracked.push({ name, data });
+        tracked.push({ data, name });
       },
     };
   });
@@ -121,9 +121,9 @@ test.describe("contact form", () => {
       capturedBody = route.request().postData() ?? "";
       capturedContentType = route.request().headers()["content-type"] ?? null;
       await route.fulfill({
-        status: 200,
-        contentType: "application/json",
         body: '{"id":"test"}',
+        contentType: "application/json",
+        status: 200,
       });
     });
 
@@ -158,7 +158,7 @@ test.describe("contact form", () => {
     // Umami event fires on success with the project type so the
     // dashboard can break submissions down by category.
     expect(await readFormEvents(page)).toEqual([
-      { name: "form-submit", data: { type: "landing" } },
+      { data: { type: "landing" }, name: "form-submit" },
     ]);
 
     expect(capturedContentType).toMatch(MULTIPART_RX);
@@ -174,7 +174,7 @@ test.describe("contact form", () => {
     page,
   }) => {
     await page.route(NOCODB_FORM_URL, (route) =>
-      route.fulfill({ status: 200, body: "{}" })
+      route.fulfill({ body: "{}", status: 200 })
     );
 
     await page.goto("/#contact");
@@ -215,7 +215,7 @@ test.describe("contact form", () => {
 
   test("upstream failure shows the inline error banner", async ({ page }) => {
     await page.route(NOCODB_FORM_URL, (route) =>
-      route.fulfill({ status: 500, body: "boom" })
+      route.fulfill({ body: "boom", status: 500 })
     );
 
     await stubUmami(page);
@@ -256,7 +256,7 @@ test.describe("contact form", () => {
     // form-error event fires too, so the Umami dashboard surfaces
     // upstream failures as a separate signal from successful submits.
     expect(await readFormEvents(page)).toEqual([
-      { name: "form-error", data: { type: "webapp" } },
+      { data: { type: "webapp" }, name: "form-error" },
     ]);
   });
 
@@ -266,7 +266,7 @@ test.describe("contact form", () => {
     let nocodbHit = false;
     await page.route(NOCODB_FORM_URL, async (route) => {
       nocodbHit = true;
-      await route.fulfill({ status: 200, body: "{}" });
+      await route.fulfill({ body: "{}", status: 200 });
     });
 
     await stubUmami(page);

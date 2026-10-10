@@ -55,11 +55,15 @@ const ogImageUrl = new URL(siteConfig.ogImage, siteConfig.url).toString();
 export const personSchema: PersonSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
-  name: siteConfig.name,
-  url: siteConfig.url,
-  jobTitle: siteConfig.role,
+  contactPoint: {
+    "@type": "ContactPoint",
+    availableLanguage: ["Polish", "English"],
+    contactType: "customer service",
+    email: siteConfig.email,
+  },
   description: siteConfig.description,
   image: ogImageUrl,
+  jobTitle: siteConfig.role,
   knowsAbout: [
     "React",
     "TypeScript",
@@ -71,21 +75,17 @@ export const personSchema: PersonSchema = {
     "Web Performance",
     "B2B Applications",
   ],
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "customer service",
-    email: siteConfig.email,
-    availableLanguage: ["Polish", "English"],
-  },
+  name: siteConfig.name,
   sameAs: [siteConfig.social.github, siteConfig.social.linkedin],
+  url: siteConfig.url,
 };
 
 export const websiteSchema: WebSiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  inLanguage: siteConfig.locale,
   name: siteConfig.name,
   url: siteConfig.url,
-  inLanguage: siteConfig.locale,
 };
 
 /* Build a ProfessionalService schema with an OfferCatalog populated from the
@@ -97,10 +97,8 @@ export function professionalServiceSchema(
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    name: `${siteConfig.name} - ${siteConfig.role}`,
-    url: siteConfig.url,
-    description: siteConfig.description,
     areaServed: ["Poland", "European Union"],
+    description: siteConfig.description,
     founder: {
       "@type": "Person",
       name: siteConfig.name,
@@ -108,16 +106,18 @@ export function professionalServiceSchema(
     },
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Usługi",
       itemListElement: services.map((s) => ({
         "@type": "Offer",
         itemOffered: {
           "@type": "Service",
-          name: s.data.title,
           description: s.data.description,
+          name: s.data.title,
           serviceType: s.data.tags.join(", "),
         },
       })),
+      name: "Usługi",
     },
+    name: `${siteConfig.name} - ${siteConfig.role}`,
+    url: siteConfig.url,
   };
 }

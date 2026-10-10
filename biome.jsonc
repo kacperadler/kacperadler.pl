@@ -9,6 +9,8 @@
       "!**/bun.lock",
       "!**/example.html",
       "!**/public",
+      // Vendor logos served through <img>; Biome 2.5 started parsing SVG.
+      "!**/*.svg",
       // Written by the harness (`h`), which formats it its own way.
       "!spec/build.json"
     ]
