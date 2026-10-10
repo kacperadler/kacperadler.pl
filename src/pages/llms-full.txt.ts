@@ -70,7 +70,7 @@ Pracuję async, w sprintach, z zespołami produktowymi w Polsce i Unii Europejsk
 
 ## Usługi
 
-Najpierw agenci AI i automatyzacje w firmach (razem ze szkoleniami z Claude Code i Codexa), potem aplikacje i strony. Każdy obszar ma własny stack dobrany pod kontekst projektu; w aplikacjach React i TypeScript jako fundament.
+Najpierw agenci AI i automatyzacje w firmach, potem aplikacje i strony. Każdy obszar ma własny stack dobrany pod kontekst projektu; w aplikacjach React i TypeScript jako fundament.
 
 ${servicesBlock}
 

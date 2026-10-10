@@ -1,6 +1,6 @@
 {
   "title": "Agenci AI i automatyzacje",
-  "description": "Wdrażam agentów AI i automatyzacje w firmach - od procesu, który zjada czas zespołu, po działające wdrożenie. Szkolę też programistów z pracy z Claude Code i Codexem.",
-  "tags": ["Claude Code", "Codex", "MCP", "LLM"],
+  "description": "Wdrażam agentów AI i automatyzacje w firmach - od procesu, który zjada czas zespołu, po działające wdrożenie. Integracje z narzędziami i danymi, których już używacie.",
+  "tags": ["LLM", "MCP", "API", "TypeScript"],
   "order": 1
 }
