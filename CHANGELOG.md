@@ -17,6 +17,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0014 `@types/node` 26 typechecks against a newer Node than CI and Docker run (2ec2514)
 - KA0015 The mobile menu has no accessible name (c12cd49)
 - KA0016 The e2e suite cannot start Astro 7 preview: it detaches (2f475d1)
+- KA0019 The modal mobile sheet does not move or hold focus (40e700a)
 - KA0022 contact-form e2e spec fails now and then in parallel runs (3da9e1f)
 
 ### Changed

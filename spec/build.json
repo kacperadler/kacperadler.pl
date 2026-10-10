@@ -140,9 +140,9 @@
   {
     "id": "KA0019",
     "title": "The modal mobile sheet does not move or hold focus",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0019-the-modal-mobile-sheet-does-not-move-or-hold-focus/ticket.md",
-    "updated": "2026-10-10T14:03:52.254Z",
+    "updated": "2026-10-10T14:23:46.331Z",
     "after": [
       "KA0022"
     ]
