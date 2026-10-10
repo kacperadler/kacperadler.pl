@@ -108,9 +108,9 @@ test.describe("design proposals (astro dev)", () => {
     ).toBeVisible();
     await Promise.all(
       proposals.map(async (proposal) => {
-        const item = page
-          .getByRole("listitem")
-          .filter({ has: page.getByRole("heading", { name: proposal.name }) });
+        const item = page.getByRole("listitem").filter({
+          has: page.getByRole("heading", { exact: true, name: proposal.name }),
+        });
         await expect(
           item.getByRole("link", { exact: true, name: proposal.name })
         ).toHaveAttribute("href", `/ui/proposal/${proposal.id}`);
