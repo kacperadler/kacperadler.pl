@@ -537,9 +537,9 @@
   {
     "id": "KA0068",
     "title": "Minimal brutalism components in the /ui catalogue",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0068-minimal-brutalism-components-in-the-ui-catalogue/ticket.md",
-    "updated": "2026-10-10T18:31:06.920Z",
+    "updated": "2026-10-10T18:48:03.818Z",
     "after": [
       "KA0067"
     ]
