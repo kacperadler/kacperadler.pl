@@ -1,6 +1,6 @@
 # kacperadler.pl
 
-Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS). Produkcyjnie pod `kacperadler.pl`, statyczny build Astro serwowany przez nginx na Dokploy.
+Portfolio Kacpra Adlera - Inżynier oprogramowania (~5 lat, React/TS). Produkcyjnie pod `kacperadler.pl`, statyczny build Astro serwowany przez nginx na Dokploy.
 
 - **Wizja i to, co ma zostać prawdą: `spec/vision.md`.**
 - **Kryteria review, styleguide, audyt: `.agents/harness/criteria/`.**
@@ -14,7 +14,8 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 - **Astro 7** (TypeScript strict, output static, `<ClientRouter />` z `astro:transitions`; `compressHTML: true` - HTML-aware whitespace z Astro 6, nie domyślne `'jsx'`)
 - **Vanilla CSS** + scoped `<style>` w `.astro`. **Dark-only**: `color-scheme: dark` na `:root` w `src/styles/tokens.css`, jedna ciemna wartość na kolor (bez par `light-dark()`). Jeden akcent (navy). **Bez Tailwinda** - design system na customowych tokenach (zob. `tokens.css` + `DESIGN.md`).
 - **Ultracite (Biome)** - lint + format dla TS/JS/JSON/CSS i `.astro` (`html.experimentalFullSupportEnabled` w `biome.jsonc`: Biome formatuje cały plik, razem z markupem)
-- **Content Collections** (Zod z `astro/zod`, `src/content.config.ts`) dla services / projects / experience / blog. `projects` to placeholdery: sekcja Realizacje nie jest renderowana na `/` (link w `src/data/navigation.ts` zakomentowany) do czasu realnych case studies
+- **Content Collections** (Zod z `astro/zod`, `src/content.config.ts`) dla services / experience (JSON) oraz caseStudies / blog (MDX)
+- **Case studies** (`@astrojs/mdx`) - `src/content/case-studies/<id>.mdx`, strona `/realizacje/<slug>/` (`src/pages/realizacje/[slug].astro`), lista `/realizacje/` (`src/pages/realizacje/[...index].astro`) i pozycja "Realizacje" w menu (`primaryNav()` w `src/data/navigation.ts`) - obie budowane tylko, gdy istnieje choć jeden case study, opcjonalne pole `experience` linkuje wpis w "Z kim pracowałem" (jeden case study na wpis, nieistniejący wpis wywala build). Build e2e (`E2E_FIXTURES=1`, ustawiane w `playwright.config.ts`) czyta `tests/fixtures/case-studies`, dopóki `src/content/case-studies` nie ma żadnego `.mdx`; ten sam run buduje też `dist-no-case-studies/` z `E2E_FIXTURES=none` (pusty `tests/fixtures/no-case-studies`) dla stanu bez case studies.
 - **Markdown pages** dla treści statycznej (polityka prywatności, regulamin) - `src/pages/*.md` z `layout: "@/layouts/legal-layout.astro"`
 - **Ikony**: `astro-icon` + `@iconify-json/lucide` (`<Icon name="lucide:..." />`), nie inline SVG.
 - **Fonty**: self-hosted Geist + Geist Mono (variable woff2 w `public/fonts`, `font-display: swap`, preload w `base-head.astro`) - bez zewnętrznych CDN.
@@ -103,17 +104,19 @@ Source of truth wizualny: `DESIGN.md`. Stan w kodzie:
 ```
 src/
 ├── components/{ui,layout,sections,contact}/   # kebab-case
-├── content/{services,projects,experience,blog}/  # JSON; blog pusty
+├── content/{services,experience}/  # JSON
+├── content/{case-studies,blog}/    # MDX; blog pusty
 ├── content.config.ts      # Zod schemas collections
 ├── data/                  # site-config, navigation, process
 ├── layouts/               # base-layout, legal-layout
-├── pages/                 # index, 404, *.md (legal), og-default.png.ts, llms.txt.ts, llms-full.txt.ts
+├── pages/                 # index, 404, *.md (legal), realizacje/{[slug],[...index]}, og-default.png.ts, llms.txt.ts, llms-full.txt.ts
 ├── scripts/               # vanilla TS: contact-form, mobile-sheet, nav-active, nav-scroll, spotlight
 ├── styles/                # tokens.css, global.css, prose.css (tylko /ui)
-├── lib/                   # seo, dates
+├── lib/                   # seo, case-studies
 └── assets/                # me.jpg (OG), experience/ logotypy, logotyp_fundusze_eu.png
 
-tests/e2e/       # Playwright specs (a11y, contact-form, mobile-sheet, nav-active, skip-link, ui-catalogue na dev serverze)
+tests/e2e/       # Playwright specs (a11y, case-studies, contact-form, mobile-sheet, nav-active, services-grid, skip-link, ui-catalogue na dev serverze)
+tests/fixtures/  # case studies dla buildów e2e: przykładowy i pusty
 spec/            # vision.md + tickets (spec/features/<id>/)
 .agents/harness/ # kryteria review / audit / retro + styleguide
 Dockerfile, nginx.conf  # produkcja na Dokploy

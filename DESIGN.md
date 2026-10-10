@@ -195,6 +195,13 @@ Used in Experience to render the `Współpracowałem z` cards. Grid `auto-fill, 
 - Logo image at the top (grayscale + opacity 0.6 idle, full color + opacity 1 on hover - uniform wall feel that rewards engagement).
 - Company name (`display` 18px), role (mono blue 12px), description (sans 14px).
 - Optional `badge` field on the data entry overrides the default year-range badge - used for engagements like `"Zlecenie"`. `<Badge>` (`ui/badge.astro`): `outline` for the year range, `filled` (`blue-wash`, same vocab as `<StatusPill>`) for `teraz` and the override. The process step badge is `outline` with `fillOnCardHover`.
+- An entry with a case study (`experience` field on a `caseStudies` entry) ends with a `Zobacz realizację` link (`.case-link`): mono 12px `blue`, `lucide:arrow-right` that shifts 3px right on hover, underline on hover; the company name is in its accessible name. Entries without one render without it.
+
+### Case study page
+`/realizacje/<slug>/`: same 70ch column as the legal pages. Header: `blue` eyebrow `Realizacja`, display h1 (company), summary lede (sans 18px), then a facts list (role, period, stack chips) between two `v2-line` rules. The MDX body uses the shared `.prose` styles from `global.css` (also used by the legal pages). Closes with a primary `Napisz do mnie` and a ghost `Wszystkie współprace`.
+
+### Case study list
+`/realizacje/`, built only when a case study exists (the `Realizacje` menu entry too). Centred `section-head` with an h1, then the logo-wall grid (`auto-fill, minmax(280px, 1fr)`) of `<Card>`s with class `case-panel` (in the shared spotlight selectors): period pill (outline, like the year-range pill), company (`display` 18px), role (mono blue 12px), summary (sans 14px), and the same `Zobacz realizację` link (`.case-link` in `global.css`, shared with the logo wall). In the menu, `Realizacje` is `.active` on `/realizacje/` and the case study pages, with `aria-current="page"` on the list itself.
 
 ### Badge, tag, status pill
 - **Badge** - mono 11px, `xs` radius, `outline` (muted text, `line` border) or `filled` (`blue` on `blue-wash`).

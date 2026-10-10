@@ -88,7 +88,7 @@ test.describe("mobile sheet", () => {
     await trigger.click();
     await expect(sheet).toHaveAttribute("data-mobile-sheet", "open");
 
-    await page.click('[data-sheet-link][href="#services"]');
+    await page.click('[data-sheet-link][href="/#services"]');
 
     await expect(sheet).toHaveAttribute("aria-hidden", "true");
     await expect(trigger).toBeFocused();

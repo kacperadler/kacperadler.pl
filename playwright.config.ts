@@ -69,6 +69,10 @@ export default defineConfig({
   // preview of this project holds the lock, so Playwright sees the process exit.
   // Playwright owns the process and kills it after the run. It never reuses a
   // server it did not start: one already on PORT fails the run instead.
+  // E2E_FIXTURES=1 lets the build read tests/fixtures/case-studies while
+  // there is no real case study (see src/content.config.ts). Before it, a
+  // build with E2E_FIXTURES=none goes to dist-no-case-studies/, which
+  // case-studies.spec.ts reads as files for the state with no case study.
   //
   // The dev server starts after the build (Playwright starts the servers in
   // order), so the two never write .astro/ at the same time. --ignore-lock
@@ -76,7 +80,8 @@ export default defineConfig({
   // `bun dev` of the main checkout.
   webServer: [
     {
-      command: `bun run build && bun run preview -- --port ${PORT} --ignore-lock`,
+      command: `E2E_FIXTURES=none bun run build -- --outDir dist-no-case-studies && bun run build && bun run preview -- --port ${PORT} --ignore-lock`,
+      env: { E2E_FIXTURES: "1" },
       reuseExistingServer: false,
       stderr: "pipe",
       stdout: "ignore",

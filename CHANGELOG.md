@@ -10,6 +10,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0003 Update dependencies, Astro to the newest release (8412871)
 - KA0005 The dropped email-templates offer is still on the site (d80d012)
 - KA0026 Offer: AI agents, automation, Claude Code and Codex training (7453229)
+- KA0028 Case studies in MDX: collection, list and page (6feb382)
 - KA0036 Kacper is a software engineer, not a frontend engineer (a8f5655)
 
 ### Fixed
@@ -33,3 +34,4 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0017 CSS still carries `light-dark()` pairs whose light half never renders (bba607f)
 - KA0024 Drop editor and agent configs, Biome formats .astro instead of Prettier (478c000)
 - KA0025 Drop project-plan.md and rewrite README.md (1918d42)
+- KA0047 review.md still says package.json has no test script (882b23a)

@@ -1,6 +1,6 @@
 # kacperadler.pl
 
-Portfolio Kacpra Adlera, Frontend Engineera (~5 lat, React/TS): kim jest i czym się zajmuje. Oferta to aplikacje webowe, narzędzia wewnętrzne, landing page'e, strony wizytówki i aplikacje mobilne. Strona jest dla osób, które mogą go zatrudnić, a spełnia swoje zadanie, gdy wyślą formularz kontaktowy.
+Portfolio Kacpra Adlera, Inżyniera oprogramowania (~5 lat, React/TS): kim jest i czym się zajmuje. Oferta to agenci AI i automatyzacje, aplikacje webowe, narzędzia wewnętrzne, landing page'e, strony wizytówki i aplikacje mobilne. Strona jest dla osób, które mogą go zatrudnić, a spełnia swoje zadanie, gdy wyślą formularz kontaktowy.
 
 Produkcja: [kacperadler.pl](https://kacperadler.pl) - statyczny build Astro serwowany przez nginx na Dokploy.
 
@@ -12,6 +12,7 @@ Produkcja: [kacperadler.pl](https://kacperadler.pl) - statyczny build Astro serw
 ## Stack
 
 - **[Astro 7](https://docs.astro.build)** - TypeScript strict, output static, content collections, `<ClientRouter />`
+- **Case studies w MDX** (`@astrojs/mdx`): `src/content/case-studies/<id>.mdx` → `/realizacje/<slug>/`, link z wpisu w "Z kim pracowałem"; lista `/realizacje/` i pozycja "Realizacje" w menu budują się tylko, gdy istnieje choć jeden case study
 - **Vanilla CSS** + scoped `<style>` w `.astro`, tokeny w `src/styles/tokens.css`; dark-only, jeden akcent (navy), bez Tailwinda
 - **[Ultracite](https://www.ultracite.ai/)** (Biome) - lint i format dla TS/JS/JSON/CSS i `.astro`
 - **[Husky](https://typicode.github.io/husky/)** + **lint-staged** - pre-commit
@@ -57,6 +58,8 @@ bun dev
 
 1. **build**: Node 22 + bun, `bun install --frozen-lockfile`, `bun run lint`, `bun run check`, `bun run build`
 2. **e2e** (po build): Playwright chromium z cache przeglądarek, `bun run test:e2e`, raport w artefakcie `playwright-report`
+
+`bun run test:e2e` buduje stronę dwa razy (`webServer` w `playwright.config.ts`): `E2E_FIXTURES=none` do `dist-no-case-studies/` (stan bez case studies, z pustego `tests/fixtures/no-case-studies`) i `E2E_FIXTURES=1` do `dist/` z przykładowym `tests/fixtures/case-studies/przyklad.mdx`, dopóki `src/content/case-studies` nie ma żadnego `.mdx`. Build produkcyjny nie czyta fixture'ów.
 
 Dependabot (`.github/dependabot.yml`) co tydzień otwiera PR-y dla bun i GitHub Actions; minor i patch zgrupowane w jednym PR.
 
