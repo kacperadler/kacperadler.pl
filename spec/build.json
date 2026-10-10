@@ -333,9 +333,9 @@
   {
     "id": "KA0041",
     "title": "Design proposal: modernist",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0041-design-proposal-modernist/ticket.md",
-    "updated": "2026-10-10T17:13:47.420Z",
+    "updated": "2026-10-10T17:15:31.605Z",
     "after": [
       "KA0038"
     ]
@@ -343,9 +343,9 @@
   {
     "id": "KA0042",
     "title": "Design proposal: computer",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0042-design-proposal-computer/ticket.md",
-    "updated": "2026-10-10T15:03:31.184Z",
+    "updated": "2026-10-10T17:14:23.061Z",
     "after": [
       "KA0038"
     ]
@@ -467,5 +467,26 @@
     "status": "planning",
     "path": "spec/features/KA0058-the-button-arrow-shrinks-to-nothing-in-a-narrow-container/ticket.md",
     "updated": "2026-10-10T17:14:07.118Z"
+  },
+  {
+    "id": "KA0059",
+    "title": "The button's arrow shrinks to nothing in a narrow box",
+    "status": "dropped",
+    "path": "spec/features/KA0059-the-button-s-arrow-shrinks-to-nothing-in-a-narrow-box/ticket.md",
+    "updated": "2026-10-10T17:15:40.821Z"
+  },
+  {
+    "id": "KA0060",
+    "title": "The proposal frame documents a scope that loses to scoped descendant selectors",
+    "status": "dropped",
+    "path": "spec/features/KA0060-the-proposal-frame-documents-a-scope-that-loses-to-scoped-descendant-selectors/ticket.md",
+    "updated": "2026-10-10T17:15:41.018Z"
+  },
+  {
+    "id": "KA0061",
+    "title": "axe runs only on the baseline proposal",
+    "status": "dropped",
+    "path": "spec/features/KA0061-axe-runs-only-on-the-baseline-proposal/ticket.md",
+    "updated": "2026-10-10T17:15:41.214Z"
   }
 ]
