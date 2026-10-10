@@ -36,6 +36,5 @@ As `.agents/harness/criteria/styleguide.md` says, with `AGENTS.md` `## Konwencje
 ## Not reasons to FAIL
 
 - Outdated dependencies (KA0003).
-- `npm test` failing because `package.json` has no `test` script (KA0001 findings, F1).
 - Em-dashes already in files, on lines the branch did not add.
 - The `[glob-loader] No files found` warning for the empty `src/content/blog`.

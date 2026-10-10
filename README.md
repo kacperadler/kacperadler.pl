@@ -1,6 +1,6 @@
 # kacperadler.pl
 
-Portfolio Kacpra Adlera, Frontend Engineera (~5 lat, React/TS): kim jest i czym się zajmuje. Oferta to aplikacje webowe, narzędzia wewnętrzne, landing page'e, strony wizytówki i aplikacje mobilne. Strona jest dla osób, które mogą go zatrudnić, a spełnia swoje zadanie, gdy wyślą formularz kontaktowy.
+Portfolio Kacpra Adlera, Inżyniera oprogramowania (~5 lat, React/TS): kim jest i czym się zajmuje. Oferta to agenci AI i automatyzacje, aplikacje webowe, narzędzia wewnętrzne, landing page'e, strony wizytówki i aplikacje mobilne. Strona jest dla osób, które mogą go zatrudnić, a spełnia swoje zadanie, gdy wyślą formularz kontaktowy.
 
 Produkcja: [kacperadler.pl](https://kacperadler.pl) - statyczny build Astro serwowany przez nginx na Dokploy.
 

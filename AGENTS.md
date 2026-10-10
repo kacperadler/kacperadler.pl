@@ -1,6 +1,6 @@
 # kacperadler.pl
 
-Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS). Produkcyjnie pod `kacperadler.pl`, statyczny build Astro serwowany przez nginx na Dokploy.
+Portfolio Kacpra Adlera - Inżynier oprogramowania (~5 lat, React/TS). Produkcyjnie pod `kacperadler.pl`, statyczny build Astro serwowany przez nginx na Dokploy.
 
 - **Wizja i to, co ma zostać prawdą: `spec/vision.md`.**
 - **Kryteria review, styleguide, audyt: `.agents/harness/criteria/`.**
@@ -111,7 +111,7 @@ src/
 ├── pages/                 # index, 404, *.md (legal), realizacje/{[slug],[...index]}, og-default.png.ts, llms.txt.ts, llms-full.txt.ts
 ├── scripts/               # vanilla TS: contact-form, mobile-sheet, nav-active, nav-scroll, spotlight
 ├── styles/                # tokens.css, global.css
-├── lib/                   # seo, dates, case-studies
+├── lib/                   # seo, case-studies
 └── assets/                # me.jpg (OG), experience/ logotypy, logotyp_fundusze_eu.png
 
 tests/e2e/       # Playwright specs (a11y, case-studies, contact-form, mobile-sheet, nav-active, services-grid, skip-link)
