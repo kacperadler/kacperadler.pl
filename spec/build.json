@@ -626,5 +626,12 @@
     "status": "planning",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
     "updated": "2026-10-10T21:02:47.675Z"
+  },
+  {
+    "id": "KA0079",
+    "title": "Blueprint: the cell tag is unreadable on hover",
+    "status": "planned",
+    "path": "spec/features/KA0079-blueprint-the-cell-tag-is-unreadable-on-hover/ticket.md",
+    "updated": "2026-10-10T21:09:50.440Z"
   }
 ]
