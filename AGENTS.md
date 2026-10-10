@@ -1,6 +1,6 @@
 # kacperadler.pl
 
-Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS). Produkcyjnie pod `kacperadler.pl`, statyczny build Astro serwowany przez nginx na Dokploy.
+Portfolio Kacpra Adlera - Inżynier oprogramowania (~5 lat, React/TS). Produkcyjnie pod `kacperadler.pl`, statyczny build Astro serwowany przez nginx na Dokploy.
 
 - **Wizja i to, co ma zostać prawdą: `spec/vision.md`.**
 - **Kryteria review, styleguide, audyt: `.agents/harness/criteria/`.**
