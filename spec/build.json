@@ -387,9 +387,9 @@
   {
     "id": "KA0047",
     "title": "review.md still says package.json has no test script",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0047-review-md-still-says-package-json-has-no-test-script/ticket.md",
-    "updated": "2026-10-10T15:23:44.630Z"
+    "updated": "2026-10-10T15:34:21.311Z"
   },
   {
     "id": "KA0048",
