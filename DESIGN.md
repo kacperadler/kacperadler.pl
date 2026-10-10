@@ -251,3 +251,38 @@ Border `1px solid line`, focus state shifts border to `blue` + a 3px `blue` wash
 - ❌ **Don't** lift CTAs on hover with `translateY`. The hover model is darken + ring - the button stays planted while the ring "lights up" around it.
 - ❌ **Don't** add new always-on motion to the foreground. Atmosphere lives in `bg-stage`; the foreground stays still except for explicit user interaction.
 - ❌ **Don't** re-implement the spotlight pseudo pattern per card. Extend the shared selector group in `src/styles/global.css` and add `data-spotlight` to the markup instead.
+
+## Minimal brutalism (`src/components/mb/`, `/ui/mb`)
+
+The direction the site moves to. Its components are built in `src/components/mb/` and shown at `/ui/mb` (`bun dev` only): the home page's sections composed from them, then every component with its variants, sizes and states forced as on `/ui`. No production page imports them yet; KA0069 switches the landing over, and from then on this section describes the site.
+
+**Vocabulary.** A ruled sheet: content sits in cells drawn with 1px ink rules that share their edges, the page is framed by two hairlines at the container's edges (fixed pseudo-elements of `page-frame.astro`, gone below the container width), headlines are heavy Geist (700-800, tight negative tracking), labels Geist Mono. No radius, no glass, no spotlight, no dot grid, no ribbons. A hovered cell lights up from inside (`panel-elevated` under a 3px `blue` top rule) and moves nothing. The one hard offset shadow marks what the visitor acts on: the default button (ink) and the contact form while the email or the message is being written in, or after it is sent (blue). Every state change is a short linear switch, never a drift.
+
+**Tokens.** `src/components/mb/tokens.css`, built only from the palette above (`tokens.css` stays as it is):
+
+| Token          | Value               | Use                                                    |
+| -------------- | ------------------- | ------------------------------------------------------ |
+| `--mb-rule`    | `var(--ink)`        | the 1px rule that draws a cell                         |
+| `--mb-hair`    | `var(--v2-line)`    | dividers inside a cell, the page edges, disabled frames |
+| `--mb-shift`   | `4px`               | the hard shadow offset (3px on `sm`, 2px on `xs`)      |
+| `--mb-snap`    | `0.12s linear`      | every transition                                       |
+| `--mb-display` | `var(--sans)` (Geist) | headlines                                            |
+
+Text on a `blue` or `error` block is `base` (`#0a0c10`): 8.5:1 and 6.7:1. Disabled text is `muted` on `panel` (6.5:1), never lowered opacity.
+
+**Variants.** Names and sets follow shadcn/ui; the components are Astro with plain scoped CSS (no React, Base UI, Tailwind or shadcn). shadcn's sub-components are named slots (card `image` / `title` / `description` / `action` / `footer`, alert `title` / `action`); breadcrumb and pagination take data props.
+
+| Component | Variants and sizes |
+| --------- | ------------------ |
+| `button` | `default` (blue block, ink rule, hard shadow; `.active` an ink block), `secondary`, `outline`, `ghost`, `destructive`, `link`; sizes `xs` 28 / `sm` 36 / `default` 44 / `lg` 52px and the square `icon-xs` / `icon-sm` / `icon` / `icon-lg` (need `aria-label`); `iconStart` / `iconEnd`, `href`, `loading` |
+| `badge` | `default`, `secondary`, `outline`, `destructive`, `ghost`, `link`; icons, `href`, `fillOnCellHover` |
+| `alert` | `default`, `destructive` |
+| `avatar`, `avatar-group` | `sm` / `default` / `lg` (32 / 48 / 96px); image or initials (decided at build time), `badge`, "+N" count |
+| `radio` | `default` (a square), `choice` (the contact form chip) |
+| `checkbox`, `input`, `textarea`, `label`, `field`, `field-set`, `separator`, `spinner` | shadcn's states; `field` orientation `vertical` / `horizontal` / `responsive` |
+| `accordion`, `accordion-item` | `single` / `multiple`, plain / `bordered`; native `<details>` |
+| `breadcrumb`, `pagination` | chevron / slash, collapse; numbers / icons |
+| `card`, `cell-grid` | `default` / `sm`; cells share their rules |
+| not in shadcn | `link` (`inline` / `nav` / `footer` / `case`), `tag`, `status-pill`, `section-head` ("01 /" counter, headline left, lede right), `prose`, `brand`, `header`, `footer`, `mobile-sheet`, `page-frame`, `contact-form`, `sections/*` |
+
+**From `ui/` to `mb/` (KA0069).** Swap the imports and rename: button `primary` → `default`, `ghost` → `outline`, `md` → `default` (`sm` stays), `icon` → `iconEnd`; badge `filled` → `default`, `fillOnCardHover` → `fillOnCellHover`; radio → `variant="choice"`; card → `card` (content in the default slot or the named slots). The script hooks are the same: `data-field`, `data-invalid`, `data-submit`, `data-contact-wrap`, `data-contact-form`, `data-form-error`, `data-form-success`, `data-form-reset`, `data-nav-wrap`, `data-nav-cta`, `data-nav-link`, `data-menu-open`, `data-menu-close`, `data-sheet-link`, `id="mobile-sheet"`. Until then the section copy exists twice (`sections/` and `mb/sections/`): a copy edit touches both.
