@@ -38,3 +38,4 @@ Out:
 - 2026-10-10: The human: focus on developing KA first; remove `.claude`, `.vscode`, `.zed`; with Biome, Prettier is not needed; look over the repo for what to clean and what to keep; drop `project-plan.md`, turn what is left into tickets, and improve `README.md`.
 - 2026-10-10: The human: model the AI offer on the existing cards, and put it first.
 - 2026-10-10: The human: drop the claim that Kacper trains programmers (card, hero, llms texts, meta); add AI and automation as a project type in the contact form (one radio "AI i automatyzacje", value "ai", first in the list, e2e covers it; NocoDB's field may need the option, say so in the final message).
+- 2026-10-10: The human: the card ends "po działające rozwiązanie" instead of "po działające wdrożenie"; otherwise ok, merge after PASS.
