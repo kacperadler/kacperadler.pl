@@ -57,9 +57,9 @@
   {
     "id": "KA0008",
     "title": "`DESIGN.md` still describes `/v2` and the theme toggle",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0008-design-md-still-describes-v2-and-the-theme-toggle/ticket.md",
-    "updated": "2026-10-10T13:00:31.438Z"
+    "updated": "2026-10-10T13:02:57.024Z"
   },
   {
     "id": "KA0009",
@@ -119,5 +119,22 @@
     "status": "in-progress",
     "path": "spec/features/KA0016-the-e2e-suite-cannot-start-astro-7-preview-it-detaches/ticket.md",
     "updated": "2026-10-10T12:59:57.030Z"
+  },
+  {
+    "id": "KA0017",
+    "title": "CSS still carries `light-dark()` pairs whose light half never renders",
+    "status": "planned",
+    "path": "spec/features/KA0017-css-still-carries-light-dark-pairs-whose-light-half-never-renders/ticket.md",
+    "updated": "2026-10-10T13:03:15.623Z",
+    "after": [
+      "KA0016"
+    ]
+  },
+  {
+    "id": "KA0018",
+    "title": "`bun run test:e2e` fails when another worktree's job holds port 4329",
+    "status": "dropped",
+    "path": "spec/features/KA0018-bun-run-test-e2e-fails-when-another-worktree-s-job-holds-port-4329/ticket.md",
+    "updated": "2026-10-10T13:03:15.412Z"
   }
 ]
