@@ -37,3 +37,4 @@ Out:
 
 - 2026-10-10: Found by the KA0012 worker after merging main; confirmed by the coordinator. Waits for the human's approval; KA0004 (npm test runs e2e) waits for it, since h merge would otherwise run a broken suite.
 - 2026-10-10: The human approved it.
+- 2026-10-10: The human: every KA finding and merge is approved until the coordinator reports the project ready; no push until he has read that report.

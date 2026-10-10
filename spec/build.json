@@ -109,9 +109,9 @@
   {
     "id": "KA0015",
     "title": "The mobile menu has no accessible name",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0015-the-mobile-menu-has-no-accessible-name/ticket.md",
-    "updated": "2026-10-10T12:56:39.437Z"
+    "updated": "2026-10-10T13:01:12.684Z"
   },
   {
     "id": "KA0016",
