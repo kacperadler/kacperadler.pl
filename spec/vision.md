@@ -19,7 +19,7 @@ kacperadler.pl is Kacper Adler's portfolio: who he is and what he does. The offe
 ## Directions
 
 - The offer: email templates are dropped. New: implementing AI agents in companies, automation, and Claude Code / Codex training.
-- The lead store: NocoDB is replaced; leads are stored first in SQLite.
+- The lead store: NocoDB is replaced; leads are stored in SQLite through an Astro API route rendered on demand (`prerender = false`) with the Node adapter on Dokploy. That route is the one exception to the static site.
 - Real project case studies, then the blog. Faza 9 of `project-plan.md` (Astro Actions with Resend) is dropped.
 - Hosting stays on Dokploy for now; a move to Cloudflare Pages is being considered.
 - The ticket is the unit of scope; the phases in `project-plan.md` are history. The docs move to the harness standards (`CLAUDE.md` to `AGENTS.md`): KA0002. The outdated dependencies are updated: KA0003.
@@ -27,7 +27,7 @@ kacperadler.pl is Kacper Adler's portfolio: who he is and what he does. The offe
 ## Not the goal
 
 - Tailwind.
-- An SSR adapter or a server runtime for the site.
+- Pages rendered on demand or a server runtime beyond the lead-store API route: the site stays static.
 - A CMS.
 - An English version.
 - The light theme coming back.
