@@ -99,9 +99,9 @@
   {
     "id": "KA0014",
     "title": "`@types/node` 26 typechecks against a newer Node than CI and Docker run",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0014-types-node-26-typechecks-against-a-newer-node-than-ci-and-docker-run/ticket.md",
-    "updated": "2026-10-10T12:56:22.462Z",
+    "updated": "2026-10-10T14:06:44.314Z",
     "after": [
       "KA0004"
     ]
@@ -140,9 +140,9 @@
   {
     "id": "KA0019",
     "title": "The modal mobile sheet does not move or hold focus",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0019-the-modal-mobile-sheet-does-not-move-or-hold-focus/ticket.md",
-    "updated": "2026-10-10T13:22:23.268Z",
+    "updated": "2026-10-10T14:03:52.254Z",
     "after": [
       "KA0022"
     ]
