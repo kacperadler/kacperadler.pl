@@ -41,35 +41,35 @@ const meta = (id: string) => `/src/styles/proposals/${id}/meta.json`;
 const style = (id: string) => `/src/styles/proposals/${id}/proposal.css`;
 const validMeta = {
   description: "Jedna linia.",
-  name: "Minimal",
+  name: "Alpha",
   references: [{ label: "Sentry", url: "https://sentry.io/" }],
 };
 
 test.describe("proposal loader", () => {
   test("pairs each folder's meta.json with its CSS, sorted by id", () => {
     const parsed = parseProposals(
-      { [meta("minimal")]: validMeta, [meta("brutal")]: validMeta },
-      { [style("minimal")]: "a{}", [style("brutal")]: "b{}" }
+      { [meta("beta")]: validMeta, [meta("alpha")]: validMeta },
+      { [style("beta")]: "a{}", [style("alpha")]: "b{}" }
     );
     expect(parsed.map(({ id, css }) => [id, css])).toEqual([
-      ["brutal", "b{}"],
-      ["minimal", "a{}"],
+      ["alpha", "b{}"],
+      ["beta", "a{}"],
     ]);
     expect(parsed[0]).toMatchObject(validMeta);
   });
 
   test("refuses a folder without proposal.css or without meta.json", () => {
-    expect(() => parseProposals({ [meta("minimal")]: validMeta }, {})).toThrow(
-      'Proposal "minimal" has no proposal.css.'
+    expect(() => parseProposals({ [meta("alpha")]: validMeta }, {})).toThrow(
+      'Proposal "alpha" has no proposal.css.'
     );
-    expect(() => parseProposals({}, { [style("minimal")]: "a{}" })).toThrow(
-      'Proposal "minimal" has no meta.json.'
+    expect(() => parseProposals({}, { [style("alpha")]: "a{}" })).toThrow(
+      'Proposal "alpha" has no meta.json.'
     );
   });
 
   test("refuses a meta.json off the schema", () => {
     const parse = (raw: unknown) => () =>
-      parseProposals({ [meta("minimal")]: raw }, { [style("minimal")]: "" });
+      parseProposals({ [meta("alpha")]: raw }, { [style("alpha")]: "" });
     for (const raw of [
       { ...validMeta, description: "Dwie\nlinie." },
       { ...validMeta, name: undefined },
@@ -79,17 +79,14 @@ test.describe("proposal loader", () => {
       },
       { ...validMeta, extra: true },
     ]) {
-      expect(parse(raw)).toThrow('Proposal "minimal" has an invalid meta.json');
+      expect(parse(raw)).toThrow('Proposal "alpha" has an invalid meta.json');
     }
   });
 
   test("refuses a folder name that is not a lowercase slug", () => {
     expect(() =>
-      parseProposals(
-        { [meta("Minimal")]: validMeta },
-        { [style("Minimal")]: "" }
-      )
-    ).toThrow('Proposal folder "Minimal" has to be a lowercase slug');
+      parseProposals({ [meta("Alpha")]: validMeta }, { [style("Alpha")]: "" })
+    ).toThrow('Proposal folder "Alpha" has to be a lowercase slug');
   });
 });
 
