@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 import { parseProposals } from "../../src/lib/proposals";
+import { sendALead } from "./send-a-lead";
 
 // The proposal pages exist only on `astro dev`; playwright.config.ts starts
 // one for this tree and passes its port in E2E_DEV_PORT.
@@ -170,6 +171,17 @@ test.describe("design proposals (astro dev)", () => {
     await expect(button).toHaveCSS("border-top-left-radius", "3px");
     await expect(card).toHaveCSS("border-top-color", "rgb(255, 0, 0)");
   });
+
+  for (const { id } of proposals) {
+    test(`a form on /ui/proposal/${id} sends nothing to the lead store`, async ({
+      page,
+    }) => {
+      await page.goto(`/ui/proposal/${id}`, { waitUntil: "networkidle" });
+      expect(
+        await sendALead(page, page.locator("#contact [data-contact-form]"))
+      ).toBe(0);
+    });
+  }
 
   for (const { id } of proposals) {
     test(`/ui/proposal/${id} has no detectable WCAG 2.1 AA violations`, async ({

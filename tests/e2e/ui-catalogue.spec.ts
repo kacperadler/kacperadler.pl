@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Locator, type Page, test } from "@playwright/test";
+import { sendALead } from "./send-a-lead";
 
 // The catalogue (/ui) exists only on `astro dev`; playwright.config.ts starts
 // one for this tree and passes its port in E2E_DEV_PORT.
@@ -240,6 +241,11 @@ test.describe("component catalogue (astro dev)", () => {
     await expect(trigger).toBeFocused();
   });
 
+  test("a form on /ui sends nothing to the lead store", async ({ page }) => {
+    const form = page.locator('[data-form-sample="idle"] [data-contact-form]');
+    expect(await sendALead(page, form)).toBe(0);
+  });
+
   test("/ui/mb and the minimal-brutalism proposal are gone", async ({
     request,
   }) => {
@@ -270,5 +276,14 @@ test.describe("production build", () => {
 
     await page.goto("/");
     await expect(page.locator('a[href^="/ui"]')).toHaveCount(0);
+  });
+
+  // The control for the dev pages' "sends nothing": the same lead on the
+  // home page, which loads contact-form.ts, does reach the (stubbed) store.
+  test("the home page form sends a lead", async ({ page }) => {
+    await page.goto("/#contact");
+    expect(
+      await sendALead(page, page.locator("#contact [data-contact-form]"))
+    ).toBe(1);
   });
 });
