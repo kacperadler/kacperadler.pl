@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 // Mobile sheet only renders the hamburger below 880px - run these tests
@@ -55,5 +56,26 @@ test.describe("mobile sheet", () => {
     await page.click('[data-sheet-link][href="#services"]');
 
     await expect(sheet).toHaveAttribute("aria-hidden", "true");
+  });
+
+  test("open sheet is a dialog named 'Menu mobilne' with no axe violations", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await page.locator("[data-menu-open]").click();
+
+    const dialog = page.getByRole("dialog", { name: "Menu mobilne" });
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toHaveAttribute("aria-modal", "true");
+    // Let the fade-in finish so axe measures contrast on the final paint.
+    await expect(dialog).toHaveCSS("opacity", "1");
+
+    const results = await new AxeBuilder({ page })
+      .include("#mobile-sheet")
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+      .analyze();
+
+    expect(results.violations).toEqual([]);
   });
 });

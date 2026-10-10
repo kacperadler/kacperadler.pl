@@ -4,7 +4,15 @@ import Button from "@/components/ui/button.astro";
 import { contactCta, primaryNav } from "@/data/navigation";
 ---
 
-<div aria-hidden="true" class="sheet" data-mobile-sheet id="mobile-sheet">
+<div
+  aria-hidden="true"
+  aria-label="Menu mobilne"
+  aria-modal="true"
+  class="sheet"
+  data-mobile-sheet
+  id="mobile-sheet"
+  role="dialog"
+>
   <button aria-label="Zamknij menu" class="sheet-close" data-menu-close type="button">
     <Icon aria-hidden="true" name="lucide:x" />
   </button>
