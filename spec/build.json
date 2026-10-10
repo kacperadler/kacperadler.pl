@@ -57,23 +57,23 @@
   {
     "id": "KA0008",
     "title": "`DESIGN.md` still describes `/v2` and the theme toggle",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0008-design-md-still-describes-v2-and-the-theme-toggle/ticket.md",
-    "updated": "2026-10-10T12:43:01.970Z"
+    "updated": "2026-10-10T12:53:20.472Z"
   },
   {
     "id": "KA0009",
     "title": "The privacy policy says the site stores a theme preference in `localStorage`",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0009-the-privacy-policy-says-the-site-stores-a-theme-preference-in-localstorage/ticket.md",
-    "updated": "2026-10-10T12:50:28.035Z"
+    "updated": "2026-10-10T12:52:50.375Z"
   },
   {
     "id": "KA0010",
     "title": "Code comments still point at `v2-layout` and `body.v2-body`",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0010-code-comments-still-point-at-v2-layout-and-body-v2-body/ticket.md",
-    "updated": "2026-10-10T12:43:01.973Z"
+    "updated": "2026-10-10T12:53:20.718Z"
   },
   {
     "id": "KA0011",
@@ -85,9 +85,9 @@
   {
     "id": "KA0012",
     "title": "`@/stores` path alias with no `src/stores`",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0012-stores-path-alias-with-no-src-stores/ticket.md",
-    "updated": "2026-10-10T12:50:28.246Z"
+    "updated": "2026-10-10T12:52:20.012Z"
   },
   {
     "id": "KA0013",
