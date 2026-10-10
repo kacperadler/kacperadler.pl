@@ -24,6 +24,7 @@ One page shows every component with each variant and state, so a redesign can be
 - Recurring one-off markup (badge, tag, link styles) becomes a component in `src/components/ui/` only where the catalogue needs one source; sections use it and the home page looks the same (screenshots before and after, pixel-identical or explained).
 - States are forced by classes or attributes on the catalogue page (`data-state="hover"` etc.), not only real interaction, so they can be compared at a glance.
 - `/ui` exists in `astro dev` and is absent from the production build: `bun run build` produces no `dist/ui/`, nothing links to it, not in the sitemap; e2e (on the dev server or a build flag) checks the page renders and axe finds no violations.
+- The error color (`field.astro`, `#c44545`, F1) gets a new value from the site's palette that reaches WCAG AA 4.5:1 for the error text on its background (and 3:1 for the error border); the `.field .err` axe-exclude is gone and axe passes on the home page and `/ui`; F1 set to `fixed`.
 - `bun run lint`, `bun run check`, `bun run build` and `bun run test:e2e` pass.
 
 ## Scope
@@ -39,3 +40,4 @@ Out:
 - 2026-10-10: The human: redesign before KA0029-KA0035: browse the site on agent:<port>; a /ui page listing our components with variants and states; /ui/proposal/<id> pages to try several directions (minimal, brutalism, modernist, computer, professional, ...); colors stay, the font may change; components card, button, link, badge etc.; typography from Tailwind prose or our own override. He likes Sentry's style and https://www.aibizneslab.pl/, minimalism and brutalism, and wants to find his own unique style.
 - 2026-10-10: The coordinator: Tailwind stays out (vision, Not the goal); the prose typography is ported as plain CSS from @tailwindcss/typography's default values, no Tailwind dependency. /ui pages are a dev tool: not in the production build.
 - 2026-10-10: Budget raised to 14 USD by the coordinator: the job ran out at 8 USD with a large uncommitted change (six new ui components, 16 files edited, /ui page in progress).
+- 2026-10-10: The human: F1, the error red: adjust it to our theme and to WCAG; the only visual change this ticket allows.
