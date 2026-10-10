@@ -1,6 +1,9 @@
 ---
-import { Icon } from "astro-icon/components";
-import Card from "@/components/ui/card.astro";
+import Badge from "@/components/mb/badge.astro";
+import Card from "@/components/mb/card.astro";
+import CellGrid from "@/components/mb/cell-grid.astro";
+import Link from "@/components/mb/link.astro";
+import SectionHead from "@/components/mb/section-head.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
 import {
   type CaseStudy,
@@ -8,10 +11,11 @@ import {
   sortedCaseStudies,
 } from "@/lib/case-studies";
 
-/* /realizacje/ - the list of case studies. A rest param with an undefined
- * value builds the directory index, and getStaticPaths returns no path
- * while there is no case study, so the page (and the menu entry that
- * points here, see src/data/navigation.ts) only exists with content. */
+/* /realizacje/ - the list of case studies as a cell table, cells as on the
+ * experience logo wall. A rest param with an undefined value builds the
+ * directory index, and getStaticPaths returns no path while there is no
+ * case study, so the page (and the menu entry that points here, see
+ * src/data/navigation.ts) only exists with content. */
 
 export async function getStaticPaths() {
   const all = await sortedCaseStudies();
@@ -31,90 +35,62 @@ const { caseStudies } = Astro.props;
   description="Wybrane realizacje: kontekst, moja rola, stack i efekt współpracy z firmami, z którymi pracowałem."
   title="Realizacje"
 >
-  <main class="case-list-page" id="top">
+  <main class="mb-case-list" id="top">
     <div class="container">
-      <header class="section-head">
-        <p class="eyebrow eyebrow-section">Realizacje</p>
-        <h1>Wybrane <em>realizacje</em>.</h1>
-        <p class="section-lede">
+      <SectionHead as="h1" label="Realizacje">
+        Wybrane <em>realizacje</em>.
+        <Fragment slot="lede">
           Kontekst, moja rola, stack i efekt - po jednej historii z firm, z
           którymi pracowałem.
-        </p>
-      </header>
+        </Fragment>
+      </SectionHead>
 
-      <ul class="case-list">
+      <CellGrid min="320px" tag="ul">
         {caseStudies.map((caseStudy) => (
-          <Card class="case-panel" tag="li">
-            <span class="case-period">{caseStudy.data.period}</span>
+          <Card class="mb-case-cell" tag="li">
+            <div class="mb-case-cell-head">
+              <Badge class="mb-case-period" variant="outline">
+                {caseStudy.data.period}
+              </Badge>
+            </div>
             <h2>{caseStudy.data.company}</h2>
-            <div class="case-role">{caseStudy.data.role}</div>
-            <p class="case-summary">{caseStudy.data.summary}</p>
-            <a class="case-link" href={caseStudyPath(caseStudy)}>
-              Zobacz realizację
-              <span class="sr-only"> - {caseStudy.data.company}</span>
-              <Icon aria-hidden="true" name="lucide:arrow-right" />
-            </a>
+            <p class="mb-case-role">{caseStudy.data.role}</p>
+            <p class="mb-case-summary">{caseStudy.data.summary}</p>
+            <p class="mb-case-more">
+              <Link href={caseStudyPath(caseStudy)} variant="case">
+                Zobacz realizację
+                <span class="sr-only"> - {caseStudy.data.company}</span>
+              </Link>
+            </p>
           </Card>
         ))}
-      </ul>
+      </CellGrid>
     </div>
   </main>
 </BaseLayout>
 
 <style>
-  .case-list-page {
-    padding: 80px 0 60px;
+  .mb-case-list {
+    padding: var(--v2-space-xl) 0 var(--v2-space-2xl);
   }
 
-  .section-head h1 {
-    margin: 0 0 12px;
-    font-family: var(--display);
-    font-size: clamp(32px, 4vw, 44px);
-    font-weight: 500;
-    line-height: 1.1;
-    color: var(--ink);
-    letter-spacing: -0.03em;
-    text-wrap: balance;
-  }
-
-  .section-head h1 em {
-    font-style: normal;
-    color: var(--blue);
-  }
-
-  .case-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--v2-space-md);
-    padding: 0;
-    margin: 0;
-    list-style: none;
-  }
-
-  .case-period {
-    align-self: flex-start;
-    padding: 4px 10px;
+  .mb-case-cell-head {
+    display: flex;
     margin-bottom: 16px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-    border: 1px solid var(--v2-line);
-    border-radius: var(--v2-radius-xs);
   }
 
-  .case-panel h2 {
+  h2 {
     margin: 0 0 4px;
-    font-family: var(--display);
-    font-size: 18px;
-    font-weight: 500;
+    font-family: var(--mb-display);
+    font-size: 20px;
+    font-weight: 750;
     line-height: 1.2;
     color: var(--ink);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.035em;
   }
 
-  .case-role {
-    margin-bottom: 12px;
+  .mb-case-role {
+    margin: 0 0 12px;
     font-family: var(--mono);
     font-size: 12px;
     font-weight: 500;
@@ -122,17 +98,20 @@ const { caseStudies } = Astro.props;
     letter-spacing: 0.02em;
   }
 
-  .case-summary {
+  .mb-case-summary {
     flex: 1;
     margin: 0;
     font-size: 14px;
     line-height: 1.6;
-    color: var(--ink-2);
+  }
+
+  .mb-case-more {
+    margin: 16px 0 0;
   }
 
   @media (max-width: 880px) {
-    .case-panel {
-      padding: var(--v2-space-md);
+    .mb-case-list {
+      padding-bottom: var(--v2-space-xl);
     }
   }
 </style>

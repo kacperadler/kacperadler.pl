@@ -3,16 +3,24 @@
  * page and to the whole component catalogue. A dev tool: astro.config.mjs
  * routes it for `astro dev` only.
  *
- * The proposal's CSS is inlined in <body>, after every component style in
+ * Its own document, as /ui: BaseHead with noindex, the site's tokens and
+ * global styles, the page frame, only mobile-sheet.ts - never
+ * contact-form.ts (which BaseLayout loads), which would POST the forms here
+ * to the production NocoDB. <html data-proposal> is the scope; the
+ * proposal's CSS is inlined in <body>, after every component style in
  * <head>, so a [data-proposal="<id>"] rule wins a tie with a scoped
- * component selector; <html data-proposal> (BaseLayout) is the scope. */
-import Contact from "@/components/sections/contact.astro";
-import Experience from "@/components/sections/experience.astro";
-import Hero from "@/components/sections/hero.astro";
-import HowIWork from "@/components/sections/how-i-work.astro";
-import Services from "@/components/sections/services.astro";
-import BaseLayout from "@/layouts/base-layout.astro";
+ * component selector. */
+import BaseHead from "@/components/layout/base-head.astro";
+import PageFrame from "@/components/mb/page-frame.astro";
+import Contact from "@/components/mb/sections/contact.astro";
+import Experience from "@/components/mb/sections/experience.astro";
+import Hero from "@/components/mb/sections/hero.astro";
+import HowIWork from "@/components/mb/sections/how-i-work.astro";
+import Services from "@/components/mb/sections/services.astro";
+import { siteConfig } from "@/data/site-config";
 import { loadProposals, type Proposal } from "@/lib/proposals";
+import "@/styles/tokens.css";
+import "@/styles/global.css";
 import Catalogue from "../catalogue.astro";
 import Switcher from "./switcher.astro";
 
@@ -30,36 +38,44 @@ interface Props {
 const { proposal } = Astro.props;
 ---
 
-<BaseLayout
-  description={proposal.description}
-  noindex
-  proposal={proposal.id}
-  title={`Propozycja: ${proposal.name}`}
->
-  <style data-proposal-css is:inline set:html={proposal.css} />
-  <Switcher current={proposal} proposals={loadProposals()} />
-  <main>
-    {/* The home page's sections, in the order of src/pages/index.astro. */}
-    <div class="proposal-home">
-      <Hero />
-      <Services />
-      <HowIWork />
-      <Experience />
-      <Contact />
-    </div>
-    <Catalogue />
-  </main>
-</BaseLayout>
+<!doctype html>
+<html data-proposal={proposal.id} lang={siteConfig.lang}>
+  <head>
+    <BaseHead
+      description={proposal.description}
+      noindex
+      title={`Propozycja: ${proposal.name}`}
+    />
+  </head>
+  <body>
+    <style data-proposal-css is:inline set:html={proposal.css} />
+    <PageFrame>
+      <Switcher current={proposal} proposals={loadProposals()} />
+      <main>
+        {/* The home page's sections, in the order of src/pages/index.astro. */}
+        <Hero />
+        <Services />
+        <HowIWork />
+        <Experience />
+        <Contact />
+        <Catalogue />
+      </main>
+    </PageFrame>
+  </body>
+</html>
+
+<script>
+  import "@/scripts/mobile-sheet.ts";
+</script>
 
 <style>
-  /* The padding of <main> on the home page. */
-  .proposal-home {
-    padding: 48px 0 96px;
+  main {
+    padding: 0 0 96px;
   }
 
   @media (max-width: 880px) {
-    .proposal-home {
-      padding: 32px 0 64px;
+    main {
+      padding-bottom: 64px;
     }
   }
 </style>

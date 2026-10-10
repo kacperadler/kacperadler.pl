@@ -8,9 +8,9 @@ import Radio from "./radio.astro";
 import Textarea from "./textarea.astro";
 
 /* Contact form: one ruled sheet holding the form or, once sent, the success
- * card. The hooks are scripts/contact-form.ts's, as in
- * contact/contact-form.astro: [data-contact-wrap] (its data-state: idle |
- * submitting | error-validation | error-submit | success),
+ * card. The hooks are scripts/contact-form.ts's: [data-contact-wrap] (its
+ * data-state: idle | submitting | error-validation | error-submit |
+ * success),
  * [data-contact-form], [data-field], [data-submit], [data-form-error],
  * [data-form-success], [data-form-reset], the "website" honeypot.
  *
@@ -20,7 +20,7 @@ import Textarea from "./textarea.astro";
  * click on a project type does not flicker it. min-height keeps the page
  * from jumping when the success card replaces the form.
  *
- * For the catalogue (/ui/mb), which shows every state at once:
+ * For the catalogue (/ui), which shows every state at once:
  *   state       the wrapper's starting data-state, with the fields, the
  *               banner and the submit button as the script would leave them
  *   forceFocus  the email field in its focus look ([data-state="focus"])

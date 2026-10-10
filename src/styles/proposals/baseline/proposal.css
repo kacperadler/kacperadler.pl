@@ -1,7 +1,8 @@
 /* biome-ignore-all lint/suspicious/noEmptySource: baseline is the current design, no overrides */
 
-/* Baseline - the current design, with no overrides, so /ui/proposal/baseline
- * shows the frame itself and every other proposal compares against it.
+/* Baseline - the current design (minimal brutalism, src/components/mb/),
+ * with no overrides, so /ui/proposal/baseline shows the frame itself and
+ * every other proposal compares against it.
  *
  * A new direction is a copy of this folder under its own id (the folder
  * name, a lowercase slug), with meta.json filled in and its rules here.
@@ -10,13 +11,13 @@
  *
  *   html[data-proposal="<id>"] {
  *     --sans: "Some Sans", system-ui, sans-serif;
- *     --v2-radius-md: 0;
+ *     --mb-shift: 6px;
  *   }
- *   [data-proposal="<id>"] .v2-card { border-width: 2px; }
+ *   [data-proposal="<id>"] .mb-card { border-width: 2px; }
  *
  * - Tokens from src/styles/tokens.css: override them on html[...], which
  *   outranks :root. Colors stay the site's palette; font, type scale,
- *   radius, borders, shadows, spacing and shapes are the proposal's.
+ *   rules, borders, shadows, spacing and shapes are the proposal's.
  * - Component styles: [data-proposal="<id>"] .class matches the scoped
  *   component selector (.class[data-astro-cid-*]), and this file loads
  *   after every component style, so the proposal wins.

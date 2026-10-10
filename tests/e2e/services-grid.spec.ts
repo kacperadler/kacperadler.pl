@@ -7,13 +7,14 @@ interface Box {
   y: number;
 }
 
-// Sub-pixel rounding of percentage widths; anything larger is a real shift.
+// Sub-pixel rounding of fractional widths plus the 1px rule two neighbouring
+// cells share; anything larger is a real shift.
 const TOLERANCE = 2;
 
 async function gridAndCards(page: Page) {
-  const grid = await page.locator(".services-grid").boundingBox();
+  const grid = await page.locator("#services .mb-cell-grid").boundingBox();
   const cards = await page
-    .locator(".services-grid .service-panel")
+    .locator("#services .mb-cell-grid > .mb-card")
     .evaluateAll((els) =>
       els.map((el) => {
         const r = el.getBoundingClientRect();
@@ -27,7 +28,7 @@ async function gridAndCards(page: Page) {
 }
 
 test.describe("services grid", () => {
-  test("desktop: every row, including a lone last card, is centred in the grid", async ({
+  test("desktop: two cells a row, every row (a lone last cell too) spans the grid", async ({
     page,
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
@@ -42,20 +43,21 @@ test.describe("services grid", () => {
       rows.set(key, [...(rows.get(key) ?? []), card]);
     }
 
-    const columnWidth = Math.min(...cards.map((c) => c.width));
     for (const row of rows.values()) {
       expect(row.length).toBeLessThanOrEqual(2);
       const left = Math.min(...row.map((c) => c.x));
       const right = Math.max(...row.map((c) => c.x + c.width));
-      // Equal gutters on both sides: a lone card left-hugging the grid
-      // (the odd-count case) fails here.
-      expect(
-        Math.abs(left - grid.x - (grid.x + grid.width - right))
-      ).toBeLessThanOrEqual(TOLERANCE);
-      for (const card of row) {
-        expect(Math.abs(card.width - columnWidth)).toBeLessThanOrEqual(
-          TOLERANCE
-        );
+      // A lone last cell left-hugging the grid (the odd-count case) fails
+      // here: the row has to reach both edges of the table.
+      expect(Math.abs(left - grid.x)).toBeLessThanOrEqual(TOLERANCE);
+      expect(Math.abs(grid.x + grid.width - right)).toBeLessThanOrEqual(
+        TOLERANCE
+      );
+      if (row.length === 2) {
+        const [a, b] = row as [Box, Box];
+        // Neighbours share one rule: no gap between the cells.
+        expect(Math.abs(a.x + a.width - b.x)).toBeLessThanOrEqual(TOLERANCE);
+        expect(Math.abs(a.width - b.width)).toBeLessThanOrEqual(TOLERANCE);
       }
     }
   });

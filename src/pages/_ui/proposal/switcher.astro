@@ -2,7 +2,7 @@
 /* Bar at the top of every proposal page: which proposal this is, its
  * references, and links to every other proposal, the list and the current
  * design (the catalogue at /ui and the home page at /). */
-import Link from "@/components/ui/link.astro";
+import Link from "@/components/mb/link.astro";
 import type { Proposal } from "@/lib/proposals";
 
 interface Props {
@@ -16,7 +16,7 @@ const { current, proposals } = Astro.props;
 <nav aria-label="Propozycje designu" class="proposal-bar">
   <div class="container">
     <p class="proposal-bar-title">
-      <span class="eyebrow">Propozycja</span>
+      <span class="proposal-bar-kicker">Propozycja</span>
       <strong>{current.name}</strong>
       <span class="proposal-bar-desc">{current.description}</span>
     </p>
@@ -61,28 +61,37 @@ const { current, proposals } = Astro.props;
   .proposal-bar {
     padding: var(--v2-space-md) 0;
     background: var(--v2-panel);
-    border-bottom: 1px solid var(--v2-line);
+    border-bottom: 1px solid var(--mb-rule);
   }
 
   .proposal-bar-title,
   .proposal-bar-refs {
-    margin: 0 0 var(--v2-space-sm);
+    margin: 0 0 8px;
     font-size: 14px;
     line-height: 1.5;
     color: var(--ink-2);
   }
 
-  .proposal-bar-title strong {
-    margin: 0 var(--v2-space-sm);
-    font-family: var(--display);
+  .proposal-bar-kicker {
+    font-family: var(--mono);
+    font-size: 12px;
     font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .proposal-bar-title strong {
+    margin: 0 8px;
+    font-family: var(--mb-display);
+    font-weight: 800;
     color: var(--ink);
+    letter-spacing: -0.02em;
   }
 
   .proposal-bar-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--v2-space-sm) var(--v2-space-md);
+    gap: 8px var(--v2-space-md);
     padding: 0;
     margin: 0;
     list-style: none;
@@ -90,6 +99,6 @@ const { current, proposals } = Astro.props;
 
   .proposal-bar-sep {
     padding-left: var(--v2-space-md);
-    border-left: 1px solid var(--v2-line);
+    border-left: 1px solid var(--mb-hair);
   }
 </style>

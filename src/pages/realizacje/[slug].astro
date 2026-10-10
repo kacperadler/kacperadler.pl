@@ -1,11 +1,15 @@
 ---
 import { getCollection, render } from "astro:content";
-import Button from "@/components/ui/button.astro";
+import Button from "@/components/mb/button.astro";
+import Prose from "@/components/mb/prose.astro";
+import SectionHead from "@/components/mb/section-head.astro";
+import Tag from "@/components/mb/tag.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
 import type { CaseStudy } from "@/lib/case-studies";
 
 /* One static page per case study at /realizacje/<slug>. The body is the
- * MDX entry; the header comes from its frontmatter. */
+ * MDX entry; the header comes from its frontmatter: the section head (h1:
+ * the company, lede: the summary), then the facts as a ruled table. */
 
 export async function getStaticPaths() {
   return (await getCollection("caseStudies")).map((entry) => ({
@@ -24,39 +28,38 @@ const { Content } = await render(caseStudy);
 ---
 
 <BaseLayout description={summary} title={`${company} - realizacja`}>
-  <main class="case-study" id="top">
+  <main class="mb-case" id="top">
     <article class="container">
-      <header class="case-head">
-        <p class="eyebrow">Realizacja</p>
-        <h1>{company}</h1>
-        <p class="case-lede">{summary}</p>
-        <dl class="case-facts">
-          <div>
-            <dt>Rola</dt>
-            <dd>{role}</dd>
-          </div>
-          <div>
-            <dt>Okres</dt>
-            <dd>{period}</dd>
-          </div>
-          <div>
-            <dt>Stack</dt>
-            <dd>
-              <ul class="case-stack">
-                {stack.map((tech) => <li>{tech}</li>)}
-              </ul>
-            </dd>
-          </div>
-        </dl>
-      </header>
-      <div class="prose">
+      <SectionHead as="h1" label="Realizacja">
+        {company}
+        <Fragment slot="lede">{summary}</Fragment>
+      </SectionHead>
+      <dl class="mb-case-facts">
+        <div class="mb-case-fact">
+          <dt>Rola</dt>
+          <dd>{role}</dd>
+        </div>
+        <div class="mb-case-fact">
+          <dt>Okres</dt>
+          <dd>{period}</dd>
+        </div>
+        <div class="mb-case-fact">
+          <dt>Stack</dt>
+          <dd>
+            <ul class="mb-case-stack">
+              {stack.map((tech) => <Tag as="li">{tech}</Tag>)}
+            </ul>
+          </dd>
+        </div>
+      </dl>
+      <Prose class="mb-case-body">
         <Content />
-      </div>
-      <footer class="case-foot">
-        <Button href="/#contact" icon="lucide:arrow-right" variant="primary">
+      </Prose>
+      <footer class="mb-case-foot">
+        <Button href="/#contact" iconEnd="lucide:arrow-right">
           Napisz do mnie
         </Button>
-        <Button href="/#experience" variant="ghost"
+        <Button href="/#experience" variant="outline"
           >Wszystkie współprace</Button
         >
       </footer>
@@ -65,69 +68,45 @@ const { Content } = await render(caseStudy);
 </BaseLayout>
 
 <style>
-  .case-study {
-    padding: 80px 0 60px;
+  .mb-case {
+    padding: var(--v2-space-xl) 0 var(--v2-space-2xl);
   }
 
-  .case-head {
-    max-width: 70ch;
-    margin: 0 auto 48px;
+  .mb-case-facts {
+    max-width: 65ch;
+    margin: 0 0 var(--v2-space-xl);
+    border: 1px solid var(--mb-rule);
   }
 
-  .case-head .eyebrow {
-    margin-bottom: 12px;
-    color: var(--blue);
-  }
-
-  .case-head h1 {
-    margin: 0 0 16px;
-    font-family: var(--display);
-    font-size: clamp(32px, 4vw, 44px);
-    font-weight: 500;
-    line-height: 1.1;
-    color: var(--ink);
-    letter-spacing: -0.03em;
-    text-wrap: balance;
-  }
-
-  .case-lede {
-    margin: 0 0 28px;
-    font-size: 18px;
-    line-height: 1.55;
-    color: var(--ink-2);
-  }
-
-  .case-facts {
+  .mb-case-fact {
     display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
     gap: 12px;
-    padding: var(--v2-space-md) 0;
-    margin: 0;
-    border-top: 1px solid var(--v2-line);
-    border-bottom: 1px solid var(--v2-line);
-  }
-
-  .case-facts > div {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 16px;
     align-items: baseline;
+    padding: 12px var(--v2-space-md);
   }
 
-  .case-facts dt {
+  .mb-case-fact + .mb-case-fact {
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-case-fact dt {
     font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
+    font-size: 11px;
+    color: var(--ink-2);
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
   }
 
-  .case-facts dd {
+  .mb-case-fact dd {
     margin: 0;
     font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4;
     color: var(--ink);
   }
 
-  .case-stack {
+  .mb-case-stack {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
@@ -136,20 +115,25 @@ const { Content } = await render(caseStudy);
     list-style: none;
   }
 
-  .case-stack li {
-    padding: 4px 10px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--ink-2);
-    border: 1px solid var(--v2-line);
-    border-radius: var(--v2-radius-xs);
-  }
-
-  .case-foot {
+  .mb-case-foot {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    max-width: 70ch;
-    margin: 48px auto 0;
+    gap: 16px;
+    max-width: 65ch;
+    padding-top: var(--v2-space-lg);
+    margin-top: var(--v2-space-xl);
+    border-top: 1px solid var(--mb-rule);
+  }
+
+  @media (max-width: 880px) {
+    .mb-case {
+      padding-bottom: var(--v2-space-xl);
+    }
+  }
+
+  @media (max-width: 400px) {
+    .mb-case-fact {
+      grid-template-columns: 88px minmax(0, 1fr);
+    }
   }
 </style>
