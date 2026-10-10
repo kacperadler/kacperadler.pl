@@ -185,9 +185,9 @@
   {
     "id": "KA0025",
     "title": "Drop project-plan.md and rewrite README.md",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0025-drop-project-plan-md-and-rewrite-readme-md/ticket.md",
-    "updated": "2026-10-10T14:32:09.883Z",
+    "updated": "2026-10-10T14:58:06.821Z",
     "after": [
       "KA0024"
     ]
