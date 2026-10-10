@@ -17,20 +17,20 @@ async function gridAndCards(page: Page) {
     .evaluateAll((els) =>
       els.map((el) => {
         const r = el.getBoundingClientRect();
-        return { x: r.x, y: r.y, width: r.width, height: r.height };
+        return { height: r.height, width: r.width, x: r.x, y: r.y };
       })
     );
   if (!grid) {
     throw new Error("services grid is not rendered");
   }
-  return { grid, cards };
+  return { cards, grid };
 }
 
 test.describe("services grid", () => {
   test("desktop: every row, including a lone last card, is centred in the grid", async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.setViewportSize({ height: 900, width: 1440 });
     await page.goto("/");
 
     const { grid, cards } = await gridAndCards(page);
@@ -63,7 +63,7 @@ test.describe("services grid", () => {
   test("mobile: cards stack in a single full-width column", async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ height: 844, width: 390 });
     await page.goto("/");
 
     const { grid, cards } = await gridAndCards(page);

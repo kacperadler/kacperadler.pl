@@ -12,13 +12,13 @@ interface Props {
 const { frontmatter } = Astro.props;
 
 const lastUpdatedFormatted = new Date(frontmatter.lastUpdated).toLocaleDateString("pl-PL", {
-  year: "numeric",
-  month: "long",
   day: "numeric",
+  month: "long",
+  year: "numeric",
 });
 ---
 
-<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+<BaseLayout description={frontmatter.description} title={frontmatter.title}>
   <main class="legal" id="top">
     <article class="container">
       <header class="legal-head">

@@ -12,10 +12,10 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 
 ## Stack
 
-- **Astro 6** (TypeScript strict, output static, `<ClientRouter />` z `astro:transitions`)
+- **Astro 7** (TypeScript strict, output static, `<ClientRouter />` z `astro:transitions`; `compressHTML: true` - HTML-aware whitespace z Astro 6, nie domyślne `'jsx'`)
 - **Vanilla CSS** + scoped `<style>` w `.astro`. **Dark-only**: `color-scheme: dark` na `:root` w `src/styles/tokens.css` blokuje każde `light-dark()` na wartości ciemnej (jasne wartości w parach są martwe, nie renderują się). Jeden akcent (navy). **Bez Tailwinda** - design system na customowych tokenach (zob. `tokens.css` + `DESIGN.md`).
 - **Ultracite (Biome)** - lint + format dla TS/JS/JSON/CSS
-- **Prettier + prettier-plugin-astro** - formatowanie `*.astro` (Biome ich nie parsuje)
+- **Prettier + prettier-plugin-astro** - formatowanie `*.astro` (Biome je lintuje, ale nie formatuje). `astroCompressHTML` w `.prettierrc` musi zgadzać się z `compressHTML` w `astro.config.mjs`, inaczej format zmienia render.
 - **Content Collections** (Zod, `src/content.config.ts`) dla services / projects / experience / blog
 - **Markdown pages** dla treści statycznej (polityka prywatności, regulamin) - `src/pages/*.md` z `layout: "@/layouts/legal-layout.astro"`
 
@@ -73,7 +73,7 @@ Pre-commit hook: `lint-staged` (ultracite fix dla TS/JS/JSON/CSS, prettier dla `
 
 **Dokploy** (self-hosted, własny serwer). Cloudflare Pages nie jest rozważany.
 
-- Build type: **Dockerfile** w repo (multi-stage `oven/bun:1.3.13-alpine` → `nginx:1.27-alpine`)
+- Build type: **Dockerfile** w repo (multi-stage `oven/bun:1.4.3-alpine` → `nginx:1.30-alpine`)
 - `nginx.conf` w repo: gzip, security headers (X-Frame-Options/X-Content-Type-Options/Referrer-Policy/Permissions-Policy), cache rules (immutable dla `/_astro/` + fontów, 30d dla obrazków, must-revalidate dla HTML). Headers przez `map`, NIE per-`location` - `add_header` nie dziedziczy.
 - Container port: **80**, Traefik-routed przez Dokploy z Let's Encrypt cert
 - W build stage `apk add fontconfig ttf-dejavu` - librsvg w `og-default.png.ts` potrzebuje fontu z polskimi diakrytykami, inaczej tofu boxes

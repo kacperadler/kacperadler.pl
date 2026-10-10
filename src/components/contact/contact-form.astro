@@ -10,11 +10,11 @@ interface ProjectType {
 }
 
 const projectTypes: readonly ProjectType[] = [
-  { value: "webapp", label: "Aplikacja webowa" },
-  { value: "landing", label: "Landing page" },
-  { value: "mobile", label: "Aplikacja mobilna" },
-  { value: "tool", label: "Narzędzie wewn." },
-  { value: "other", label: "Inne" },
+  { label: "Aplikacja webowa", value: "webapp" },
+  { label: "Landing page", value: "landing" },
+  { label: "Aplikacja mobilna", value: "mobile" },
+  { label: "Narzędzie wewn.", value: "tool" },
+  { label: "Inne", value: "other" },
 ];
 ---
 
@@ -34,16 +34,12 @@ const projectTypes: readonly ProjectType[] = [
     </div>
 
     <div class="field" data-field="type">
-      <label>Typ projektu</label>
-      <div class="radios" role="radiogroup" aria-label="Typ projektu">
-        {
-          projectTypes.map((opt) => (
-            <label class="radio">
-              <input name="type" type="radio" value={opt.value} />
-              <span>{opt.label}</span>
-            </label>
-          ))
-        }
+      <span class="field-label">Typ projektu</span>
+      <div aria-label="Typ projektu" class="radios" role="radiogroup">
+        {projectTypes.map((opt) => <label class="radio">
+          <input name="type" type="radio" value={opt.value} />
+          <span>{opt.label}</span>
+        </label>)}
       </div>
       <span class="err">Wybierz typ projektu.</span>
     </div>
@@ -65,13 +61,13 @@ const projectTypes: readonly ProjectType[] = [
       tabindex=-1 keeps it out of the keyboard tab order and screen
       reader output; the off-screen position keeps it out of view.
     -->
-    <div class="hp" aria-hidden="true">
+    <div aria-hidden="true" class="hp">
       <label for="hp-website">Strona WWW (zostaw puste)</label>
-      <input type="text" id="hp-website" name="website" tabindex="-1" autocomplete="off" />
+      <input autocomplete="off" id="hp-website" name="website" tabindex="-1" type="text" />
     </div>
 
-    <div class="form-error" role="alert" data-form-error>
-      <Icon name="lucide:triangle-alert" aria-hidden="true" />
+    <div class="form-error" data-form-error role="alert">
+      <Icon aria-hidden="true" name="lucide:triangle-alert" />
       Coś poszło nie tak. Spróbuj ponownie za chwilę albo napisz mailem na
       <a href="mailto:kontakt@kacperadler.pl">kontakt@kacperadler.pl</a>.
     </div>
@@ -89,8 +85,8 @@ const projectTypes: readonly ProjectType[] = [
     </div>
   </form>
 
-  <div class="form-success-card" role="status" aria-live="polite" data-form-success>
-    <div class="success-mark" aria-hidden="true">
+  <div aria-live="polite" class="form-success-card" data-form-success role="status">
+    <div aria-hidden="true" class="success-mark">
       <Icon name="lucide:check" />
     </div>
     <h3>Wiadomość wysłana</h3>
@@ -144,7 +140,8 @@ const projectTypes: readonly ProjectType[] = [
     gap: 8px;
   }
 
-  .field label {
+  .field label,
+  .field-label {
     font-family: var(--mono);
     font-size: 11px;
     color: var(--muted);
@@ -199,15 +196,15 @@ const projectTypes: readonly ProjectType[] = [
     transition: all 0.15s ease;
   }
 
+  .radio:hover span {
+    border-color: var(--ink);
+  }
+
   .radio input:checked + span {
     font-weight: 500;
     color: var(--blue);
     background: var(--blue-wash);
     border-color: var(--blue);
-  }
-
-  .radio:hover span {
-    border-color: var(--ink);
   }
 
   /* Keyboard focus on the radio surfaces a clear ring on the wrapper. */

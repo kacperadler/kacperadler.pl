@@ -5,42 +5,38 @@ import { contactCta, primaryNav } from "@/data/navigation";
 import { siteConfig } from "@/data/site-config";
 ---
 
-<nav class="nav" aria-label="Główna nawigacja">
-  <a href="/#top" class="brand" aria-label={`${siteConfig.name} - Strona główna`}>
-    <span class="mark" aria-hidden="true">k</span>
+<nav aria-label="Główna nawigacja" class="nav">
+  <a aria-label={`${siteConfig.name} - Strona główna`} class="brand" href="/#top">
+    <span aria-hidden="true" class="mark">k</span>
     <span><b>Kacper</b> <em>Adler</em></span>
   </a>
 
   <div class="nav-links">
-    {
-      primaryNav.map((link) => (
-        <a data-nav-link href={link.href}>
-          {link.label}
-        </a>
-      ))
-    }
+    {primaryNav.map((link) => <a data-nav-link href={link.href}>
+      {link.label}
+    </a>)}
   </div>
 
   <div class="nav-tail">
     <Button
-      variant="primary"
-      size="sm"
+      data-nav-cta
       href={contactCta.href}
       icon="lucide:arrow-right"
-      data-nav-cta
+      size="sm"
+      variant="primary"
     >
       {contactCta.label}
     </Button>
 
     <button
-      type="button"
-      class="menu-btn"
-      data-menu-open
-      aria-label="Otwórz menu"
       aria-controls="mobile-sheet"
       aria-expanded="false"
+      aria-label="Otwórz menu"
+      class="menu-btn"
+      data-menu-open
+      type="button"
     >
-      <Icon name="lucide:menu" aria-hidden="true" />
+      <Icon aria-hidden="true" name="lucide:menu" />
     </button>
   </div>
 </nav>

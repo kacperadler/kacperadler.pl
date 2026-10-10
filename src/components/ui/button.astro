@@ -23,21 +23,19 @@ const {
 const classes = ["btn", `btn-${variant}`, size === "sm" && "btn-sm", extraClass];
 ---
 
-{
-  href ? (
-    <a href={href} class:list={classes} {...rest}>
-      <slot />
-      {icon && <Icon aria-hidden="true" class="btn-icon" name={icon} />}
-      <span aria-hidden="true" class="btn-spinner" />
-    </a>
-  ) : (
-    <button class:list={classes} type={type} {...rest}>
-      <slot />
-      {icon && <Icon aria-hidden="true" class="btn-icon" name={icon} />}
-      <span aria-hidden="true" class="btn-spinner" />
-    </button>
-  )
-}
+{href ? (
+  <a class:list={classes} href={href} {...rest}>
+    <slot />
+    {icon && <Icon aria-hidden="true" class="btn-icon" name={icon} />}
+    <span aria-hidden="true" class="btn-spinner" />
+  </a>
+) : (
+  <button class:list={classes} type={type} {...rest}>
+    <slot />
+    {icon && <Icon aria-hidden="true" class="btn-icon" name={icon} />}
+    <span aria-hidden="true" class="btn-spinner" />
+  </button>
+)}
 
 <style>
   /* Canonical button - vocabulary mirrors the header .nav-cta:
@@ -156,6 +154,10 @@ const classes = ["btn", `btn-${variant}`, size === "sm" && "btn-sm", extraClass]
     opacity: 0.6;
   }
 
+  .btn[data-state="submitting"] :global(.btn-icon) {
+    display: none;
+  }
+
   .btn[disabled]:hover :global(.btn-icon),
   .btn[data-state="submitting"]:hover :global(.btn-icon) {
     animation: none;
@@ -174,10 +176,6 @@ const classes = ["btn", `btn-${variant}`, size === "sm" && "btn-sm", extraClass]
     border: 2px solid currentColor;
     border-right-color: transparent;
     border-radius: 50%;
-  }
-
-  .btn[data-state="submitting"] :global(.btn-icon) {
-    display: none;
   }
 
   .btn[data-state="submitting"] .btn-spinner {

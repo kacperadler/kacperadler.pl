@@ -4,26 +4,22 @@ import Button from "@/components/ui/button.astro";
 import { contactCta, primaryNav } from "@/data/navigation";
 ---
 
-<div id="mobile-sheet" class="sheet" data-mobile-sheet aria-hidden="true" aria-label="Menu mobilne">
-  <button type="button" class="sheet-close" data-menu-close aria-label="Zamknij menu">
-    <Icon name="lucide:x" aria-hidden="true" />
+<div aria-hidden="true" class="sheet" data-mobile-sheet id="mobile-sheet">
+  <button aria-label="Zamknij menu" class="sheet-close" data-menu-close type="button">
+    <Icon aria-hidden="true" name="lucide:x" />
   </button>
 
   <div class="sheet-content">
     <span class="status-pill">
-      <span class="status-pill-dot" aria-hidden="true"></span>
+      <span aria-hidden="true" class="status-pill-dot"></span>
       Otwarty na nowe współprace
     </span>
 
-    <nav class="sheet-nav" aria-label="Menu główne">
-      {
-        primaryNav.map((link) => (
-          <a class="sheet-link" data-sheet-link href={link.href}>
-            <span>{link.label}</span>
-            <Icon aria-hidden="true" name="lucide:arrow-right" />
-          </a>
-        ))
-      }
+    <nav aria-label="Menu główne" class="sheet-nav">
+      {primaryNav.map((link) => <a class="sheet-link" data-sheet-link href={link.href}>
+        <span>{link.label}</span>
+        <Icon aria-hidden="true" name="lucide:arrow-right" />
+      </a>)}
     </nav>
 
     <Button

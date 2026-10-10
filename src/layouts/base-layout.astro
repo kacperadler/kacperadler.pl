@@ -55,18 +55,16 @@ const ribbonStyles = ribbons.map((r, i) => {
 <!doctype html>
 <html lang={siteConfig.lang}>
   <head>
-    <BaseHead title={title} description={description} ogImage={ogImage} noindex={noindex} />
+    <BaseHead description={description} noindex={noindex} ogImage={ogImage} title={title} />
     <ClientRouter />
   </head>
   <body>
-    <a href="#top" class="skip-link">Przejdź do treści</a>
+    <a class="skip-link" href="#top">Przejdź do treści</a>
 
-    <div class="bg-stage" aria-hidden="true">
-      {
-        ribbonStyles.map((r) => (
-          <div class:list={["ribbon", `ribbon-${r.variant}`]} style={r.style} />
-        ))
-      }
+    <div aria-hidden="true" class="bg-stage">
+      {ribbonStyles.map((r) => (
+        <div class:list={["ribbon", `ribbon-${r.variant}`]} style={r.style} />
+      ))}
       <div class="fade-h"></div>
       <div class="fade-v"></div>
     </div>

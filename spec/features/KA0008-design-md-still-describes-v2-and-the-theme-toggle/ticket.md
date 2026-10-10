@@ -24,14 +24,20 @@ Evidence:
 
 ## Done means
 
-- The fix, with a test that proves it: bring `DESIGN.md` to the code (drop the `/v2` and theming text, point at `base-layout.astro` and `global.css`, decide whether the light values in tokens stay documented); then drop the `DESIGN.md` exceptions added to `.agents/harness/criteria/styleguide.md`, `review.md` and `retro.md`. Its em-dashes are KA0001 F3.
-- `npm test` and `npm run check` pass. The structure test holds.
+- `DESIGN.md` describes one dark site at `/`: no `/v2`, `v1`, theme toggle, `data-theme`, `ka:theme` or light values; the dot grid points at `.bg-stage` in `base-layout.astro`, the spotlight selectors at `global.css`; new tokens need a dark value only. `grep -n 'v2\|data-theme\|ka:theme\|light' DESIGN.md` finds no theming or v2 text.
+- The `DESIGN.md` staleness exceptions in `.agents/harness/criteria/styleguide.md`, `review.md` and `retro.md` are removed.
+- No em-dash added.
+- `bun run lint`, `bun run check`, `bunx prettier --check "**/*.astro"`, `bun run build` and `bun run test:e2e` pass.
 
 ## Scope
 
 In:
-- bring `DESIGN.md` to the code (drop the `/v2` and theming text, point at `base-layout.astro` and `global.css`, decide whether the light values in tokens stay documented); then drop the `DESIGN.md` exceptions added to `.agents/harness/criteria/styleguide.md`, `review.md` and `retro.md`. Its em-dashes are KA0001 F3.
+- `DESIGN.md`, `.agents/harness/criteria/styleguide.md`, `review.md`, `retro.md`.
+
+Out:
+- `src/styles/tokens.css` and any CSS.
 
 ## Decisions
 
 - 2026-10-10: Source: F1 of KA0002
+- 2026-10-10: The human: no light theme and no v2 in the app; this ticket removes their remaining mentions, approved on that reading.

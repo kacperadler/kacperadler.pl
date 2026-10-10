@@ -9,33 +9,25 @@ const services = (await getCollection("services")).sort((a, b) => a.data.order -
   <div class="container">
     <header class="section-head">
       <p class="eyebrow eyebrow-section">Usługi</p>
-      <h2>
-        Obszary w&nbsp;których <em>działam</em>.
-      </h2>
+      <h2>Obszary w&nbsp;których <em>działam</em>.</h2>
       <p class="section-lede">
         Moje doświadczenie pozwala mi na pracę w wielu technologiach<br />i projektach.
       </p>
     </header>
 
     <div class="services-grid">
-      {
-        services.map((service, idx) => (
-          <Card class="service-panel">
-            <header class="service-head">
-              <h3>{service.data.title}</h3>
-              <span aria-hidden="true" class="service-num">
-                {String(idx + 1).padStart(2, "0")}
-              </span>
-            </header>
-            <p>{service.data.description}</p>
-            <ul class="service-tags">
-              {service.data.tags.map((tag) => (
-                <li class="chip">{tag}</li>
-              ))}
-            </ul>
-          </Card>
-        ))
-      }
+      {services.map((service, idx) => <Card class="service-panel">
+        <header class="service-head">
+          <h3>{service.data.title}</h3>
+          <span aria-hidden="true" class="service-num">
+            {String(idx + 1).padStart(2, "0")}
+          </span>
+        </header>
+        <p>{service.data.description}</p>
+        <ul class="service-tags">
+          {service.data.tags.map((tag) => <li class="chip">{tag}</li>)}
+        </ul>
+      </Card>)}
     </div>
   </div>
 </section>

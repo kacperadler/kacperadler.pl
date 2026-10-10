@@ -4,7 +4,7 @@
 # package.json's packageManager field so CI/local/prod all build the
 # same way.
 
-FROM oven/bun:1.3.13-alpine AS build
+FROM oven/bun:1.4.3-alpine AS build
 WORKDIR /app
 
 # Sharp + librsvg need fontconfig and at least one sans font installed
@@ -26,7 +26,7 @@ RUN bun run build
 
 # ---
 
-FROM nginx:1.27-alpine AS serve
+FROM nginx:1.30-alpine AS serve
 
 # Custom server block: gzip, security headers, fingerprint-aware cache
 # rules, /404.html as the error page.

@@ -22,12 +22,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Astro CLI (astro check, astro build) shells out to Node - bun
-      # alone isn't enough. Astro 6 requires Node >= 22.12.
+      # alone isn't enough. Astro 7 requires Node >= 22.12.
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
 
@@ -60,10 +60,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
 
@@ -82,7 +82,7 @@ jobs:
         run: echo "version=$(bun pm ls @playwright/test | awk '/@playwright\/test/ {print $NF; exit}')" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright

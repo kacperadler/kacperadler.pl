@@ -8,58 +8,58 @@ import { z } from "astro/zod";
  * is defined so Faza 8 can drop posts in without touching this file. */
 
 const services = defineCollection({
-  loader: glob({ pattern: "**/*.json", base: "./src/content/services" }),
+  loader: glob({ base: "./src/content/services", pattern: "**/*.json" }),
   schema: z.object({
-    title: z.string(),
     description: z.string(),
-    tags: z.array(z.string()).min(1),
     order: z.number().int().nonnegative(),
+    tags: z.array(z.string()).min(1),
+    title: z.string(),
   }),
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: "**/*.json", base: "./src/content/projects" }),
+  loader: glob({ base: "./src/content/projects", pattern: "**/*.json" }),
   schema: z.object({
-    title: z.string(),
-    role: z.string(),
     description: z.string(),
-    glyph: z.string().min(1).max(2),
-    stack: z.array(z.string()).min(1),
-    order: z.number().int().nonnegative(),
     draft: z.boolean().default(false),
+    glyph: z.string().min(1).max(2),
+    order: z.number().int().nonnegative(),
+    role: z.string(),
+    stack: z.array(z.string()).min(1),
+    title: z.string(),
   }),
 });
 
 const experience = defineCollection({
-  loader: glob({ pattern: "**/*.json", base: "./src/content/experience" }),
+  loader: glob({ base: "./src/content/experience", pattern: "**/*.json" }),
   schema: z.object({
+    /* Optional override for the meta badge - replaces the default
+     * year-range pill. Used for one-off engagements like "Zlecenie". */
+    badge: z.string().optional(),
     company: z.string(),
-    role: z.string(),
-    startDate: z.string().regex(/^\d{4}-\d{2}$/),
+    current: z.boolean().default(false),
+    description: z.string(),
     endDate: z
       .string()
       .regex(/^\d{4}-\d{2}$/)
       .optional(),
-    description: z.string(),
-    current: z.boolean().default(false),
-    order: z.number().int().nonnegative(),
     location: z.string().optional(),
-    /* Optional override for the meta badge - replaces the default
-     * year-range pill. Used for one-off engagements like "Zlecenie". */
-    badge: z.string().optional(),
+    order: z.number().int().nonnegative(),
+    role: z.string(),
+    startDate: z.string().regex(/^\d{4}-\d{2}$/),
   }),
 });
 
 const blog = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }),
+  loader: glob({ base: "./src/content/blog", pattern: "**/*.{md,mdx}" }),
   schema: z.object({
-    title: z.string(),
     description: z.string(),
-    pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
     draft: z.boolean().default(false),
+    pubDate: z.coerce.date(),
     tags: z.array(z.string()).default([]),
+    title: z.string(),
+    updatedDate: z.coerce.date().optional(),
   }),
 });
 
-export const collections = { services, projects, experience, blog };
+export const collections = { blog, experience, projects, services };
