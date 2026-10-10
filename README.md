@@ -52,7 +52,7 @@ Projekt zawiera config dla VS Code (`.vscode/`) i Zed (`.zed/`). Format-on-save 
 | `bun run check`       | `astro check` - type-check `.astro`                             |
 | `bun run lint`        | `ultracite check` - lint Biome (TS/JS/JSON/CSS)                 |
 | `bun run format`      | `ultracite fix` + `prettier --write '**/*.astro'`               |
-| `bun run test:e2e`    | Playwright E2E (chromium, headless; wymaga `bun run build`)     |
+| `bun run test:e2e`    | Playwright E2E (chromium, headless; sam buduje `dist/`)         |
 | `bun run test:e2e:ui` | Playwright UI mode                                              |
 | `bun astro ...`       | passthrough do Astro CLI (`bun astro add`, `bun astro sync`, …) |
 
@@ -69,7 +69,7 @@ Projekt zawiera config dla VS Code (`.vscode/`) i Zed (`.zed/`). Format-on-save 
 GitHub Actions (`.github/workflows/ci.yml`) na `push` / `pull_request` do `main`, dwa joby:
 
 1. **build**: setup Node 22 + bun (wersja z `packageManager` w `package.json`), `bun install --frozen-lockfile`, `bun run lint`, `bun run check`, `bunx prettier --check '**/*.astro'`, `bun run build`
-2. **e2e** (po build): Playwright chromium (cache przeglądarek), `bun run build`, `bun run test:e2e`, upload `playwright-report/`
+2. **e2e** (po build): Playwright chromium (cache przeglądarek), `bun run test:e2e` (buduje `dist/` przed preview), upload `playwright-report/`
 
 Dependabot (`.github/dependabot.yml`) - bun + github-actions weekly, minor + patch zgrupowane w 1 PR.
 

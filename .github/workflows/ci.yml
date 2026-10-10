@@ -96,9 +96,6 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: bunx playwright install-deps chromium
 
-      - name: Build
-        run: bun run build
-
       - name: Run Playwright tests
         run: bun run test:e2e
 
