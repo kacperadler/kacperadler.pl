@@ -7,7 +7,6 @@
       "!**/.astro",
       "!**/node_modules",
       "!**/bun.lock",
-      "!**/example.html",
       "!**/public",
       // Vendor logos served through <img>; Biome 2.5 started parsing SVG.
       "!**/*.svg",
