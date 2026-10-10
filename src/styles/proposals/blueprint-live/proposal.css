@@ -1,0 +1,691 @@
+/* Blueprint na żywo - blueprint's engineer's drawing (every mark is the
+ * blueprint proposal's), drawn while you scroll, as live-grid draws its
+ * grid. A pen plots each part in order:
+ *
+ *   - a section's rule runs out left to right as the section comes up;
+ *     then the extension ticks grow out of it at both ends; then the
+ *     dimension (the section's real width in px), the "§" label and the
+ *     headline's brace are written; the brace's callout letter last
+ *   - a cell's frame traces clockwise from its top-left corner as the cell
+ *     comes in; its item number is written on the top rule after
+ *   - the process rail (a centre line) runs down step by step; the
+ *     footer's rule runs out, then its hairline, then the sheet's legend
+ *   - scrolling back undraws all of it, in reverse
+ *   - the hero is on the screen from the start, so it draws on load: the
+ *     datum's cross grows from its centre, "X 0  Y 0" is written, the
+ *     headline's brace runs out and gets its callout, and the title block
+ *     traces its frame, its header and its table (on a narrow screen,
+ *     where the title block sits under the fold, it draws on scroll like
+ *     a cell); the rulers on the frame's edges run down, and their ticks
+ *     then travel with the sheet as it scrolls, as in a CAD viewport
+ *   - under the cursor a cell is selected whole, as in blueprint: all
+ *     four rules, grips on the corners, the item number on a blue box
+ *     reading the cell's width
+ *
+ * Each drawn piece reads one number, --bl-p (0 undrawn, 1 drawn),
+ * animated on that piece over its section's, cell's or step's scroll range
+ * (or the hero's second on load), and draws its own stage of it. Palette,
+ * fonts and the hard shadow are the baseline's. Under
+ * prefers-reduced-motion and in a browser without scroll-driven
+ * animations nothing is animated and --bl-p stays 1: the drawing stands
+ * complete, as blueprint's does. */
+
+@property --bl-p {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --bl-w {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+html[data-proposal="blueprint-live"] {
+  /* The drawing's annotation type: small mono caps. */
+  --bl-note: 500 10px / 1 var(--mono);
+  --bl-grip: 7px;
+}
+
+/* -- Frame: the edge hairlines become rulers -------------------------- */
+
+/* Drawn down from the top. */
+[data-proposal="blueprint-live"] .mb-frame::before,
+[data-proposal="blueprint-live"] .mb-frame::after {
+  width: 9px;
+  background: var(--muted);
+  opacity: 0.45;
+  clip-path: inset(0 0 calc((1 - var(--bl-p)) * 100%) 0);
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='64'%3E%3Cpath d='M0 0h1v64H0zM1 0h8v1H1zM1 16h3v1H1zM1 32h5v1H1zM1 48h3v1H1z'/%3E%3C/svg%3E")
+    0 0 / 9px 64px repeat-y;
+}
+
+[data-proposal="blueprint-live"] .mb-frame::after {
+  transform: scaleX(-1);
+}
+
+/* -- Section head: a spec paragraph under a dimension line ------------ */
+
+/* The rule is drawn by the background (the border gives way to it while
+ * the drawing moves, in the motion section below): stage 0-0.6. */
+[data-proposal="blueprint-live"] .mb-section-head,
+[data-proposal="blueprint-live"] .mb-ui-section {
+  position: relative;
+  view-timeline: --bl-head;
+  background-image: linear-gradient(var(--mb-rule) 0 0);
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-position: 0 0;
+  background-size: calc(clamp(0, var(--bl-p) / 0.6, 1) * 100%) 1px;
+}
+
+[data-proposal="blueprint-live"] .mb-section-head {
+  container-type: inline-size;
+  counter-reset: bl-cell;
+}
+
+/* Extension ticks at both ends of the rule (the catalogue's sections on
+ * /ui are drawn the same way), grown out of the rule: stage 0.6-0.7. */
+[data-proposal="blueprint-live"] .mb-section-head::before,
+[data-proposal="blueprint-live"] .mb-ui-section::before {
+  position: absolute;
+  top: -6px;
+  right: 0;
+  left: 0;
+  height: 11px;
+  pointer-events: none;
+  content: "";
+  border-inline: 1px solid var(--mb-rule);
+  clip-path: inset(calc((1 - clamp(0, (var(--bl-p) - 0.6) * 10, 1)) * 50%) 0);
+}
+
+/* The dimension: the element's own width, read from its container size
+ * (100cqw as a number of px), written after the ticks: stage 0.7-0.9. A
+ * browser without typed trigonometry would print 0, so it prints
+ * nothing. */
+@supports (width: calc(1px * tan(atan2(1px, 1px)))) {
+  [data-proposal="blueprint-live"] .mb-section-head::after,
+  [data-proposal="blueprint-live"] .mb-ui-h2::after {
+    --bl-w: tan(atan2(100cqw, 1px));
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    padding: 0 10px;
+    font: var(--bl-note);
+    color: var(--blue);
+    letter-spacing: 0.08em;
+    content: counter(bl-w) / "";
+    counter-reset: bl-w var(--bl-w);
+    background: var(--v2-bg);
+    clip-path: inset(
+      0 calc((1 - clamp(0, (var(--bl-p) - 0.7) * 5, 1)) * 100%) 0 0
+    );
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* The label, written left to right with the dimension: stage 0.7-0.9. Its
+ * box hugs the text, so the pen writes the words, not the empty row. */
+[data-proposal="blueprint-live"] .mb-section-label {
+  justify-self: start;
+  clip-path: inset(
+    0 calc((1 - clamp(0, (var(--bl-p) - 0.7) * 5, 1)) * 100%) 0 0
+  );
+}
+
+[data-proposal="blueprint-live"] .mb-section-label::before {
+  content: "§ " counter(mb-section, decimal-leading-zero) " /" / "";
+}
+
+/* -- Headlines: the <em> under a dimension brace, called out A, B ----- */
+
+[data-proposal="blueprint-live"] .mb-section-title,
+[data-proposal="blueprint-live"] .mb-hero h1 {
+  counter-reset: bl-callout;
+}
+
+[data-proposal="blueprint-live"] .mb-section-title em,
+[data-proposal="blueprint-live"] .mb-hero h1 em {
+  position: relative;
+  white-space: nowrap;
+  text-decoration: none;
+  counter-increment: bl-callout;
+}
+
+/* The brace runs out left to right: stage 0.7-0.9 in a section head. */
+[data-proposal="blueprint-live"] .mb-section-title em::after,
+[data-proposal="blueprint-live"] .mb-hero h1 em::after {
+  --bl-from: 0.7;
+  --bl-rate: 5;
+  position: absolute;
+  right: 0.02em;
+  bottom: 0.02em;
+  left: 0.02em;
+  height: 0.14em;
+  pointer-events: none;
+  content: "";
+  border: max(2px, 0.05em) solid var(--blue);
+  border-top: 0;
+  clip-path: inset(
+    0
+      calc(
+        (1 - clamp(0, (var(--bl-p) - var(--bl-from)) * var(--bl-rate), 1)) *
+        100%
+      )
+      0 0
+  );
+}
+
+/* The callout hangs off the brace's right end, written last: stage
+ * 0.9-1 in a section head. */
+[data-proposal="blueprint-live"] .mb-section-title em::before,
+[data-proposal="blueprint-live"] .mb-hero h1 em::before {
+  --bl-from: 0.9;
+  --bl-rate: 10;
+  position: absolute;
+  bottom: 0.02em;
+  left: 100%;
+  padding: 2px 3px;
+  margin-left: 0.12em;
+  font: var(--bl-note);
+  color: var(--v2-bg);
+  letter-spacing: 0;
+  content: counter(bl-callout, upper-alpha) / "";
+  background: var(--blue);
+  clip-path: inset(
+    0
+      calc(
+        (1 - clamp(0, (var(--bl-p) - var(--bl-from)) * var(--bl-rate), 1)) *
+        100%
+      )
+      0 0
+  );
+  transform: translateY(50%);
+}
+
+/* In the hero (one second on load) the brace runs out over 0.3-0.7 and
+ * the callout comes at 0.7-0.8, after the datum. */
+[data-proposal="blueprint-live"] .mb-hero h1 em::after {
+  --bl-from: 0.3;
+  --bl-rate: 2.5;
+}
+
+[data-proposal="blueprint-live"] .mb-hero h1 em::before {
+  --bl-from: 0.7;
+  --bl-rate: 10;
+}
+
+/* -- Cells: a traced frame, item numbers on the rule, grips ----------- */
+
+/* The frame: four rules drawn by the background over the border, top,
+ * right, bottom, left, clockwise from the top-left corner, each a fifth
+ * of --bl-p (0-0.8). */
+[data-proposal="blueprint-live"] .mb-card {
+  container-type: inline-size;
+  view-timeline: --bl-cell;
+  counter-increment: bl-cell;
+  background-image:
+    linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0),
+    linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0);
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-position:
+    0 0,
+    100% 0,
+    100% 100%,
+    0 100%;
+  background-size:
+    calc(clamp(0, var(--bl-p) * 5, 1) * 100%) 1px,
+    1px calc(clamp(0, var(--bl-p) * 5 - 1, 1) * 100%),
+    calc(clamp(0, var(--bl-p) * 5 - 2, 1) * 100%) 1px,
+    1px calc(clamp(0, var(--bl-p) * 5 - 3, 1) * 100%);
+}
+
+/* The 3px top rule gives way to the grips and the filled item number. */
+[data-proposal="blueprint-live"] .mb-card:is(:hover, [data-state="hover"]) {
+  box-shadow: none;
+}
+
+/* The card's own ::before is its 3px hover rule: as the tag it gives up that
+ * rule's right edge, height and scaleX, or the box shrinks to a 3px strip the
+ * text hangs out of. Written on the top rule once the frame is traced
+ * (0.8-1). */
+[data-proposal="blueprint-live"] .mb-card::before {
+  position: absolute;
+  top: -1px;
+  right: auto;
+  left: 12px;
+  z-index: 2;
+  height: auto;
+  padding: 3px 6px;
+  font: var(--bl-note);
+  color: var(--ink-2);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  pointer-events: none;
+  content: counter(mb-section, decimal-leading-zero) "." counter(bl-cell) / "";
+  background: var(--v2-bg);
+  clip-path: inset(0 calc((1 - clamp(0, var(--bl-p) * 5 - 4, 1)) * 100%) 0 0);
+  transform: translateY(-50%);
+  transition:
+    background-color var(--mb-snap),
+    color var(--mb-snap);
+}
+
+[data-proposal="blueprint-live"]
+  .mb-card:is(:hover, [data-state="hover"])::before {
+  color: var(--v2-bg);
+  background: var(--blue);
+  transform: translateY(-50%);
+}
+
+/* Under the cursor the item number reads the cell's outer width. */
+@supports (width: calc(1px * tan(atan2(1px, 1px)))) {
+  [data-proposal="blueprint-live"]
+    .mb-card:is(:hover, [data-state="hover"])::before {
+    --bl-w: tan(atan2(100cqw + 2 * var(--mb-card-pad) + 2px, 1px));
+    content:
+      counter(mb-section, decimal-leading-zero) "." counter(bl-cell) " ↔ "
+      counter(bl-w) / "";
+    counter-reset: bl-w var(--bl-w);
+  }
+}
+
+/* Grips: four squares on the corners, one clipped box. */
+[data-proposal="blueprint-live"] .mb-card::after {
+  position: absolute;
+  inset: -4px;
+  z-index: 1;
+  visibility: hidden;
+  pointer-events: none;
+  content: "";
+  background: var(--blue);
+  clip-path: polygon(
+    0 0,
+    var(--bl-grip) 0,
+    var(--bl-grip) var(--bl-grip),
+    0 var(--bl-grip),
+    0 0,
+    calc(100% - var(--bl-grip)) 0,
+    100% 0,
+    100% var(--bl-grip),
+    calc(100% - var(--bl-grip)) var(--bl-grip),
+    calc(100% - var(--bl-grip)) 0,
+    0 0,
+    0 calc(100% - var(--bl-grip)),
+    var(--bl-grip) calc(100% - var(--bl-grip)),
+    var(--bl-grip) 100%,
+    0 100%,
+    0 calc(100% - var(--bl-grip)),
+    calc(100% - var(--bl-grip)) calc(100% - var(--bl-grip)),
+    100% calc(100% - var(--bl-grip)),
+    100% 100%,
+    calc(100% - var(--bl-grip)) 100%,
+    calc(100% - var(--bl-grip)) calc(100% - var(--bl-grip)),
+    0 calc(100% - var(--bl-grip))
+  );
+}
+
+[data-proposal="blueprint-live"]
+  .mb-card:is(:hover, [data-state="hover"])::after {
+  visibility: visible;
+}
+
+/* The process steps carry their numbers on the rail already. */
+[data-proposal="blueprint-live"] .mb-step .mb-card::before {
+  content: none;
+}
+
+/* -- Hero: the datum and the title block ------------------------------ */
+
+/* The datum sits in the hero's top padding, over the headline's corner. */
+[data-proposal="blueprint-live"] .mb-hero-grid {
+  --bl-datum: calc(-1 * var(--v2-space-lg));
+  position: relative;
+}
+
+/* Its cross: two 1px arms on a 17px square, grown from the centre (stage
+ * 0-0.25 of the hero's second). */
+[data-proposal="blueprint-live"] .mb-hero-grid::before {
+  position: absolute;
+  top: var(--bl-datum);
+  left: calc(var(--v2-space-md) - 8px);
+  width: 17px;
+  height: 17px;
+  content: "";
+  background:
+    linear-gradient(var(--blue) 0 0) 50% 50% /
+    calc(clamp(0, var(--bl-p) * 4, 1) * 100%) 1px no-repeat,
+    linear-gradient(var(--blue) 0 0) 50% 50% / 1px
+    calc(clamp(0, var(--bl-p) * 4, 1) * 100%) no-repeat;
+}
+
+/* Written next to it: stage 0.25-0.5. */
+[data-proposal="blueprint-live"] .mb-hero-grid::after {
+  position: absolute;
+  top: calc(var(--bl-datum) + 4px);
+  left: calc(var(--v2-space-md) + 14px);
+  font: var(--bl-note);
+  color: var(--ink-2);
+  letter-spacing: 0.08em;
+  white-space: pre;
+  content: "X 0  Y 0" / "";
+  clip-path: inset(
+    0 calc((1 - clamp(0, (var(--bl-p) - 0.25) * 4, 1)) * 100%) 0 0
+  );
+}
+
+/* The title block traces its frame like a cell (stage 0-0.6), writes its
+ * header (0.5-0.8), rules its rows (0.6-0.85) and the column between label
+ * and value (0.75-1). */
+[data-proposal="blueprint-live"] .mb-hero-status {
+  --bl-pad: var(--v2-space-lg);
+  gap: 0;
+  padding: 0 var(--bl-pad) var(--bl-pad);
+  view-timeline: --bl-block;
+  background-image:
+    linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0),
+    linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0);
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-position:
+    0 0,
+    100% 0,
+    100% 100%,
+    0 100%;
+  background-size:
+    calc(clamp(0, var(--bl-p) / 0.15, 1) * 100%) 1px,
+    1px calc(clamp(0, var(--bl-p) / 0.15 - 1, 1) * 100%),
+    calc(clamp(0, var(--bl-p) / 0.15 - 2, 1) * 100%) 1px,
+    1px calc(clamp(0, var(--bl-p) / 0.15 - 3, 1) * 100%);
+}
+
+[data-proposal="blueprint-live"] .mb-hero-status::before {
+  padding: 10px var(--bl-pad);
+  margin: 0 calc(-1 * var(--bl-pad)) var(--v2-space-md);
+  font: var(--bl-note);
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  content: "Rys. KA-001 · Arkusz 1/1" / "";
+  border-bottom: 1px solid var(--mb-rule);
+  clip-path: inset(
+    0 calc((1 - clamp(0, (var(--bl-p) - 0.5) / 0.3, 1)) * 100%) 0 0
+  );
+}
+
+[data-proposal="blueprint-live"] .mb-status-id {
+  margin-bottom: var(--v2-space-md);
+}
+
+/* A row's hairlines, drawn by its background over the border. */
+[data-proposal="blueprint-live"] .mb-status-row {
+  --bl-row: calc(clamp(0, (var(--bl-p) - 0.6) / 0.25, 1) * 100%);
+  position: relative;
+  background-image: linear-gradient(var(--mb-hair) 0 0);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-origin: border-box;
+  background-size: var(--bl-row) 1px;
+}
+
+/* The title block's column rule, between label and value, run down. */
+[data-proposal="blueprint-live"] .mb-status-row::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(104px + 6px);
+  width: 1px;
+  content: "";
+  background: var(--mb-hair);
+  clip-path: inset(
+    0 0 calc((1 - clamp(0, (var(--bl-p) - 0.75) * 4, 1)) * 100%) 0
+  );
+}
+
+[data-proposal="blueprint-live"] .mb-status-row:last-child {
+  padding-bottom: 12px;
+  background-image:
+    linear-gradient(var(--mb-hair) 0 0), linear-gradient(var(--mb-hair) 0 0);
+  background-position:
+    0 0,
+    0 100%;
+  background-size:
+    var(--bl-row) 1px,
+    var(--bl-row) 1px;
+  border-bottom: 1px solid var(--mb-hair);
+}
+
+/* -- Process: the rail is a centre line, run down per step ------------ */
+
+[data-proposal="blueprint-live"] .mb-step {
+  view-timeline: --bl-step;
+}
+
+[data-proposal="blueprint-live"] .mb-step-marker::before {
+  background: var(--mb-rule);
+  clip-path: inset(0 0 calc((1 - var(--bl-p)) * 100%) 0);
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='16'%3E%3Cpath d='M0 0h1v9H0zM0 12h1v1H0z'/%3E%3C/svg%3E")
+    0 0 / 1px 16px repeat-y;
+}
+
+/* -- Footer: the sheet's legend --------------------------------------- */
+
+/* The footer's rule runs out like a section's. */
+[data-proposal="blueprint-live"] .mb-footer {
+  view-timeline: --bl-foot;
+  background-image: linear-gradient(var(--mb-rule) 0 0);
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-position: 0 0;
+  background-size: calc(var(--bl-p) * 100%) 1px;
+}
+
+/* Then the bottom row's hairline (stage 0-0.6), then the legend
+ * (0.6-1). */
+[data-proposal="blueprint-live"] .mb-footer-bottom {
+  view-timeline: --bl-legend;
+  background-image: linear-gradient(var(--mb-hair) 0 0);
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-position: 0 0;
+  background-size: calc(clamp(0, var(--bl-p) / 0.6, 1) * 100%) 1px;
+}
+
+[data-proposal="blueprint-live"] .mb-footer-bottom::after {
+  margin-left: auto;
+  text-transform: uppercase;
+  content: "Wymiary w px · Skala 1:1 · Rys. KA-001" / "";
+  clip-path: inset(
+    0 calc((1 - clamp(0, (var(--bl-p) - 0.6) / 0.4, 1)) * 100%) 0 0
+  );
+}
+
+/* -- Catalogue (/ui): its sections are paragraphs under dimensions too -- */
+
+[data-proposal="blueprint-live"] .mb-ui-section {
+  counter-reset: bl-cell;
+}
+
+/* The section's heading measures it: it is as wide as the section. The
+ * section itself is no query container: as one, Chrome numbered every
+ * cell inside it ".1" (its own counter-reset no longer counted on). */
+[data-proposal="blueprint-live"] .mb-ui-h2 {
+  container-type: inline-size;
+}
+
+/* Its "§" is written with the dimension: stage 0.7-0.9. */
+[data-proposal="blueprint-live"] .mb-ui-h2::before {
+  color: var(--blue);
+  content: "§ " / "";
+  clip-path: inset(
+    0 calc((1 - clamp(0, (var(--bl-p) - 0.7) * 5, 1)) * 100%) 0 0
+  );
+}
+
+@media (max-width: 880px) {
+  [data-proposal="blueprint-live"] .mb-hero-grid {
+    --bl-datum: -22px;
+  }
+
+  [data-proposal="blueprint-live"] .mb-hero-status {
+    --bl-pad: var(--v2-space-md);
+  }
+}
+
+@media (max-width: 400px) {
+  [data-proposal="blueprint-live"] .mb-status-row::before {
+    left: calc(88px + 6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-proposal="blueprint-live"] .mb-card::before {
+    transition: none;
+  }
+}
+
+/* -- Motion: the pen ---------------------------------------------------- */
+
+@keyframes bl-draw {
+  from {
+    --bl-p: 0;
+  }
+
+  to {
+    --bl-p: 1;
+  }
+}
+
+/* The rulers' ticks move with the sheet, one px per px scrolled. */
+@keyframes bl-sheet {
+  from {
+    mask-position: 0 0;
+  }
+
+  to {
+    mask-position: 0 -1000000px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* The rules are drawn by the backgrounds above, not the borders. */
+    [data-proposal="blueprint-live"] .mb-section-head,
+    [data-proposal="blueprint-live"] .mb-ui-section,
+    [data-proposal="blueprint-live"] .mb-footer,
+    [data-proposal="blueprint-live"] .mb-footer-bottom,
+    [data-proposal="blueprint-live"] .mb-status-row {
+      border-top-color: transparent;
+    }
+
+    [data-proposal="blueprint-live"] .mb-card,
+    [data-proposal="blueprint-live"] .mb-hero-status {
+      border-color: transparent;
+    }
+
+    [data-proposal="blueprint-live"] .mb-status-row:last-child {
+      border-bottom-color: transparent;
+    }
+
+    /* A selected (or pressed) cell stands whole, drawn or not: the
+     * component's hover background takes the traced frame away, the
+     * border brings all four rules back, and its number is on at once. */
+    [data-proposal="blueprint-live"]
+      .mb-card:is(
+        :hover,
+        [data-state="hover"],
+        :active,
+        [data-state="pressed"]
+      ) {
+      border-color: var(--mb-rule);
+    }
+
+    /* A section: rule, ticks, dimension, label, brace, callout. */
+    [data-proposal="blueprint-live"] .mb-section-head,
+    [data-proposal="blueprint-live"] .mb-section-head::before,
+    [data-proposal="blueprint-live"] .mb-section-head::after,
+    [data-proposal="blueprint-live"] .mb-section-label,
+    [data-proposal="blueprint-live"] .mb-section-title em::before,
+    [data-proposal="blueprint-live"] .mb-section-title em::after,
+    [data-proposal="blueprint-live"] .mb-ui-section,
+    [data-proposal="blueprint-live"] .mb-ui-section::before,
+    [data-proposal="blueprint-live"] .mb-ui-h2::before,
+    [data-proposal="blueprint-live"] .mb-ui-h2::after {
+      animation: bl-draw linear both;
+      animation-timeline: --bl-head;
+      animation-range: cover 0% cover 360px;
+    }
+
+    /* A cell: frame, then number, while it comes in. */
+    [data-proposal="blueprint-live"] .mb-card,
+    [data-proposal="blueprint-live"] .mb-card::before {
+      animation: bl-draw linear both;
+      animation-timeline: --bl-cell;
+      animation-range: entry 0% entry 100%;
+    }
+
+    [data-proposal="blueprint-live"]
+      .mb-card:is(:hover, [data-state="hover"])::before {
+      animation: none;
+    }
+
+    [data-proposal="blueprint-live"] .mb-step-marker::before {
+      animation: bl-draw linear both;
+      animation-timeline: --bl-step;
+      animation-range: entry 0% entry 100%;
+    }
+
+    [data-proposal="blueprint-live"] .mb-footer {
+      animation: bl-draw linear both;
+      animation-timeline: --bl-foot;
+      animation-range: cover 0% cover 360px;
+    }
+
+    [data-proposal="blueprint-live"] .mb-footer-bottom,
+    [data-proposal="blueprint-live"] .mb-footer-bottom::after {
+      animation: bl-draw linear both;
+      animation-timeline: --bl-legend;
+      animation-range: cover 0% cover 200px;
+    }
+
+    /* On load: the hero, and the rulers, which then follow the sheet. */
+    [data-proposal="blueprint-live"] .mb-hero-grid::before,
+    [data-proposal="blueprint-live"] .mb-hero-grid::after,
+    [data-proposal="blueprint-live"] .mb-hero h1 em::before,
+    [data-proposal="blueprint-live"] .mb-hero h1 em::after,
+    [data-proposal="blueprint-live"] .mb-hero-status,
+    [data-proposal="blueprint-live"] .mb-hero-status::before,
+    [data-proposal="blueprint-live"] .mb-status-row,
+    [data-proposal="blueprint-live"] .mb-status-row::before {
+      animation: bl-draw 1s linear both;
+    }
+
+    [data-proposal="blueprint-live"] .mb-frame::before,
+    [data-proposal="blueprint-live"] .mb-frame::after {
+      animation:
+        bl-draw 1s linear both,
+        bl-sheet linear both;
+      animation-timeline: auto, scroll(root);
+      animation-range:
+        normal,
+        0px 1000000px;
+    }
+
+    /* One column: the title block is under the fold, it draws as it
+     * comes in. */
+    @media (max-width: 880px) {
+      [data-proposal="blueprint-live"] .mb-hero-status,
+      [data-proposal="blueprint-live"] .mb-hero-status::before,
+      [data-proposal="blueprint-live"] .mb-status-row,
+      [data-proposal="blueprint-live"] .mb-status-row::before {
+        animation-duration: auto;
+        animation-timeline: --bl-block;
+        animation-range: entry 0% entry 100%;
+      }
+    }
+  }
+}
