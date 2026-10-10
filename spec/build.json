@@ -195,9 +195,9 @@
   {
     "id": "KA0026",
     "title": "Offer: AI agents, automation, Claude Code and Codex training",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0026-offer-ai-agents-automation-claude-code-and-codex-training/ticket.md",
-    "updated": "2026-10-10T15:00:33.675Z"
+    "updated": "2026-10-10T15:06:29.848Z"
   },
   {
     "id": "KA0027",
@@ -209,9 +209,9 @@
   {
     "id": "KA0028",
     "title": "Case studies in MDX: collection, list and page",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0028-case-studies-in-mdx-instead-of-placeholder-projects/ticket.md",
-    "updated": "2026-10-10T14:58:58.774Z"
+    "updated": "2026-10-10T15:05:01.639Z"
   },
   {
     "id": "KA0029",
@@ -296,9 +296,9 @@
   {
     "id": "KA0037",
     "title": "Component catalogue at /ui",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0037-component-catalogue-at-ui/ticket.md",
-    "updated": "2026-10-10T15:03:30.082Z"
+    "updated": "2026-10-10T15:03:45.195Z"
   },
   {
     "id": "KA0038",
@@ -369,5 +369,12 @@
     "after": [
       "KA0038"
     ]
+  },
+  {
+    "id": "KA0045",
+    "title": "The hero and status card still present only a frontend engineer",
+    "status": "dropped",
+    "path": "spec/features/KA0045-the-hero-and-status-card-still-present-only-a-frontend-engineer/ticket.md",
+    "updated": "2026-10-10T15:06:42.280Z"
   }
 ]

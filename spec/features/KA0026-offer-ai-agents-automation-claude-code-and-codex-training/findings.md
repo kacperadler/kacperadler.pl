@@ -22,4 +22,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/components/sections/hero.astro:12`, `src/data/site-config.ts` (`role`, `tagline`)
 - What: KA0026 put the AI offer first in the services, the hero subline, `siteConfig.description` and `llms*.txt`, but the h1 ("Buduję interfejsy dla produktów..."), `siteConfig.role` ("Frontend Engineer", also the page title, OG alt and `llms.txt` heading) and the status card's STACK line (React Native · TypeScript · Astro) describe only frontend work. A visitor who came for AI agents or training reads a frontend portfolio above the fold.
 - Suggestion: a copy ticket for the hero h1, `role` / `tagline` and the status card that names the AI offer next to the frontend work; the human decides the positioning.
-- Status: open
+- Status: ticket KA0036 (KA0045 dropped as its duplicate)
