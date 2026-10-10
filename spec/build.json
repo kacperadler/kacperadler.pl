@@ -178,9 +178,9 @@
   {
     "id": "KA0024",
     "title": "Drop editor and agent configs, Biome formats .astro instead of Prettier",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0024-drop-editor-and-agent-configs-biome-formats-astro-instead-of-prettier/ticket.md",
-    "updated": "2026-10-10T14:32:15.881Z"
+    "updated": "2026-10-10T14:46:41.210Z"
   },
   {
     "id": "KA0025",
@@ -195,9 +195,9 @@
   {
     "id": "KA0026",
     "title": "Offer: AI agents, automation, Claude Code and Codex training",
-    "status": "planned",
+    "status": "review",
     "path": "spec/features/KA0026-offer-ai-agents-automation-claude-code-and-codex-training/ticket.md",
-    "updated": "2026-10-10T14:40:42.517Z"
+    "updated": "2026-10-10T14:46:20.418Z"
   },
   {
     "id": "KA0027",
@@ -209,9 +209,9 @@
   {
     "id": "KA0028",
     "title": "Case studies in MDX: collection, list and page",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0028-case-studies-in-mdx-instead-of-placeholder-projects/ticket.md",
-    "updated": "2026-10-10T14:40:42.715Z"
+    "updated": "2026-10-10T14:40:49.193Z"
   },
   {
     "id": "KA0029",
@@ -281,6 +281,16 @@
     "updated": "2026-10-10T14:40:42.315Z",
     "after": [
       "KA0028"
+    ]
+  },
+  {
+    "id": "KA0036",
+    "title": "Kacper is a software engineer, not a frontend engineer",
+    "status": "planned",
+    "path": "spec/features/KA0036-kacper-is-a-software-engineer-not-a-frontend-engineer/ticket.md",
+    "updated": "2026-10-10T14:49:11.508Z",
+    "after": [
+      "KA0026"
     ]
   }
 ]
