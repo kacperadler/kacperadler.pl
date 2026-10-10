@@ -14,6 +14,7 @@ colors:
   blue: "#8eaed8"
   blue-2: "#b4c8e6"
   on-blue: "#0f1116"
+  error: "#e07a70"
 typography:
   display-xl:
     fontFamily: Geist Mono
@@ -125,6 +126,7 @@ There is one design, served at `/`, and it is dark only.
 - **`panel-elevated` (`#1a1e26`):** secondary surface, used for emphasis (CTAs, hero, featured cards). ~1 step lighter again.
 - **`ink` / `ink-2` / `muted`:** triadic text scale. `ink` is for headlines and primary text, `ink-2` for body copy, `muted` for metadata, eyebrows, captions.
 - **`blue` (`#8eaed8`):** the **only** chromatic accent. Used for: link color, primary-button hover ring, eyebrow status dot, `<em>` highlights inside headings. One accent enforces the brand mark - never reach for a second hue.
+- **`error` (`#e07a70`):** a warm coral, for form errors only (the invalid field border, the error line under it, the send-error banner). Not an accent: it never decorates. Reaches WCAG AA on the form surfaces: 6.15:1 on `panel`, 6.7:1 on `base`.
 
 ## Typography
 
@@ -222,7 +224,7 @@ Buttons live in `src/components/ui/button.astro` (canonical). Used by: header CT
 Small mono-uppercase label, `muted` color, often paired with a small blue dot (3-step shadow as a "live" indicator). Used at the start of every section to anchor it.
 
 ### Form fields
-Border `1px solid line`, focus state shifts border to `blue` + a 3px `blue` wash. Errors flip the border to `#c44545` and show a 12px `#c44545` line under the field. Same radius (`sm`) as buttons. `ui/field.astro` carries the mono label and the error line around `<Input>`, `<Textarea>` or a group of `<Radio>` (a pill: checked = `blue` on `blue-wash` with a `blue` border, keyboard focus = 2px `blue` ring).
+Border `1px solid line`, focus state shifts border to `blue` + a 3px `blue` wash. Errors flip the border to `error` and show a 12px `error` line under the field. Same radius (`sm`) as buttons. `ui/field.astro` carries the mono label and the error line around `<Input>`, `<Textarea>` or a group of `<Radio>` (a pill: checked = `blue` on `blue-wash` with a `blue` border, keyboard focus = 2px `blue` ring).
 
 ## Motion
 

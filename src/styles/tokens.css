@@ -36,6 +36,12 @@
   --blue-2: #b4c8e6;
   --blue-wash: rgba(142, 174, 216, 0.1);
 
+  /* Error - form validation and the send-error banner. Warm coral that sits
+   * with the warm ink; 6.15:1 on --v2-panel, 6.7:1 on --v2-bg (WCAG AA
+   * 4.5:1 for text, 3:1 for the invalid border). Not an accent: only for
+   * errors. */
+  --error: #e07a70;
+
   /* Typography stacks. */
   --display: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
   --sans: "Geist", system-ui, -apple-system, sans-serif;

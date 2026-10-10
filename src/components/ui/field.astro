@@ -52,13 +52,13 @@ const { errorMessage, for: forId, invalid = false, label, name } = Astro.props;
   /* Input / Textarea live in their own style scope, hence :global(). */
   .field[data-invalid] :global(.v2-input),
   .field[data-invalid] :global(.v2-textarea) {
-    border-color: #c44545;
+    border-color: var(--error);
   }
 
   .err {
     display: none;
     font-size: 12px;
-    color: #c44545;
+    color: var(--error);
   }
 
   .field[data-invalid] .err {

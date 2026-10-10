@@ -58,13 +58,9 @@ test.describe("component catalogue (astro dev)", () => {
   });
 
   test("has no detectable WCAG 2.1 AA violations", async ({ page }) => {
-    // The field error line (#c44545 on the panel, 3.66:1) fails contrast on
-    // the live contact form too; recolouring it changes the live site, so it
-    // waits for a decision: KA0037 findings F1. Drop the exclude with it.
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
       .exclude("astro-dev-toolbar")
-      .exclude(".field .err")
       .analyze();
 
     expect(results.violations).toEqual([]);
@@ -114,14 +110,27 @@ test.describe("component catalogue (astro dev)", () => {
     expect(await paint(empty, props)).toEqual(forcedPaint);
   });
 
-  test("the error state shows the message and the red border", async ({
+  test("the error state shows the message and the error border", async ({
     page,
   }) => {
     const error = sample(page, "ui-form", "error").first();
     await expect(error.locator(".err")).toBeVisible();
     await expect(error.locator(".v2-input")).toHaveCSS(
       "border-color",
-      "rgb(196, 69, 69)"
+      "rgb(224, 122, 112)"
+    );
+  });
+
+  test("the typography block follows the port, not the site's .prose", async ({
+    page,
+  }) => {
+    // global.css styles .prose for the legal pages (h2 weight 500, a boxed
+    // inline code); prose.css has to win on /ui.
+    const prose = page.locator("article.prose");
+    await expect(prose.locator("h2")).toHaveCSS("font-weight", "700");
+    await expect(prose.locator("p code")).toHaveCSS(
+      "background-color",
+      "rgba(0, 0, 0, 0)"
     );
   });
 });
