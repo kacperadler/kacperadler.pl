@@ -1,0 +1,369 @@
+/* Editorial - minimal brutalism set like a magazine spread. The ruled
+ * cells, the palette and every component state stay as they are; what
+ * changes is the page grid and the type that hangs on it:
+ *
+ *   - One 13-column grid per section: a narrow spine on the left edge and
+ *     twelve columns of content. The section head and its content share it
+ *     (the head is display: contents inside a section's container), so the
+ *     head breaks into separate pieces placed off the halves.
+ *   - The spine carries the section label set vertically, read bottom to
+ *     top like a Polish book spine, and sticky: it rides down the edge
+ *     while its section is on screen - a running section index.
+ *   - The section number becomes an oversized numeral drawn with the same
+ *     ink rule as the cells (an outline on the substrate). Sections
+ *     alternate: the numeral on the left, then on the right.
+ *   - Cells of uneven spans: two-column tables zigzag 7 | 5, 5 | 7; the
+ *     experience wall cascades 1, 2, 3 cells a row; process steps step in
+ *     and out. Service numbers are display numerals.
+ *   - The hero headline runs the full width; the lede and the status card
+ *     sit off-centre under it.
+ *
+ * No motion is added (sticky is not an animation), so there is nothing for
+ * prefers-reduced-motion to switch off beyond what the components do. */
+
+html[data-proposal="editorial"] {
+  --ed-spine: 56px;
+  --ed-gap: 24px;
+  --ed-cols: var(--ed-spine) repeat(12, minmax(0, 1fr));
+  /* Below the sticky header (14px + 44px button + 14px + 1px rule). */
+  --ed-sticky: calc(73px + var(--v2-space-md));
+}
+
+/* --- Section head: the pieces on the grid ------------------------------ */
+
+/* Standalone (the catalogue sample, any head not first in a container):
+ * the head is its own grid. Rows: the ink rule, the title, the lede. The
+ * numeral counts the section instead of the head, since a head with
+ * display: contents (below) generates no box and so counts nothing. */
+[data-proposal="editorial"] .mb-section-head {
+  grid-template-rows: auto auto 1fr;
+  grid-template-columns: var(--ed-cols);
+  gap: 0 var(--ed-gap);
+  align-items: start;
+  padding-top: 0;
+  counter-increment: none;
+  border-top: 0;
+}
+
+/* In a section: the container is the grid and the head dissolves into it,
+ * so the label can run down the spine beside the content. Rows: the rule,
+ * the title, the lede, the content. */
+[data-proposal="editorial"] .container:has(> .mb-section-head) {
+  display: grid;
+  grid-template-rows: auto auto auto auto;
+  grid-template-columns: var(--ed-cols);
+  column-gap: var(--ed-gap);
+}
+
+[data-proposal="editorial"]
+  .container:has(> .mb-section-head)
+  > .mb-section-head {
+  display: contents;
+}
+
+[data-proposal="editorial"]
+  .container:has(> .mb-section-head)
+  > :not(.mb-section-head) {
+  grid-row: 4;
+  grid-column: 2 / -1;
+  min-width: 0;
+  margin-top: var(--v2-space-xl);
+}
+
+/* The ink rule over the whole width, spine included. */
+[data-proposal="editorial"] .mb-section-head::after {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  content: "";
+  border-top: 1px solid var(--mb-rule);
+}
+
+/* The spine: the numbered label, vertical and sticky. */
+[data-proposal="editorial"] .mb-section-label {
+  position: sticky;
+  top: var(--ed-sticky);
+  grid-row: 1 / -1;
+  grid-column: 1;
+  align-self: start;
+  justify-self: center;
+  margin: var(--v2-space-md) 0 0;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* The oversized numeral, drawn with the rule. It comes before the label,
+ * so the label's "01 /" reads the count it set. The stroke is painted
+ * first and the substrate-coloured fill over it, so the glyph's own
+ * overlapping contours (the foot of a 1, the cross of a 4) are covered and
+ * only the outer 1px of the 2px stroke shows. The padding gives back the
+ * negative tracking after the last digit, so a right-aligned numeral ends
+ * on the column edge. */
+[data-proposal="editorial"] .mb-section-head::before {
+  grid-row: 2 / span 2;
+  grid-column: 2 / span 4;
+  padding-right: 0.06em;
+  margin-top: var(--v2-space-lg);
+  font-family: var(--mb-display);
+  font-size: clamp(120px, 16vw, 216px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 0.74;
+  color: var(--v2-bg);
+  -webkit-text-stroke: 2px var(--mb-rule);
+  letter-spacing: -0.06em;
+  content: counter(mb-section, decimal-leading-zero) / "";
+  counter-increment: mb-section;
+  paint-order: stroke fill;
+}
+
+[data-proposal="editorial"] .mb-section-title {
+  grid-row: 2;
+  grid-column: 6 / -1;
+  margin-top: var(--v2-space-lg);
+  font-size: clamp(36px, 5vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+[data-proposal="editorial"] .mb-section-lede {
+  grid-row: 3;
+  grid-column: 9 / -1;
+  max-width: none;
+  margin-top: var(--v2-space-md);
+}
+
+/* Every other section mirrors: the numeral to the right edge, the title
+ * and lede against the spine. The hero is the first section of main, so
+ * the odd ones are Proces and Kontakt. */
+[data-proposal="editorial"]
+  main
+  > section:nth-of-type(odd)
+  .mb-section-head::before {
+  grid-column: -5 / -1;
+  justify-self: end;
+  text-align: end;
+}
+
+[data-proposal="editorial"] main > section:nth-of-type(odd) .mb-section-title {
+  grid-column: 2 / span 8;
+}
+
+[data-proposal="editorial"] main > section:nth-of-type(odd) .mb-section-lede {
+  grid-column: 2 / span 5;
+}
+
+/* --- Hero: a full-width headline, the rest off-centre ------------------ */
+
+/* Rows: the headline, the lede, the buttons; the last row takes what the
+ * taller status card adds, so the buttons stay right under the lede. */
+[data-proposal="editorial"] .mb-hero-grid {
+  grid-template-rows: auto auto 1fr;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0 var(--ed-gap);
+  align-items: start;
+}
+
+[data-proposal="editorial"] .mb-hero-text {
+  display: contents;
+}
+
+[data-proposal="editorial"] .mb-hero h1 {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  max-width: none;
+  margin: 0 0 var(--v2-space-xl);
+  font-size: clamp(44px, 8.2vw, 108px);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+[data-proposal="editorial"] .mb-hero-sub {
+  grid-row: 2;
+  grid-column: 1 / span 6;
+}
+
+[data-proposal="editorial"] .mb-hero-ctas {
+  grid-row: 3;
+  grid-column: 1 / span 6;
+}
+
+[data-proposal="editorial"] .mb-hero-status {
+  grid-row: 2 / span 2;
+  grid-column: 8 / -1;
+}
+
+/* --- Cells of uneven spans --------------------------------------------- */
+
+/* Two-column tables zigzag: 7 | 5, then 5 | 7. */
+[data-proposal="editorial"] .mb-cell-grid-pair {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+[data-proposal="editorial"]
+  .mb-cell-grid-pair
+  > :is(:nth-child(4n + 1), :nth-child(4n)) {
+  grid-column: span 7;
+}
+
+[data-proposal="editorial"]
+  .mb-cell-grid-pair
+  > :is(:nth-child(4n + 2), :nth-child(4n + 3)) {
+  grid-column: span 5;
+}
+
+/* Service numbers: display numerals, still turning blue with the cell. */
+[data-proposal="editorial"] .mb-service-num {
+  font-family: var(--mb-display);
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+}
+
+/* The experience wall cascades: the current role across the row, then
+ * two cells, then three. */
+[data-proposal="editorial"] .mb-experience .mb-cell-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+[data-proposal="editorial"] .mb-experience .mb-cell-grid > * {
+  grid-column: span 4;
+}
+
+[data-proposal="editorial"] .mb-experience .mb-cell-grid > :nth-child(1) {
+  grid-column: 1 / -1;
+}
+
+[data-proposal="editorial"] .mb-experience .mb-cell-grid > :nth-child(2) {
+  grid-column: span 7;
+}
+
+[data-proposal="editorial"] .mb-experience .mb-cell-grid > :nth-child(3) {
+  grid-column: span 5;
+}
+
+[data-proposal="editorial"]
+  .mb-experience
+  .mb-cell-grid
+  > :nth-child(1)
+  .mb-exp-desc {
+  max-width: 64ch;
+}
+
+/* Process steps step in and out from the rail. */
+[data-proposal="editorial"] .mb-step:nth-child(even) .mb-card {
+  margin-left: calc(100% / 6);
+}
+
+/* Too narrow for three: the lead row, then pairs; a cell left over after
+ * the pairs (an even count, since the lead stands alone) takes the row. */
+@media (max-width: 1080px) {
+  [data-proposal="editorial"] .mb-experience .mb-cell-grid > :nth-child(n + 2) {
+    grid-column: span 6;
+  }
+
+  [data-proposal="editorial"]
+    .mb-experience
+    .mb-cell-grid
+    > :last-child:nth-child(even) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* --- Mobile: one column beside the spine ------------------------------- */
+
+@media (max-width: 880px) {
+  html[data-proposal="editorial"] {
+    --ed-spine: 24px;
+    --ed-gap: 12px;
+    --ed-cols: var(--ed-spine) minmax(0, 1fr);
+  }
+
+  /* Rows: the rule, the numeral, the title, the lede (and the content). */
+  [data-proposal="editorial"] .mb-section-head {
+    grid-template-rows: auto auto auto 1fr;
+  }
+
+  [data-proposal="editorial"] .container:has(> .mb-section-head) {
+    grid-template-rows: auto auto auto auto auto;
+  }
+
+  [data-proposal="editorial"]
+    .container:has(> .mb-section-head)
+    > :not(.mb-section-head) {
+    grid-row: 5;
+    margin-top: var(--v2-space-lg);
+  }
+
+  [data-proposal="editorial"] .mb-section-label {
+    margin-bottom: 0;
+  }
+
+  [data-proposal="editorial"] .mb-section-head::before,
+  [data-proposal="editorial"]
+    main
+    > section:nth-of-type(odd)
+    .mb-section-head::before {
+    grid-row: 2;
+    grid-column: 2;
+    margin-top: var(--v2-space-md);
+    font-size: 104px;
+  }
+
+  [data-proposal="editorial"] .mb-section-title,
+  [data-proposal="editorial"]
+    main
+    > section:nth-of-type(odd)
+    .mb-section-title {
+    grid-row: 3;
+    grid-column: 2;
+    margin-top: var(--v2-space-md);
+  }
+
+  [data-proposal="editorial"] .mb-section-lede,
+  [data-proposal="editorial"] main > section:nth-of-type(odd) .mb-section-lede {
+    grid-row: 4;
+    grid-column: 2;
+    margin-top: 12px;
+  }
+
+  [data-proposal="editorial"] .mb-hero-grid {
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-proposal="editorial"] .mb-hero h1 {
+    margin-bottom: var(--v2-space-lg);
+  }
+
+  [data-proposal="editorial"]
+    :is(.mb-hero-sub, .mb-hero-ctas, .mb-hero-status) {
+    grid-row: auto;
+    grid-column: 1;
+  }
+
+  [data-proposal="editorial"] .mb-hero-status {
+    margin-top: var(--v2-space-lg);
+  }
+
+  [data-proposal="editorial"]
+    :is(.mb-cell-grid-pair, .mb-experience .mb-cell-grid) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-proposal="editorial"]
+    :is(.mb-cell-grid-pair, .mb-experience .mb-cell-grid)
+    > :nth-child(n) {
+    grid-column: 1;
+  }
+
+  [data-proposal="editorial"] .mb-service-num {
+    font-size: 48px;
+  }
+
+  /* Spine, rail and cell already share a phone's width: no stepping. */
+  [data-proposal="editorial"] .mb-step:nth-child(even) .mb-card {
+    margin-left: 0;
+  }
+}
