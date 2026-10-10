@@ -149,10 +149,10 @@ test.describe("contact form", () => {
       '[data-contact-form] input[name="email"]',
       "kacper@example.com"
     );
-    await pickType(page, "landing");
+    await pickType(page, "ai");
     await page.fill(
       '[data-contact-form] textarea[name="message"]',
-      "Chciałbym landing page dla nowego produktu."
+      "Chciałbym wdrożyć agenta AI w firmie."
     );
 
     await page.click("[data-contact-form] [data-submit]");
@@ -170,16 +170,53 @@ test.describe("contact form", () => {
     // Umami event fires on success with the project type so the
     // dashboard can break submissions down by category.
     expect(await readFormEvents(page)).toEqual([
-      { data: { type: "landing" }, name: "form-submit" },
+      { data: { type: "ai" }, name: "form-submit" },
     ]);
 
     expect(capturedContentType).toMatch(MULTIPART_RX);
     expect(capturedBody).toContain('name="data"');
     expect(capturedBody).toContain('"Email":"kacper@example.com"');
-    expect(capturedBody).toContain('"Type":"landing"');
+    expect(capturedBody).toContain('"Type":"ai"');
     expect(capturedBody).toContain(
-      '"Message":"Chciałbym landing page dla nowego produktu."'
+      '"Message":"Chciałbym wdrożyć agenta AI w firmie."'
     );
+  });
+
+  test("AI i automatyzacje is the first project type, and the row wraps on mobile", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 844, width: 390 });
+    await page.goto("/#contact");
+
+    const group = page.locator('[data-contact-form] [role="radiogroup"]');
+    const first = group.locator("label").first();
+    await expect(first.locator("input")).toHaveAttribute("value", "ai");
+    await expect(first).toHaveText("AI i automatyzacje");
+
+    // Every option stays inside the group (none pushed past its right
+    // edge), and the options take more than one line at 390px.
+    const groupBox = await group.boundingBox();
+    const boxes = await group
+      .locator("label")
+      .evaluateAll((els) =>
+        els.map((el) => el.getBoundingClientRect().toJSON() as DOMRect)
+      );
+    if (!groupBox) {
+      throw new Error("project type group is not rendered");
+    }
+    for (const box of boxes) {
+      expect(box.right).toBeLessThanOrEqual(groupBox.x + groupBox.width + 1);
+    }
+    expect(
+      new Set(boxes.map((box) => Math.round(box.top))).size
+    ).toBeGreaterThan(1);
+    expect(
+      await page.evaluate(
+        () =>
+          document.documentElement.scrollWidth <=
+          document.documentElement.clientWidth
+      )
+    ).toBe(true);
   });
 
   test("reset button on success card brings the form back empty", async ({
