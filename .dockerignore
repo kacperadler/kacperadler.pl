@@ -31,5 +31,5 @@ blob-report/
 .env
 .env.*
 
-# Docs (CLAUDE.md, README, project-plan.md aren't part of the build)
+# Docs (AGENTS.md, README, project-plan.md aren't part of the build)
 *.md
