@@ -85,9 +85,9 @@
   {
     "id": "KA0012",
     "title": "`@/stores` path alias with no `src/stores`",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0012-stores-path-alias-with-no-src-stores/ticket.md",
-    "updated": "2026-10-10T12:54:16.366Z"
+    "updated": "2026-10-10T12:58:03.599Z"
   },
   {
     "id": "KA0013",
@@ -116,8 +116,8 @@
   {
     "id": "KA0016",
     "title": "The e2e suite cannot start Astro 7 preview: it detaches",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0016-the-e2e-suite-cannot-start-astro-7-preview-it-detaches/ticket.md",
-    "updated": "2026-10-10T12:57:28.368Z"
+    "updated": "2026-10-10T12:58:42.362Z"
   }
 ]
