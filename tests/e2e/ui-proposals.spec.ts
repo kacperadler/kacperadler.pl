@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 import { parseProposals } from "../../src/lib/proposals";
 import { sendALead } from "./send-a-lead";
 
@@ -55,6 +55,88 @@ const validMeta = {
   description: "Jedna linia.",
   name: "Alpha",
   references: [{ label: "Sentry", url: "https://sentry.io/" }],
+};
+
+interface BlueprintTag {
+  background: string;
+  /** The background's (border) box; global.css sizes ::before border-box. */
+  boxHeight: number;
+  boxWidth: number;
+  color: string;
+  content: string;
+  padLeft: number;
+  padTop: number;
+  textHeight: number;
+  textWidth: number;
+}
+
+// The blueprint item tag (a cell's ::before) as it renders: its background
+// box, and the box its text needs - the same pseudo-element with no size
+// and no padding of its own. The text starts at the box's padding corner.
+const blueprintTag = (card: Locator): Promise<BlueprintTag> =>
+  card.evaluate((el) => {
+    const read = () => {
+      const s = getComputedStyle(el, "::before");
+      return {
+        background: s.backgroundColor,
+        color: s.color,
+        content: s.content,
+        height: Number.parseFloat(s.height),
+        padLeft: Number.parseFloat(s.paddingLeft),
+        padTop: Number.parseFloat(s.paddingTop),
+        width: Number.parseFloat(s.width),
+      };
+    };
+    const { height, width, ...box } = read();
+    const probe = document.createElement("style");
+    probe.textContent = `[data-bp-probe]::before {
+      width: auto !important; height: auto !important;
+      right: auto !important; bottom: auto !important;
+      padding: 0 !important;
+    }`;
+    document.head.append(probe);
+    el.setAttribute("data-bp-probe", "");
+    const text = read();
+    el.removeAttribute("data-bp-probe");
+    probe.remove();
+    return {
+      ...box,
+      boxHeight: height,
+      boxWidth: width,
+      textHeight: text.height,
+      textWidth: text.width,
+    };
+  });
+
+const OPAQUE = /^rgb\(/;
+const CHANNELS = /[\d.]+/g;
+
+// WCAG 2.1 relative luminance of an rgb() color.
+const luminance = (color: string) => {
+  const [r = 0, g = 0, b = 0] = (color.match(CHANNELS) ?? []).map((c) => {
+    const v = Number(c) / 255;
+    return v <= 0.039_28 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+const contrast = (fg: string, bg: string) => {
+  const [hi, lo] = [luminance(fg), luminance(bg)].sort((x, y) => y - x);
+  return ((hi ?? 0) + 0.05) / ((lo ?? 0) + 0.05);
+};
+
+const expectReadable = (tag: BlueprintTag) => {
+  const where = `${tag.content} at ${tag.boxWidth}x${tag.boxHeight}`;
+  expect(tag.padLeft + tag.textWidth, where).toBeLessThanOrEqual(
+    tag.boxWidth + 0.5
+  );
+  expect(tag.padTop + tag.textHeight, where).toBeLessThanOrEqual(
+    tag.boxHeight + 0.5
+  );
+  expect(tag.background, where).toMatch(OPAQUE);
+  expect(contrast(tag.color, tag.background), where).toBeGreaterThanOrEqual(
+    4.5
+  );
 };
 
 test.describe("proposal loader", () => {
@@ -193,6 +275,45 @@ test.describe("design proposals (astro dev)", () => {
         .analyze();
 
       expect(results.violations).toEqual([]);
+    });
+  }
+
+  for (const width of [1440, 360]) {
+    test(`blueprint: a hovered cell's tag sits inside its box at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ height: 900, width });
+      await page.goto("/ui/proposal/blueprint", { waitUntil: "networkidle" });
+
+      // Under the cursor: the tag reads the cell's width, on a blue box.
+      const card = page.locator("#services .mb-card").first();
+      await card.hover();
+      const hovered = await blueprintTag(card);
+      expectReadable(hovered);
+      expect(hovered.content).toContain("↔");
+
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+        .exclude("astro-dev-toolbar")
+        .analyze();
+      expect(results.violations).toEqual([]);
+
+      // Forced hover on every cell of the page and the catalogue; the
+      // process steps carry no tag.
+      await page.mouse.move(0, 0);
+      const cards = page.locator(".mb-card");
+      await cards.evaluateAll((all) => {
+        for (const el of all) {
+          el.setAttribute("data-state", "hover");
+        }
+      });
+      const tags = (
+        await Promise.all((await cards.all()).map(blueprintTag))
+      ).filter((tag) => tag.content !== "none");
+      expect(tags.length).toBeGreaterThan(0);
+      for (const tag of tags) {
+        expectReadable(tag);
+      }
     });
   }
 
