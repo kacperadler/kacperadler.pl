@@ -40,3 +40,4 @@ Out:
 - 2026-10-10: The human: focus on developing KA first; remove `.claude`, `.vscode`, `.zed`; with Biome, Prettier is not needed; look over the repo for what to clean and what to keep; drop `project-plan.md`, turn what is left into tickets, and improve `README.md`.
 - 2026-10-10: After KA0028 (both add MDX).
 - 2026-10-10: The human: first post about Claude Code or Codex, roughly "how I save time with automation"; the title still to be polished.
+- 2026-10-10: The human: the redesign (KA0037-KA0044) comes first; this waits.

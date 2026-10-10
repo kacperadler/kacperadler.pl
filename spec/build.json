@@ -195,9 +195,9 @@
   {
     "id": "KA0026",
     "title": "Offer: AI agents, automation, Claude Code and Codex training",
-    "status": "review",
+    "status": "in-progress",
     "path": "spec/features/KA0026-offer-ai-agents-automation-claude-code-and-codex-training/ticket.md",
-    "updated": "2026-10-10T14:57:03.201Z"
+    "updated": "2026-10-10T15:00:33.675Z"
   },
   {
     "id": "KA0027",
@@ -211,7 +211,7 @@
     "title": "Case studies in MDX: collection, list and page",
     "status": "in-progress",
     "path": "spec/features/KA0028-case-studies-in-mdx-instead-of-placeholder-projects/ticket.md",
-    "updated": "2026-10-10T14:56:10.244Z"
+    "updated": "2026-10-10T14:58:58.774Z"
   },
   {
     "id": "KA0029",
@@ -291,6 +291,83 @@
     "updated": "2026-10-10T14:49:11.508Z",
     "after": [
       "KA0026"
+    ]
+  },
+  {
+    "id": "KA0037",
+    "title": "Component catalogue at /ui",
+    "status": "planned",
+    "path": "spec/features/KA0037-component-catalogue-at-ui/ticket.md",
+    "updated": "2026-10-10T15:03:30.082Z"
+  },
+  {
+    "id": "KA0038",
+    "title": "Design proposals at /ui/proposal/<id>",
+    "status": "planned",
+    "path": "spec/features/KA0038-design-proposals-at-ui-proposal-id/ticket.md",
+    "updated": "2026-10-10T15:03:30.297Z",
+    "after": [
+      "KA0037"
+    ]
+  },
+  {
+    "id": "KA0039",
+    "title": "Design proposal: minimal",
+    "status": "planned",
+    "path": "spec/features/KA0039-design-proposal-minimal/ticket.md",
+    "updated": "2026-10-10T15:03:30.503Z",
+    "after": [
+      "KA0038"
+    ]
+  },
+  {
+    "id": "KA0040",
+    "title": "Design proposal: brutalist",
+    "status": "planned",
+    "path": "spec/features/KA0040-design-proposal-brutalist/ticket.md",
+    "updated": "2026-10-10T15:03:30.741Z",
+    "after": [
+      "KA0038"
+    ]
+  },
+  {
+    "id": "KA0041",
+    "title": "Design proposal: modernist",
+    "status": "planned",
+    "path": "spec/features/KA0041-design-proposal-modernist/ticket.md",
+    "updated": "2026-10-10T15:03:30.963Z",
+    "after": [
+      "KA0038"
+    ]
+  },
+  {
+    "id": "KA0042",
+    "title": "Design proposal: computer",
+    "status": "planned",
+    "path": "spec/features/KA0042-design-proposal-computer/ticket.md",
+    "updated": "2026-10-10T15:03:31.184Z",
+    "after": [
+      "KA0038"
+    ]
+  },
+  {
+    "id": "KA0043",
+    "title": "Design proposal: professional",
+    "status": "planned",
+    "path": "spec/features/KA0043-design-proposal-professional/ticket.md",
+    "updated": "2026-10-10T15:03:31.393Z",
+    "after": [
+      "KA0038"
+    ]
+  },
+  {
+    "id": "KA0044",
+    "title": "Design proposal: minimal brutalism",
+    "status": "planned",
+    "path": "spec/features/KA0044-design-proposal-minimal-brutalism/ticket.md",
+    "updated": "2026-10-10T15:03:31.599Z",
+    "after": [
+      "KA0038"
     ]
   }
 ]
