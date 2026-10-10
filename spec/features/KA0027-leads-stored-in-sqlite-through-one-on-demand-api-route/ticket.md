@@ -23,6 +23,7 @@ Every contact form, the site's measure of success, lands in a store the site own
 - `@astrojs/node` adapter; `src/pages/api/lead.ts` with `prerender = false` validates the form server-side (same fields and honeypot as today) and inserts into SQLite (`bun:sqlite` or `better-sqlite3`), the file on a Docker volume; every other page stays prerendered (`dist/` has their HTML).
 - The form posts to it; its states (`idle | submitting | error-validation | error-submit | success`) and Umami events stay; NocoDB code and `nocodbFormUrl` are gone.
 - Dockerfile and `nginx.conf` run the Node server for `/api/*` and serve the static pages; `docker build` and a run that posts a lead and reads it back from the volume are in the final message; e2e covers success, validation error and server error.
+- Each new lead sends an e-mail to the human through Resend's HTTP API with `fetch` (no mail library); the key and the addresses come from env vars named in `README.md`, never committed; a failed or unconfigured send is logged and the lead stays saved and the visitor sees success; e2e or a unit test covers a send failure.
 - `bun run lint`, `bun run check`, `bun run build` and `bun run test:e2e` pass (and the Biome format check that replaces `prettier --check`, once KA0024 is in).
 
 ## Scope
@@ -38,3 +39,4 @@ Out:
 - 2026-10-10: The human: focus on developing KA first; remove `.claude`, `.vscode`, `.zed`; with Biome, Prettier is not needed; look over the repo for what to clean and what to keep; drop `project-plan.md`, turn what is left into tickets, and improve `README.md`.
 - 2026-10-10: The human: the Dokploy app may get a volume for the database; add a notification about a new lead.
 - 2026-10-10: Waits for the notification channel (Telegram or e-mail) before it starts.
+- 2026-10-10: The human: the notification goes by e-mail. The coordinator: Resend's HTTP API, pending the human's word on the provider.
