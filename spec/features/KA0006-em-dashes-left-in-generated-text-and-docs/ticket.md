@@ -14,9 +14,10 @@ Em-dashes are never to be added (KA0001 answers, question 8), and the sweeps in 
 
 ## Goal
 
-What we are after, what it moves in `spec/vision.md`, and the evidence (file:line, a command and its output). A mechanical, fully specified change (a rename, a moved section, a list of exact edits) adds `- Model: haiku` under Kind; anything with behaviour to judge has no Model line.
+Em-dashes are never in the copy or docs (vision, styleguide). After this none is left, including the public `/llms.txt` and `/llms-full.txt`.
 
 - Kind: cleanup
+- Model: haiku
 
 Evidence:
 - `src/pages/llms.txt.ts:42`, `src/pages/llms.txt.ts:46`, `src/pages/llms-full.txt.ts:61`, `src/pages/llms-full.txt.ts:107-109`, `DESIGN.md:173-174`, `DESIGN.md:183`, `DESIGN.md:190`, `DESIGN.md:192`
@@ -24,14 +25,15 @@ Evidence:
 
 ## Done means
 
-- The fix, with a test that proves it: replace each with ` - `; no other change.
-- `npm test` and `npm run check` pass. The structure test holds.
+- Each listed em-dash (U+2014) becomes ` - `; `grep -rn $'\u2014' src DESIGN.md` finds nothing; no other change.
+- `bun run lint`, `bun run check`, `bunx prettier --check "**/*.astro"`, `bun run build` and `bun run test:e2e` pass.
 
 ## Scope
 
 In:
-- replace each with ` - `; no other change.
+- `src/pages/llms.txt.ts`, `src/pages/llms-full.txt.ts`, `DESIGN.md`.
 
 ## Decisions
 
 - 2026-10-10: Source: F3 of KA0001
+- 2026-10-10: The human approved it.

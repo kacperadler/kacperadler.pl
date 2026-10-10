@@ -4,7 +4,10 @@
 {
   "id": "KA0004",
   "title": "Harness gap: no `test` script, so `npm test` fails",
-  "date": "2026-10-10"
+  "date": "2026-10-10",
+  "after": [
+    "KA0003"
+  ]
 }
 ```
 
@@ -14,7 +17,7 @@
 
 ## Goal
 
-What we are after, what it moves in `spec/vision.md`, and the evidence (file:line, a command and its output). A mechanical, fully specified change (a rename, a moved section, a list of exact edits) adds `- Model: haiku` under Kind; anything with behaviour to judge has no Model line.
+`h merge` and `h review-needed` check this repository on main with `npm test`, so a broken e2e suite reaches main unnoticed today. After this, `npm test` runs the repository's own e2e suite. Waits for KA0003 (both change `package.json`).
 
 - Kind: risk
 
@@ -24,14 +27,15 @@ Evidence:
 
 ## Done means
 
-- The fix, with a test that proves it: decide whether `package.json` gets a `test` script (for example one that runs the e2e suite) or the harness learns to run this repository's own commands. Onboarding changed neither.
-- `npm test` and `npm run check` pass. The structure test holds.
+- `package.json` has `"test": "playwright test"` (the e2e suite, as `test:e2e`); `npm test` in the main checkout passes 16/16 with `~/.bun/bin` on PATH, and fails when one spec is broken by hand (checked once, not committed).
+- `bun run lint`, `bun run check`, `bunx prettier --check "**/*.astro"`, `bun run build` and `bun run test:e2e` pass.
 
 ## Scope
 
 In:
-- decide whether `package.json` gets a `test` script (for example one that runs the e2e suite) or the harness learns to run this repository's own commands. Onboarding changed neither.
+- `package.json` (one script).
 
 ## Decisions
 
 - 2026-10-10: Source: F1 of KA0001
+- 2026-10-10: The human approved it.

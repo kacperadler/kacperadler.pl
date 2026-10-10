@@ -9,9 +9,9 @@
   {
     "id": "KA0002",
     "title": "Docs match the code and the harness standards (AGENTS.md)",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0002-docs-match-the-code-and-the-harness-standards-agents-md/ticket.md",
-    "updated": "2026-10-10T12:19:41.116Z",
+    "updated": "2026-10-10T12:24:27.858Z",
     "after": ["KA0001"]
   },
   {
@@ -24,22 +24,23 @@
   {
     "id": "KA0004",
     "title": "Harness gap: no `test` script, so `npm test` fails",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0004-harness-gap-no-test-script-so-npm-test-fails/ticket.md",
-    "updated": "2026-10-10T12:24:05.356Z"
+    "updated": "2026-10-10T12:28:08.232Z",
+    "after": ["KA0003"]
   },
   {
     "id": "KA0005",
     "title": "The dropped email-templates offer is still on the site",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0005-the-dropped-email-templates-offer-is-still-on-the-site/ticket.md",
-    "updated": "2026-10-10T12:24:05.357Z"
+    "updated": "2026-10-10T12:28:07.841Z"
   },
   {
     "id": "KA0006",
     "title": "Em-dashes left in generated text and docs",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0006-em-dashes-left-in-generated-text-and-docs/ticket.md",
-    "updated": "2026-10-10T12:24:05.358Z"
+    "updated": "2026-10-10T12:28:08.033Z"
   }
 ]

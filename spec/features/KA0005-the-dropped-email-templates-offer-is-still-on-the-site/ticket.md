@@ -14,7 +14,7 @@ Kacper dropped email templates from the offer (KA0001 answers, question 1), but 
 
 ## Goal
 
-What we are after, what it moves in `spec/vision.md`, and the evidence (file:line, a command and its output). A mechanical, fully specified change (a rename, a moved section, a list of exact edits) adds `- Model: haiku` under Kind; anything with behaviour to judge has no Model line.
+The site offers what the vision says: email templates are dropped from the offer, so the services section shows five cards and stays laid out well.
 
 - Kind: improvement
 
@@ -24,14 +24,18 @@ Evidence:
 
 ## Done means
 
-- The fix, with a test that proves it: remove the entry and check the services grid layout still holds with five items; the new offer (AI agents, automation, Claude Code / Codex training) is its own ticket.
-- `npm test` and `npm run check` pass. The structure test holds.
+- `src/content/services/email-templates.json` is removed; nothing else references it; the services section renders five cards, and the e2e suite passes. Screenshots of the services section at mobile and desktop width, sent with the final message.
+- `bun run lint`, `bun run check`, `bunx prettier --check "**/*.astro"`, `bun run build` and `bun run test:e2e` pass.
 
 ## Scope
 
 In:
-- remove the entry and check the services grid layout still holds with five items; the new offer (AI agents, automation, Claude Code / Codex training) is its own ticket.
+- `src/content/services/email-templates.json`, and the services grid styles only if five cards break its layout.
+
+Out:
+- The new offer (AI agents, automation, Claude Code / Codex training): its own ticket.
 
 ## Decisions
 
 - 2026-10-10: Source: F2 of KA0001
+- 2026-10-10: The human approved it.
