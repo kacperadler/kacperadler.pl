@@ -39,8 +39,15 @@
   {
     "id": "KA0006",
     "title": "Em-dashes left in generated text and docs",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0006-em-dashes-left-in-generated-text-and-docs/ticket.md",
-    "updated": "2026-10-10T12:37:43.075Z"
+    "updated": "2026-10-10T12:40:40.002Z"
+  },
+  {
+    "id": "KA0007",
+    "title": "Em-dash left in the KA0001 review record",
+    "status": "planning",
+    "path": "spec/features/KA0007-em-dash-left-in-the-ka0001-review-record/ticket.md",
+    "updated": "2026-10-10T12:40:39.999Z"
   }
 ]

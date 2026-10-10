@@ -11,4 +11,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `spec/features/KA0001-onboarding-vision-and-criteria-for-kacperadler-pl/review-1.md`
 - What: the file still contains U+2014 em-dashes. The KA0006 Done-means grep covers only `src` and `DESIGN.md`, so this file was left as is. Reproduce: `grep -rn $'\u2014' spec`.
 - Suggestion: decide whether a historical review record should be rewritten or kept verbatim; if rewritten, replace with ` - ` in a separate commit. Out of KA0006 scope.
-- Status: open
+- Status: ticket KA0007
