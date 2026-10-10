@@ -40,3 +40,4 @@ Out:
 
 - 2026-10-10: The human (onboarding answers 5, 6): update the docs to the code, Dokploy is production for now (Cloudflare Pages considered later), and follow our standards, e.g. CLAUDE.md → AGENTS.md.
 - 2026-10-10: The human: the whole project is built on Dokploy, Cloudflare Pages is no longer considered.
+- 2026-10-10: The human: no CLAUDE.md; AGENTS.md only (Claude Code reads it, and the agents run through omp, which reads AGENTS.md). Merge approved.

@@ -9,9 +9,9 @@
   {
     "id": "KA0002",
     "title": "Docs match the code and the harness standards (AGENTS.md)",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0002-docs-match-the-code-and-the-harness-standards-agents-md/ticket.md",
-    "updated": "2026-10-10T12:37:25.285Z",
+    "updated": "2026-10-10T12:41:41.048Z",
     "after": ["KA0001"]
   },
   {
@@ -46,8 +46,8 @@
   {
     "id": "KA0007",
     "title": "Em-dash left in the KA0001 review record",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0007-em-dash-left-in-the-ka0001-review-record/ticket.md",
-    "updated": "2026-10-10T12:40:39.999Z"
+    "updated": "2026-10-10T12:42:50.796Z"
   }
 ]

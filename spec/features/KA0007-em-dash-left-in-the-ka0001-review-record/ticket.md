@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F1 of KA0006
+- 2026-10-10: The human dropped it: review records stay verbatim.
