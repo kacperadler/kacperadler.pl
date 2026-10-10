@@ -10,6 +10,10 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0003 Update dependencies, Astro to the newest release (8412871)
 - KA0005 The dropped email-templates offer is still on the site (d80d012)
 
+### Fixed
+
+- KA0009 The privacy policy says the site stores a theme preference in `localStorage` (8a20178)
+
 ### Changed
 
 - KA0002 Docs match the code and the harness standards (AGENTS.md) (237e8a7)

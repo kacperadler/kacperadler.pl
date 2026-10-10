@@ -26,9 +26,9 @@
   {
     "id": "KA0004",
     "title": "Harness gap: no `test` script, so `npm test` fails",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0004-harness-gap-no-test-script-so-npm-test-fails/ticket.md",
-    "updated": "2026-10-10T12:51:10.646Z",
+    "updated": "2026-10-10T12:53:58.794Z",
     "after": [
       "KA0003"
     ]
@@ -64,9 +64,9 @@
   {
     "id": "KA0009",
     "title": "The privacy policy says the site stores a theme preference in `localStorage`",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0009-the-privacy-policy-says-the-site-stores-a-theme-preference-in-localstorage/ticket.md",
-    "updated": "2026-10-10T12:52:50.375Z"
+    "updated": "2026-10-10T12:55:17.985Z"
   },
   {
     "id": "KA0010",
@@ -85,9 +85,9 @@
   {
     "id": "KA0012",
     "title": "`@/stores` path alias with no `src/stores`",
-    "status": "review",
+    "status": "in-progress",
     "path": "spec/features/KA0012-stores-path-alias-with-no-src-stores/ticket.md",
-    "updated": "2026-10-10T12:52:20.012Z"
+    "updated": "2026-10-10T12:54:16.366Z"
   },
   {
     "id": "KA0013",
