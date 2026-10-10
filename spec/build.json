@@ -513,8 +513,15 @@
   {
     "id": "KA0065",
     "title": "Design proposal: minimal brutalism computer",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0065-design-proposal-minimal-brutalism-computer/ticket.md",
-    "updated": "2026-10-10T17:54:04.788Z"
+    "updated": "2026-10-10T18:18:44.204Z"
+  },
+  {
+    "id": "KA0066",
+    "title": "The catalogue scrolls sideways on a 360px phone, under every proposal and on /ui",
+    "status": "planning",
+    "path": "spec/features/KA0066-the-catalogue-scrolls-sideways-on-a-360px-phone-under-every-proposal-and-on-ui/ticket.md",
+    "updated": "2026-10-10T18:18:44.202Z"
   }
 ]

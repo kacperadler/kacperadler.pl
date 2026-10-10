@@ -13,4 +13,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/pages/_ui/catalogue.astro` (`.ui-grid-wide`, `grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))`)
 - What: at a 360px viewport `document.documentElement.scrollWidth` is 369 on `/ui/proposal/baseline`, `/ui/proposal/computer`, `/ui/proposal/minimal-brutalism` and `/ui/proposal/minimal-brutalism-computer`. The elements past the right edge are the form samples (`.ui-sample`, `.field`, `.v2-input`) in the 320px-minimum columns of `.ui-grid-wide`, inside the 32px padding of `.ui-form-surface` and the 16px of `.container`. The page scrolls sideways by 9px, so a proposal can't be judged on a small phone without that scroll. Measured with a throwaway Playwright script listing the elements whose right edge passes `innerWidth`.
 - Suggestion: cap the column minimum at the available width, `minmax(min(100%, 320px), 1fr)`, the way the minimal brutalism proposal does for `.exp-list`. The catalogue's content and states stay as they are.
-- Status: open
+- Status: ticket KA0066
