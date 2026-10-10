@@ -123,9 +123,9 @@
   {
     "id": "KA0017",
     "title": "CSS still carries `light-dark()` pairs whose light half never renders",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0017-css-still-carries-light-dark-pairs-whose-light-half-never-renders/ticket.md",
-    "updated": "2026-10-10T13:03:15.623Z",
+    "updated": "2026-10-10T13:38:46.570Z",
     "after": [
       "KA0016"
     ]
@@ -164,8 +164,8 @@
   {
     "id": "KA0022",
     "title": "contact-form e2e spec fails now and then in parallel runs",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0022-contact-form-e2e-spec-fails-now-and-then-in-parallel-runs/ticket.md",
-    "updated": "2026-10-10T13:18:59.356Z"
+    "updated": "2026-10-10T13:22:29.384Z"
   }
 ]

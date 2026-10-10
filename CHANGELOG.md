@@ -24,3 +24,4 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0010 Code comments still point at `v2-layout` and `body.v2-body` (d450f62)
 - KA0012 `@/stores` path alias with no `src/stores` (aa7a919)
 - KA0013 astro-icon 1.2 warns on every build about a missing `src/icons` (e5eee8c)
+- KA0017 CSS still carries `light-dark()` pairs whose light half never renders (bba607f)
