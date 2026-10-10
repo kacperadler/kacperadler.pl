@@ -1,25 +1,26 @@
 # kacperadler.pl
 
-Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS).
+Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS). Statyczny build Astro 6, produkcyjnie na Dokploy (Dockerfile + nginx).
 
-Migracja prototypu (`example.html`) do produkcyjnego Astro 6 hostowanego na Cloudflare Pages.
-
-> Plan i decyzje architektoniczne: [`project-plan.md`](./project-plan.md)
-> Konwencje pracy z asystentem: [`CLAUDE.md`](./CLAUDE.md)
+> Wizja: [`spec/vision.md`](./spec/vision.md)
+> Konwencje pracy z agentami: [`AGENTS.md`](./AGENTS.md)
+> Design system: [`DESIGN.md`](./DESIGN.md)
+> Historia projektu (fazy): [`project-plan.md`](./project-plan.md)
 
 ## Stack
 
-- **[Astro 6](https://docs.astro.build)** (TypeScript strict, kontent collections)
-- **Vanilla CSS** + scoped `<style>` w `.astro` - theming `light | dark | system` przez `light-dark()` + `color-scheme`, jeden akcent (navy)
+- **[Astro 6](https://docs.astro.build)** (TypeScript strict, content collections, output static)
+- **Vanilla CSS** + scoped `<style>` w `.astro` - dark-only (`color-scheme: dark` w `tokens.css`), jeden akcent (navy)
 - **[Ultracite](https://www.ultracite.ai/)** (Biome 2) - lint + format dla TS/JS/JSON/CSS
 - **[Prettier](https://prettier.io)** + `prettier-plugin-astro` - formatowanie `*.astro` (Biome ich nie obsługuje natywnie)
 - **[Husky](https://typicode.github.io/husky/)** + **lint-staged** - pre-commit hooks
+- **[Playwright](https://playwright.dev)** + `@axe-core/playwright` - testy E2E i a11y
 - Self-hosted **[Geist](https://vercel.com/font)** Variable woff2 (SIL OFL 1.1, GDPR-friendly)
-- Hosting: **[Cloudflare Pages](https://pages.cloudflare.com)** (static, hybrid pod real form w Fazie 9)
+- Hosting: **[Dokploy](https://dokploy.com)** (self-hosted) - `Dockerfile` (bun build → nginx) + `nginx.conf`
 
 ## Wymagania
 
-- **[bun](https://bun.sh) ≥ 1.3** (Node 22+ jeśli wracasz do node-only flow - `astro check` działa w node ekosystemie)
+- **[bun](https://bun.sh) ≥ 1.3** w `PATH` (pre-commit hook woła `bunx`); Node 22+ (Astro CLI)
 
 ## Setup
 
@@ -43,15 +44,17 @@ Projekt zawiera config dla VS Code (`.vscode/`) i Zed (`.zed/`). Format-on-save 
 
 ## Skrypty
 
-| Komenda           | Opis                                                                 |
-| :---------------- | :------------------------------------------------------------------- |
-| `bun dev`         | Astro dev server                                                     |
-| `bun run build`   | Production build do `dist/`                                          |
-| `bun run preview` | Preview prod build                                                   |
-| `bun run check`   | `astro check` - type-check `.astro`                                  |
-| `bun run lint`    | `ultracite check` - lint Biome (TS/JS/JSON/CSS)                      |
-| `bun run format`  | `ultracite fix` + `prettier --write '**/*.astro'`                    |
-| `bun astro ...`   | passthrough do Astro CLI (`bun astro add`, `bun astro sync`, …)      |
+| Komenda               | Opis                                                            |
+| :-------------------- | :-------------------------------------------------------------- |
+| `bun dev`             | Astro dev server                                                |
+| `bun run build`       | Production build do `dist/`                                     |
+| `bun run preview`     | Preview prod build                                              |
+| `bun run check`       | `astro check` - type-check `.astro`                             |
+| `bun run lint`        | `ultracite check` - lint Biome (TS/JS/JSON/CSS)                 |
+| `bun run format`      | `ultracite fix` + `prettier --write '**/*.astro'`               |
+| `bun run test:e2e`    | Playwright E2E (chromium, headless; wymaga `bun run build`)     |
+| `bun run test:e2e:ui` | Playwright UI mode                                              |
+| `bun astro ...`       | passthrough do Astro CLI (`bun astro add`, `bun astro sync`, …) |
 
 ## Pre-commit
 
@@ -63,46 +66,42 @@ Projekt zawiera config dla VS Code (`.vscode/`) i Zed (`.zed/`). Format-on-save 
 
 ## CI
 
-GitHub Actions (`.github/workflows/ci.yml`) na `push` / `pull_request` do `main`:
+GitHub Actions (`.github/workflows/ci.yml`) na `push` / `pull_request` do `main`, dwa joby:
 
-1. checkout
-2. setup-bun (czyta wersję z `packageManager` w `package.json`)
-3. `bun install --frozen-lockfile`
-4. `bun run lint`
-5. `bun run check`
-6. `bunx prettier --check '**/*.astro'`
-7. `bun run build`
+1. **build**: setup Node 22 + bun (wersja z `packageManager` w `package.json`), `bun install --frozen-lockfile`, `bun run lint`, `bun run check`, `bunx prettier --check '**/*.astro'`, `bun run build`
+2. **e2e** (po build): Playwright chromium (cache przeglądarek), `bun run build`, `bun run test:e2e`, upload `playwright-report/`
 
 Dependabot (`.github/dependabot.yml`) - bun + github-actions weekly, minor + patch zgrupowane w 1 PR.
 
 ## Struktura
 
-Pełna struktura w [`project-plan.md`](./project-plan.md) sekcja 4. Skrót:
-
 ```
 src/
-├── components/{ui,layout,sections,theme,contact}/   # kebab-case
+├── components/{ui,layout,sections,contact}/   # kebab-case
 ├── content/{services,projects,experience,blog}/
-├── data/                  # site-config, navigation
-├── layouts/
-├── pages/
+├── data/                  # site-config, navigation, process
+├── layouts/               # base-layout, legal-layout
+├── pages/                 # index, 404, legal *.md, og-default.png.ts, llms*.txt.ts
 ├── scripts/               # vanilla TS, ładowane przez <script>
-├── stores/                # nanostores
 ├── styles/                # tokens.css, global.css
-├── lib/                   # seo, validators
-└── actions/               # Astro Actions (Faza 9)
+├── lib/                   # seo, dates
+└── assets/
+tests/e2e/                 # Playwright specs
 ```
 
-Path aliasy: `@/components`, `@/layouts`, `@/lib`, `@/scripts`, `@/styles`, `@/data`, `@/content`, `@/stores`, `@/assets`.
+Path aliasy: `@/components`, `@/layouts`, `@/lib`, `@/scripts`, `@/styles`, `@/data`, `@/content`, `@/assets`.
 
 ## Deploy
 
-Cloudflare Pages (Faza 7+):
+Dokploy na własnym serwerze:
 
-- Framework preset: **Astro**
-- Build command: `bun run build`
-- Build output: `dist`
-- Build runtime: `BUN_VERSION=1.3` (env var)
-- Production env: `PUBLIC_SITE_URL=https://kacperadler.pl`
+- Build type: **Dockerfile** z repo - multi-stage `oven/bun:1.3.13-alpine` (`bun install --frozen-lockfile` + `bun run build`) → `nginx:1.27-alpine` serwuje `dist/`
+- `nginx.conf`: gzip, security headers, cache rules (immutable dla `/_astro/` i fontów)
+- Container port **80**, routing przez Traefik w Dokploy z certyfikatem Let's Encrypt
 
-Per-PR preview deploy automatycznie z `*.pages.dev`. Custom domain + auto SSL po podpięciu DNS.
+Lokalny test obrazu:
+
+```bash
+docker build -t kacperadler-pl-test .
+docker run --rm -p 8089:80 kacperadler-pl-test
+```
