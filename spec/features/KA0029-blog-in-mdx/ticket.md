@@ -13,7 +13,7 @@
 
 ## Description
 
-Faza 10 of `project-plan.md`: blog with MDX, list, post pages, RSS. `src/content/blog/` exists and is empty.
+Blog with MDX, list, post pages, RSS. `src/content/blog/` exists and is empty.
 
 ## Goal
 

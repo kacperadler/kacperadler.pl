@@ -39,3 +39,4 @@ Out:
 
 - 2026-10-10: The human: focus on developing KA first; remove `.claude`, `.vscode`, `.zed`; with Biome, Prettier is not needed; look over the repo for what to clean and what to keep; drop `project-plan.md`, turn what is left into tickets, and improve `README.md`.
 - 2026-10-10: Runs after KA0024, which changes the tools README describes.
+- 2026-10-10: The human: keep the edits to spec/vision.md; merge after PASS.

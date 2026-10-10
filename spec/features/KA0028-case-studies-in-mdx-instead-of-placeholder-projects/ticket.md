@@ -39,3 +39,5 @@ Out:
 - 2026-10-10: The human: case studies come one ticket per entry in "Z kim pracowałem"; this ticket is the frame for them.
 - 2026-10-10: The human: the frame is ok; add a /realizacje list page and a "Realizacje" menu entry (F1, F2); while no case study exists, the page and the menu entry are not built; merge after PASS.
 - 2026-10-10: Budget raised to 10 USD by the coordinator: the job ran out at 5 USD mid-way through the /realizacje list page and menu, with the edits uncommitted in its worktree.
+- 2026-10-10: The human: the /realizacje list and menu are fine; merge after PASS.
+- 2026-10-10: Budget raised to 13 USD by the coordinator: the job ran out at 10 USD in the middle of its third merge of main (only AGENTS.md and README.md left to resolve).

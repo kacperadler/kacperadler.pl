@@ -18,7 +18,6 @@ What in the repository today works against `spec/vision.md`, or will cost the ne
 - Single dependency bumps; Dependabot (`.github/dependabot.yml`) opens them, and KA0003 carries the backlog.
 - Anything already covered by an open ticket (KA0003 dependencies).
 - Style or taste with no rule behind it in `.agents/harness/criteria/styleguide.md`, `AGENTS.md` or `DESIGN.md`.
-- `project-plan.md` describing a past state: it is history.
 
 ## Priorities
 

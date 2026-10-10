@@ -70,7 +70,7 @@ Pracuję async, w sprintach, z zespołami produktowymi w Polsce i Unii Europejsk
 
 ## Usługi
 
-Cztery główne obszary; każdy z własnym stackiem dobranym pod kontekst projektu. React i TypeScript jako fundament, reszta dobiera się pod konkretny projekt.
+Najpierw agenci AI i automatyzacje w firmach, potem aplikacje i strony. Każdy obszar ma własny stack dobrany pod kontekst projektu; w aplikacjach React i TypeScript jako fundament.
 
 ${servicesBlock}
 

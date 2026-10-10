@@ -7,7 +7,7 @@ export const siteConfig = {
     umamiWebsiteId: "937a952a-548b-4e9d-ba9a-d511be5454f6",
   },
   description:
-    "Aplikacje webowe, narzędzia B2B i landing pages - od architektury po deploy. Pracuję w sprintach, async, z zespołami produktowymi w PL/EU.",
+    "Agenci AI i automatyzacje, aplikacje webowe, narzędzia B2B i landing pages - od architektury po deploy. Pracuję w sprintach, async, z zespołami produktowymi w PL/EU.",
   email: "kontakt@kacperadler.pl",
   lang: "pl",
   locale: "pl-PL",
@@ -18,7 +18,7 @@ export const siteConfig = {
   nocodbFormUrl:
     "https://crm.kacperadler.pl/api/v1/db/public/shared-view/3f05fcfa-3df7-4e2a-9eb1-4c9538c14c12/rows",
   ogImage: "/og-default.png",
-  role: "Frontend Engineer",
+  role: "Inżynier oprogramowania",
   social: {
     github: "https://github.com/kacperadler",
     linkedin: "https://www.linkedin.com/in/kacperadler/",
