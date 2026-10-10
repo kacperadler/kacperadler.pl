@@ -71,9 +71,9 @@
   {
     "id": "KA0010",
     "title": "Code comments still point at `v2-layout` and `body.v2-body`",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0010-code-comments-still-point-at-v2-layout-and-body-v2-body/ticket.md",
-    "updated": "2026-10-10T13:03:24.724Z"
+    "updated": "2026-10-10T13:06:51.952Z"
   },
   {
     "id": "KA0011",
@@ -92,9 +92,9 @@
   {
     "id": "KA0013",
     "title": "astro-icon 1.2 warns on every build about a missing `src/icons`",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0013-astro-icon-1-2-warns-on-every-build-about-a-missing-src-icons/ticket.md",
-    "updated": "2026-10-10T12:56:21.861Z"
+    "updated": "2026-10-10T13:05:03.834Z"
   },
   {
     "id": "KA0014",
