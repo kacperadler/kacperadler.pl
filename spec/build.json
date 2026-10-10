@@ -343,9 +343,9 @@
   {
     "id": "KA0042",
     "title": "Design proposal: computer",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0042-design-proposal-computer/ticket.md",
-    "updated": "2026-10-10T17:29:50.596Z",
+    "updated": "2026-10-10T17:36:02.235Z",
     "after": [
       "KA0038"
     ]
@@ -502,5 +502,12 @@
     "status": "planning",
     "path": "spec/features/KA0063-the-header-brand-wraps-to-two-lines-on-a-390px-phone/ticket.md",
     "updated": "2026-10-10T17:32:50.732Z"
+  },
+  {
+    "id": "KA0064",
+    "title": "The send-error banner puts the mail link in a column of its own",
+    "status": "dropped",
+    "path": "spec/features/KA0064-the-send-error-banner-puts-the-mail-link-in-a-column-of-its-own/ticket.md",
+    "updated": "2026-10-10T17:36:09.111Z"
   }
 ]

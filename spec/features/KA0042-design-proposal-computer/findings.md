@@ -13,4 +13,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/components/contact/contact-form.astro` (`.contact-form-wrap[data-state="error-submit"] .form-error { display: flex; }`)
 - What: the banner is a flex row of the icon, a text run and the `<a>` to the email, so the link is a separate flex item: on `/` at 1440 px wide, with the wrapper set to `data-state="error-submit"`, the 140 px link starts 468 px into the 662 px banner, beside the wrapped sentence instead of after "napisz mailem na". Seen with a throwaway Playwright script on the dev server; the computer proposal works around it on its own page (`display: block`, inline icon).
 - Suggestion: lay the banner out as one run of text (block, the icon inline or floated), or wrap the sentence and the link in one `<span>` so the flex row has two items. The error copy stays as it is.
-- Status: open
+- Status: ticket KA0062
