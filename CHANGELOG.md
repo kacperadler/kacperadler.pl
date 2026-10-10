@@ -31,3 +31,4 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0013 astro-icon 1.2 warns on every build about a missing `src/icons` (e5eee8c)
 - KA0017 CSS still carries `light-dark()` pairs whose light half never renders (bba607f)
 - KA0024 Drop editor and agent configs, Biome formats .astro instead of Prettier (478c000)
+- KA0025 Drop project-plan.md and rewrite README.md (1918d42)

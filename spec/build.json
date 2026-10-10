@@ -185,9 +185,9 @@
   {
     "id": "KA0025",
     "title": "Drop project-plan.md and rewrite README.md",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0025-drop-project-plan-md-and-rewrite-readme-md/ticket.md",
-    "updated": "2026-10-10T15:06:53.256Z",
+    "updated": "2026-10-10T15:11:13.497Z",
     "after": [
       "KA0024"
     ]
@@ -209,9 +209,9 @@
   {
     "id": "KA0028",
     "title": "Case studies in MDX: collection, list and page",
-    "status": "review",
+    "status": "in-progress",
     "path": "spec/features/KA0028-case-studies-in-mdx-instead-of-placeholder-projects/ticket.md",
-    "updated": "2026-10-10T15:05:01.639Z"
+    "updated": "2026-10-10T15:10:35.624Z"
   },
   {
     "id": "KA0029",
@@ -376,5 +376,33 @@
     "status": "dropped",
     "path": "spec/features/KA0045-the-hero-and-status-card-still-present-only-a-frontend-engineer/ticket.md",
     "updated": "2026-10-10T15:06:42.280Z"
+  },
+  {
+    "id": "KA0046",
+    "title": "Lighthouse never re-run on the production domain",
+    "status": "planning",
+    "path": "spec/features/KA0046-lighthouse-never-re-run-on-the-production-domain/ticket.md",
+    "updated": "2026-10-10T15:11:13.490Z"
+  },
+  {
+    "id": "KA0047",
+    "title": "review.md still says package.json has no test script",
+    "status": "planned",
+    "path": "spec/features/KA0047-review-md-still-says-package-json-has-no-test-script/ticket.md",
+    "updated": "2026-10-10T15:11:35.166Z"
+  },
+  {
+    "id": "KA0048",
+    "title": "src/lib/dates.ts is imported nowhere",
+    "status": "dropped",
+    "path": "spec/features/KA0048-src-lib-dates-ts-is-imported-nowhere/ticket.md",
+    "updated": "2026-10-10T15:11:34.690Z"
+  },
+  {
+    "id": "KA0049",
+    "title": "KA0029 cites the deleted project-plan.md",
+    "status": "dropped",
+    "path": "spec/features/KA0049-ka0029-cites-the-deleted-project-plan-md/ticket.md",
+    "updated": "2026-10-10T15:11:34.930Z"
   }
 ]
