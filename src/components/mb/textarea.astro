@@ -1,10 +1,10 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 
-/* Textarea: <Input>'s frame and states (focus, invalid, disabled) with a
- * 130px floor, vertical resize only. `value` becomes the initial text.
- * [data-state="focus"] forces the focus look on the catalogue page
- * (/ui). */
+/* Textarea: <Input>'s frame and states (hover, focus, invalid, disabled)
+ * with a 130px floor, vertical resize only. `value` becomes the initial
+ * text. [data-state="hover"] and [data-state="focus"] force those looks on
+ * the catalogue page (/ui). */
 type Props = HTMLAttributes<"textarea">;
 
 const { class: extraClass, value, ...rest } = Astro.props;
@@ -36,6 +36,10 @@ const { class: extraClass, value, ...rest } = Astro.props;
   .mb-textarea::placeholder {
     color: var(--muted);
     opacity: 1;
+  }
+
+  .mb-textarea:is(:hover, [data-state="hover"]) {
+    border-color: var(--ink-2);
   }
 
   .mb-textarea:is(:focus, [data-state="focus"]) {

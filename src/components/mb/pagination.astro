@@ -1,23 +1,31 @@
 ---
 import { Icon } from "astro-icon/components";
+import Button from "./button.astro";
 
 /* Pagination: nav[aria-label="Paginacja"] with plain links (no JavaScript).
  *   - pages: the first, the last, and the current one with its neighbours;
  *     a gap of more than one page becomes an ellipsis;
  *   - the current page is the outline cell (aria-current="page"), the rest
- *     ghost cells;
+ *     ghost cells; a press sinks a cell into the panel;
  *   - variant "numbers": "Poprzednia" / "Następna" with their chevrons;
  *     "icons": the chevrons alone, named for assistive tech;
  *   - on the first (last) page the previous (next) cell is inert text.
- * `href(page)` builds each link. The row wraps instead of scrolling. */
+ * `href(page)` builds each link. The row wraps instead of scrolling.
+ *
+ * `jump` adds "go to page": a GET form (no JavaScript) with a number field
+ * (1 to `total`, the browser refuses anything else) and an "Idź" button. It
+ * sends `<jump.action>?<jump.param>=<n>`, so the page behind `action` has
+ * to read that parameter: give `href` the same query, and pages that read
+ * it on request (an on-demand route, the dev-only catalogue). */
 interface Props {
   current: number;
   href: (page: number) => string;
+  jump?: { action: string; param: string };
   total: number;
   variant?: "numbers" | "icons";
 }
 
-const { current, href, total, variant = "numbers" } = Astro.props;
+const { current, href, jump, total, variant = "numbers" } = Astro.props;
 
 const shown = [
   ...new Set(
@@ -123,9 +131,40 @@ const [previousEnd, nextEnd] = ends;
       )}
     </li>
   </ul>
+  {jump && (
+    <form action={jump.action} class="mb-page-jump" method="get">
+      <label class="mb-page-jump-label">
+        Strona
+        <input
+          class="mb-page-jump-input"
+          inputmode="numeric"
+          max={total}
+          min="1"
+          name={jump.param}
+          required
+          type="number"
+        >
+      </label>
+      <Button
+        iconEnd="lucide:arrow-right"
+        size="sm"
+        type="submit"
+        variant="outline"
+      >
+        Idź
+      </Button>
+    </form>
+  )}
 </nav>
 
 <style>
+  .mb-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: center;
+  }
+
   .mb-pagination ul {
     display: flex;
     flex-wrap: wrap;
@@ -152,7 +191,13 @@ const [previousEnd, nextEnd] = ends;
     transition:
       background-color var(--mb-snap),
       border-color var(--mb-snap),
-      color var(--mb-snap);
+      color var(--mb-snap),
+      outline-offset var(--mb-snap);
+  }
+
+  /* The focus ring (global.css) grows out of the edge instead of popping. */
+  :where(.mb-page) {
+    outline-offset: 0;
   }
 
   .mb-page :global(svg) {
@@ -172,6 +217,12 @@ const [previousEnd, nextEnd] = ends;
     background: var(--v2-panel-elevated);
   }
 
+  a.mb-page:is(:active, [data-state="pressed"]) {
+    color: var(--ink);
+    background: var(--v2-panel);
+    border-color: var(--mb-hair);
+  }
+
   .mb-page-current {
     color: var(--ink);
     border-color: var(--mb-rule);
@@ -186,8 +237,57 @@ const [previousEnd, nextEnd] = ends;
     cursor: not-allowed;
   }
 
+  .mb-page-jump {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .mb-page-jump-label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .mb-page-jump-input {
+    width: 64px;
+    height: 36px;
+    padding: 0 8px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    outline: none;
+    background: var(--v2-bg);
+    border: 1px solid var(--muted);
+    border-radius: 0;
+    transition:
+      border-color var(--mb-snap),
+      box-shadow var(--mb-snap);
+  }
+
+  .mb-page-jump-input:hover {
+    border-color: var(--ink-2);
+  }
+
+  .mb-page-jump-input:focus {
+    border-color: var(--ink);
+    box-shadow: 3px 3px 0 var(--blue);
+  }
+
+  .mb-page-jump-input:user-invalid {
+    border-color: var(--error);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .mb-page {
+    .mb-page,
+    .mb-page-jump-input {
       transition: none;
     }
   }

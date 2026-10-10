@@ -34,7 +34,6 @@ const CATALOGUE_SECTIONS = [
   "Okruszki",
   "Paginacja",
   "Link",
-  "Tag i status pill",
   "Karta i siatka",
   "Nagłówek sekcji",
   "Rama strony",

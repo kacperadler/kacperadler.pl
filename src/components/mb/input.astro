@@ -2,14 +2,16 @@
 import type { HTMLAttributes } from "astro/types";
 
 /* Input: a muted frame on the substrate.
- *   focus     the ink frame and the hard blue shadow (you are typing here)
+ *   hover     the ink-2 frame
+ *   focus     the ink frame and the hard blue shadow shifting out from
+ *             under it (you are typing here)
  *   invalid   a coral frame, from [data-invalid] on the enclosing <Field>
  *             (scripts/contact-form.ts sets it) or aria-invalid="true"; focus
  *             on an invalid input keeps the coral frame and adds the shadow
  *   disabled  the flat panel in a hairline, muted text
  *   file      the picker button as a raised mono cell inside the frame
- * Native input attributes pass through. [data-state="focus"] forces the
- * focus look on the catalogue page (/ui). */
+ * Native input attributes pass through. [data-state="hover"] and
+ * [data-state="focus"] force those looks on the catalogue page (/ui). */
 type Props = HTMLAttributes<"input">;
 
 const { class: extraClass, ...rest } = Astro.props;
@@ -38,6 +40,10 @@ const { class: extraClass, ...rest } = Astro.props;
   .mb-input::placeholder {
     color: var(--muted);
     opacity: 1;
+  }
+
+  .mb-input:is(:hover, [data-state="hover"]) {
+    border-color: var(--ink-2);
   }
 
   .mb-input:is(:focus, [data-state="focus"]) {

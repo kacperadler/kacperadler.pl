@@ -4,9 +4,10 @@
  * which astro.config.mjs routes for `astro dev` only.
  *
  * States are forced, not waited for: [data-state="hover"],
- * [data-state="focus-visible"], [data-state="focus"], the real `.active`
- * class and `disabled` attribute. The components own those selectors next
- * to the real :hover / :focus ones, so a forced state is the real paint.
+ * [data-state="pressed"], [data-state="focus-visible"],
+ * [data-state="focus"], the real `.active` class and `disabled` attribute.
+ * The components own those selectors next to the real :hover / :active /
+ * :focus ones, so a forced state is the real paint.
  * Every id here starts with `mb-`; every radio and accordion group has a
  * name of its own. */
 import { Image } from "astro:assets";
@@ -36,13 +37,13 @@ import Radio from "@/components/mb/radio.astro";
 import SectionHead from "@/components/mb/section-head.astro";
 import Separator from "@/components/mb/separator.astro";
 import Spinner from "@/components/mb/spinner.astro";
-import StatusPill from "@/components/mb/status-pill.astro";
-import Tag from "@/components/mb/tag.astro";
 import Textarea from "@/components/mb/textarea.astro";
 
-type Forced = "idle" | "hover" | "focus-visible";
+type Forced = "idle" | "hover" | "pressed" | "focus-visible";
 const forced = (state: string) =>
-  state === "hover" || state === "focus-visible" ? state : undefined;
+  state === "hover" || state === "pressed" || state === "focus-visible"
+    ? state
+    : undefined;
 
 type ButtonVariant =
   | "default"
@@ -54,6 +55,7 @@ type ButtonVariant =
 type ButtonState =
   | "idle"
   | "hover"
+  | "pressed"
   | "focus-visible"
   | "active"
   | "disabled"
@@ -62,6 +64,7 @@ type ButtonState =
 const buttonStates: readonly ButtonState[] = [
   "idle",
   "hover",
+  "pressed",
   "focus-visible",
   "disabled",
   "loading",
@@ -82,6 +85,7 @@ const buttonRows: readonly {
 const defaultButtonStates: readonly ButtonState[] = [
   "idle",
   "hover",
+  "pressed",
   "focus-visible",
   "active",
   "disabled",
@@ -98,7 +102,19 @@ const badgeVariants = [
   "destructive",
   "ghost",
   "link",
+  "tag",
+  "status",
 ] as const;
+const badgeText = {
+  default: "teraz",
+  destructive: "teraz",
+  ghost: "teraz",
+  link: "teraz",
+  outline: "2022–2024",
+  secondary: "teraz",
+  status: "Otwarty na nowe współprace",
+  tag: "TypeScript",
+} as const;
 
 const checkboxStates = [
   "unchecked",
@@ -121,13 +137,20 @@ const radioStates = [
 
 const inputStates = [
   "default",
+  "hover",
   "filled",
   "focus",
   "disabled",
   "invalid",
   "required",
 ] as const;
-const textareaStates = ["default", "focus", "disabled", "invalid"] as const;
+const textareaStates = [
+  "default",
+  "hover",
+  "focus",
+  "disabled",
+  "invalid",
+] as const;
 
 const crumbs = [
   { href: "/", label: "Strona główna" },
@@ -135,7 +158,26 @@ const crumbs = [
   { href: "/realizacje/", label: "2025" },
   { label: "Panel dla zespołu sprzedaży" },
 ] as const;
+// Collapsed, the middle two ("Realizacje", "2025") go into the menu.
+const collapsedCrumbs = [
+  { href: "/", label: "Strona główna" },
+  { href: "/realizacje/", label: "Realizacje" },
+  { href: "/realizacje/#2025", label: "2025" },
+  { href: "/realizacje/#sprzedaz", label: "Sprzedaż" },
+  { label: "Panel dla zespołu sprzedaży" },
+] as const;
 const pageHref = (page: number) => `#mb-pagination-${page}`;
+
+// The jump sample really pages: its links and its GET form both carry
+// ?strona=<n>, read here on every dev request (5 when absent or out of
+// range).
+const jumpTotal = 12;
+const askedPage = Number(Astro.url.searchParams.get("strona"));
+const jumpCurrent =
+  Number.isInteger(askedPage) && askedPage >= 1 && askedPage <= jumpTotal
+    ? askedPage
+    : 5;
+const jumpHref = (page: number) => `?strona=${page}#mb-pagination`;
 
 const formStates = [
   { caption: "idle", state: "idle" },
@@ -146,7 +188,12 @@ const formStates = [
   { caption: "success", state: "success" },
 ] as const;
 
-const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
+const linkStates: readonly Forced[] = [
+  "idle",
+  "hover",
+  "pressed",
+  "focus-visible",
+];
 ---
 
 <div class="mb-ui">
@@ -169,9 +216,10 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
         <code>button.astro</code>
         - warianty <code>default</code>, <code>secondary</code>,
         <code>outline</code>, <code>ghost</code>, <code>destructive</code>,
-        <code>link</code>. Active (klasa <code>.active</code>) to CTA w nagłówku
-        przy sekcji kontaktu, dlatego tylko default. Loading to
-        <code>loading</code>
+        <code>link</code>. Pressed (<code>data-state="pressed"</code>, jak
+        <code>:active</code>): default wpada w swój cień, reszta ciemnieje o
+        krok. Active (klasa <code>.active</code>) to CTA w nagłówku przy sekcji
+        kontaktu, dlatego tylko default. Loading to <code>loading</code>
         (albo <code>data-state="submitting"</code> z formularza).
       </p>
       {buttonRows.map((row) => (
@@ -313,10 +361,13 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
         <code>badge.astro</code>
         - <code>outline</code> to lata współpracy i czas etapu,
         <code>default</code>
-        to <em>teraz</em> i <em>Zlecenie</em>.
+        to <em>teraz</em> i <em>Zlecenie</em>, <code>tag</code> to technologia
+        na karcie usługi i w realizacji (bez wersalików, żeby odróżniał się od
+        reszty), <code>status</code> to dostępność w hero i menu mobilnym.
         <code>fillOnCellHover</code>
         wypełnia badge, gdy jego karta jest pod kursorem (etap procesu, w sekcji
-        „Karta i siatka”).
+        „Karta i siatka”). Jako link: hover, wciśnięcie i ring, który wysuwa się
+        z krawędzi.
       </p>
       <div class="mb-ui-row">
         <p class="mb-ui-row-label">Warianty</p>
@@ -324,9 +375,7 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
           {badgeVariants.map((variant) => (
             <div class="mb-ui-sample">
               <div class="mb-ui-stage">
-                <Badge variant={variant}>
-                  {variant === "outline" ? "2022–2024" : "teraz"}
-                </Badge>
+                <Badge variant={variant}>{badgeText[variant]}</Badge>
               </div>
               <p class="mb-ui-caption">{variant}</p>
             </div>
@@ -369,6 +418,16 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
               <Badge href="#mb-badge" variant="link">Realizacja</Badge>
             </div>
             <p class="mb-ui-caption">link, href</p>
+          </div>
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <ul class="mb-ui-tags">
+                <li><Badge variant="tag">React</Badge></li>
+                <li><Badge variant="tag">TypeScript</Badge></li>
+                <li><Badge variant="tag">Astro</Badge></li>
+              </ul>
+            </div>
+            <p class="mb-ui-caption">tag, lista</p>
           </div>
         </div>
       </div>
@@ -544,9 +603,9 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
       <h2 class="mb-ui-h2" id="mb-checkbox">Pole wyboru</h2>
       <p class="mb-ui-note">
         <code>checkbox.astro</code>
-        - natywny checkbox (<code>appearance: none</code>), kwadrat; zaznaczony
-        to niebieski blok z <code>check</code>; <code>aria-invalid</code> -
-        koralowa ramka.
+        - natywny checkbox (<code>appearance: none</code>), kwadrat; hover
+        pokazuje <code>check</code> blado w pustym polu; zaznaczony to niebieski
+        blok z <code>check</code>; <code>aria-invalid</code> - koralowa ramka.
       </p>
       <div class="mb-ui-row">
         <p class="mb-ui-row-label">Stany</p>
@@ -610,7 +669,8 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
       <p class="mb-ui-note">
         <code>radio.astro</code>
         - <code>default</code> (kwadrat) i <code>choice</code> (chip z
-        formularza kontaktowego). Nieprawidłowy stan z
+        formularza kontaktowego; ramka i grubość tekstu te same w każdym stanie,
+        więc zaznaczenie nic nie przesuwa). Nieprawidłowy stan z
         <code>[data-invalid]</code>
         na polu albo <code>aria-invalid</code>.
       </p>
@@ -639,7 +699,12 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
                       disabled={state === "disabled"}
                       label={option}
                       name={`mb-radio-${variant}-${state}`}
-                      state={i === 0 ? forced(state) : undefined}
+                      state={
+                        i === 0 &&
+                        (state === "hover" || state === "focus-visible")
+                          ? state
+                          : undefined
+                      }
                       value={option}
                       variant={variant}
                     />
@@ -677,7 +742,9 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
                 required={state === "required"}
               >
                 <Input
-                  data-state={state === "focus" ? "focus" : undefined}
+                  data-state={
+                    state === "focus" || state === "hover" ? state : undefined
+                  }
                   disabled={state === "disabled"}
                   id={`mb-input-${state}`}
                   placeholder="twoj@email.pl"
@@ -722,7 +789,9 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
                 name={`mb-textarea-${state}`}
               >
                 <Textarea
-                  data-state={state === "focus" ? "focus" : undefined}
+                  data-state={
+                    state === "focus" || state === "hover" ? state : undefined
+                  }
                   disabled={state === "disabled"}
                   id={`mb-textarea-${state}`}
                   placeholder="Opisz krótko, o co chodzi."
@@ -822,7 +891,8 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
       <p class="mb-ui-note">
         <code>accordion.astro</code>
         z <code>accordion-item.astro</code> - natywne
-        <code>&lt;details&gt;</code>, działa bez JavaScriptu.
+        <code>&lt;details&gt;</code>, działa bez JavaScriptu; otwieranie i
+        zamykanie animuje wysokość i chevron (<code>--mb-snap</code>).
         <code>single</code>
         (wspólne <code>name</code>, otwarty jeden naraz) i
         <code>multiple</code>; zwykły i <code>bordered</code>.
@@ -868,7 +938,8 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
         - ostatni element to bieżąca strona (<code>aria-current="page"</code>);
         separator <code>chevron</code> albo <code>slash</code>;
         <code>collapse</code>
-        zwija środek w wielokropek.
+        zwija środek w wielokropek, który otwiera menu z pominiętymi stronami
+        (natywny <code>popover</code>: Esc i klik obok zamykają).
       </p>
       <div class="mb-ui-stack-lg">
         <div class="mb-ui-sample">
@@ -882,7 +953,9 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
           <p class="mb-ui-caption">slash</p>
         </div>
         <div class="mb-ui-sample">
-          <div class="mb-ui-stage"><Breadcrumb collapse items={crumbs} /></div>
+          <div class="mb-ui-stage">
+            <Breadcrumb collapse items={collapsedCrumbs} />
+          </div>
           <p class="mb-ui-caption">collapse</p>
         </div>
       </div>
@@ -895,13 +968,22 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
         - bieżąca strona w ramce (<code>aria-current="page"</code>), reszta
         ghost; wielokropki liczone z <code>current</code> i
         <code>total</code>; zwykłe linki, bez JavaScriptu.
+        <code>jump</code>
+        dokłada pole „Strona” z przyciskiem - formularz GET, też bez
+        JavaScriptu; w pierwszym przykładzie działa naprawdę (parametr
+        <code>?strona=</code>).
       </p>
       <div class="mb-ui-stack-lg">
         <div class="mb-ui-sample">
           <div class="mb-ui-stage">
-            <Pagination current={5} href={pageHref} total={12} />
+            <Pagination
+              current={jumpCurrent}
+              href={jumpHref}
+              jump={{ action: "#mb-pagination", param: "strona" }}
+              total={jumpTotal}
+            />
           </div>
-          <p class="mb-ui-caption">numbers, 5 z 12</p>
+          <p class="mb-ui-caption">numbers, 5 z 12, jump</p>
         </div>
         <div class="mb-ui-sample">
           <div class="mb-ui-stage">
@@ -933,6 +1015,9 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
         ustawia <code>nav-active.ts</code>),
         <code>footer</code>
         z ikoną albo bez, <code>case</code> (<em>Zobacz realizację</em>).
+        Wciśnięcie (<code>data-state="pressed"</code>) zmienia kolor, w
+        <code>case</code>
+        strzałka wysuwa się dalej; ring fokusu wysuwa się z krawędzi.
       </p>
       <div class="mb-ui-row">
         <p class="mb-ui-row-label">Inline</p>
@@ -959,22 +1044,24 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
       <div class="mb-ui-row">
         <p class="mb-ui-row-label">Nav</p>
         <div class="mb-ui-grid">
-          {["idle", "hover", "focus-visible", "active"].map((state) => (
-            <div class="mb-ui-sample">
-              <div class="mb-ui-stage">
-                <Link
-                  aria-current={state === "active" ? "location" : undefined}
-                  class={state === "active" ? "active" : undefined}
-                  data-state={forced(state)}
-                  href="#mb-link"
-                  variant="nav"
-                >
-                  Usługi
-                </Link>
+          {["idle", "hover", "pressed", "focus-visible", "active"].map(
+            (state) => (
+              <div class="mb-ui-sample">
+                <div class="mb-ui-stage">
+                  <Link
+                    aria-current={state === "active" ? "location" : undefined}
+                    class={state === "active" ? "active" : undefined}
+                    data-state={forced(state)}
+                    href="#mb-link"
+                    variant="nav"
+                  >
+                    Usługi
+                  </Link>
+                </div>
+                <p class="mb-ui-caption">{state}</p>
               </div>
-              <p class="mb-ui-caption">{state}</p>
-            </div>
-          ))}
+            )
+          )}
         </div>
       </div>
       <div class="mb-ui-row">
@@ -1025,34 +1112,6 @@ const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
               <p class="mb-ui-caption">{state}</p>
             </div>
           ))}
-        </div>
-      </div>
-    </section>
-
-    <section aria-labelledby="mb-tag" class="mb-ui-section">
-      <h2 class="mb-ui-h2" id="mb-tag">Tag i status pill</h2>
-      <p class="mb-ui-note">
-        <code>tag.astro</code>
-        - technologie na karcie usługi, bez wersalików, żeby odróżniały się od
-        badge'y. <code>status-pill.astro</code> - karta statusu w hero i menu
-        mobilne.
-      </p>
-      <div class="mb-ui-grid mb-ui-grid-wide">
-        <div class="mb-ui-sample">
-          <div class="mb-ui-stage">
-            <ul class="mb-ui-tags">
-              <Tag as="li">React</Tag>
-              <Tag as="li">TypeScript</Tag>
-              <Tag as="li">Astro</Tag>
-            </ul>
-          </div>
-          <p class="mb-ui-caption">tag</p>
-        </div>
-        <div class="mb-ui-sample">
-          <div class="mb-ui-stage">
-            <StatusPill>Otwarty na nowe współprace</StatusPill>
-          </div>
-          <p class="mb-ui-caption">status pill</p>
         </div>
       </div>
     </section>

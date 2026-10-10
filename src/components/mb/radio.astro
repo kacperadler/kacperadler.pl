@@ -7,7 +7,9 @@ import type { HTMLAttributes } from "astro/types";
  *            in the frame
  *   choice   the input is visually hidden and `label` is a square chip (the
  *            contact form's project type); hover: the ink frame; checked: a
- *            solid blue block; keyboard focus: the ring around the chip
+ *            solid blue block; keyboard focus: the ring around the chip.
+ *            Every state keeps the 1px frame and the type weight, so
+ *            checking a chip moves nothing.
  * Disabled: the flat panel, muted text. Invalid: a coral frame, from
  * [data-invalid] on the enclosing <Field> or aria-invalid on the input.
  * Native input attributes (name / value / checked / disabled) pass through.
@@ -132,7 +134,6 @@ const {
   }
 
   .mb-radio-choice .mb-radio-input:checked + .mb-radio-label {
-    font-weight: 600;
     color: var(--v2-bg);
     background: var(--blue);
     border-color: var(--blue);

@@ -1,9 +1,9 @@
 ---
 import { getCollection } from "astro:content";
+import Badge from "../badge.astro";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
 import SectionHead from "../section-head.astro";
-import Tag from "../tag.astro";
 
 /* Services (#services): the services collection as a two-column cell
  * table (one column at 880px and below, an odd last cell spans the row).
@@ -33,7 +33,9 @@ const services = (await getCollection("services")).sort(
           <p class="mb-service-desc">{service.data.description}</p>
           <ul class="mb-service-tags" slot="footer">
             {service.data.tags.map((tag) => (
-              <Tag as="li">{tag}</Tag>
+              <li>
+                <Badge variant="tag">{tag}</Badge>
+              </li>
             ))}
           </ul>
         </Card>

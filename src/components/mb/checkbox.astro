@@ -3,7 +3,8 @@ import type { HTMLAttributes } from "astro/types";
 import { Icon } from "astro-icon/components";
 
 /* Checkbox: a native input (appearance: none) drawn as an 18px square in a
- * muted frame; hover: the ink frame; checked: a blue block with a lucide
+ * muted frame; hover: the ink frame, and an unchecked box shows the lucide
+ * check faintly (what a click will do); checked: a blue block with the
  * check; disabled: the flat panel; aria-invalid="true": a coral frame.
  * With `label` (and optionally `description`, tied by aria-describedby) it
  * renders its row; `id` is then required to tie the label. Native input
@@ -119,10 +120,18 @@ const descriptionId = description && id ? `${id}-description` : undefined;
     color: var(--v2-bg);
     pointer-events: none;
     opacity: 0;
+    transition: opacity var(--mb-snap);
   }
 
   .mb-checkbox-input:checked + :global(.mb-checkbox-mark) {
     opacity: 1;
+  }
+
+  .mb-checkbox-row:is(:hover, [data-state="hover"])
+    .mb-checkbox-input:not(:checked, :disabled)
+    + :global(.mb-checkbox-mark) {
+    color: var(--ink);
+    opacity: 0.35;
   }
 
   .mb-checkbox-text {
@@ -151,7 +160,8 @@ const descriptionId = description && id ? `${id}-description` : undefined;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .mb-checkbox-input {
+    .mb-checkbox-input,
+    .mb-checkbox :global(.mb-checkbox-mark) {
       transition: none;
     }
   }

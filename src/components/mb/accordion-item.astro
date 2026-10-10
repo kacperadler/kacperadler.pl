@@ -6,9 +6,12 @@ import { Icon } from "astro-icon/components";
  *   open      the item starts open
  *   disabled  the row is plain text that cannot be focused or opened, the
  *             content is not rendered
- * The chevron turns with --mb-snap; the content snaps open, with no height
- * animation. The `data-mb-accordion-item` marker is where <Accordion>
- * writes the shared `name`. */
+ * Opening and closing animate with --mb-snap: the content's height (the
+ * ::details-content box, from 0 to its own height through
+ * interpolate-size) and the chevron's half turn. Where the browser has no
+ * ::details-content the content snaps, as under prefers-reduced-motion.
+ * The `data-mb-accordion-item` marker is where <Accordion> writes the
+ * shared `name`. */
 interface Props {
   disabled?: boolean;
   open?: boolean;
@@ -47,7 +50,22 @@ const { disabled = false, open = false, title } = Astro.props;
 
 <style>
   .mb-accordion-item {
+    interpolate-size: allow-keywords;
     border-bottom: 1px solid var(--mb-hair);
+  }
+
+  /* Closed, the box stays at height 0 until content-visibility hides it,
+   * so closing runs the same height transition back down. */
+  .mb-accordion-item::details-content {
+    height: 0;
+    overflow: clip;
+    transition:
+      height var(--mb-snap),
+      content-visibility var(--mb-snap) allow-discrete;
+  }
+
+  .mb-accordion-item[open]::details-content {
+    height: auto;
   }
 
   :global(.mb-accordion-bordered) > .mb-accordion-item {
@@ -78,11 +96,16 @@ const { disabled = false, open = false, title } = Astro.props;
     display: none;
   }
 
-  .mb-accordion-trigger:is(:hover, [data-state="hover"]) span {
+  .mb-accordion-trigger span {
     text-decoration: underline;
     text-decoration-thickness: 2px;
-    text-decoration-color: var(--blue);
+    text-decoration-color: transparent;
     text-underline-offset: 4px;
+    transition: text-decoration-color var(--mb-snap);
+  }
+
+  .mb-accordion-trigger:is(:hover, [data-state="hover"]) span {
+    text-decoration-color: var(--blue);
   }
 
   .mb-accordion-trigger :global(.mb-accordion-chevron) {
@@ -90,7 +113,9 @@ const { disabled = false, open = false, title } = Astro.props;
     width: 18px;
     height: 18px;
     color: var(--ink-2);
-    transition: transform var(--mb-snap);
+    transition:
+      color var(--mb-snap),
+      transform var(--mb-snap);
   }
 
   .mb-accordion-item-disabled .mb-accordion-trigger {
@@ -127,7 +152,9 @@ const { disabled = false, open = false, title } = Astro.props;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .mb-accordion-trigger :global(.mb-accordion-chevron) {
+    .mb-accordion-trigger span,
+    .mb-accordion-trigger :global(.mb-accordion-chevron),
+    .mb-accordion-item::details-content {
       transition: none;
     }
   }
