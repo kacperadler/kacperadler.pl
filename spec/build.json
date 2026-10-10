@@ -547,9 +547,9 @@
   {
     "id": "KA0069",
     "title": "The landing page in minimal brutalism",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0069-the-landing-page-in-minimal-brutalism/ticket.md",
-    "updated": "2026-10-10T19:26:38.210Z",
+    "updated": "2026-10-10T20:01:30.931Z",
     "after": [
       "KA0068"
     ]

@@ -40,3 +40,4 @@ Out:
 
 - 2026-10-10: The human: "minimal-brutalism I like a lot; delete the rest and make a branch where we build its components in the UI tab, to rework our landing at the end". The coordinator: the work goes in steps KA0067, KA0068, KA0069 on main; until KA0069 everything new is dev-only (/ui), so production does not change before the landing switch, which is what a separate branch would give; merge after PASS.
 - 2026-10-10: The coordinator: the proposal frame stays for KA0072 (signature proposals on top of the new design).
+- 2026-10-10: The human: KA0069 ok to merge, no push.
