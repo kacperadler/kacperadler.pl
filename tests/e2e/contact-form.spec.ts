@@ -43,6 +43,22 @@ async function readFormEvents(page: Page): Promise<TrackedEvent[]> {
   );
 }
 
+// Picks a project type the way a visitor does: by clicking its visible
+// label. The radio input is opacity 0 with pointer-events none, and
+// check({ force: true }) on it clicks raw coordinates without waiting for
+// the page to hold still. After goto("/#contact") the browser is still
+// smooth-scrolling to the fragment (html has scroll-behavior: smooth), so
+// that click landed on another field now and then. A label click waits
+// until the label is stable.
+async function pickType(page: Page, value: string): Promise<void> {
+  const radio = `input[name="type"][value="${value}"]`;
+  await page
+    .locator("[data-contact-form] label")
+    .filter({ has: page.locator(radio) })
+    .click();
+  await expect(page.locator(`[data-contact-form] ${radio}`)).toBeChecked();
+}
+
 test.describe("contact form", () => {
   test("empty submit marks all fields invalid", async ({ page }) => {
     await stubUmami(page);
@@ -85,9 +101,7 @@ test.describe("contact form", () => {
     await page.goto("/#contact");
 
     await page.fill('[data-contact-form] input[name="email"]', "not-an-email");
-    await page
-      .locator('[data-contact-form] input[name="type"][value="webapp"]')
-      .check({ force: true });
+    await pickType(page, "webapp");
     await page.fill(
       '[data-contact-form] textarea[name="message"]',
       "Test message"
@@ -135,9 +149,7 @@ test.describe("contact form", () => {
       '[data-contact-form] input[name="email"]',
       "kacper@example.com"
     );
-    await page
-      .locator('[data-contact-form] input[name="type"][value="landing"]')
-      .check({ force: true });
+    await pickType(page, "landing");
     await page.fill(
       '[data-contact-form] textarea[name="message"]',
       "Chciałbym landing page dla nowego produktu."
@@ -184,9 +196,7 @@ test.describe("contact form", () => {
       '[data-contact-form] input[name="email"]',
       "kacper@example.com"
     );
-    await page
-      .locator('[data-contact-form] input[name="type"][value="webapp"]')
-      .check({ force: true });
+    await pickType(page, "webapp");
     await page.fill(
       '[data-contact-form] textarea[name="message"]',
       "Pierwsza wiadomość"
@@ -226,9 +236,7 @@ test.describe("contact form", () => {
       '[data-contact-form] input[name="email"]',
       "kacper@example.com"
     );
-    await page
-      .locator('[data-contact-form] input[name="type"][value="webapp"]')
-      .check({ force: true });
+    await pickType(page, "webapp");
     await page.fill(
       '[data-contact-form] textarea[name="message"]',
       "Server is down"
@@ -277,9 +285,7 @@ test.describe("contact form", () => {
       '[data-contact-form] input[name="email"]',
       "bot@example.com"
     );
-    await page
-      .locator('[data-contact-form] input[name="type"][value="other"]')
-      .check({ force: true });
+    await pickType(page, "other");
     await page.fill(
       '[data-contact-form] textarea[name="message"]',
       "Buy our SEO services!"
