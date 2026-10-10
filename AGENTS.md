@@ -109,7 +109,7 @@ src/
 ├── pages/                 # index, 404, *.md (legal), og-default.png.ts, llms.txt.ts, llms-full.txt.ts
 ├── scripts/               # vanilla TS: contact-form, mobile-sheet, nav-active, nav-scroll, spotlight
 ├── styles/                # tokens.css, global.css
-├── lib/                   # seo, dates
+├── lib/                   # seo
 └── assets/                # me.jpg (OG), experience/ logotypy, logotyp_fundusze_eu.png
 
 tests/e2e/       # Playwright specs (a11y, contact-form, mobile-sheet, nav-active, skip-link)
