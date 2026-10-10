@@ -1,0 +1,722 @@
+---
+/* Component catalogue - every ui component with its variants and states,
+ * side by side, so a redesign can be judged on all of them at once. A dev
+ * tool, rendered by /ui (_ui/index.astro) and by every design proposal
+ * (_ui/proposal/[id].astro); astro.config.mjs routes both for `astro dev`
+ * only, the production build has no such page.
+ *
+ * States are forced, not waited for: [data-state="hover"],
+ * [data-state="focus-visible"], [data-state="focus"] and the real `.active`
+ * class / `disabled` attribute. The components own those selectors next to
+ * the real :hover / :focus ones, so a forced state is the real paint. */
+import Badge from "@/components/ui/badge.astro";
+import Button from "@/components/ui/button.astro";
+import Card from "@/components/ui/card.astro";
+import Field from "@/components/ui/field.astro";
+import Input from "@/components/ui/input.astro";
+import Link from "@/components/ui/link.astro";
+import Radio from "@/components/ui/radio.astro";
+import StatusPill from "@/components/ui/status-pill.astro";
+import Tag from "@/components/ui/tag.astro";
+import Textarea from "@/components/ui/textarea.astro";
+import "@/styles/prose.css";
+
+type ButtonState =
+  | "idle"
+  | "hover"
+  | "focus-visible"
+  | "active"
+  | "disabled"
+  | "loading";
+
+interface ButtonRow {
+  icon?: string;
+  label: string;
+  size: "md" | "sm";
+  states: readonly ButtonState[];
+  variant: "primary" | "ghost";
+}
+
+const allButtonStates: readonly ButtonState[] = [
+  "idle",
+  "hover",
+  "focus-visible",
+  "active",
+  "disabled",
+  "loading",
+];
+// `.active` exists only on the primary button (the header CTA at #contact).
+const ghostButtonStates = allButtonStates.filter((s) => s !== "active");
+
+const buttonRows: readonly ButtonRow[] = [
+  {
+    icon: "lucide:arrow-right",
+    label: "Primary · md",
+    size: "md",
+    states: allButtonStates,
+    variant: "primary",
+  },
+  {
+    icon: "lucide:arrow-right",
+    label: "Primary · sm",
+    size: "sm",
+    states: allButtonStates,
+    variant: "primary",
+  },
+  {
+    label: "Ghost · md",
+    size: "md",
+    states: ghostButtonStates,
+    variant: "ghost",
+  },
+  {
+    label: "Ghost · sm",
+    size: "sm",
+    states: ghostButtonStates,
+    variant: "ghost",
+  },
+];
+
+const forcedState = (state: string) =>
+  state === "hover" || state === "focus-visible" ? state : undefined;
+
+type FieldState = "empty" | "filled" | "focus" | "error" | "disabled";
+const fieldStates: readonly FieldState[] = [
+  "empty",
+  "filled",
+  "focus",
+  "error",
+  "disabled",
+];
+
+const radioOptions = ["Aplikacja webowa", "Landing page", "Inne"] as const;
+type RadioState = "empty" | "filled" | "hover" | "focus" | "error" | "disabled";
+const radioStates: readonly RadioState[] = [
+  "empty",
+  "filled",
+  "hover",
+  "focus",
+  "error",
+  "disabled",
+];
+
+// Only the first option carries the forced state, as one pointer or one
+// keyboard focus would.
+const forcedRadioState = (state: RadioState, index: number) => {
+  if (index !== 0) {
+    return;
+  }
+  if (state === "hover") {
+    return "hover";
+  }
+  if (state === "focus") {
+    return "focus-visible";
+  }
+};
+---
+
+<div class="ui-page">
+  <div class="container">
+    <header class="ui-head">
+      <p class="eyebrow">Narzędzie deweloperskie · tylko astro dev</p>
+      <h1>Katalog komponentów</h1>
+      <p class="ui-lede">
+        Każdy komponent z <code>src/components/ui/</code> we wszystkich
+        wariantach i stanach. Stany są wymuszone atrybutami (<code
+          >data-state</code
+        >, <code>.active</code>, <code>disabled</code>), więc widać je naraz,
+        bez najeżdżania kursorem.
+      </p>
+    </header>
+
+    <section aria-labelledby="ui-button" class="ui-section">
+      <h2 class="ui-h2" id="ui-button">Przycisk</h2>
+      <p class="ui-note">
+        <code>button.astro</code>
+        - warianty <code>primary</code> i
+        <code>ghost</code>, rozmiary <code>md</code> i <code>sm</code>. Active
+        to stan CTA w nagłówku po dojściu do sekcji kontaktu (klasa
+        <code>.active</code>), dlatego tylko primary. Loading to
+        <code>data-state="submitting"</code>
+        z <code>disabled</code>, jak przy wysyłce formularza.
+      </p>
+      {buttonRows.map((row) => (
+        <div class="ui-row">
+          <p class="ui-row-label">{row.label}</p>
+          <div class="ui-grid">
+            {row.states.map((state) => (
+              <div class="ui-sample">
+                <div class="ui-stage">
+                  <Button
+                    class={state === "active" ? "active" : undefined}
+                    data-state={
+                      state === "loading" ? "submitting" : forcedState(state)
+                    }
+                    disabled={state === "disabled" || state === "loading"}
+                    icon={row.icon}
+                    size={row.size}
+                    variant={row.variant}
+                  >
+                    {row.variant === "primary"
+                      ? "Porozmawiajmy"
+                      : "Zobacz proces"}
+                  </Button>
+                </div>
+                <p class="ui-caption">{state}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section aria-labelledby="ui-link" class="ui-section">
+      <h2 class="ui-h2" id="ui-link">Link</h2>
+      <p class="ui-note">
+        <code>link.astro</code>
+        - <code>inline</code> w treści,
+        <code>nav</code>
+        w nagłówku (<code>.active</code>
+        ustawia
+        <code>nav-active.ts</code>), <code>footer</code> z ikoną albo bez.
+      </p>
+
+      <div class="ui-row">
+        <p class="ui-row-label">Inline</p>
+        <div class="ui-grid">
+          {["idle", "focus-visible"].map((state) => (
+            <div class="ui-sample">
+              <div class="ui-stage">
+                <p class="ui-copy">
+                  Szczegóły:
+                  <Link
+                    data-state={forcedState(state)}
+                    href="#ui-link"
+                    variant="inline"
+                  >
+                    polityka prywatności
+                  </Link>
+                </p>
+              </div>
+              <p class="ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="ui-row">
+        <p class="ui-row-label">Nav</p>
+        <div class="ui-grid">
+          {["idle", "hover", "focus-visible", "active"].map((state) => (
+            <div class="ui-sample">
+              <div class="ui-stage">
+                <Link
+                  aria-current={state === "active" ? "location" : undefined}
+                  class={state === "active" ? "active" : undefined}
+                  data-state={forcedState(state)}
+                  href="#ui-link"
+                  variant="nav"
+                >
+                  Usługi
+                </Link>
+              </div>
+              <p class="ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="ui-row">
+        <p class="ui-row-label">Footer</p>
+        <div class="ui-grid">
+          {["idle", "hover", "focus-visible"].map((state) => (
+            <div class="ui-sample">
+              <div class="ui-stage">
+                <Link
+                  data-state={forcedState(state)}
+                  href="#ui-link"
+                  variant="footer"
+                >
+                  Polityka prywatności
+                </Link>
+              </div>
+              <p class="ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="ui-row">
+        <p class="ui-row-label">Footer z ikoną</p>
+        <div class="ui-grid">
+          {["idle", "hover", "focus-visible"].map((state) => (
+            <div class="ui-sample">
+              <div class="ui-stage">
+                <Link
+                  data-state={forcedState(state)}
+                  href="#ui-link"
+                  icon="lucide:mail"
+                  variant="footer"
+                >
+                  Email
+                </Link>
+              </div>
+              <p class="ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-badge" class="ui-section">
+      <h2 class="ui-h2" id="ui-badge">Badge i tag</h2>
+      <p class="ui-note">
+        <code>badge.astro</code>
+        - <code>outline</code> (lata współpracy, czas etapu),
+        <code>filled</code>
+        (<em>teraz</em>, <em>Zlecenie</em>),
+        <code>fillOnCardHover</code>
+        (etap procesu: wypełnia się, gdy karta jest pod kursorem).
+        <code>tag.astro</code>
+        - technologie na karcie usługi.
+      </p>
+      <div class="ui-row">
+        <p class="ui-row-label">Badge</p>
+        <div class="ui-grid">
+          <div class="ui-sample">
+            <div class="ui-stage"><Badge>2022–2024</Badge></div>
+            <p class="ui-caption">outline</p>
+          </div>
+          <div class="ui-sample">
+            <div class="ui-stage">
+              <Badge variant="filled">teraz</Badge>
+            </div>
+            <p class="ui-caption">filled</p>
+          </div>
+          <div class="ui-sample">
+            <div class="ui-stage">
+              <Badge variant="filled">Zlecenie</Badge>
+            </div>
+            <p class="ui-caption">filled (pole badge)</p>
+          </div>
+        </div>
+      </div>
+      <div class="ui-row">
+        <p class="ui-row-label">Tag</p>
+        <div class="ui-grid ui-grid-wide">
+          <div class="ui-sample">
+            <div class="ui-stage">
+              <ul class="ui-tags">
+                <Tag as="li">React</Tag>
+                <Tag as="li">TypeScript</Tag>
+                <Tag as="li">Astro</Tag>
+              </ul>
+            </div>
+            <p class="ui-caption">idle</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-pill" class="ui-section">
+      <h2 class="ui-h2" id="ui-pill">Status pill</h2>
+      <p class="ui-note">
+        <code>status-pill.astro</code>
+        - karta statusu w hero i menu mobilne.
+      </p>
+      <div class="ui-grid ui-grid-wide">
+        <div class="ui-sample">
+          <div class="ui-stage">
+            <StatusPill>Otwarty na nowe współprace</StatusPill>
+          </div>
+          <p class="ui-caption">idle</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-card" class="ui-section">
+      <h2 class="ui-h2" id="ui-card">Karta</h2>
+      <p class="ui-note">
+        <code>card.astro</code>
+        - pełny panel w spoczynku, szkło i spotlight na hover (spotlight pod
+        kursorem wyłącza
+        <code>prefers-reduced-motion</code>).
+      </p>
+      <div class="ui-grid ui-grid-wide">
+        {["idle", "hover"].map((state) => (
+          <div class="ui-sample">
+            <Card class="ui-card" data-state={forcedState(state)} tag="div">
+              <div class="ui-card-head">
+                <h3>Rozmowa</h3>
+                <Badge fillOnCardHover>~ 30 min</Badge>
+              </div>
+              <p>Krótka rozmowa o celu projektu, terminie i tym, co blokuje.</p>
+            </Card>
+            <p class="ui-caption">{state}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-form" class="ui-section">
+      <h2 class="ui-h2" id="ui-form">Pola formularza</h2>
+      <p class="ui-note">
+        <code>field.astro</code>
+        (etykieta i komunikat błędu) z
+        <code>input.astro</code>, <code>textarea.astro</code> i
+        <code>radio.astro</code>, na tle i tokenach formularza kontaktowego.
+      </p>
+
+      <div class="ui-form-surface">
+        <div class="ui-row">
+          <p class="ui-row-label">Input</p>
+          <div class="ui-grid ui-grid-wide">
+            {fieldStates.map((state) => (
+              <div class="ui-sample">
+                <Field
+                  errorMessage="Podaj prawidłowy adres email."
+                  for={`ui-input-${state}`}
+                  invalid={state === "error"}
+                  label="Twój email"
+                  name={`ui-input-${state}`}
+                >
+                  <Input
+                    data-state={state === "focus" ? "focus" : undefined}
+                    disabled={state === "disabled"}
+                    id={`ui-input-${state}`}
+                    placeholder="twoj@email.pl"
+                    type="email"
+                    value={
+                      state === "filled" || state === "focus"
+                        ? "kontakt@firma.pl"
+                        : undefined
+                    }
+                  />
+                </Field>
+                <p class="ui-caption">{state}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="ui-row">
+          <p class="ui-row-label">Textarea</p>
+          <div class="ui-grid ui-grid-wide">
+            {fieldStates.map((state) => (
+              <div class="ui-sample">
+                <Field
+                  errorMessage="Dodaj krótki opis projektu."
+                  for={`ui-textarea-${state}`}
+                  invalid={state === "error"}
+                  label="Wiadomość"
+                  name={`ui-textarea-${state}`}
+                >
+                  <Textarea
+                    data-state={state === "focus" ? "focus" : undefined}
+                    disabled={state === "disabled"}
+                    id={`ui-textarea-${state}`}
+                    placeholder="Opisz krótko, o co chodzi."
+                    value={
+                      state === "filled" || state === "focus"
+                        ? "Sklep na Astro, start w marcu."
+                        : undefined
+                    }
+                  />
+                </Field>
+                <p class="ui-caption">{state}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="ui-row">
+          <p class="ui-row-label">Radio</p>
+          <div class="ui-grid ui-grid-wide">
+            {radioStates.map((state) => (
+              <div class="ui-sample">
+                <Field
+                  errorMessage="Wybierz typ projektu."
+                  invalid={state === "error"}
+                  label="Typ projektu"
+                  name={`ui-radio-${state}`}
+                >
+                  <div
+                    aria-label={`Typ projektu (${state})`}
+                    class="ui-radios"
+                    role="radiogroup"
+                  >
+                    {radioOptions.map((option, i) => (
+                      <Radio
+                        checked={
+                          (state === "filled" || state === "focus") && i === 0
+                        }
+                        disabled={state === "disabled"}
+                        label={option}
+                        name={`ui-radio-${state}`}
+                        state={forcedRadioState(state, i)}
+                        value={option}
+                      />
+                    ))}
+                  </div>
+                </Field>
+                <p class="ui-caption">{state}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-section-head" class="ui-section">
+      <h2 class="ui-h2" id="ui-section-head">Nagłówek sekcji</h2>
+      <p class="ui-note">
+        Klasy z <code>global.css</code>: <code>.section-head</code>,
+        <code>.eyebrow</code>
+        + <code>.eyebrow-section</code>, h2 z
+        <code>&lt;em&gt;</code>, <code>.section-lede</code>.
+      </p>
+      <div class="ui-panel">
+        <header class="section-head">
+          <p class="eyebrow eyebrow-section">Proces</p>
+          <h2>Od <em>rozmowy</em> do <em>produktu</em>.</h2>
+          <p class="section-lede">
+            Biorąc pod uwagę Twoje potrzeby, skupiam się na znalezieniu
+            najlepszego rozwiązania dla Ciebie.
+          </p>
+        </header>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-prose" class="ui-section">
+      <h2 class="ui-h2" id="ui-prose">Typografia</h2>
+      <p class="ui-note">
+        <code>.prose</code>
+        z <code>src/styles/prose.css</code> - wartości domyślne
+        @tailwindcss/typography przeniesione do zwykłego CSS, kolory z naszych
+        tokenów.
+      </p>
+      <div class="ui-panel">
+        <article class="prose">
+          <h1>Nagłówek pierwszego stopnia</h1>
+          <p class="lead">
+            Lead - akapit otwierający, większy i cichszy od reszty tekstu.
+          </p>
+          <p>
+            Zwykły akapit z <strong>pogrubieniem</strong>, <em>kursywą</em>,
+            <a href="#ui-prose">linkiem w treści</a>
+            i kodem w linii:
+            <code>bun run build</code>. Tekst ciągnie się przez kilka linii,
+            żeby było widać interlinię i szerokość kolumny.
+          </p>
+          <h2>Nagłówek drugiego stopnia</h2>
+          <p>Akapit pod nagłówkiem drugiego stopnia.</p>
+          <ul>
+            <li>Pierwszy punkt listy</li>
+            <li>
+              Drugi punkt, z listą zagnieżdżoną:
+              <ul>
+                <li>punkt zagnieżdżony</li>
+              </ul>
+            </li>
+            <li>Trzeci punkt</li>
+          </ul>
+          <h3>Nagłówek trzeciego stopnia</h3>
+          <ol>
+            <li>Rozmowa</li>
+            <li>Plan i wycena</li>
+            <li>Realizacja</li>
+          </ol>
+          <blockquote>
+            <p>Cytat - wyróżniony fragment z linią po lewej.</p>
+          </blockquote>
+          <h4>Nagłówek czwartego stopnia</h4>
+          <pre><code>const greeting = "Cześć";
+console.log(greeting);</code></pre>
+          <table>
+            <thead>
+              <tr>
+                <th>Etap</th>
+                <th>Czas</th>
+                <th>Wynik</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Rozmowa</td>
+                <td>~ 30 min</td>
+                <td>Zakres i termin</td>
+              </tr>
+              <tr>
+                <td>Plan i wycena</td>
+                <td>2–3 dni</td>
+                <td>Wycena etapami</td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+  </div>
+</div>
+
+<style>
+  .ui-page {
+    padding: var(--v2-space-xl) 0;
+  }
+
+  .ui-head {
+    max-width: 70ch;
+    margin-bottom: var(--v2-space-xl);
+  }
+
+  .ui-head h1 {
+    margin: 0 0 16px;
+    font-family: var(--display);
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .ui-lede,
+  .ui-note {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .ui-note {
+    max-width: 80ch;
+    margin-bottom: var(--v2-space-md);
+    font-size: 14px;
+  }
+
+  .ui-lede code,
+  .ui-note code {
+    font-family: var(--mono);
+    font-size: 0.9em;
+    color: var(--ink);
+  }
+
+  .ui-section {
+    padding-top: var(--v2-space-lg);
+    margin-bottom: var(--v2-space-xl);
+    border-top: 1px solid var(--v2-line);
+  }
+
+  .ui-h2 {
+    margin: 0 0 8px;
+    font-family: var(--display);
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .ui-row {
+    margin-bottom: var(--v2-space-md);
+  }
+
+  .ui-row-label {
+    margin: 0 0 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  .ui-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--v2-space-md);
+  }
+
+  .ui-grid-wide {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+
+  .ui-sample {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Stage keeps room around a sample so rings and hover shadows show. */
+  .ui-stage {
+    display: flex;
+    align-items: center;
+    min-height: 72px;
+    padding: 12px;
+  }
+
+  .ui-caption {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .ui-copy {
+    margin: 0;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .ui-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .ui-card-head {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .ui-card h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .ui-card p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .ui-panel {
+    padding: var(--v2-space-lg);
+    background: var(--v2-panel);
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-md);
+  }
+
+  /* The form's surface: the same --card / --line / --paper as
+   * .contact-form-host in sections/contact.astro, so the fields read as
+   * they do in the contact form. */
+  .ui-form-surface {
+    --card: var(--v2-panel);
+    --line: var(--v2-line);
+    --paper: var(--v2-bg);
+    padding: var(--v2-space-lg);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--v2-radius-md);
+  }
+
+  .ui-radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>

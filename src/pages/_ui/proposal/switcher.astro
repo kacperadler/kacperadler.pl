@@ -1,0 +1,95 @@
+---
+/* Bar at the top of every proposal page: which proposal this is, its
+ * references, and links to every other proposal, the list and the current
+ * design (the catalogue at /ui and the home page at /). */
+import Link from "@/components/ui/link.astro";
+import type { Proposal } from "@/lib/proposals";
+
+interface Props {
+  current: Proposal;
+  proposals: readonly Proposal[];
+}
+
+const { current, proposals } = Astro.props;
+---
+
+<nav aria-label="Propozycje designu" class="proposal-bar">
+  <div class="container">
+    <p class="proposal-bar-title">
+      <span class="eyebrow">Propozycja</span>
+      <strong>{current.name}</strong>
+      <span class="proposal-bar-desc">{current.description}</span>
+    </p>
+    {current.references.length > 0 && (
+      <p class="proposal-bar-refs">
+        Inspiracje:
+        {current.references.map((reference, i) => (
+          <>
+            {i > 0 && ", "}
+            <Link href={reference.url} variant="inline">
+              {reference.label}
+            </Link>
+          </>
+        ))}
+      </p>
+    )}
+    <ul class="proposal-bar-links">
+      {proposals.map((proposal) => (
+        <li>
+          <Link
+            aria-current={proposal.id === current.id ? "page" : undefined}
+            class={proposal.id === current.id ? "active" : undefined}
+            href={`/ui/proposal/${proposal.id}`}
+            variant="nav"
+          >
+            {proposal.name}
+          </Link>
+        </li>
+      ))}
+      <li class="proposal-bar-sep">
+        <Link href="/ui" variant="nav">Obecny design: katalog</Link>
+      </li>
+      <li><Link href="/" variant="nav">Obecny design: strona</Link></li>
+      <li>
+        <Link href="/ui/proposal" variant="nav">Wszystkie propozycje</Link>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .proposal-bar {
+    padding: var(--v2-space-md) 0;
+    background: var(--v2-panel);
+    border-bottom: 1px solid var(--v2-line);
+  }
+
+  .proposal-bar-title,
+  .proposal-bar-refs {
+    margin: 0 0 var(--v2-space-sm);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .proposal-bar-title strong {
+    margin: 0 var(--v2-space-sm);
+    font-family: var(--display);
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .proposal-bar-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--v2-space-sm) var(--v2-space-md);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .proposal-bar-sep {
+    padding-left: var(--v2-space-md);
+    border-left: 1px solid var(--v2-line);
+  }
+</style>
