@@ -27,12 +27,12 @@ interface LinkedEntry {
 async function linkedEntries(page: Page): Promise<LinkedEntry[]> {
   await page.goto("/");
   return page
-    .locator("#experience .exp-panel")
-    .filter({ has: page.locator("a.case-link") })
+    .locator("#experience .mb-card")
+    .filter({ has: page.locator("a.mb-link-case") })
     .evaluateAll((cards) =>
       cards.map((card) => ({
         company: card.querySelector("h3")?.textContent?.trim() ?? "",
-        href: card.querySelector("a.case-link")?.getAttribute("href") ?? "",
+        href: card.querySelector("a.mb-link-case")?.getAttribute("href") ?? "",
       }))
     );
 }
@@ -50,7 +50,7 @@ test.describe("case studies", () => {
       // biome-ignore lint/performance/noAwaitInLoops: one page, one entry at a time
       await page.goto("/");
       const card = page
-        .locator("#experience .exp-panel")
+        .locator("#experience .mb-card")
         .filter({ has: page.locator("h3", { hasText: company }) });
       // Screen readers get the company in the link name, not five
       // identical "Zobacz realizację".
@@ -83,9 +83,11 @@ test.describe("case studies", () => {
       const description = await page
         .locator('meta[name="description"]')
         .getAttribute("content");
-      await expect(page.locator(".case-lede")).toHaveText(description ?? "");
-      await expect(page.locator(".case-stack li").first()).toBeVisible();
-      await expect(page.locator(".prose")).not.toBeEmpty();
+      await expect(page.locator(".mb-section-lede")).toHaveText(
+        description ?? ""
+      );
+      await expect(page.locator(".mb-case-stack li").first()).toBeVisible();
+      await expect(page.locator(".mb-prose")).not.toBeEmpty();
 
       const results = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
@@ -117,11 +119,11 @@ test.describe("case studies", () => {
     const entries = await linkedEntries(page);
     expect(entries.length).toBeGreaterThan(0);
 
-    await expect(page.locator(".nav-links [data-nav-link]")).toHaveText(
+    await expect(page.locator(".mb-nav-links [data-nav-link]")).toHaveText(
       NAV_LABELS
     );
     await page
-      .locator(".nav-links")
+      .locator(".mb-nav-links")
       .getByRole("link", { exact: true, name: "Realizacje" })
       .click();
     await expect(page).toHaveURL(LIST_PATH);
@@ -132,19 +134,19 @@ test.describe("case studies", () => {
       `${SITE}${LIST_PATH}`
     );
     await expect(
-      page.locator(".nav-links").getByRole("link", { name: "Realizacje" })
+      page.locator(".mb-nav-links").getByRole("link", { name: "Realizacje" })
     ).toHaveAttribute("aria-current", "page");
 
-    const cards = page.locator(".case-panel");
+    const cards = page.locator(".mb-case-cell");
     await expect(cards).toHaveCount(entries.length);
     for (const { company, href } of entries) {
       const card = cards.filter({
         has: page.getByRole("heading", { exact: true, name: company }),
       });
       // biome-ignore lint/performance/noAwaitInLoops: one card at a time
-      await expect(card.locator(".case-role")).not.toBeEmpty();
-      await expect(card.locator(".case-period")).not.toBeEmpty();
-      await expect(card.locator(".case-summary")).not.toBeEmpty();
+      await expect(card.locator(".mb-case-role")).not.toBeEmpty();
+      await expect(card.locator(".mb-case-period")).not.toBeEmpty();
+      await expect(card.locator(".mb-case-summary")).not.toBeEmpty();
       await expect(
         card.getByRole("link", { name: `Zobacz realizację - ${company}` })
       ).toHaveAttribute("href", href);
@@ -157,7 +159,7 @@ test.describe("case studies", () => {
 
     // Section links lead back to the home page sections from here.
     await page
-      .locator(".nav-links")
+      .locator(".mb-nav-links")
       .getByRole("link", { name: "Współprace" })
       .click();
     await expect(page).toHaveURL("/#experience");
@@ -170,7 +172,7 @@ test.describe("case studies", () => {
     await page.goto("/");
     await page.locator("[data-menu-open]").click();
 
-    const sheetLinks = page.locator("#mobile-sheet .sheet-link");
+    const sheetLinks = page.locator("#mobile-sheet .mb-sheet-link");
     await expect(sheetLinks).toHaveText(NAV_LABELS);
     await sheetLinks.filter({ hasText: "Realizacje" }).click();
     await expect(page).toHaveURL(LIST_PATH);
@@ -205,12 +207,12 @@ test.describe("no case studies", () => {
 
     // The built HTML read straight from disk: the menus as rendered.
     await page.goto(pathToFileURL(file("index.html")).href);
-    await expect(page.locator(".nav-links [data-nav-link]")).toHaveText(
+    await expect(page.locator(".mb-nav-links [data-nav-link]")).toHaveText(
       NAV_LABELS_WITHOUT_LIST
     );
-    await expect(page.locator("#mobile-sheet .sheet-link")).toHaveText(
+    await expect(page.locator("#mobile-sheet .mb-sheet-link")).toHaveText(
       NAV_LABELS_WITHOUT_LIST
     );
-    await expect(page.locator("a.case-link")).toHaveCount(0);
+    await expect(page.locator("a.mb-link-case")).toHaveCount(0);
   });
 });

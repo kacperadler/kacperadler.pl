@@ -20,13 +20,25 @@ const proposals = readdirSync(PROPOSALS_DIR)
 
 const CATALOGUE_SECTIONS = [
   "Przycisk",
-  "Link",
-  "Badge i tag",
-  "Status pill",
-  "Karta",
+  "Spinner",
+  "Badge",
+  "Alert",
+  "Avatar",
+  "Separator",
+  "Etykieta",
+  "Pole wyboru",
+  "Radio",
   "Pola formularza",
+  "Akordeon",
+  "Okruszki",
+  "Paginacja",
+  "Link",
+  "Tag i status pill",
+  "Karta i siatka",
   "Nagłówek sekcji",
+  "Rama strony",
   "Typografia",
+  "Formularz kontaktowy",
 ];
 
 const switcher = (page: Page) =>
@@ -142,21 +154,21 @@ test.describe("design proposals (astro dev)", () => {
     page,
   }) => {
     await page.goto("/ui/proposal/baseline", { waitUntil: "networkidle" });
-    const button = page.locator(".btn").first();
-    const card = page.locator(".v2-card").first();
+    const button = page.locator(".mb-btn").first();
+    const card = page.locator(".mb-card").first();
     await expect(button).not.toHaveCSS("border-top-left-radius", "3px");
-    await expect(card).not.toHaveCSS("border-top-left-radius", "5px");
+    await expect(card).not.toHaveCSS("border-top-color", "rgb(255, 0, 0)");
 
     // Rules in the form proposal.css documents: a token on html[...] and a
     // component class under the scope, at the scoped component's
     // specificity.
     await page.locator("style[data-proposal-css]").evaluate((el) => {
       el.textContent += `
-        html[data-proposal="baseline"] { --v2-radius-md: 5px; }
-        [data-proposal="baseline"] .btn { border-radius: 3px; }`;
+        html[data-proposal="baseline"] { --mb-rule: rgb(255, 0, 0); }
+        [data-proposal="baseline"] .mb-btn { border-radius: 3px; }`;
     });
     await expect(button).toHaveCSS("border-top-left-radius", "3px");
-    await expect(card).toHaveCSS("border-top-left-radius", "5px");
+    await expect(card).toHaveCSS("border-top-color", "rgb(255, 0, 0)");
   });
 
   for (const { id } of proposals) {

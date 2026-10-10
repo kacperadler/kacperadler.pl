@@ -35,12 +35,12 @@ test.describe("mobile sheet", () => {
     const sheet = page.locator("#mobile-sheet");
     const trigger = page.locator("[data-menu-open]");
     const close = page.locator("[data-menu-close]");
-    const pageShell = page.locator(".page-shell");
+    const frame = page.locator(".mb-frame");
 
     await trigger.click();
 
     await expect(close).toBeFocused();
-    await expect(pageShell).toHaveJSProperty("inert", true);
+    await expect(frame).toHaveJSProperty("inert", true);
 
     // One full lap forward: each press moves to the next control of the
     // sheet in DOM order, and the press after the last one wraps back to
@@ -54,12 +54,26 @@ test.describe("mobile sheet", () => {
 
     // Shift+Tab from the first control wraps to the last one, not the page.
     await page.keyboard.press("Shift+Tab");
-    await expect(sheet.locator(".sheet-cta")).toBeFocused();
+    await expect(sheet.locator(".mb-sheet-cta a")).toBeFocused();
 
     await close.click();
 
     await expect(trigger).toBeFocused();
-    await expect(pageShell).toHaveJSProperty("inert", false);
+    await expect(frame).toHaveJSProperty("inert", false);
+  });
+
+  test.describe("under reduced motion", () => {
+    test.use({ contextOptions: { reducedMotion: "reduce" } });
+
+    test("the open sheet still takes focus on its close button", async ({
+      page,
+    }) => {
+      await page.goto("/");
+
+      await page.locator("[data-menu-open]").click();
+
+      await expect(page.locator("[data-menu-close]")).toBeFocused();
+    });
   });
 
   test("Escape closes the sheet and returns focus to trigger", async ({
@@ -92,7 +106,7 @@ test.describe("mobile sheet", () => {
 
     await expect(sheet).toHaveAttribute("aria-hidden", "true");
     await expect(trigger).toBeFocused();
-    await expect(page.locator(".page-shell")).toHaveJSProperty("inert", false);
+    await expect(page.locator(".mb-frame")).toHaveJSProperty("inert", false);
   });
 
   test("open sheet is a dialog named 'Menu mobilne' with no axe violations", async ({

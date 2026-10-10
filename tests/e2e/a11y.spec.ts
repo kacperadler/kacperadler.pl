@@ -1,36 +1,80 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
-// reduce motion → reveal.ts applies `.in` immediately so axe sees the
-// final, fully-opaque state instead of the pre-scroll faded-out one.
+// Reduced motion: every transition collapses (global.css), so axe reads the
+// final paint instead of a state halfway through a switch.
 test.use({ contextOptions: { reducedMotion: "reduce" } });
 
+const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
+const VIEWPORTS = [
+  { height: 900, width: 1440 },
+  { height: 800, width: 360 },
+];
+const PAGES = ["/", "/polityka-prywatnosci/", "/regulamin/", "/realizacje/"];
+
+// The case study pages the build has (the e2e build reads the fixture while
+// src/content/case-studies is empty), as linked from their list.
+async function caseStudyPaths(page: Page): Promise<string[]> {
+  await page.goto("/realizacje/");
+  return page
+    .locator("#top a[href^='/realizacje/']")
+    .evaluateAll((links) =>
+      links.map((link) => link.getAttribute("href") ?? "")
+    );
+}
+
 test.describe("axe-core a11y", () => {
-  test("home page has no detectable WCAG 2.1 AA violations", async ({
-    page,
-  }) => {
-    await page.goto("/");
+  for (const viewport of VIEWPORTS) {
+    test(`home, legal, case study pages and 404 have no WCAG 2.1 AA violations at ${viewport.width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize(viewport);
+      const cases = await caseStudyPaths(page);
+      expect(cases.length).toBeGreaterThan(0);
 
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-      .analyze();
+      for (const path of [...PAGES, ...cases, "/this-route-does-not-exist"]) {
+        // biome-ignore lint/performance/noAwaitInLoops: one page at a time
+        await page.goto(path, { waitUntil: "domcontentloaded" });
+        const results = await new AxeBuilder({ page }).withTags(WCAG).analyze();
+        expect(results.violations, path).toEqual([]);
+      }
+    });
 
-    expect(results.violations).toEqual([]);
-  });
+    for (const fonts of ["Geist", "a fallback font"]) {
+      test(`no page scrolls sideways at ${viewport.width}px with ${fonts}`, async ({
+        page,
+      }) => {
+        await page.setViewportSize(viewport);
+        const cases = await caseStudyPaths(page);
+        // The fallback is what a visitor sees until Geist has loaded (or
+        // when it fails): a wider face the heavy headlines and the header
+        // must survive too.
+        if (fonts !== "Geist") {
+          await page.route("**/*.woff2", (route) => route.abort());
+        }
+        for (const path of [...PAGES, ...cases, "/this-route-does-not-exist"]) {
+          // biome-ignore lint/performance/noAwaitInLoops: one page at a time
+          await page.goto(path);
+          await page.evaluate(() => document.fonts.ready);
+          const { client, scroll } = await page.evaluate(() => ({
+            client: document.documentElement.clientWidth,
+            scroll: document.documentElement.scrollWidth,
+          }));
+          expect(scroll, path).toBeLessThanOrEqual(client);
+        }
+      });
+    }
+  }
 
   test("contact form error states have no detectable WCAG 2.1 AA violations", async ({
     page,
   }) => {
-    // Measured on the idle form: hover or a focused field turns the host into
-    // translucent glass. Even idle, axe files the error lines as "incomplete"
-    // (the host's spotlight pseudos cover them), so the contrast is also
-    // computed directly below.
     const axe = async () => {
       await page.evaluate(() => (document.activeElement as HTMLElement).blur());
       await page.mouse.move(0, 0);
       return new AxeBuilder({ page })
-        .include(".contact-form-host")
-        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+        .include("[data-contact-wrap]")
+        .withTags(WCAG)
         .analyze();
     };
     await page.route("**/api/v1/db/public/shared-view/**/rows", (route) =>
@@ -40,12 +84,12 @@ test.describe("axe-core a11y", () => {
     await page.waitForLoadState("networkidle");
     const wrap = page.locator("[data-contact-wrap]");
 
-    // Empty submit: every field invalid, error lines and red borders shown.
+    // Empty submit: every field invalid, error lines and coral frames shown.
     await page.click("[data-contact-form] [data-submit]");
     await expect(wrap).toHaveAttribute("data-state", "error-validation");
     expect((await axe()).violations).toEqual([]);
 
-    // WCAG AA: error text 4.5:1, invalid border 3:1, on the form surface.
+    // WCAG AA: error text 4.5:1, invalid frame 3:1, on the form surface.
     const ratios = await page.evaluate(() => {
       const luminance = (color: string) => {
         const [r = 0, g = 0, b = 0] = (color.match(/\d+(\.\d+)?/g) ?? []).map(
@@ -63,10 +107,22 @@ test.describe("axe-core a11y", () => {
       };
       const css = (selector: string) =>
         getComputedStyle(document.querySelector(selector) as Element);
-      const surface = css("[data-contact-form]").backgroundColor;
+      // The first opaque background behind the form.
+      let el: Element | null = document.querySelector("[data-contact-form]");
+      let surface = "rgba(0, 0, 0, 0)";
+      while (el && surface === "rgba(0, 0, 0, 0)") {
+        surface = getComputedStyle(el).backgroundColor;
+        el = el.parentElement;
+      }
       return {
-        border: contrast(css(".v2-input").borderTopColor, surface),
-        text: contrast(css(".field .err").color, surface),
+        border: contrast(
+          css("[data-contact-form] .mb-input").borderTopColor,
+          surface
+        ),
+        text: contrast(
+          css("[data-contact-form] .mb-field-error").color,
+          surface
+        ),
       };
     });
     expect(ratios.text).toBeGreaterThanOrEqual(4.5);
@@ -74,24 +130,10 @@ test.describe("axe-core a11y", () => {
 
     // Valid submit the server refuses: the send-error banner.
     await page.fill('[data-contact-form] input[name="email"]', "a@example.com");
-    await page.locator("[data-contact-form] label.radio").first().click();
+    await page.locator("[data-contact-form] label.mb-radio").first().click();
     await page.fill('[data-contact-form] textarea[name="message"]', "Treść");
     await page.click("[data-contact-form] [data-submit]");
     await expect(wrap).toHaveAttribute("data-state", "error-submit");
     expect((await axe()).violations).toEqual([]);
-  });
-
-  test("404 page has no detectable WCAG 2.1 AA violations", async ({
-    page,
-  }) => {
-    await page.goto("/this-route-does-not-exist", {
-      waitUntil: "domcontentloaded",
-    });
-
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-      .analyze();
-
-    expect(results.violations).toEqual([]);
   });
 });

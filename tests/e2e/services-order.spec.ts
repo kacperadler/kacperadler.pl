@@ -13,7 +13,7 @@ test("the AI offer comes first, on the page and in llms.txt / llms-full.txt", as
 }) => {
   await page.goto("/");
   const onPage = (
-    await page.locator(".services-grid .service-panel h3").allTextContents()
+    await page.locator("#services .mb-card h3").allTextContents()
   ).map((title) => title.trim());
 
   expect(onPage[0]).toContain("Agenci AI");
