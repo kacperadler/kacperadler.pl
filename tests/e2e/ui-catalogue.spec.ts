@@ -50,9 +50,9 @@ const sample = (page: Page, sectionId: string, caption: string) =>
     }),
   });
 
-// The rendered height of `target` on each of the next `frames` animation
-// frames after `act` runs in the page - a transition shows up as heights
-// between the first and the last.
+// The rendered height of `target` just before a click on its `act` child,
+// then on each of the next `frames` animation frames - a transition shows
+// up as heights between the first and the last.
 const heightsAfter = (
   target: Locator,
   act: string,
@@ -81,12 +81,20 @@ const between = (heights: number[]) => {
   );
 };
 
-// CSS transitions running on the element or inside it.
+// CSS transitions running on the element or inside it. Under reduced
+// motion global.css shortens every transition to 0.01ms - a snap, which a
+// slow machine can still catch running - so only those of 1ms or more
+// count as motion.
 const runningTransitions = (locator: Locator) =>
   locator.evaluate((el) =>
     el
       .getAnimations({ subtree: true })
-      .filter((a) => a instanceof CSSTransition && a.playState === "running")
+      .filter(
+        (a) =>
+          a instanceof CSSTransition &&
+          a.playState === "running" &&
+          Number(a.effect?.getTiming().duration) >= 1
+      )
       .map((a) => (a as CSSTransition).transitionProperty)
   );
 
@@ -231,11 +239,18 @@ test.describe("component catalogue (astro dev)", () => {
   });
 
   test("checking a choice chip moves nothing", async ({ page }) => {
+    // Across every sample state (checked, hover, focus, disabled, invalid)
+    // the chips keep one frame width and one type weight.
     const chips = page.locator(".mb-radio-choice .mb-radio-label");
-    const widths = await chips.evaluateAll((labels) => [
-      ...new Set(labels.map((label) => getComputedStyle(label).borderTopWidth)),
+    const looks = await chips.evaluateAll((labels) => [
+      ...new Set(
+        labels.map((label) => {
+          const style = getComputedStyle(label);
+          return `${style.borderTopWidth} ${style.borderLeftWidth} ${style.fontWeight}`;
+        })
+      ),
     ]);
-    expect(widths).toEqual(["1px"]);
+    expect(looks).toEqual(["1px 1px 500"]);
 
     const group = page.getByRole("radiogroup", {
       name: "Typ projektu (choice, checked)",
@@ -570,5 +585,29 @@ test.describe("production build", () => {
     expect(
       await sendALead(page, page.locator("#contact [data-contact-form]"))
     ).toBe(1);
+  });
+
+  // Tag and status pill are badge variants now: the service tags keep their
+  // own case in the muted frame, the availability keeps its blue frame and
+  // square dot.
+  test("service tags and the availability are badge variants", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const tags = page.locator("#services .mb-service-tags li > .mb-badge-tag");
+    expect(await tags.count()).toBeGreaterThan(0);
+    await expect(tags.first()).toHaveCSS("text-transform", "none");
+    await expect(tags.first()).toHaveCSS("border-color", "rgb(157, 156, 149)");
+
+    const status = page.locator(".mb-hero-status .mb-badge-status");
+    await expect(status).toHaveText("Otwarty na nowe współprace");
+    await expect(status).toHaveCSS("border-color", "rgb(142, 174, 216)");
+    expect(
+      await status.evaluate((el) => {
+        const dot = getComputedStyle(el, "::before");
+        return `${dot.width} ${dot.height} ${dot.backgroundColor}`;
+      })
+    ).toBe("7px 7px rgb(142, 174, 216)");
+    await expect(page.locator(".mb-tag, .mb-status-pill")).toHaveCount(0);
   });
 });
