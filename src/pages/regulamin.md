@@ -2,7 +2,7 @@
 layout: "@/layouts/legal-layout.astro"
 title: Regulamin serwisu
 description: Zasady korzystania ze strony kacperadler.pl - charakter informacyjny, prawa autorskie, reklamacje, postanowienia końcowe.
-lastUpdated: "2026-05-09"
+lastUpdated: "2026-10-10"
 ---
 
 ## 1. Informacje ogólne
@@ -27,7 +27,7 @@ Serwis nie jest sklepem internetowym, platformą sprzedażową ani narzędziem d
 Do prawidłowego korzystania z Serwisu potrzebne są:
 
 - urządzenie z dostępem do Internetu,
-- aktualna przeglądarka internetowa z włączoną obsługą JavaScript oraz `localStorage`.
+- aktualna przeglądarka internetowa z włączoną obsługą JavaScript.
 
 Usługodawca nie ponosi odpowiedzialności za nieprawidłowe działanie Serwisu wynikające z niespełnienia powyższych wymagań technicznych po stronie Użytkownika.
 
