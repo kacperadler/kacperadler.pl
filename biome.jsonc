@@ -15,12 +15,10 @@
       "!spec/build.json"
     ]
   },
-  "overrides": [
-    {
-      "includes": ["**/*.astro"],
-      "formatter": {
-        "enabled": false
-      }
-    }
-  ]
+  // Biome parses and formats the whole .astro file (markup included), not
+  // only the frontmatter. ultracite/biome/astro turns this on too; it is
+  // stated here because the repo has no other .astro formatter.
+  "html": {
+    "experimentalFullSupportEnabled": true
+  }
 }

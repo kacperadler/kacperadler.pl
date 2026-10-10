@@ -7,9 +7,8 @@ Does the branch do what its ticket asks, with every check below green, without b
 ## PASS when all hold
 
 - These pass, the same commands `.github/workflows/ci.yml` runs (after `bun install --frozen-lockfile`):
-  - `bun run lint`
+  - `bun run lint` (Biome: lint and format check, `.astro` included)
   - `bun run check`
-  - `bunx prettier --check "**/*.astro"`
   - `bun run build`
   - `bun run test:e2e`
 - A change in behaviour has a new or updated spec in `tests/e2e/`.

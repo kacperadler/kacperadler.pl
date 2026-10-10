@@ -14,8 +14,7 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 
 - **Astro 7** (TypeScript strict, output static, `<ClientRouter />` z `astro:transitions`; `compressHTML: true` - HTML-aware whitespace z Astro 6, nie domyślne `'jsx'`)
 - **Vanilla CSS** + scoped `<style>` w `.astro`. **Dark-only**: `color-scheme: dark` na `:root` w `src/styles/tokens.css`, jedna ciemna wartość na kolor (bez par `light-dark()`). Jeden akcent (navy). **Bez Tailwinda** - design system na customowych tokenach (zob. `tokens.css` + `DESIGN.md`).
-- **Ultracite (Biome)** - lint + format dla TS/JS/JSON/CSS
-- **Prettier + prettier-plugin-astro** - formatowanie `*.astro` (Biome je lintuje, ale nie formatuje). `astroCompressHTML` w `.prettierrc` musi zgadzać się z `compressHTML` w `astro.config.mjs`, inaczej format zmienia render.
+- **Ultracite (Biome)** - lint + format dla TS/JS/JSON/CSS i `.astro` (`html.experimentalFullSupportEnabled` w `biome.jsonc`: Biome formatuje cały plik, razem z markupem)
 - **Content Collections** (Zod, `src/content.config.ts`) dla services / projects / experience / blog
 - **Markdown pages** dla treści statycznej (polityka prywatności, regulamin) - `src/pages/*.md` z `layout: "@/layouts/legal-layout.astro"`
 
@@ -55,19 +54,18 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 Package manager: **bun** (Node 22+; `bun` musi być w `PATH`, bo pre-commit hook woła `bunx`).
 
 ```bash
-bun install                          # install deps
-bun dev                              # dev server (Umami script NIE jest renderowany)
-bun run build                        # production build → dist/
-bun run preview                      # preview prod build (port domyślny 4321; testy używają 4329)
-bun run check                        # astro check (type-check .astro)
-bun run lint                         # ultracite check (Biome)
-bunx prettier --check "**/*.astro"   # format check .astro (jak w CI)
-bun run format                       # ultracite fix + prettier --write *.astro
-bun run test:e2e                     # playwright (chromium, headless); sam buduje dist/ przed preview
-bun run test:e2e:ui                  # playwright UI mode
+bun install            # install deps
+bun dev                # dev server (Umami script NIE jest renderowany)
+bun run build          # production build → dist/
+bun run preview        # preview prod build (port domyślny 4321; testy używają 4329)
+bun run check          # astro check (type-check .astro)
+bun run lint           # ultracite check (Biome): lint + format check, też .astro (jak w CI)
+bun run format         # ultracite fix (Biome): lint fix + format
+bun run test:e2e       # playwright (chromium, headless); sam buduje dist/ przed preview
+bun run test:e2e:ui    # playwright UI mode
 ```
 
-Pre-commit hook: `lint-staged` (ultracite fix dla TS/JS/JSON/CSS, prettier dla `.astro`) + `astro check`. CI (`.github/workflows/ci.yml`): lint → check → prettier check → build, potem job e2e.
+Pre-commit hook: `lint-staged` (ultracite fix dla TS/JS/JSON/CSS/`.astro`) + `astro check`. CI (`.github/workflows/ci.yml`): lint + format check → check → build, potem job e2e.
 
 ## Hosting
 
