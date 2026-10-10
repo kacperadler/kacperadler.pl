@@ -209,9 +209,9 @@
   {
     "id": "KA0028",
     "title": "Case studies in MDX: collection, list and page",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0028-case-studies-in-mdx-instead-of-placeholder-projects/ticket.md",
-    "updated": "2026-10-10T15:12:18.298Z"
+    "updated": "2026-10-10T15:17:52.259Z"
   },
   {
     "id": "KA0029",
@@ -286,9 +286,9 @@
   {
     "id": "KA0036",
     "title": "Kacper is a software engineer, not a frontend engineer",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0036-kacper-is-a-software-engineer-not-a-frontend-engineer/ticket.md",
-    "updated": "2026-10-10T15:15:50.959Z",
+    "updated": "2026-10-10T15:18:23.530Z",
     "after": [
       "KA0026"
     ]
@@ -404,5 +404,19 @@
     "status": "dropped",
     "path": "spec/features/KA0049-ka0029-cites-the-deleted-project-plan-md/ticket.md",
     "updated": "2026-10-10T15:11:34.930Z"
+  },
+  {
+    "id": "KA0050",
+    "title": "`AGENTS.md` and `README.md` still call Kacper a Frontend Engineer",
+    "status": "dropped",
+    "path": "spec/features/KA0050-agents-md-and-readme-md-still-call-kacper-a-frontend-engineer/ticket.md",
+    "updated": "2026-10-10T15:18:38.685Z"
+  },
+  {
+    "id": "KA0051",
+    "title": "The h1, tagline, OG tagline and status card stack still describe only frontend work",
+    "status": "planning",
+    "path": "spec/features/KA0051-the-h1-tagline-og-tagline-and-status-card-stack-still-describe-only-frontend-work/ticket.md",
+    "updated": "2026-10-10T15:18:23.528Z"
   }
 ]

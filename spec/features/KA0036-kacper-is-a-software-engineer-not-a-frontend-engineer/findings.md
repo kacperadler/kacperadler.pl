@@ -13,7 +13,7 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `AGENTS.md:3`, `README.md:3`
 - What: after KA0036 the site names the role "Inżynier oprogramowania" (`siteConfig.role`), but the first line of `AGENTS.md` says "Frontend Engineer (~5 lat, React/TS)" and `README.md` says "Frontend Engineera"; the README's offer list also leaves out the AI agents and automation that KA0026 put first.
 - Suggestion: say "Inżynier oprogramowania" in both and add the AI offer to the README's list; site code stays as it is.
-- Status: open
+- Status: ticket KA0047 (KA0050 folded into it)
 
 ## F2. The h1, tagline, OG tagline and status card stack still describe only frontend work
 
@@ -22,4 +22,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/components/sections/hero.astro:12` (h1 "Buduję interfejsy dla produktów..."), `src/data/site-config.ts` (`tagline`, also the OG image and `llms*.txt` quote), `src/components/sections/hero.astro:58` (Stack: React Native · TypeScript · Astro), `src/lib/seo.ts:67` (`knowsAbout` without AI or automation)
 - What: KA0036 changed only the title, as its Goal asks. The rest of the positioning KA0026 F2 named is unchanged: above the fold and in the OG image a visitor still reads "Buduję interfejsy" next to a frontend-only stack.
 - Suggestion: a copy ticket in which the human picks the h1 / tagline wording and the stack line that names the AI work; `knowsAbout` gains AI agents and automation. Experience roles stay.
-- Status: open
+- Status: ticket KA0051
