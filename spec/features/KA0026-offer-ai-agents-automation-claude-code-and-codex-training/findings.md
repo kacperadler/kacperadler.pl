@@ -13,7 +13,7 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/components/contact/contact-form.astro:12`
 - What: the "Typ projektu" radios are `webapp | landing | mobile | tool | other`. Someone who came for AI agents, automation or Claude Code / Codex training, now the first service card, has to pick "Inne", so the lead does not say what it is about and the `form-submit { type }` Umami event cannot count AI leads.
 - Suggestion: add one radio for the AI offer (for example `{ label: "Agenci AI / szkolenie", value: "ai" }`), first in the list like the card, and cover it in `tests/e2e/contact-form.spec.ts`; check the radio row still wraps on mobile. The NocoDB form view may need the new value accepted on its side.
-- Status: open
+- Status: fixed in 6a3c226
 
 ## F2. The hero and status card still present only a frontend engineer
 
