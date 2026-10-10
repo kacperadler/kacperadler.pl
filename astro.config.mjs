@@ -1,5 +1,6 @@
 // @ts-check
 import { fileURLToPath } from "node:url";
+import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 import icon from "astro-icon";
@@ -18,7 +19,7 @@ export default defineConfig({
   // astro-icon 1.2 has no option to skip local icons and warns when iconDir is
   // missing. All icons come from @iconify-json/lucide, so point it at an existing
   // folder with no SVGs (src/styles) and the local collection stays empty.
-  integrations: [icon({ iconDir: "src/styles" }), sitemap()],
+  integrations: [icon({ iconDir: "src/styles" }), sitemap(), mdx()],
   site: "https://kacperadler.pl",
 
   vite: {
