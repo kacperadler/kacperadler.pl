@@ -1,0 +1,800 @@
+/* Minimal - as little as carries the content.
+ *
+ * - One family: Geist for headlines, labels and body (--display and --mono
+ *   point at it); Geist Mono is left only for code. Both are the site's
+ *   self-hosted fonts in public/fonts, so the proposal brings no new font.
+ * - Space instead of surfaces: no panels, no glass, no dot grid, no
+ *   ribbons. A block is a hairline (--v2-line) on top and room below it;
+ *   sections sit further apart, headings align left with the content.
+ * - No shadows, no rings, no corner radius (the round things stay round).
+ * - Navy only where it means something: links, the active nav item and
+ *   CTA, a checked radio, focus, the availability dot, the <em> in
+ *   headlines, the "teraz" badge.
+ * - Motion: hairlines and text change color in 150ms; nothing moves but
+ *   the CTA arrow (3px). The mobile sheet fades, it does not slide.
+ * - Form controls keep a stronger 1px edge (--minimal-control, 3.3:1 on
+ *   the page) because without a fill the edge is all that marks them.
+ *
+ * Every rule starts at :root[data-proposal="minimal"], two simple
+ * selectors: a rule of one or two scoped compounds
+ * (.a[data-astro-cid-*] .b[data-astro-cid-*]) is then tied and this file,
+ * loaded last, wins it. The few deeper component selectors are matched
+ * one by one below. */
+
+html[data-proposal="minimal"] {
+  --display: "Geist", system-ui, -apple-system, sans-serif;
+  --mono: "Geist", system-ui, -apple-system, sans-serif;
+  --code: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+  --minimal-control: color-mix(in srgb, var(--ink) 40%, transparent);
+  --paper: var(--v2-bg);
+  --v2-panel: var(--v2-bg);
+  --v2-panel-elevated: var(--v2-bg);
+  --v2-grid: transparent;
+  --v2-radius-xs: 0;
+  --v2-radius-sm: 0;
+  --v2-radius-md: 0;
+  --v2-radius-lg: 0;
+  --v2-space-lg: 40px;
+  --v2-space-xl: 96px;
+  --v2-space-2xl: 176px;
+}
+
+:root[data-proposal="minimal"] :is(code, pre),
+:root[data-proposal="minimal"] :is(.ui-lede, .ui-note) code {
+  font-family: var(--code);
+}
+
+:root[data-proposal="minimal"]
+  :is(:focus-visible, [data-state="focus-visible"]) {
+  outline-offset: 4px;
+}
+
+/* ── Atmosphere: none. */
+
+:root[data-proposal="minimal"] :is(.ribbon, .fade-h, .fade-v) {
+  display: none;
+}
+
+:root[data-proposal="minimal"]
+  :is(.hero-status, .v2-card, .v2-contact-link, .contact-form-host)::before,
+:root[data-proposal="minimal"]
+  :is(.hero-status, .v2-card, .v2-contact-link, .contact-form-host)::after {
+  display: none;
+}
+
+/* ── Chrome: header, footer, mobile sheet. */
+
+:root[data-proposal="minimal"] .nav-wrap,
+:root[data-proposal="minimal"] .nav-wrap.scrolled {
+  background: var(--v2-bg);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-proposal="minimal"] .nav-wrap {
+  border-bottom-color: transparent;
+}
+
+:root[data-proposal="minimal"] .nav-wrap.scrolled {
+  border-bottom-color: var(--v2-line);
+}
+
+:root[data-proposal="minimal"] .mark {
+  box-shadow: none;
+}
+
+:root[data-proposal="minimal"] .brand {
+  white-space: nowrap;
+}
+
+:root[data-proposal="minimal"] :is(.menu-btn, .sheet-close) {
+  border-color: transparent;
+}
+
+:root[data-proposal="minimal"] .site-footer {
+  background: none;
+  border-top-color: var(--v2-line);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-proposal="minimal"] .footer-col-title {
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+:root[data-proposal="minimal"] .footer-bottom {
+  font-size: 13px;
+  letter-spacing: 0;
+  border-top-color: var(--v2-line);
+}
+
+:root[data-proposal="minimal"] .sheet {
+  background: var(--v2-bg);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transform: none;
+  transition:
+    opacity 0.15s ease,
+    visibility 0s linear 0.15s;
+}
+
+:root[data-proposal="minimal"] .sheet[data-mobile-sheet="open"] {
+  transform: none;
+  transition:
+    opacity 0.15s ease,
+    visibility 0s linear 0s;
+}
+
+:root[data-proposal="minimal"] .sheet-link {
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  border-bottom-color: var(--v2-line);
+}
+
+:root[data-proposal="minimal"] .sheet-link:is(:hover, :focus-visible) svg {
+  color: var(--ink);
+  transform: none;
+}
+
+/* ── Section head: left-aligned with the content under it. */
+
+:root[data-proposal="minimal"] .section-head {
+  max-width: 40rem;
+  margin: 0 0 var(--v2-space-xl);
+  text-align: left;
+}
+
+:root[data-proposal="minimal"] .section-head h2 {
+  margin-bottom: 16px;
+  font-size: clamp(30px, 4vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+:root[data-proposal="minimal"] .section-lede {
+  margin: 0;
+}
+
+:root[data-proposal="minimal"] .eyebrow {
+  margin-bottom: 16px;
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+:root[data-proposal="minimal"] .eyebrow-section {
+  justify-content: flex-start;
+}
+
+/* ── Hero: a large headline, the status card is a hairline column. */
+
+:root[data-proposal="minimal"] .hero {
+  padding: 128px 0 0;
+}
+
+:root[data-proposal="minimal"] .hero h1 {
+  margin-bottom: 32px;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+:root[data-proposal="minimal"] .hero-sub {
+  margin-bottom: 48px;
+}
+
+:root[data-proposal="minimal"] .hero-status,
+:root[data-proposal="minimal"] .hero-status:hover {
+  padding: 0 0 0 var(--v2-space-lg);
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--v2-line);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-proposal="minimal"] .hero-avatar {
+  width: 64px;
+  height: 64px;
+  border: 0;
+  box-shadow: none;
+}
+
+:root[data-proposal="minimal"] .status-name {
+  font-size: 17px;
+}
+
+:root[data-proposal="minimal"] .status-eyebrow {
+  margin: 0;
+}
+
+:root[data-proposal="minimal"] .status-rows {
+  gap: 0;
+}
+
+:root[data-proposal="minimal"] .status-row {
+  flex-flow: row wrap;
+  gap: 4px 16px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid var(--v2-line);
+}
+
+:root[data-proposal="minimal"] .status-label {
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+:root[data-proposal="minimal"] .status-value {
+  font-size: 14px;
+  font-weight: 400;
+  text-align: right;
+}
+
+@media (max-width: 880px) {
+  :root[data-proposal="minimal"] .hero {
+    padding: 64px 0 0;
+  }
+
+  :root[data-proposal="minimal"] .hero-status,
+  :root[data-proposal="minimal"] .hero-status:hover {
+    padding: var(--v2-space-lg) 0 0;
+    border-top: 1px solid var(--v2-line);
+    border-left: 0;
+  }
+}
+
+/* ── Card: no panel, a hairline on top that darkens on hover. */
+
+:root[data-proposal="minimal"] .v2-card {
+  padding: var(--v2-space-lg) 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--v2-line);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition: border-color 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .v2-card:is(:hover, [data-state="hover"]) {
+  background: none;
+  border-color: var(--muted);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+@media (max-width: 880px) {
+  :root[data-proposal="minimal"] .v2-card {
+    padding: 32px 0;
+  }
+}
+
+/* ── Services: an index number before each title, plain-text tags. */
+
+:root[data-proposal="minimal"] .services-grid {
+  gap: 0 var(--v2-space-xl);
+}
+
+@media (min-width: 881px) {
+  :root[data-proposal="minimal"]
+    .services-grid
+    .service-panel:last-child:nth-child(odd) {
+    justify-self: start;
+    width: calc((100% - var(--v2-space-xl)) / 2);
+  }
+}
+
+:root[data-proposal="minimal"] .service-head {
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+
+:root[data-proposal="minimal"] .service-num,
+:root[data-proposal="minimal"] .service-panel:hover .service-num {
+  order: -1;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  letter-spacing: 0;
+  opacity: 1;
+}
+
+:root[data-proposal="minimal"] .service-panel p {
+  margin-bottom: 24px;
+}
+
+:root[data-proposal="minimal"] :is(.service-tags, .ui-tags) {
+  gap: 4px 16px;
+}
+
+/* ── Process: numbered rows between hairlines, no rail, no icons. */
+
+:root[data-proposal="minimal"] .how-steps {
+  gap: 0;
+}
+
+:root[data-proposal="minimal"] .step-item {
+  border-top: 1px solid var(--v2-line);
+  transition: border-color 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .step-item:has(.step-panel:hover) {
+  border-top-color: var(--muted);
+}
+
+:root[data-proposal="minimal"] .step-panel {
+  border-top-width: 0;
+}
+
+:root[data-proposal="minimal"] .step-marker {
+  justify-content: flex-start;
+  padding-top: var(--v2-space-lg);
+}
+
+:root[data-proposal="minimal"] .step-marker::before,
+:root[data-proposal="minimal"] .step-icon {
+  display: none;
+}
+
+:root[data-proposal="minimal"] .step-dot,
+:root[data-proposal="minimal"] .step-item:has(.step-panel:hover) .step-dot {
+  width: auto;
+  height: 24px;
+  font-size: 13px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-proposal="minimal"] .step-head {
+  gap: 16px;
+}
+
+@media (max-width: 880px) {
+  :root[data-proposal="minimal"] .step-marker {
+    padding-top: 32px;
+  }
+}
+
+/* ── Experience: the logos stay grey, the role is plain text. */
+
+:root[data-proposal="minimal"] .exp-list {
+  gap: 0 var(--v2-space-lg);
+}
+
+:root[data-proposal="minimal"] .exp-head {
+  margin-bottom: 24px;
+}
+
+:root[data-proposal="minimal"] .exp-logo {
+  opacity: 0.7;
+  filter: grayscale(100%);
+  transition: opacity 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .exp-panel:hover .exp-logo {
+  opacity: 1;
+  filter: grayscale(100%);
+}
+
+:root[data-proposal="minimal"] .exp-role {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink-2);
+  letter-spacing: 0;
+}
+
+:root[data-proposal="minimal"] .case-link {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--blue) 45%, transparent);
+  text-underline-offset: 4px;
+}
+
+:root[data-proposal="minimal"] .case-link:hover {
+  text-decoration-color: var(--blue);
+}
+
+:root[data-proposal="minimal"] .case-link:hover svg {
+  transform: none;
+}
+
+/* ── Contact: two hairline rows, then the form on the same rule. */
+
+/* Left-aligned under the section head, at the original 720px. */
+:root[data-proposal="minimal"] :is(.contact-links, .contact-form-host) {
+  margin: 0;
+}
+
+:root[data-proposal="minimal"] .contact-links {
+  gap: 0 var(--v2-space-lg);
+}
+
+:root[data-proposal="minimal"] .v2-contact-link,
+:root[data-proposal="minimal"] .v2-contact-link:hover {
+  padding: 20px 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--v2-line);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition: border-color 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .v2-contact-link:hover {
+  border-top-color: var(--muted);
+}
+
+:root[data-proposal="minimal"] .v2-contact-icon {
+  display: none;
+}
+
+:root[data-proposal="minimal"] .v2-contact-label {
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+:root[data-proposal="minimal"] .v2-contact-value {
+  font-weight: 400;
+}
+
+:root[data-proposal="minimal"] .contact-form-host,
+:root[data-proposal="minimal"] .contact-form-host:hover,
+:root[data-proposal="minimal"]
+  .contact-form-host:has(input[type="email"]:focus, textarea:focus),
+:root[data-proposal="minimal"] .contact-form-host:has([data-state="success"]) {
+  --card: transparent;
+  --line: var(--v2-line);
+  background: none;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-proposal="minimal"] .form {
+  gap: 28px;
+  padding: var(--v2-space-lg) 0 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--v2-line);
+}
+
+:root[data-proposal="minimal"] .submit-row {
+  justify-content: flex-start;
+}
+
+:root[data-proposal="minimal"] .form-error {
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+:root[data-proposal="minimal"] .form-success-card {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: var(--v2-space-lg) 0;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--v2-line);
+}
+
+:root[data-proposal="minimal"] .success-mark {
+  width: auto;
+  height: auto;
+  color: var(--blue);
+  background: none;
+}
+
+/* ── Button: square, flat; primary darkens to --ink-2 on hover, ghost is
+ * underlined text. */
+
+:root[data-proposal="minimal"] .btn {
+  font-size: 14px;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    text-decoration-color 0.15s ease,
+    padding 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .btn .btn-icon {
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .btn:is(:hover, [data-state="hover"]) .btn-icon {
+  transform: translateX(3px);
+  animation: none;
+}
+
+:root[data-proposal="minimal"] .btn-primary {
+  padding: 14px 22px;
+}
+
+:root[data-proposal="minimal"] .btn-primary.active {
+  color: var(--paper-2);
+  background: var(--blue);
+  box-shadow: none;
+}
+
+:root[data-proposal="minimal"] .btn-primary:is(:hover, [data-state="hover"]) {
+  background: var(--ink-2);
+  box-shadow: none;
+}
+
+:root[data-proposal="minimal"] .btn-ghost,
+:root[data-proposal="minimal"] .btn-ghost:is(:hover, [data-state="hover"]) {
+  padding: 14px 12px;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--minimal-control);
+  text-underline-offset: 6px;
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-proposal="minimal"] .btn-ghost:is(:hover, [data-state="hover"]) {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
+:root[data-proposal="minimal"] .btn-sm.btn-primary {
+  padding: 9px 16px;
+}
+
+:root[data-proposal="minimal"] .btn-sm.btn-ghost {
+  padding: 9px 10px;
+}
+
+:root[data-proposal="minimal"] .btn:is([disabled], [data-state="submitting"]) {
+  opacity: 0.5;
+}
+
+:root[data-proposal="minimal"] .btn-spinner {
+  border-width: 1.5px;
+}
+
+/* ── Link: thin underlines, the nav line fades in instead of growing. */
+
+:root[data-proposal="minimal"] .link-inline,
+:root[data-proposal="minimal"] .prose :is(a) {
+  font-weight: 400;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--blue) 45%, transparent);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .link-inline:is(:hover, [data-state="hover"]),
+:root[data-proposal="minimal"] .prose :is(a):hover {
+  text-decoration-color: var(--blue);
+}
+
+:root[data-proposal="minimal"] .link-nav {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  transition: color 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .link-nav::after {
+  bottom: 6px;
+  height: 1px;
+  background: var(--ink);
+  opacity: 0;
+  transform: none;
+  transition: opacity 0.15s ease;
+}
+
+:root[data-proposal="minimal"]
+  .link-nav:is(:hover, .active, [data-state="hover"])::after {
+  opacity: 1;
+  transform: none;
+}
+
+:root[data-proposal="minimal"] .link-nav.active::after {
+  background: var(--blue);
+}
+
+:root[data-proposal="minimal"] .link-footer {
+  gap: 12px;
+  transition: color 0.15s ease;
+}
+
+:root[data-proposal="minimal"]
+  .link-footer:is(:hover, [data-state="hover"])
+  svg {
+  color: var(--ink);
+}
+
+/* ── Badge, tag, status pill: plain text, no chip. */
+
+:root[data-proposal="minimal"] .badge {
+  padding: 0;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  border: 0;
+  transition: color 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .badge-outline {
+  color: var(--muted);
+  background: none;
+}
+
+:root[data-proposal="minimal"] .badge-filled,
+:root[data-proposal="minimal"]
+  .v2-card:is(:hover, [data-state="hover"])
+  .badge-card-hover {
+  color: var(--blue);
+  background: none;
+}
+
+:root[data-proposal="minimal"] .tag {
+  padding: 0;
+  font-size: 13px;
+  color: var(--muted);
+  border: 0;
+}
+
+:root[data-proposal="minimal"] .status-pill {
+  padding: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-2);
+  background: none;
+}
+
+/* ── Form fields: transparent, a 1px edge, blue edge on focus, no ring. */
+
+:root[data-proposal="minimal"] .field {
+  gap: 10px;
+}
+
+:root[data-proposal="minimal"] .field-label {
+  font-size: 13px;
+  color: var(--ink-2);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+:root[data-proposal="minimal"] .err {
+  font-size: 13px;
+}
+
+:root[data-proposal="minimal"] :is(.v2-input, .v2-textarea) {
+  background: transparent;
+  border-color: var(--minimal-control);
+}
+
+:root[data-proposal="minimal"]
+  :is(.v2-input, .v2-textarea):is(:focus, [data-state="focus"]) {
+  border-color: var(--blue);
+  box-shadow: none;
+}
+
+:root[data-proposal="minimal"]
+  .field[data-invalid]
+  :is(.v2-input, .v2-textarea) {
+  border-color: var(--error);
+}
+
+:root[data-proposal="minimal"] :is(.v2-input, .v2-textarea):disabled {
+  cursor: not-allowed;
+  border-color: var(--v2-line);
+}
+
+:root[data-proposal="minimal"] .radio {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+:root[data-proposal="minimal"] .radio span {
+  font-size: 14px;
+  border-color: var(--minimal-control);
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+:root[data-proposal="minimal"] .radio:is(:hover, [data-state="hover"]) span {
+  color: var(--ink);
+  border-color: var(--ink-2);
+}
+
+/* A group in error: every option takes the error edge until one is
+ * picked (the checked rule below is one step more specific). */
+:root[data-proposal="minimal"] .field[data-invalid] .radio span {
+  border-color: var(--error);
+}
+
+/* input[type="radio"] matches the specificity of the component's
+ * .radio input:checked + span (three scoped compounds). */
+:root[data-proposal="minimal"] .radio input[type="radio"]:checked + span {
+  font-weight: 400;
+  color: var(--blue);
+  background: none;
+  border-color: var(--blue);
+}
+
+:root[data-proposal="minimal"] .radio input[type="radio"]:disabled + span {
+  color: var(--muted);
+  cursor: not-allowed;
+  border-color: var(--v2-line);
+}
+
+/* ── Typography (.prose): lighter weights, flat code block, thin quote. */
+
+:root[data-proposal="minimal"] .prose :is(h1) {
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+:root[data-proposal="minimal"] .prose :is(h2) {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+:root[data-proposal="minimal"] .prose :is(h3, h4) {
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+:root[data-proposal="minimal"] .prose :is(strong) {
+  font-weight: 500;
+}
+
+:root[data-proposal="minimal"] .prose :is(code) {
+  font-weight: 400;
+}
+
+:root[data-proposal="minimal"] .prose :is(blockquote) {
+  padding-inline-start: 1.25em;
+  font-style: normal;
+  font-weight: 400;
+  border-inline-start-width: 1px;
+}
+
+:root[data-proposal="minimal"] .prose :is(pre) {
+  background: none;
+  border: 1px solid var(--v2-line);
+  border-radius: 0;
+}
+
+/* ── The catalogue's own surfaces: no box, like the sections they show. */
+
+:root[data-proposal="minimal"] :is(.ui-panel, .ui-form-surface) {
+  padding: 0;
+  border: 0;
+}
+
+:root[data-proposal="minimal"] .ui-caption {
+  letter-spacing: 0;
+}
