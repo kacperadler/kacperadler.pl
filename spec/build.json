@@ -630,9 +630,9 @@
   {
     "id": "KA0079",
     "title": "Blueprint: the cell tag is unreadable on hover",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0079-blueprint-the-cell-tag-is-unreadable-on-hover/ticket.md",
-    "updated": "2026-10-10T21:09:58.224Z"
+    "updated": "2026-10-10T21:23:04.910Z"
   },
   {
     "id": "KA0080",
