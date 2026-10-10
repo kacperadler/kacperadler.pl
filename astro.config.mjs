@@ -15,7 +15,10 @@ export default defineConfig({
   // .prettierrc mirrors it as astroCompressHTML so formatting never changes output.
   compressHTML: true,
 
-  integrations: [icon(), sitemap()],
+  // astro-icon 1.2 has no option to skip local icons and warns when iconDir is
+  // missing. All icons come from @iconify-json/lucide, so point it at an existing
+  // folder with no SVGs (src/styles) and the local collection stays empty.
+  integrations: [icon({ iconDir: "src/styles" }), sitemap()],
   site: "https://kacperadler.pl",
 
   vite: {
