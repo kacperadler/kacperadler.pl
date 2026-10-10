@@ -36,3 +36,4 @@ Out:
 ## Decisions
 
 - 2026-10-10: The human (onboarding answer 11): update the packages and bump Astro, no Dependabot PR was merged.
+- 2026-10-10: The human: KA0003 has no budget limit (h continue --budget 0).

@@ -19,7 +19,7 @@
     "title": "Update dependencies, Astro to the newest release",
     "status": "in-progress",
     "path": "spec/features/KA0003-update-dependencies-astro-to-the-newest-release/ticket.md",
-    "updated": "2026-10-10T12:19:42.013Z"
+    "updated": "2026-10-10T12:36:34.915Z"
   },
   {
     "id": "KA0004",
@@ -32,15 +32,15 @@
   {
     "id": "KA0005",
     "title": "The dropped email-templates offer is still on the site",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0005-the-dropped-email-templates-offer-is-still-on-the-site/ticket.md",
-    "updated": "2026-10-10T12:28:07.841Z"
+    "updated": "2026-10-10T12:36:29.392Z"
   },
   {
     "id": "KA0006",
     "title": "Em-dashes left in generated text and docs",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0006-em-dashes-left-in-generated-text-and-docs/ticket.md",
-    "updated": "2026-10-10T12:28:08.033Z"
+    "updated": "2026-10-10T12:34:45.583Z"
   }
 ]
