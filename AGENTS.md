@@ -41,7 +41,7 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 - Nie przywracaj theming machinery (`data-theme`, przełącznik motywu, inline theme script, jasne wartości) - strona jest dark-only.
 - Nie używaj scroll listenera dla active section - IntersectionObserver.
 - Nie dodawaj em-dashy (U+2014) nigdzie: copy, docs, komentarze, generowany tekst.
-- Nie commituj `.claude/settings.local.json` (gitignored, personalny allowlist).
+- Nie commituj konfiguracji edytorów ani agentów (`.claude/`, `.vscode/`, `.zed/`, `.idea/` są w `.gitignore`).
 - Nie wychodź poza Scope ticketu bez konsultacji.
 - Nie wysyłaj do NocoDB form view innego payloadu niż `FormData` z polem `data` zawierającym JSON-string.
 - Nie zmieniaj tokenów, brand-marka favicon ani palety bez aktualizacji `DESIGN.md`.
