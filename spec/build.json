@@ -574,8 +574,11 @@
   {
     "id": "KA0072",
     "title": "A signature of Kacper's own in the minimal brutalism style",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0072-a-signature-of-kacper-s-own-in-the-minimal-brutalism-style/ticket.md",
-    "updated": "2026-10-10T19:43:38.860Z"
+    "updated": "2026-10-10T19:46:16.086Z",
+    "after": [
+      "KA0069"
+    ]
   }
 ]
