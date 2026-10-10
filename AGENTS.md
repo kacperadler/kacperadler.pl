@@ -63,7 +63,7 @@ bun run check                        # astro check (type-check .astro)
 bun run lint                         # ultracite check (Biome)
 bunx prettier --check "**/*.astro"   # format check .astro (jak w CI)
 bun run format                       # ultracite fix + prettier --write *.astro
-bun run test:e2e                     # playwright (chromium, headless)
+bun run test:e2e                     # playwright (chromium, headless); sam buduje dist/ przed preview
 bun run test:e2e:ui                  # playwright UI mode
 ```
 

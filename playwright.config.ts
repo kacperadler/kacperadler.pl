@@ -53,13 +53,16 @@ export default defineConfig({
     trace: "on-first-retry",
   },
 
+  // The run builds first, so it tests this tree: `astro preview` serves whatever
+  // dist/ holds, and a dist/ older than the specs failed them (h merge runs no
+  // build of its own).
   // --ignore-lock keeps `astro preview` (Astro 7) in the foreground: without it the
   // CLI detaches when it detects an AI agent, and refuses to start while another
   // preview of this project holds the lock, so Playwright sees the process exit.
   // Playwright owns the process and kills it after the run. It never reuses a
   // server it did not start: one already on PORT fails the run instead.
   webServer: {
-    command: `bun run preview -- --port ${PORT} --ignore-lock`,
+    command: `bun run build && bun run preview -- --port ${PORT} --ignore-lock`,
     reuseExistingServer: false,
     stderr: "pipe",
     stdout: "ignore",

@@ -68,8 +68,11 @@ test.describe("mobile sheet", () => {
     const dialog = page.getByRole("dialog", { name: "Menu mobilne" });
     await expect(dialog).toBeVisible();
     await expect(dialog).toHaveAttribute("aria-modal", "true");
-    // Let the fade-in finish so axe measures contrast on the final paint.
-    await expect(dialog).toHaveCSS("opacity", "1");
+    // Let the open transition finish so axe measures contrast on the final
+    // paint: wait until the sheet has no running animation, not for a value.
+    await dialog.evaluate((sheet) =>
+      Promise.all(sheet.getAnimations().map((animation) => animation.finished))
+    );
 
     const results = await new AxeBuilder({ page })
       .include("#mobile-sheet")
