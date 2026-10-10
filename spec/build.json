@@ -313,9 +313,9 @@
   {
     "id": "KA0039",
     "title": "Design proposal: minimal",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0039-design-proposal-minimal/ticket.md",
-    "updated": "2026-10-10T15:03:30.503Z",
+    "updated": "2026-10-10T17:14:07.119Z",
     "after": [
       "KA0038"
     ]
@@ -323,9 +323,9 @@
   {
     "id": "KA0040",
     "title": "Design proposal: brutalist",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0040-design-proposal-brutalist/ticket.md",
-    "updated": "2026-10-10T15:03:30.741Z",
+    "updated": "2026-10-10T17:11:25.331Z",
     "after": [
       "KA0038"
     ]
@@ -333,9 +333,9 @@
   {
     "id": "KA0041",
     "title": "Design proposal: modernist",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0041-design-proposal-modernist/ticket.md",
-    "updated": "2026-10-10T15:03:30.963Z",
+    "updated": "2026-10-10T17:13:47.420Z",
     "after": [
       "KA0038"
     ]
@@ -446,5 +446,26 @@
     "status": "planning",
     "path": "spec/features/KA0055-case-study-pages-repeat-the-badge-and-tag-markup/ticket.md",
     "updated": "2026-10-10T16:32:42.754Z"
+  },
+  {
+    "id": "KA0056",
+    "title": "The axe check runs only on the baseline proposal",
+    "status": "planning",
+    "path": "spec/features/KA0056-the-axe-check-runs-only-on-the-baseline-proposal/ticket.md",
+    "updated": "2026-10-10T17:14:07.114Z"
+  },
+  {
+    "id": "KA0057",
+    "title": "The proposal docs promise a specificity win that deeper component selectors do not give",
+    "status": "planning",
+    "path": "spec/features/KA0057-the-proposal-docs-promise-a-specificity-win-that-deeper-component-selectors-do-not-give/ticket.md",
+    "updated": "2026-10-10T17:14:07.117Z"
+  },
+  {
+    "id": "KA0058",
+    "title": "The button arrow shrinks to nothing in a narrow container",
+    "status": "planning",
+    "path": "spec/features/KA0058-the-button-arrow-shrinks-to-nothing-in-a-narrow-container/ticket.md",
+    "updated": "2026-10-10T17:14:07.118Z"
   }
 ]

@@ -14,6 +14,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0036 Kacper is a software engineer, not a frontend engineer (a8f5655)
 - KA0037 Component catalogue at /ui (140ac4d)
 - KA0038 Design proposals at /ui/proposal/<id> (4d48281)
+- KA0039 Design proposal: minimal (354a688)
 
 ### Fixed
 
