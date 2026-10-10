@@ -1,7 +1,7 @@
 ---
 /* /ui - the component catalogue (catalogue.astro) in the current design,
- * with a link to the design proposals. astro.config.mjs routes it for
- * `astro dev` only. */
+ * with links to the design proposals and to the minimal brutalism
+ * components (/ui/mb). astro.config.mjs routes it for `astro dev` only. */
 import Link from "@/components/ui/link.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
 import Catalogue from "./catalogue.astro";
@@ -15,6 +15,7 @@ import Catalogue from "./catalogue.astro";
   <main id="top">
     <nav aria-label="Propozycje designu" class="container ui-proposals">
       <Link href="/ui/proposal" variant="nav">Propozycje designu</Link>
+      <Link href="/ui/mb" variant="nav">Minimal brutalism</Link>
     </nav>
     <Catalogue />
   </main>
