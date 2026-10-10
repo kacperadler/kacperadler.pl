@@ -547,9 +547,9 @@
   {
     "id": "KA0069",
     "title": "The landing page in minimal brutalism",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0069-the-landing-page-in-minimal-brutalism/ticket.md",
-    "updated": "2026-10-10T20:01:30.931Z",
+    "updated": "2026-10-10T20:20:42.316Z",
     "after": [
       "KA0068"
     ]
@@ -557,9 +557,9 @@
   {
     "id": "KA0070",
     "title": "Under reduced motion the mobile sheet opens without focus on its close button",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0070-under-reduced-motion-the-mobile-sheet-opens-without-focus-on-its-close-button/ticket.md",
-    "updated": "2026-10-10T19:26:17.205Z"
+    "updated": "2026-10-10T20:20:56.997Z"
   },
   {
     "id": "KA0071",
@@ -580,5 +580,19 @@
     "after": [
       "KA0069"
     ]
+  },
+  {
+    "id": "KA0073",
+    "title": "The OG image still draws the old design",
+    "status": "planning",
+    "path": "spec/features/KA0073-the-og-image-still-draws-the-old-design/ticket.md",
+    "updated": "2026-10-10T20:20:42.312Z"
+  },
+  {
+    "id": "KA0074",
+    "title": "`bun run check` reads the Playwright HTML report when `CI` is set",
+    "status": "planning",
+    "path": "spec/features/KA0074-bun-run-check-reads-the-playwright-html-report-when-ci-is-set/ticket.md",
+    "updated": "2026-10-10T20:20:42.314Z"
   }
 ]

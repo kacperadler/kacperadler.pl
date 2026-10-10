@@ -23,6 +23,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0065 Design proposal: minimal brutalism computer (b0634b2)
 - KA0067 Keep only the minimal brutalism proposal (85fb50e)
 - KA0068 Minimal brutalism components in the /ui catalogue (a271183)
+- KA0069 The landing page in minimal brutalism (1928b85)
 
 ### Fixed
 

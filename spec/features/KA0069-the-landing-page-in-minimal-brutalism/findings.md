@@ -13,7 +13,7 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/pages/og-default.png.ts:6-7,79,109,122,141`
 - What: the share image is built in the old vocabulary: a dot grid (`GRID`, the `<circle>` pattern), the photo in a rounded panel (`rx`/`ry` = `PHOTO_RADIUS`) and a rounded brand mark (`rx="6"`). Every page now renders minimal brutalism (square cells in ink rules on a solid substrate), so a shared link previews a design the site no longer has. KA0069 left it alone: its Done means keeps SEO output as it is (`og-default.png` is byte-identical to the build before the switch).
 - Suggestion: redraw it in the new vocabulary - solid `base`, the photo in a square 1px ink frame, the square brand mark, heavy Geist-like headline - keeping 1200×630 and the path; check with `docker build -t kacperadler-pl-test .` as AGENTS.md requires for this file.
-- Status: open
+- Status: ticket KA0073
 
 ## F2. `bun run check` reads the Playwright HTML report when `CI` is set
 
@@ -22,4 +22,13 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `playwright.config.ts` (`reporter`), `tsconfig.json` / `astro check` input
 - What: with `CI` set (as in this job's shell) a run with a failing test retries it and records a trace (`trace: "on-first-retry"`), and the `html` reporter bundles the trace viewer into `playwright-report/trace/`. A later `bun run check` in the same tree then printed that viewer's minified source as diagnostics, although the folder is gitignored; after `rm -rf playwright-report test-results` the same `bun run check` reported 0 errors. After a run where everything passed (no trace), check passes with the report folder present. CI runs check before e2e, so it does not hit it there; a local or agent run in that order after a failure does.
 - Suggestion: exclude `playwright-report` and `test-results` from what `astro check` reads (`exclude` in `tsconfig.json`), or write the HTML report outside the source tree.
-- Status: open
+- Status: ticket KA0074
+
+## F3. The 360px sideways-scroll test on the dev catalogue is flaky
+
+- Kind: bug
+- Found by: 2026-10-10-review-landing-in-mb-a68b6d20 (review), 2026-10-10
+- Where: `tests/e2e/ui-catalogue.spec.ts:87`
+- What: "does not scroll sideways at 360px" measured 368px once and passed on retry.
+- Suggestion: fix the overflow it catches, not the retry.
+- Status: ticket KA0066

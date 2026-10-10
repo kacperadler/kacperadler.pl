@@ -36,3 +36,4 @@ In:
 
 - 2026-10-10: Source: F1 of KA0068
 - 2026-10-10: The coordinator: KA0069 replaces the old sheet with mb/mobile-sheet.astro, which has the fix; drop this ticket once KA0069 merges if the bug is gone.
+- 2026-10-10: Dropped by the coordinator: KA0069 replaced the old sheet with mb/mobile-sheet.astro; the reduced-motion focus test passes and its review mutation confirmed it.

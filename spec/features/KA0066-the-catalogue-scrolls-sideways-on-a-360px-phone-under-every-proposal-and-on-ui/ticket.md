@@ -39,3 +39,4 @@ In:
 
 - 2026-10-10: Source: F1 of KA0065
 - 2026-10-10: After KA0067: the catalogue fix applies to what is left.
+- 2026-10-10: Also F3 of KA0069: the 360px test on the dev catalogue is flaky (368px once).
