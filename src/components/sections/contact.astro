@@ -201,10 +201,9 @@ import { siteConfig } from "@/data/site-config";
       border-color 0.3s ease;
   }
 
-  /* Form internals that are NOT rendered by v2 components (Input /
-   * Textarea / Button bring their own radius) need rounding here to
-   * read v2-native instead of sharp-cornered. */
-  .contact-form-host :global(.radio span),
+  /* The error banner is not a ui component (Input / Textarea / Radio /
+   * Button bring their own radius), so it gets rounded here to read
+   * v2-native instead of sharp-cornered. */
   .contact-form-host :global(.form-error) {
     border-radius: var(--v2-radius-sm);
   }

@@ -14,6 +14,7 @@ colors:
   blue: "#8eaed8"
   blue-2: "#b4c8e6"
   on-blue: "#0f1116"
+  error: "#e07a70"
 typography:
   display-xl:
     fontFamily: Geist Mono
@@ -125,6 +126,7 @@ There is one design, served at `/`, and it is dark only.
 - **`panel-elevated` (`#1a1e26`):** secondary surface, used for emphasis (CTAs, hero, featured cards). ~1 step lighter again.
 - **`ink` / `ink-2` / `muted`:** triadic text scale. `ink` is for headlines and primary text, `ink-2` for body copy, `muted` for metadata, eyebrows, captions.
 - **`blue` (`#8eaed8`):** the **only** chromatic accent. Used for: link color, primary-button hover ring, eyebrow status dot, `<em>` highlights inside headings. One accent enforces the brand mark - never reach for a second hue.
+- **`error` (`#e07a70`):** a warm coral, for form errors only (the invalid field border, the error line under it, the send-error banner). Not an accent: it never decorates. Reaches WCAG AA on the form surfaces: 6.15:1 on `panel`, 6.7:1 on `base`.
 
 ## Typography
 
@@ -163,9 +165,11 @@ Every content card (services / how-i-work steps / experience tiles / contact-lin
 - The card's bg also bumps from solid `panel` to `panel` 65% mix on hover, so backdrop-filter blur becomes visible behind the translucent surface - that's where the "glass-up" feeling comes from.
 - `prefers-reduced-motion: reduce` skips the spotlight binding entirely (no var updates, no opacity transition).
 
-The shared selector group lives in `src/styles/global.css` - extending the pattern to a new card means adding the selector to that group and dropping `data-spotlight` on the markup.
+The shared selector group lives in `src/styles/global.css` and keys on `.v2-card` (the `<Card>` component) plus the cards with their own paint (`.hero-status`, `.v2-contact-link`, `.contact-form-host`) - a new card should use `<Card>`; a card that cannot means adding its selector to that group and dropping `data-spotlight` on the markup.
 
 ## Components
+
+Every component lives in `src/components/ui/` and is shown, with each variant and state, by the catalogue at `/ui` (`bun dev` only). States there are forced with `[data-state="hover" | "focus-visible" | "focus"]`, `.active` and `disabled`; each component declares those selectors next to its real `:hover` / `:focus`, so changing a state means changing one rule.
 
 ### Panel (default surface)
 Background `panel`, border `1px solid line` (≈10% ink). Radius `lg`. Default padding `lg`. Use `panel-elevated` only for the single most important block per screen (hero, primary card).
@@ -192,7 +196,7 @@ Used in Experience to render the `Współpracowałem z` cards. Grid `auto-fill, 
 
 - Logo image at the top (grayscale + opacity 0.6 idle, full color + opacity 1 on hover - uniform wall feel that rewards engagement).
 - Company name (`display` 18px), role (mono blue 12px), description (sans 14px).
-- Optional `badge` field on the data entry overrides the default year-range pill - used for engagements like `"Zlecenie"`. Filled `blue-wash` styling, same vocab as `.status-pill` and the current-role `teraz` pill.
+- Optional `badge` field on the data entry overrides the default year-range badge - used for engagements like `"Zlecenie"`. `<Badge>` (`ui/badge.astro`): `outline` for the year range, `filled` (`blue-wash`, same vocab as `<StatusPill>`) for `teraz` and the override. The process step badge is `outline` with `fillOnCardHover`.
 - An entry with a case study (`experience` field on a `caseStudies` entry) ends with a `Zobacz realizację` link (`.case-link`): mono 12px `blue`, `lucide:arrow-right` that shifts 3px right on hover, underline on hover; the company name is in its accessible name. Entries without one render without it.
 
 ### Case study page
@@ -200,6 +204,14 @@ Used in Experience to render the `Współpracowałem z` cards. Grid `auto-fill, 
 
 ### Case study list
 `/realizacje/`, built only when a case study exists (the `Realizacje` menu entry too). Centred `section-head` with an h1, then the logo-wall grid (`auto-fill, minmax(280px, 1fr)`) of `<Card>`s with class `case-panel` (in the shared spotlight selectors): period pill (outline, like the year-range pill), company (`display` 18px), role (mono blue 12px), summary (sans 14px), and the same `Zobacz realizację` link (`.case-link` in `global.css`, shared with the logo wall). In the menu, `Realizacje` is `.active` on `/realizacje/` and the case study pages, with `aria-current="page"` on the list itself.
+
+### Badge, tag, status pill
+- **Badge** - mono 11px, `xs` radius, `outline` (muted text, `line` border) or `filled` (`blue` on `blue-wash`).
+- **Tag** (`ui/tag.astro`) - the service-card tech chips: mono 11px, `ink-2`, transparent with a `line` border.
+- **Status pill** (`ui/status-pill.astro`) - `blue-wash` pill with a 6px dot; hero status card and mobile sheet.
+
+### Links
+`ui/link.astro`: `inline` (blue, underlined, offset 3px), `nav` (header; a 1.5px `blue` underline scales in on hover and stays while `.active`), `footer` (muted list link; an optional leading icon turns `blue` on hover).
 
 ### Buttons
 - **Primary** - `ink` background, `paper-2` text, `sm` radius. **Hover:** background darkens 12% toward black + a 4px `--blue-wash` ring (the same ring used in `.active`, so hover previews the "you arrived" state). The button does not lift - it stays planted, glass-style. Arrow icon (`lucide:arrow-right` via `icon` prop) cycles through a translateX + opacity:0 teleport on hover so it appears to "fly through" rather than reverse. All button transitions are unified at `0.25s ease`. One primary per screen.
@@ -212,7 +224,7 @@ Buttons live in `src/components/ui/button.astro` (canonical). Used by: header CT
 Small mono-uppercase label, `muted` color, often paired with a small blue dot (3-step shadow as a "live" indicator). Used at the start of every section to anchor it.
 
 ### Form fields
-Border `1px solid line`, focus state shifts border to `blue` + a 3px `blue` wash. Errors flip border to `#c44545` + same-toned wash. Same radius (`sm`) as buttons.
+Border `1px solid line`, focus state shifts border to `blue` + a 3px `blue` wash. Errors flip the border to `error` and show a 12px `error` line under the field. Same radius (`sm`) as buttons. `ui/field.astro` carries the mono label and the error line around `<Input>`, `<Textarea>` or a group of `<Radio>` (a pill: checked = `blue` on `blue-wash` with a `blue` border, keyboard focus = 2px `blue` ring).
 
 ## Motion
 

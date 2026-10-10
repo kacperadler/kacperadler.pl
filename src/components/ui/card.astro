@@ -5,10 +5,12 @@
  * --card swap) and keep their own classes.
  *
  * Adds the .v2-card class (base panel CSS) plus optional `data-spotlight`
- * - on by default so spotlight pseudos defined in global.css activate.
- * `tag` lets the caller pick the semantic wrapper (article / li / div).
- * `class` passes through so sections add their own modifiers (extra padding,
- * flex-direction, etc.). All other props forward to the rendered element. */
+ * - on by default so the spotlight pseudos that global.css keys on .v2-card
+ * follow the cursor. [data-state="hover"] forces the hover look (catalogue
+ * at /ui). `tag` lets the caller pick the semantic wrapper (article / li /
+ * div). `class` passes through so sections add their own modifiers (extra
+ * padding, flex-direction, etc.). All other props forward to the rendered
+ * element. */
 import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"article"> {
@@ -50,7 +52,7 @@ const dataAttrs = spotlight ? { "data-spotlight": true } : {};
       backdrop-filter 0.3s ease;
   }
 
-  .v2-card:hover {
+  .v2-card:is(:hover, [data-state="hover"]) {
     border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
     -webkit-backdrop-filter: saturate(160%) blur(20px);

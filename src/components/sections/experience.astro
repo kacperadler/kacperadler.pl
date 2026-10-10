@@ -8,6 +8,7 @@ import helpfindLogo from "@/assets/experience/helpfind.svg";
 import paylooLogo from "@/assets/experience/payloo.jpg";
 import pwcLogo from "@/assets/experience/pwc.svg";
 import rexLogo from "@/assets/experience/rex.svg";
+import Badge from "@/components/ui/badge.astro";
 import Card from "@/components/ui/card.astro";
 import { caseStudiesByExperience, caseStudyPath } from "@/lib/case-studies";
 
@@ -49,8 +50,8 @@ const caseStudies = await caseStudiesByExperience();
         const startYear = item.data.startDate.slice(0, 4);
         const endYear = item.data.endDate?.slice(0, 4);
         // Badge label: current → "teraz"; badge override → that label; else
-        // year range. Filled (.exp-meta-now styling) when current OR badge
-        // override is set, otherwise the muted outline year range.
+        // year range. Filled when current OR badge override is set,
+        // otherwise the muted outline year range.
         let metaLabel: string;
         let metaFilled: boolean;
         if (item.data.current) {
@@ -76,9 +77,9 @@ const caseStudies = await caseStudiesByExperience();
                   width={logo.width}
                 />
               </div>
-              <span class:list={["exp-meta", { "exp-meta-now": metaFilled }]}>
+              <Badge variant={metaFilled ? "filled" : "outline"}>
                 {metaLabel}
-              </span>
+              </Badge>
             </header>
             <h3>{item.data.company}</h3>
             <div class="exp-role">{item.data.role}</div>
@@ -151,26 +152,6 @@ const caseStudies = await caseStudiesByExperience();
   .exp-panel:hover .exp-logo {
     opacity: 1;
     filter: grayscale(0%);
-  }
-
-  .exp-meta {
-    padding: 4px 10px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-    background: transparent;
-    border: 1px solid var(--v2-line);
-    border-radius: var(--v2-radius-xs);
-  }
-
-  /* Filled badge - "teraz" for current role, or whatever the entry's
-   * `badge` field overrides to (e.g., "Zlecenie"). Same blue-wash vocab
-   * as the hero status-pill. */
-  .exp-meta-now {
-    color: var(--blue);
-    background: var(--blue-wash);
-    border-color: transparent;
   }
 
   .exp-panel h3 {

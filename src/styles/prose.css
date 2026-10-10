@@ -1,0 +1,411 @@
+/* .prose - typography for long-form copy, ported as plain CSS from the
+ * default (base size) styles of @tailwindcss/typography: sizes, spacing,
+ * weights and line-heights are its values, the colors are our tokens (its
+ * `invert` palette mapped onto the dark page). No Tailwind dependency.
+ *
+ * Differences from the plugin, on purpose:
+ *   - no `not-prose` escape hatch;
+ *   - Tailwind's preflight is not loaded here, so the resets the plugin relies
+ *     on (zero margins, borders, collapsed tables, mono code font) are
+ *     written out per element below;
+ *   - selectors use :is() where the plugin uses :where(). The site's own
+ *     .prose (legal pages, case studies) lives in global.css as `.prose h2`
+ *     and the like; :is() gives these rules the same specificity, and this
+ *     file loads after global.css, so the port wins wherever it is loaded.
+ *     What the site's .prose sets and the plugin does not (centering,
+ *     heading font and tracking, link underline offset, the inline code
+ *     box) is reset here.
+ *
+ * Loaded only by the component catalogue (src/pages/_ui/), which is not part
+ * of the production build. */
+
+.prose {
+  --prose-body: var(--ink-2);
+  --prose-headings: var(--ink);
+  --prose-lead: var(--muted);
+  --prose-links: var(--blue);
+  --prose-bold: var(--ink);
+  --prose-counters: var(--muted);
+  --prose-bullets: var(--muted);
+  --prose-hr: var(--line);
+  --prose-quotes: var(--ink);
+  --prose-quote-borders: var(--line);
+  --prose-captions: var(--muted);
+  --prose-kbd: var(--ink);
+  --prose-kbd-shadows: var(--line);
+  --prose-code: var(--ink);
+  --prose-pre-code: var(--ink-2);
+  --prose-pre-bg: var(--paper);
+  --prose-th-borders: var(--line);
+  --prose-td-borders: var(--line-2);
+  max-width: 65ch;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--prose-body);
+}
+
+.prose :is(p) {
+  margin: 1.25em 0;
+}
+
+.prose :is([class~="lead"]) {
+  margin: 1.2em 0;
+  font-size: 1.25em;
+  line-height: 1.6;
+  color: var(--prose-lead);
+}
+
+.prose :is(a) {
+  font-weight: 500;
+  color: var(--prose-links);
+  text-decoration: underline;
+  text-underline-offset: auto;
+}
+
+.prose :is(strong) {
+  font-weight: 600;
+  color: var(--prose-bold);
+}
+
+.prose :is(a strong, blockquote strong, thead th strong) {
+  color: inherit;
+}
+
+.prose :is(ol) {
+  padding-inline-start: 1.625em;
+  margin: 1.25em 0;
+  list-style-type: decimal;
+}
+
+.prose :is(ol[type="A" s]) {
+  list-style-type: upper-alpha;
+}
+
+.prose :is(ol[type="a" s]) {
+  list-style-type: lower-alpha;
+}
+
+.prose :is(ol[type="I" s]) {
+  list-style-type: upper-roman;
+}
+
+.prose :is(ol[type="i" s]) {
+  list-style-type: lower-roman;
+}
+
+.prose :is(ol[type="1"]) {
+  list-style-type: decimal;
+}
+
+.prose :is(ul) {
+  padding-inline-start: 1.625em;
+  margin: 1.25em 0;
+  list-style-type: disc;
+}
+
+.prose :is(li) {
+  margin: 0.5em 0;
+}
+
+.prose :is(ol > li, ul > li) {
+  padding-inline-start: 0.375em;
+}
+
+.prose :is(ol > li)::marker {
+  font-weight: 400;
+  color: var(--prose-counters);
+}
+
+.prose :is(ul > li)::marker {
+  color: var(--prose-bullets);
+}
+
+.prose :is(.prose > ul > li p) {
+  margin: 0.75em 0;
+}
+
+.prose :is(.prose > ul > li > p:first-child, .prose > ol > li > p:first-child) {
+  margin-top: 1.25em;
+}
+
+.prose :is(.prose > ul > li > p:last-child, .prose > ol > li > p:last-child) {
+  margin-bottom: 1.25em;
+}
+
+.prose :is(ul ul, ul ol, ol ul, ol ol) {
+  margin: 0.75em 0;
+}
+
+.prose :is(dl) {
+  margin: 1.25em 0;
+}
+
+.prose :is(dt) {
+  margin-top: 1.25em;
+  font-weight: 600;
+  color: var(--prose-headings);
+}
+
+.prose :is(dd) {
+  padding-inline-start: 1.625em;
+  margin: 0.5em 0 0;
+}
+
+.prose :is(hr) {
+  height: 0;
+  margin: 3em 0;
+  border: 0;
+  border-top: 1px solid var(--prose-hr);
+}
+
+.prose :is(blockquote) {
+  padding-inline-start: 1em;
+  margin: 1.6em 0;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--prose-quotes);
+  quotes: "\201C" "\201D" "\2018" "\2019";
+  border-inline-start: 0.25rem solid var(--prose-quote-borders);
+}
+
+.prose :is(blockquote p:first-of-type)::before {
+  content: open-quote;
+}
+
+.prose :is(blockquote p:last-of-type)::after {
+  content: close-quote;
+}
+
+.prose :is(h1, h2, h3, h4) {
+  font-family: inherit;
+  color: var(--prose-headings);
+  letter-spacing: normal;
+}
+
+.prose :is(h1) {
+  margin: 0 0 0.8888889em;
+  font-size: 2.25em;
+  font-weight: 800;
+  line-height: 1.1111111;
+}
+
+.prose :is(h2) {
+  margin: 2em 0 1em;
+  font-size: 1.5em;
+  font-weight: 700;
+  line-height: 1.3333333;
+}
+
+.prose :is(h3) {
+  margin: 1.6em 0 0.6em;
+  font-size: 1.25em;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.prose :is(h4) {
+  margin: 1.5em 0 0.5em;
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.prose :is(h1 strong) {
+  font-weight: 900;
+  color: inherit;
+}
+
+.prose :is(h2 strong) {
+  font-weight: 800;
+  color: inherit;
+}
+
+.prose :is(h3 strong, h4 strong) {
+  font-weight: 700;
+  color: inherit;
+}
+
+.prose :is(img, video) {
+  margin: 2em 0;
+}
+
+.prose :is(picture) {
+  display: block;
+  margin: 2em 0;
+}
+
+.prose :is(picture > img) {
+  margin: 0;
+}
+
+.prose :is(kbd) {
+  padding: 0.1875em 0.375em;
+  font-family: inherit;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: var(--prose-kbd);
+  border-radius: 0.3125rem;
+  box-shadow:
+    0 0 0 1px var(--prose-kbd-shadows),
+    0 3px 0 var(--prose-kbd-shadows);
+}
+
+.prose :is(code) {
+  padding: 0;
+  font-family: var(--mono);
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--prose-code);
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+
+.prose :is(code)::before,
+.prose :is(code)::after {
+  content: "`";
+}
+
+.prose
+  :is(
+    a code,
+    h1 code,
+    h2 code,
+    h3 code,
+    h4 code,
+    blockquote code,
+    thead th code
+  ) {
+  color: inherit;
+}
+
+.prose :is(h2 code) {
+  font-size: 0.875em;
+}
+
+.prose :is(h3 code) {
+  font-size: 0.9em;
+}
+
+.prose :is(pre) {
+  padding: 0.8571429em 1.1428571em;
+  margin: 1.7142857em 0;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.875em;
+  font-weight: 400;
+  line-height: 1.7142857;
+  color: var(--prose-pre-code);
+  background-color: var(--prose-pre-bg);
+  border-radius: 0.375rem;
+}
+
+.prose :is(pre code) {
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.prose :is(pre code)::before,
+.prose :is(pre code)::after {
+  content: none;
+}
+
+.prose :is(table) {
+  width: 100%;
+  margin: 2em 0;
+  font-size: 0.875em;
+  line-height: 1.7142857;
+  text-indent: 0;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+.prose :is(thead) {
+  border-bottom: 1px solid var(--prose-th-borders);
+}
+
+.prose :is(thead th) {
+  padding: 0 0.5714286em 0.5714286em;
+  font-weight: 600;
+  vertical-align: bottom;
+  color: var(--prose-headings);
+}
+
+.prose :is(thead th:first-child) {
+  padding-inline-start: 0;
+}
+
+.prose :is(thead th:last-child) {
+  padding-inline-end: 0;
+}
+
+.prose :is(tbody tr) {
+  border-bottom: 1px solid var(--prose-td-borders);
+}
+
+.prose :is(tbody tr:last-child) {
+  border-bottom-width: 0;
+}
+
+.prose :is(tbody td) {
+  vertical-align: baseline;
+}
+
+.prose :is(tfoot) {
+  border-top: 1px solid var(--prose-th-borders);
+}
+
+.prose :is(tfoot td) {
+  vertical-align: top;
+}
+
+.prose :is(tbody td, tfoot td) {
+  padding: 0.5714286em;
+}
+
+.prose :is(tbody td:first-child, tfoot td:first-child) {
+  padding-inline-start: 0;
+}
+
+.prose :is(tbody td:last-child, tfoot td:last-child) {
+  padding-inline-end: 0;
+}
+
+.prose :is(th, td) {
+  text-align: start;
+}
+
+.prose :is(figure) {
+  margin: 2em 0;
+}
+
+.prose :is(figure > *) {
+  margin: 0;
+}
+
+.prose :is(figcaption) {
+  margin-top: 0.8571429em;
+  font-size: 0.875em;
+  line-height: 1.4285714;
+  color: var(--prose-captions);
+}
+
+.prose :is(hr + *, h2 + *, h3 + *, h4 + *) {
+  margin-top: 0;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose > :last-child {
+  margin-bottom: 0;
+}

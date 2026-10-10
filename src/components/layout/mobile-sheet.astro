@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import Button from "@/components/ui/button.astro";
+import StatusPill from "@/components/ui/status-pill.astro";
 import { contactCta, primaryNav } from "@/data/navigation";
 
 const links = await primaryNav();
@@ -25,10 +26,7 @@ const links = await primaryNav();
   </button>
 
   <div class="sheet-content">
-    <span class="status-pill">
-      <span aria-hidden="true" class="status-pill-dot"></span>
-      Otwarty na nowe współprace
-    </span>
+    <StatusPill>Otwarty na nowe współprace</StatusPill>
 
     <nav aria-label="Menu główne" class="sheet-nav">
       {links.map((link) => (
@@ -116,29 +114,6 @@ const links = await primaryNav();
   .sheet-close :global(svg) {
     width: 18px;
     height: 18px;
-  }
-
-  /* "Otwarty na nowe współprace" pill - lustro hero-status pill.
-   * Daje powitanie + signal "available" zaraz po otwarciu menu. */
-  .status-pill {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    align-self: flex-start;
-    padding: 6px 12px;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--blue);
-    background: var(--blue-wash);
-    border-radius: var(--v2-radius-xs);
-  }
-
-  .status-pill-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--blue);
-    border-radius: var(--v2-radius-full);
   }
 
   /* Nav links jako "menu listing" - tytuł po lewej, strzałka po

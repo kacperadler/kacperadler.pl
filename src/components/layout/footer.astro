@@ -1,5 +1,5 @@
 ---
-import { Icon } from "astro-icon/components";
+import Link from "@/components/ui/link.astro";
 import { siteConfig } from "@/data/site-config";
 
 const year = new Date().getFullYear();
@@ -28,10 +28,12 @@ const year = new Date().getFullYear();
           <h3 class="footer-col-title">Informacje</h3>
           <ul>
             <li>
-              <a href="/polityka-prywatnosci">Polityka prywatności</a>
+              <Link href="/polityka-prywatnosci" variant="footer"
+                >Polityka prywatności</Link
+              >
             </li>
             <li>
-              <a href="/regulamin">Regulamin</a>
+              <Link href="/regulamin" variant="footer">Regulamin</Link>
             </li>
           </ul>
         </div>
@@ -40,26 +42,35 @@ const year = new Date().getFullYear();
           <h3 class="footer-col-title">Kontakt</h3>
           <ul>
             <li>
-              <a href={`mailto:${siteConfig.email}`}>
-                <Icon aria-hidden="true" name="lucide:mail" />
-                <span>Email</span>
-              </a>
+              <Link
+                href={`mailto:${siteConfig.email}`}
+                icon="lucide:mail"
+                variant="footer"
+              >
+                Email
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href={siteConfig.social.linkedin}
+                icon="lucide:linkedin"
                 rel="noopener"
                 target="_blank"
+                variant="footer"
               >
-                <Icon aria-hidden="true" name="lucide:linkedin" />
-                <span>LinkedIn</span>
-              </a>
+                LinkedIn
+              </Link>
             </li>
             <li>
-              <a href={siteConfig.social.github} rel="noopener" target="_blank">
-                <Icon aria-hidden="true" name="lucide:github" />
-                <span>GitHub</span>
-              </a>
+              <Link
+                href={siteConfig.social.github}
+                icon="lucide:github"
+                rel="noopener"
+                target="_blank"
+                variant="footer"
+              >
+                GitHub
+              </Link>
             </li>
           </ul>
         </div>
@@ -164,30 +175,6 @@ const year = new Date().getFullYear();
     list-style: none;
   }
 
-  .footer-col a {
-    display: inline-flex;
-    gap: 10px;
-    align-items: center;
-    font-size: 14px;
-    color: var(--ink-2);
-    transition: color 0.2s ease;
-  }
-
-  .footer-col a :global(svg) {
-    width: 16px;
-    height: 16px;
-    color: var(--muted);
-    transition: color 0.2s ease;
-  }
-
-  .footer-col a:hover {
-    color: var(--ink);
-  }
-
-  .footer-col a:hover :global(svg) {
-    color: var(--blue);
-  }
-
   /* Copyright row sits below the grid, separated by a soft hairline.
    * Single line on desktop, can wrap on small viewports. */
   .footer-bottom {
@@ -217,13 +204,6 @@ const year = new Date().getFullYear();
 
     .footer-bottom {
       margin-top: 32px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .footer-col a,
-    .footer-col a :global(svg) {
-      transition: none;
     }
   }
 </style>

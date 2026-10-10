@@ -61,7 +61,7 @@ Package manager: **bun** (Node 22+; `bun` musi być w `PATH`, bo pre-commit hook
 
 ```bash
 bun install            # install deps
-bun dev                # dev server (Umami script NIE jest renderowany)
+bun dev                # dev server (Umami script NIE jest renderowany); katalog komponentów pod /ui (tylko dev)
 bun run build          # production build → dist/
 bun run preview        # preview prod build (port domyślny 4321; testy używają 4329)
 bun run check          # astro check (type-check .astro)
@@ -92,9 +92,10 @@ Source of truth wizualny: `DESIGN.md`. Stan w kodzie:
 - **Liquid-glass paint** (`--v2-panel` 55-70% + `backdrop-filter: blur(20px) saturate(160%)` + inset 1px top hairline) używamy w dwóch trybach:
   - **Always-on atmosphere chrome**: header (`.nav-wrap`), footer (`.site-footer`), mobile sheet (`.sheet`, 70%) - globalne override'y na dole `base-layout.astro`; plus panel `.hero-status`.
   - **On hover / focus dla content cards**: services / how steps / experience tiles / contact-link / contact-form host - solid `--v2-panel` idle, glass-up na `:hover` (i `:has(...focus)` dla forma) przez shared spotlight selectors. Plus `.btn-ghost:hover` (canonical Button).
-- **Spotlight effect** - wszystkie content cards mają wspólny cursor-follow pattern. `src/scripts/spotlight.ts` bind'uje się do `[data-spotlight]`, śledzi pointer (rAF-throttled) i ustawia `--mx` / `--my` jako %. Dwa pseudo'sy na karcie: `::before` to white wash radial-gradient + flat navy tint (`#2a4d7f` 8%); `::after` to navy gradient masked via `mask-composite: exclude` do 1px obwodu. Oba fade'ują `opacity: 0 → 1` na hover. Shared selectors w `src/styles/global.css` obejmują `.hero-status, .service-panel, .step-panel, .exp-panel, .case-panel, .v2-contact-link, .contact-form-host`. `prefers-reduced-motion: reduce` skip'uje binding.
+- **Spotlight effect** - wszystkie content cards mają wspólny cursor-follow pattern. `src/scripts/spotlight.ts` bind'uje się do `[data-spotlight]`, śledzi pointer (rAF-throttled) i ustawia `--mx` / `--my` jako %. Dwa pseudo'sy na karcie: `::before` to white wash radial-gradient + flat navy tint (`#2a4d7f` 8%); `::after` to navy gradient masked via `mask-composite: exclude` do 1px obwodu. Oba fade'ują `opacity: 0 → 1` na hover. Shared selectors w `src/styles/global.css` obejmują `.hero-status, .v2-card, .v2-contact-link, .contact-form-host`. `prefers-reduced-motion: reduce` skip'uje binding.
 - **Contact form focus state** - `.contact-form-host:has(input[type='email']:focus, textarea:focus)` aktywuje glass + spotlight tak samo jak hover, plus navy halo (`box-shadow: 0 8px 60px` z `--blue` 28%) i navy `--line` na wewnętrznej ramce. Radio "Typ projektu" celowo wykluczone z `:has()` żeby kliknięcie radio nie zgaszało stanu. Success state (`[data-state='success']`) trigger'uje to samo. `min-height: 490px` na hostcie lockuje wysokość żeby strona nie skakała przy submit.
-- **UI primitives** w `src/components/ui/`: `button.astro`, `card.astro` (idle solid → hover glass, domyślnie `data-spotlight`), `input.astro` (`.v2-input`), `textarea.astro` (`.v2-textarea`). Używaj ich przed pisaniem nowego komponentu.
+- **UI primitives** w `src/components/ui/`: `button.astro`, `card.astro` (idle solid → hover glass, domyślnie `data-spotlight`), `input.astro` (`.v2-input`), `textarea.astro` (`.v2-textarea`), `field.astro` (etykieta + komunikat błędu, `[data-field]` dla `contact-form.ts`), `radio.astro`, `badge.astro` (`outline | filled`, `fillOnCardHover`), `tag.astro`, `status-pill.astro`, `link.astro` (`inline | nav | footer`, opcjonalna ikona). Używaj ich przed pisaniem nowego komponentu.
+- **Katalog komponentów** - `src/pages/_ui/index.astro`, routowany na `/ui` tylko w `astro dev` (integracja w `astro.config.mjs`; build go nie zna). Pokazuje każdy komponent z `ui/` we wszystkich wariantach i stanach. Stany wymuszone przez `[data-state="hover" | "focus-visible" | "focus"]`, `.active`, `disabled` - selektory siedzą w komponentach obok prawdziwych `:hover` / `:focus`, więc nowy komponent albo stan dopisujesz w obu miejscach. Typografia: `.prose` z `src/styles/prose.css` (port @tailwindcss/typography, ładowany tylko przez katalog).
 - **Canonical Button** - `button.astro` jest jedynym source'em CTA. Variants `primary | ghost`, sizes `md | sm` (sm = header). Primary hover: `--blue-wash` 4px ring + 12% darken + arrow icon fly-through cycle (translateX z opacity 0 dla "teleport" iluzji, bez rewind on hover-out). Ghost hover: glass. Stan `data-state="submitting"` pokazuje CSS-only spinner. Wszystkie transition'y `0.25s ease`. Używany w: header (z `data-nav-cta` żeby `nav-active.ts` mógł włączyć `.active`), hero CTAs, mobile sheet CTA, contact form, 404.
 - Sekcje (`src/components/sections/`): hero (status card), services (2x2 grid + ghost number), how-i-work (vertical timeline + lucide icons per step + glass dot rail), experience ("Współpracowałem z" logo wall + optional `badge` schema field dla zleceń), contact (vertical stack + glass focus + min-height lock). Layout chrome: header, footer (2-zone glass), mobile sheet (glass overlay + animated open/close), EU funding disclosure. OG image (`src/pages/og-default.png.ts`) w ciemnej palecie.
 
@@ -110,11 +111,11 @@ src/
 ├── layouts/               # base-layout, legal-layout
 ├── pages/                 # index, 404, *.md (legal), realizacje/{[slug],[...index]}, og-default.png.ts, llms.txt.ts, llms-full.txt.ts
 ├── scripts/               # vanilla TS: contact-form, mobile-sheet, nav-active, nav-scroll, spotlight
-├── styles/                # tokens.css, global.css
+├── styles/                # tokens.css, global.css, prose.css (tylko /ui)
 ├── lib/                   # seo, case-studies
 └── assets/                # me.jpg (OG), experience/ logotypy, logotyp_fundusze_eu.png
 
-tests/e2e/       # Playwright specs (a11y, case-studies, contact-form, mobile-sheet, nav-active, services-grid, skip-link)
+tests/e2e/       # Playwright specs (a11y, case-studies, contact-form, mobile-sheet, nav-active, services-grid, skip-link, ui-catalogue na dev serverze)
 tests/fixtures/  # case studies dla buildów e2e: przykładowy i pusty
 spec/            # vision.md + tickets (spec/features/<id>/)
 .agents/harness/ # kryteria review / audit / retro + styleguide
