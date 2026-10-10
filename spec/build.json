@@ -564,9 +564,9 @@
   {
     "id": "KA0071",
     "title": "Minimal brutalism components: the human's first round of fixes",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0071-minimal-brutalism-components-the-human-s-first-round-of-fixes/ticket.md",
-    "updated": "2026-10-10T19:43:57.894Z",
+    "updated": "2026-10-10T20:21:12.386Z",
     "after": [
       "KA0069"
     ]
@@ -574,9 +574,9 @@
   {
     "id": "KA0072",
     "title": "A signature of Kacper's own in the minimal brutalism style",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0072-a-signature-of-kacper-s-own-in-the-minimal-brutalism-style/ticket.md",
-    "updated": "2026-10-10T19:46:16.086Z",
+    "updated": "2026-10-10T20:21:13.403Z",
     "after": [
       "KA0069"
     ]
@@ -594,5 +594,16 @@
     "status": "planning",
     "path": "spec/features/KA0074-bun-run-check-reads-the-playwright-html-report-when-ci-is-set/ticket.md",
     "updated": "2026-10-10T20:20:42.314Z"
+  },
+  {
+    "id": "KA0075",
+    "title": "The home page layout and sections present Kacper better",
+    "status": "planning",
+    "path": "spec/features/KA0075-the-home-page-layout-and-sections-present-kacper-better/ticket.md",
+    "updated": "2026-10-10T20:33:50.100Z",
+    "after": [
+      "KA0072",
+      "KA0071"
+    ]
   }
 ]
