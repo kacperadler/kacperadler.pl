@@ -537,9 +537,9 @@
   {
     "id": "KA0068",
     "title": "Minimal brutalism components in the /ui catalogue",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0068-minimal-brutalism-components-in-the-ui-catalogue/ticket.md",
-    "updated": "2026-10-10T18:48:03.818Z",
+    "updated": "2026-10-10T19:26:17.207Z",
     "after": [
       "KA0067"
     ]
@@ -553,5 +553,12 @@
     "after": [
       "KA0068"
     ]
+  },
+  {
+    "id": "KA0070",
+    "title": "Under reduced motion the mobile sheet opens without focus on its close button",
+    "status": "planning",
+    "path": "spec/features/KA0070-under-reduced-motion-the-mobile-sheet-opens-without-focus-on-its-close-button/ticket.md",
+    "updated": "2026-10-10T19:26:17.205Z"
   }
 ]
