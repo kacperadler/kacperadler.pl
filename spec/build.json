@@ -92,9 +92,9 @@
   {
     "id": "KA0013",
     "title": "astro-icon 1.2 warns on every build about a missing `src/icons`",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0013-astro-icon-1-2-warns-on-every-build-about-a-missing-src-icons/ticket.md",
-    "updated": "2026-10-10T13:05:03.834Z"
+    "updated": "2026-10-10T13:09:35.853Z"
   },
   {
     "id": "KA0014",
@@ -116,9 +116,9 @@
   {
     "id": "KA0016",
     "title": "The e2e suite cannot start Astro 7 preview: it detaches",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0016-the-e2e-suite-cannot-start-astro-7-preview-it-detaches/ticket.md",
-    "updated": "2026-10-10T12:59:57.030Z"
+    "updated": "2026-10-10T13:09:25.829Z"
   },
   {
     "id": "KA0017",
@@ -153,5 +153,12 @@
     "status": "dropped",
     "path": "spec/features/KA0020-parallel-worktrees-collide-on-the-e2e-preview-port-4329/ticket.md",
     "updated": "2026-10-10T13:04:54.782Z"
+  },
+  {
+    "id": "KA0021",
+    "title": "`bun run test:e2e` fails when another job holds port 4329",
+    "status": "dropped",
+    "path": "spec/features/KA0021-bun-run-test-e2e-fails-when-another-job-holds-port-4329/ticket.md",
+    "updated": "2026-10-10T13:09:44.078Z"
   }
 ]
