@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import Button from "@/components/ui/button.astro";
+import Link from "@/components/ui/link.astro";
 import { contactCta, primaryNav } from "@/data/navigation";
 import { siteConfig } from "@/data/site-config";
 ---
@@ -17,9 +18,9 @@ import { siteConfig } from "@/data/site-config";
 
   <div class="nav-links">
     {primaryNav.map((link) => (
-      <a data-nav-link href={link.href}>
+      <Link data-nav-link href={link.href} variant="nav">
         {link.label}
-      </a>
+      </Link>
     ))}
   </div>
 
@@ -105,55 +106,10 @@ import { siteConfig } from "@/data/site-config";
     align-items: center;
   }
 
-  .nav-links a {
-    position: relative;
-    padding: 10px 4px;
-    margin: 0 10px;
-    font-family: var(--display);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--ink-2);
-    letter-spacing: -0.01em;
-    transition: color 0.2s ease;
-  }
-
-  .nav-links a::after {
-    position: absolute;
-    bottom: 4px;
-    left: 0;
-    width: 100%;
-    height: 1.5px;
-    content: "";
-    background: var(--blue);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
-  }
-
-  .nav-links a:hover,
-  .nav-links a.active {
-    color: var(--ink);
-  }
-
-  .nav-links a:hover::after,
-  .nav-links a.active::after {
-    transform: scaleX(1);
-  }
-
   .nav-tail {
     display: flex;
     gap: 10px;
     align-items: center;
-  }
-
-  /* Active state for the contact CTA - applied by nav-active.ts when
-   * the user scrolls into the contact section. Filled blue + ring tells
-   * the visitor "you've arrived". Targeted via [data-nav-cta] so the
-   * rule never leaks to other .btn-primary instances. */
-  :global([data-nav-cta].active) {
-    color: #0f1116;
-    background: var(--blue);
-    box-shadow: 0 0 0 4px var(--blue-wash);
   }
 
   .menu-btn {
@@ -200,9 +156,7 @@ import { siteConfig } from "@/data/site-config";
   @media (prefers-reduced-motion: reduce) {
     .nav,
     .brand,
-    .mark,
-    .nav-links a,
-    .nav-links a::after {
+    .mark {
       transition: none;
     }
   }

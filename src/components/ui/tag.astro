@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/* Mono tag (tech chip) on a service card: transparent, thin border, so a row
+ * of them reads as separate items without fighting the card border. `as`
+ * picks the element: "li" inside a tag list, "span" anywhere else. */
+interface Props extends HTMLAttributes<"span"> {
+  as?: "li" | "span";
+}
+const { as = "span", class: extraClass, ...rest } = Astro.props;
+const Tag = as;
+---
+
+<Tag class:list={["tag", extraClass]} {...rest}><slot /></Tag>
+
+<style>
+  .tag {
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    background: transparent;
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-xs);
+  }
+</style>

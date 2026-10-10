@@ -1,0 +1,104 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { Icon } from "astro-icon/components";
+
+/* Text link in three looks:
+ *   - inline: blue, underlined - a link inside running copy
+ *   - nav: header navigation, a blue underline grows in on hover and stays
+ *     while `.active` (set by scripts/nav-active.ts on [data-nav-link])
+ *   - footer: muted list link, an optional leading icon turns blue on hover
+ * `icon` takes an Iconify name ("lucide:mail"), drawn before the label.
+ * The label is trimmed and touches the tags: whitespace inside the <a>
+ * would be underlined (inline) and outlined (focus ring).
+ *
+ * The catalogue (/ui) forces states with [data-state="hover"] and
+ * [data-state="focus-visible"] (the ring itself comes from global.css). */
+interface Props extends HTMLAttributes<"a"> {
+  href: string;
+  icon?: string;
+  variant: "inline" | "nav" | "footer";
+}
+
+const { href, variant, icon, class: extraClass, ...rest } = Astro.props;
+const label = (await Astro.slots.render("default")).trim();
+---
+
+<a href={href} class:list={["link", `link-${variant}`, extraClass]} {...rest}
+  >{icon && <Icon aria-hidden="true" name={icon} />}<Fragment
+    set:html={label}
+  /></a
+>
+
+<style>
+  .link-inline {
+    color: var(--blue);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .link-nav {
+    position: relative;
+    padding: 10px 4px;
+    margin: 0 10px;
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+    letter-spacing: -0.01em;
+    transition: color 0.2s ease;
+  }
+
+  .link-nav::after {
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    content: "";
+    background: var(--blue);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  .link-nav:is(:hover, .active, [data-state="hover"]) {
+    color: var(--ink);
+  }
+
+  .link-nav:is(:hover, .active, [data-state="hover"])::after {
+    transform: scaleX(1);
+  }
+
+  .link-footer {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+    color: var(--ink-2);
+    transition: color 0.2s ease;
+  }
+
+  .link-footer :global(svg) {
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    transition: color 0.2s ease;
+  }
+
+  .link-footer:is(:hover, [data-state="hover"]) {
+    color: var(--ink);
+  }
+
+  .link-footer:is(:hover, [data-state="hover"]) :global(svg) {
+    color: var(--blue);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .link-nav,
+    .link-nav::after,
+    .link-footer,
+    .link-footer :global(svg) {
+      transition: none;
+    }
+  }
+</style>

@@ -3,6 +3,7 @@ import { Icon } from "astro-icon/components";
 
 interface Props {
   class?: string;
+  disabled?: boolean;
   href?: string;
   icon?: string;
   size?: "md" | "sm";
@@ -57,9 +58,12 @@ const classes = [
    *     soft border, lit-edge inset, blur(20px) saturate(160%). Two
    *     glass surfaces, one hover vocabulary.
    *
-   * Header keeps a hand-written .nav-cta in nav.astro because it has
-   * the scrolled-state padding/font-size transitions baked in - those
-   * don't fit a static component. */
+   * Header keeps its scrolled-state padding in nav.astro: that transition
+   * belongs to the header, not to the button.
+   *
+   * The catalogue (/ui) forces :hover and :focus-visible with
+   * [data-state="hover"] / [data-state="focus-visible"] (the ring comes
+   * from global.css); `.active` is a class already. */
   .btn {
     display: inline-flex;
     gap: 8px;
@@ -89,7 +93,7 @@ const classes = [
    * 0% i 100% są identyczne ze stanem spoczynkowym, więc po
    * zakończeniu animacji nic nie wraca - strzałka po prostu
    * "przeleciała" raz na każdy hover. */
-  .btn:hover :global(.btn-icon) {
+  .btn:is(:hover, [data-state="hover"]) :global(.btn-icon) {
     animation: btn-arrow-cycle 0.45s ease;
   }
 
@@ -118,7 +122,17 @@ const classes = [
     background: var(--ink);
   }
 
-  .btn-primary:hover {
+  /* Active - the header CTA once the visitor reaches #contact: nav-active.ts
+   * toggles `.active` on [data-nav-cta]. Filled blue + ring says "you've
+   * arrived". Declared before :hover, so hovering the active CTA still shows
+   * the hover paint. */
+  .btn-primary.active {
+    color: #0f1116;
+    background: var(--blue);
+    box-shadow: 0 0 0 4px var(--blue-wash);
+  }
+
+  .btn-primary:is(:hover, [data-state="hover"]) {
     background: color-mix(in srgb, var(--ink) 88%, black);
     box-shadow: 0 0 0 4px var(--blue-wash);
   }
@@ -130,7 +144,7 @@ const classes = [
     border: 1px solid var(--v2-line);
   }
 
-  .btn-ghost:hover {
+  .btn-ghost:is(:hover, [data-state="hover"]) {
     background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
     border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);

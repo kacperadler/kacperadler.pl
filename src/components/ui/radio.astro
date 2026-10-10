@@ -1,0 +1,80 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/* Pill-shaped radio: the native input is visually hidden, `label` is the
+ * visible chip. Checked = blue-wash fill, keyboard focus = ring around the
+ * chip. Native input attributes (name / value / checked / disabled) pass
+ * through to the <input>.
+ *
+ * `state` forces a look on the catalogue page (/ui) without interaction:
+ * "hover" on the label, "focus-visible" on the input. */
+interface Props extends HTMLAttributes<"input"> {
+  label: string;
+  state?: "hover" | "focus-visible";
+}
+
+const { label, state, class: extraClass, ...rest } = Astro.props;
+---
+
+<label
+  data-state={state === "hover" ? state : undefined}
+  class:list={["radio", extraClass]}
+>
+  <input
+    data-state={state === "focus-visible" ? state : undefined}
+    type="radio"
+    {...rest}
+  >
+  <span>{label}</span>
+</label>
+
+<style>
+  .radio {
+    position: relative;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .radio input {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .radio span {
+    display: inline-block;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--ink-2);
+    cursor: pointer;
+    border: 1px solid var(--line);
+    border-radius: var(--v2-radius-sm);
+    transition: all 0.15s ease;
+  }
+
+  .radio:is(:hover, [data-state="hover"]) span {
+    border-color: var(--ink);
+  }
+
+  .radio input:checked + span {
+    font-weight: 500;
+    color: var(--blue);
+    background: var(--blue-wash);
+    border-color: var(--blue);
+  }
+
+  /* Keyboard focus on the hidden input surfaces a clear ring on the chip. */
+  .radio input:is(:focus-visible, [data-state="focus-visible"]) + span {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .radio span {
+      transition: none;
+    }
+  }
+</style>

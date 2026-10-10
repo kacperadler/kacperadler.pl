@@ -40,7 +40,9 @@ button {
   border: 0;
 }
 
-:focus-visible {
+/* [data-state="focus-visible"] forces the ring on the catalogue page (/ui). */
+:focus-visible,
+[data-state="focus-visible"] {
   outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
@@ -152,46 +154,22 @@ button {
   margin-bottom: 14px;
 }
 
-/* Static blue-wash status pill, used in hero status card and mobile sheet
- * header. Same vocab as the "teraz" badge on current experience entry. */
-.status-pill {
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-  align-self: flex-start;
-  padding: 6px 12px;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--blue);
-  background: var(--blue-wash);
-  border-radius: var(--v2-radius-xs);
-}
-
-.status-pill-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--blue);
-  border-radius: var(--v2-radius-full);
-}
-
 /* ───────────────────────────────────────────────────────────────────
  * Cursor spotlight pattern.
  *
- * Every content card in the site (hero status / services / steps /
+ * Every content card in the site (hero status / <Card> - services, steps,
  * experience tiles / contact links / contact form host) shares the same
  * pseudo-element treatment: a soft white wash + flat navy tint on ::before,
  * and a navy gradient masked to a 1px ring on ::after. Both fade in via
  * opacity 0 → 1 on :hover (and :has(...focus) / [data-state='success']
- * for the contact form host).
+ * for the contact form host). The catalogue (/ui) forces a card's hover
+ * with [data-state="hover"].
  *
  * --mx / --my are written to each [data-spotlight] element by
  * scripts/spotlight.ts. Default 50%/50% so the resting paint (invisible
  * via opacity:0 anyway) doesn't shift on first move. */
 .hero-status:hover,
-.service-panel:hover,
-.step-panel:hover,
-.exp-panel:hover,
+.v2-card:is(:hover, [data-state="hover"]),
 .v2-contact-link:hover,
 .contact-form-host:hover,
 .contact-form-host:has(input[type="email"]:focus, textarea:focus),
@@ -200,9 +178,7 @@ button {
 }
 
 .hero-status > *,
-.service-panel > *,
-.step-panel > *,
-.exp-panel > *,
+.v2-card > *,
 .v2-contact-link > *,
 .contact-form-host > * {
   position: relative;
@@ -211,12 +187,8 @@ button {
 
 .hero-status::before,
 .hero-status::after,
-.service-panel::before,
-.service-panel::after,
-.step-panel::before,
-.step-panel::after,
-.exp-panel::before,
-.exp-panel::after,
+.v2-card::before,
+.v2-card::after,
 .v2-contact-link::before,
 .v2-contact-link::after,
 .contact-form-host::before,
@@ -234,9 +206,7 @@ button {
  * a flat navy tint. The radial wash is the cursor-follow ambient lift; the
  * flat layer below tints the whole panel cool-navy when ::before fades in. */
 .hero-status::before,
-.service-panel::before,
-.step-panel::before,
-.exp-panel::before,
+.v2-card::before,
 .v2-contact-link::before,
 .contact-form-host::before {
   z-index: 0;
@@ -254,9 +224,7 @@ button {
  * box mask = padding strip). -webkit-mask-composite: xor is the legacy
  * syntax for the same effect. */
 .hero-status::after,
-.service-panel::after,
-.step-panel::after,
-.exp-panel::after,
+.v2-card::after,
 .v2-contact-link::after,
 .contact-form-host::after {
   z-index: 2;
@@ -278,12 +246,8 @@ button {
 
 .hero-status:hover::before,
 .hero-status:hover::after,
-.service-panel:hover::before,
-.service-panel:hover::after,
-.step-panel:hover::before,
-.step-panel:hover::after,
-.exp-panel:hover::before,
-.exp-panel:hover::after,
+.v2-card:is(:hover, [data-state="hover"])::before,
+.v2-card:is(:hover, [data-state="hover"])::after,
 .v2-contact-link:hover::before,
 .v2-contact-link:hover::after,
 .contact-form-host:hover::before,
@@ -298,12 +262,8 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .hero-status::before,
   .hero-status::after,
-  .service-panel::before,
-  .service-panel::after,
-  .step-panel::before,
-  .step-panel::after,
-  .exp-panel::before,
-  .exp-panel::after,
+  .v2-card::before,
+  .v2-card::after,
   .v2-contact-link::before,
   .v2-contact-link::after,
   .contact-form-host::before,

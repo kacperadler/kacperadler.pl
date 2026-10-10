@@ -4,13 +4,15 @@ import type { HTMLAttributes } from "astro/types";
 /* v2 textarea. Mirrors Input.astro - same paint + focus ring - plus
  * a 130px min-height and tighter line-height for multi-line copy.
  * Extends native HTMLTextAreaElement attrs so id / name / placeholder
- * / required / etc. pass through unchanged. */
+ * / required / etc. pass through unchanged; `value` becomes the initial
+ * text. Invalid state comes from the parent <Field>; [data-state="focus"]
+ * forces the focus look on /ui. */
 type Props = HTMLAttributes<"textarea">;
 
-const { class: extraClass, ...rest } = Astro.props;
+const { class: extraClass, value, ...rest } = Astro.props;
 ---
 
-<textarea class:list={["v2-textarea", extraClass]} {...rest}></textarea>
+<textarea class:list={["v2-textarea", extraClass]} {...rest}>{value}</textarea>
 
 <style>
   .v2-textarea {
@@ -36,7 +38,7 @@ const { class: extraClass, ...rest } = Astro.props;
     opacity: 0.7;
   }
 
-  .v2-textarea:focus {
+  .v2-textarea:is(:focus, [data-state="focus"]) {
     border-color: var(--blue);
     box-shadow: 0 0 0 3px var(--blue-wash);
   }

@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import meImage from "@/assets/me.jpg";
 import Button from "@/components/ui/button.astro";
+import StatusPill from "@/components/ui/status-pill.astro";
 import { siteConfig } from "@/data/site-config";
 ---
 
@@ -45,10 +46,7 @@ import { siteConfig } from "@/data/site-config";
             <span>{siteConfig.role}</span>
             <span>Polska</span>
           </p>
-          <span class="status-pill">
-            <span aria-hidden="true" class="status-pill-dot"></span>
-            Otwarty na nowe współprace
-          </span>
+          <StatusPill>Otwarty na nowe współprace</StatusPill>
         </div>
       </div>
 
