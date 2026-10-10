@@ -566,7 +566,7 @@
     "title": "Minimal brutalism components: the human's first round of fixes",
     "status": "in-progress",
     "path": "spec/features/KA0071-minimal-brutalism-components-the-human-s-first-round-of-fixes/ticket.md",
-    "updated": "2026-10-10T20:21:12.386Z",
+    "updated": "2026-10-10T20:44:57.893Z",
     "after": [
       "KA0069"
     ]
@@ -609,9 +609,9 @@
   {
     "id": "KA0076",
     "title": "Signature proposal: editorial",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0076-signature-proposal-editorial/ticket.md",
-    "updated": "2026-10-10T20:44:40.031Z"
+    "updated": "2026-10-10T20:48:00.476Z"
   },
   {
     "id": "KA0077",

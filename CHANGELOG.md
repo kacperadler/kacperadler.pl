@@ -25,6 +25,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0068 Minimal brutalism components in the /ui catalogue (a271183)
 - KA0069 The landing page in minimal brutalism (1928b85)
 - KA0072 A signature of Kacper's own in the minimal brutalism style (890ae8d)
+- KA0076 Signature proposal: editorial (8d3181c)
 
 ### Fixed
 
