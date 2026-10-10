@@ -8,6 +8,7 @@
 
 import { getCollection } from "astro:content";
 import { siteConfig } from "@/data/site-config";
+import { caseStudyPath, sortedCaseStudies } from "@/lib/case-studies";
 
 export const prerender = true;
 
@@ -19,6 +20,8 @@ export async function GET(): Promise<Response> {
   const experience = (await getCollection("experience")).sort(
     (a, b) => a.data.order - b.data.order
   );
+
+  const caseStudies = await sortedCaseStudies();
 
   const servicesList = services
     .map(
@@ -43,6 +46,16 @@ export async function GET(): Promise<Response> {
     })
     .join("\n");
 
+  const caseStudyList = caseStudies
+    .map(
+      (c) =>
+        `- [${c.data.company}](${siteConfig.url}${caseStudyPath(c)}) (${c.data.period}) - ${c.data.role}: ${c.data.summary}`
+    )
+    .join("\n");
+
+  const caseStudiesBlock =
+    caseStudies.length > 0 ? `## Realizacje\n\n${caseStudyList}\n\n` : "";
+
   const body = `# ${siteConfig.name} - ${siteConfig.role}
 
 > ${siteConfig.tagline} ${siteConfig.description}
@@ -55,7 +68,7 @@ ${servicesList}
 
 ${experienceList}
 
-## Kontakt
+${caseStudiesBlock}## Kontakt
 
 - Email: ${siteConfig.email}
 - LinkedIn: ${siteConfig.social.linkedin}

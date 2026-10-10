@@ -61,8 +61,11 @@ export default defineConfig({
   // preview of this project holds the lock, so Playwright sees the process exit.
   // Playwright owns the process and kills it after the run. It never reuses a
   // server it did not start: one already on PORT fails the run instead.
+  // E2E_FIXTURES=1 lets the build read tests/fixtures/case-studies while
+  // there is no real case study (see src/content.config.ts).
   webServer: {
     command: `bun run build && bun run preview -- --port ${PORT} --ignore-lock`,
+    env: { E2E_FIXTURES: "1" },
     reuseExistingServer: false,
     stderr: "pipe",
     stdout: "ignore",

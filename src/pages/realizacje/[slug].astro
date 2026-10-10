@@ -1,0 +1,153 @@
+---
+import { getCollection, render } from "astro:content";
+import Button from "@/components/ui/button.astro";
+import BaseLayout from "@/layouts/base-layout.astro";
+import type { CaseStudy } from "@/lib/case-studies";
+
+/* One static page per case study at /realizacje/<slug>. The body is the
+ * MDX entry; the header comes from its frontmatter. */
+
+export async function getStaticPaths() {
+  return (await getCollection("caseStudies")).map((entry) => ({
+    params: { slug: entry.id },
+    props: { caseStudy: entry },
+  }));
+}
+
+interface Props {
+  caseStudy: CaseStudy;
+}
+
+const { caseStudy } = Astro.props;
+const { company, period, role, stack, summary } = caseStudy.data;
+const { Content } = await render(caseStudy);
+---
+
+<BaseLayout description={summary} title={`${company} - realizacja`}>
+  <main class="case-study" id="top">
+    <article class="container">
+      <header class="case-head">
+        <p class="eyebrow">Realizacja</p>
+        <h1>{company}</h1>
+        <p class="case-lede">{summary}</p>
+        <dl class="case-facts">
+          <div>
+            <dt>Rola</dt>
+            <dd>{role}</dd>
+          </div>
+          <div>
+            <dt>Okres</dt>
+            <dd>{period}</dd>
+          </div>
+          <div>
+            <dt>Stack</dt>
+            <dd>
+              <ul class="case-stack">
+                {stack.map((tech) => <li>{tech}</li>)}
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </header>
+      <div class="prose">
+        <Content />
+      </div>
+      <footer class="case-foot">
+        <Button href="/#contact" icon="lucide:arrow-right" variant="primary">
+          Napisz do mnie
+        </Button>
+        <Button href="/#experience" variant="ghost">Wszystkie współprace</Button>
+      </footer>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .case-study {
+    padding: 80px 0 60px;
+  }
+
+  .case-head {
+    max-width: 70ch;
+    margin: 0 auto 48px;
+  }
+
+  .case-head .eyebrow {
+    margin-bottom: 12px;
+    color: var(--blue);
+  }
+
+  .case-head h1 {
+    margin: 0 0 16px;
+    font-family: var(--display);
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .case-lede {
+    margin: 0 0 28px;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .case-facts {
+    display: grid;
+    gap: 12px;
+    padding: var(--v2-space-md) 0;
+    margin: 0;
+    border-top: 1px solid var(--v2-line);
+    border-bottom: 1px solid var(--v2-line);
+  }
+
+  .case-facts > div {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    align-items: baseline;
+  }
+
+  .case-facts dt {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .case-facts dd {
+    margin: 0;
+    font-size: 15px;
+    color: var(--ink);
+  }
+
+  .case-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .case-stack li {
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-2);
+    border: 1px solid var(--v2-line);
+    border-radius: var(--v2-radius-xs);
+  }
+
+  .case-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 70ch;
+    margin: 48px auto 0;
+  }
+</style>
