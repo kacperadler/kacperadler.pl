@@ -1,0 +1,115 @@
+---
+import { Icon } from "astro-icon/components";
+
+/* Alert: a callout in a 1px rule - an icon, a title (slot "title"), the
+ * description (default slot) and an optional action (slot "action").
+ *   default      an ink rule, the icon blue
+ *   destructive  a coral rule, coral title and icon
+ * role="alert" by default; pass another `role` (or role="none") where the
+ * host already owns its live region. Other attributes (data-form-error)
+ * pass through. */
+interface Props {
+  class?: string;
+  icon?: string;
+  role?: "alert" | "status" | "none";
+  variant?: "default" | "destructive";
+  [attribute: `data-${string}`]: unknown;
+}
+
+const {
+  variant = "default",
+  icon = variant === "destructive" ? "lucide:triangle-alert" : "lucide:info",
+  role = "alert",
+  class: extraClass,
+  ...rest
+} = Astro.props;
+
+const hasTitle = Astro.slots.has("title");
+const hasAction = Astro.slots.has("action");
+---
+
+<div
+  role={role}
+  class:list={["mb-alert", `mb-alert-${variant}`, extraClass]}
+  {...rest}
+>
+  <Icon aria-hidden="true" class="mb-alert-icon" name={icon} />
+  <div class="mb-alert-body">
+    {hasTitle && (
+      <p class="mb-alert-title">
+        <slot name="title" />
+      </p>
+    )}
+    <div class="mb-alert-description"><slot /></div>
+  </div>
+  {hasAction && (
+    <div class="mb-alert-action">
+      <slot name="action" />
+    </div>
+  )}
+</div>
+
+<style>
+  .mb-alert {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    align-items: start;
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    background: var(--v2-bg);
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-alert :global(.mb-alert-icon) {
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    color: var(--blue);
+  }
+
+  .mb-alert-title {
+    margin: 0 0 2px;
+    font-family: var(--mb-display);
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+  }
+
+  .mb-alert-description :global(p) {
+    margin: 0;
+  }
+
+  .mb-alert-description :global(a) {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .mb-alert-action {
+    align-self: center;
+  }
+
+  .mb-alert-destructive {
+    color: var(--error);
+    border-color: var(--error);
+  }
+
+  .mb-alert-destructive :global(.mb-alert-icon),
+  .mb-alert-destructive .mb-alert-title {
+    color: var(--error);
+  }
+
+  @media (max-width: 480px) {
+    .mb-alert {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .mb-alert-action {
+      grid-column: 2;
+      justify-self: start;
+    }
+  }
+</style>

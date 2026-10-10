@@ -1,0 +1,164 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { Icon } from "astro-icon/components";
+
+/* Text link in four looks:
+ *   inline  ink text over a 2px blue underline; hover: blue text
+ *   nav     header navigation in Geist; an ink bar snaps in under it on
+ *           hover; `.active` (scripts/nav-active.ts on [data-nav-link]) is
+ *           a blue bar under blue text
+ *   footer  ink-2 list link, underlined on hover; the optional icon before
+ *           it turns blue
+ *   case    "Zobacz realizację": heavy ink text over a blue underline, the
+ *           icon after it (an arrow by default) nudges 3px right on hover
+ * `icon` takes an Iconify name. The label is trimmed and touches the tags:
+ * whitespace inside the <a> would be underlined and outlined.
+ *
+ * The catalogue (/ui/mb) forces states with [data-state="hover"] and
+ * [data-state="focus-visible"] (the ring itself comes from global.css). */
+interface Props extends HTMLAttributes<"a"> {
+  href: string;
+  icon?: string;
+  variant: "inline" | "nav" | "footer" | "case";
+}
+
+const {
+  href,
+  variant,
+  icon: iconName,
+  class: extraClass,
+  ...rest
+} = Astro.props;
+const icon =
+  iconName ?? (variant === "case" ? "lucide:arrow-right" : undefined);
+const label = (await Astro.slots.render("default")).trim();
+const iconAfter = variant === "case";
+---
+
+<a
+  href={href}
+  class:list={["mb-link", `mb-link-${variant}`, extraClass]}
+  {...rest}
+  >{icon && !iconAfter && <Icon aria-hidden="true" name={icon} />}<Fragment
+    set:html={label}
+  />{icon && iconAfter && <Icon aria-hidden="true" name={icon} />}</a
+>
+
+<style>
+  .mb-link-inline {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--blue);
+    text-underline-offset: 4px;
+    transition: color var(--mb-snap);
+  }
+
+  .mb-link-inline:is(:hover, [data-state="hover"]) {
+    color: var(--blue);
+  }
+
+  .mb-link-nav {
+    position: relative;
+    display: inline-block;
+    padding: 10px 12px;
+    font-family: var(--mb-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-2);
+    letter-spacing: -0.015em;
+    transition: color var(--mb-snap);
+  }
+
+  .mb-link-nav::after {
+    position: absolute;
+    right: 12px;
+    bottom: 0;
+    left: 12px;
+    height: 2px;
+    content: "";
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--mb-snap);
+  }
+
+  .mb-link-nav:is(:hover, [data-state="hover"]) {
+    color: var(--ink);
+  }
+
+  .mb-link-nav:is(:hover, .active, [data-state="hover"])::after {
+    transform: scaleX(1);
+  }
+
+  .mb-link-nav.active {
+    color: var(--blue);
+  }
+
+  .mb-link-nav.active::after {
+    background: var(--blue);
+  }
+
+  .mb-link-case {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    font-family: var(--mb-display);
+    font-size: 14px;
+    font-weight: 650;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--blue);
+    text-underline-offset: 4px;
+  }
+
+  .mb-link-case :global(svg) {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--blue);
+    transition: transform var(--mb-snap);
+  }
+
+  .mb-link-footer {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+    color: var(--ink-2);
+    transition: color var(--mb-snap);
+  }
+
+  .mb-link-footer :global(svg) {
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    transition: color var(--mb-snap);
+  }
+
+  .mb-link-footer:is(:hover, [data-state="hover"]) {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+
+  .mb-link-footer:is(:hover, [data-state="hover"]) :global(svg) {
+    color: var(--blue);
+  }
+  .mb-link-case:is(:hover, [data-state="hover"]) :global(svg) {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-link-inline,
+    .mb-link-nav,
+    .mb-link-nav::after,
+    .mb-link-footer,
+    .mb-link-footer :global(svg),
+    .mb-link-case :global(svg) {
+      transition: none;
+    }
+  }
+</style>

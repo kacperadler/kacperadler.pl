@@ -1,0 +1,64 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/* Textarea: <Input>'s frame and states (focus, invalid, disabled) with a
+ * 130px floor, vertical resize only. `value` becomes the initial text.
+ * [data-state="focus"] forces the focus look on the catalogue page
+ * (/ui/mb). */
+type Props = HTMLAttributes<"textarea">;
+
+const { class: extraClass, value, ...rest } = Astro.props;
+---
+
+<textarea class:list={["mb-textarea", extraClass]} {...rest}>{value}</textarea>
+
+<style>
+  .mb-textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 130px;
+    padding: 12px 14px;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    background: var(--v2-bg);
+    border: 1px solid var(--muted);
+    border-radius: 0;
+    transition:
+      border-color var(--mb-snap),
+      box-shadow var(--mb-snap);
+  }
+
+  .mb-textarea::placeholder {
+    color: var(--muted);
+    opacity: 1;
+  }
+
+  .mb-textarea:is(:focus, [data-state="focus"]) {
+    border-color: var(--ink);
+    box-shadow: var(--mb-shift) var(--mb-shift) 0 var(--blue);
+  }
+
+  .mb-textarea[aria-invalid="true"],
+  :global([data-invalid]) .mb-textarea {
+    border-color: var(--error);
+  }
+
+  .mb-textarea:disabled {
+    color: var(--muted);
+    cursor: not-allowed;
+    background: var(--v2-panel);
+    border-color: var(--mb-hair);
+    box-shadow: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-textarea {
+      transition: none;
+    }
+  }
+</style>

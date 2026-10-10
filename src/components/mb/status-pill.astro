@@ -1,0 +1,36 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/* Status pill (availability, hero status card and mobile sheet): ink mono
+ * text in a square blue frame behind a square blue dot. */
+type Props = HTMLAttributes<"span">;
+
+const { class: extraClass, ...rest } = Astro.props;
+---
+
+<span class:list={["mb-status-pill", extraClass]} {...rest}>
+  <span aria-hidden="true" class="mb-status-pill-dot"></span>
+  <slot />
+</span>
+
+<style>
+  .mb-status-pill {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    align-self: flex-start;
+    padding: 5px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    border: 1px solid var(--blue);
+  }
+
+  .mb-status-pill-dot {
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    background: var(--blue);
+  }
+</style>

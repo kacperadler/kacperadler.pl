@@ -1,0 +1,60 @@
+---
+/* Avatar group: <Avatar>s in the slot overlap by 8px, their ink rules
+ * doubling as separators; `count` closes the row with a "+N" square of the
+ * same `size` ("i N więcej" for assistive tech). Each avatar keeps its own
+ * alt text. */
+interface Props {
+  count?: number;
+  size?: "sm" | "default" | "lg";
+}
+
+const { count, size = "default" } = Astro.props;
+---
+
+<div class:list={["mb-avatar-group", `mb-avatar-group-${size}`]}>
+  <slot />
+  {count !== undefined && count > 0 && (
+    <span class="mb-avatar-count">
+      <span aria-hidden="true">+{count}</span>
+      <span class="sr-only">i {count} więcej</span>
+    </span>
+  )}
+</div>
+
+<style>
+  .mb-avatar-group {
+    display: flex;
+    align-items: center;
+  }
+
+  .mb-avatar-group > :global(* + *) {
+    margin-left: -8px;
+  }
+
+  .mb-avatar-count {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--v2-panel-elevated);
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-avatar-group-sm .mb-avatar-count {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .mb-avatar-group-lg .mb-avatar-count {
+    width: 96px;
+    height: 96px;
+    font-size: 22px;
+  }
+</style>

@@ -1,0 +1,182 @@
+---
+/* Card: a cell drawn by a 1px ink rule on the substrate. Hover lights it
+ * from inside - a lighter panel under a 3px blue top rule - and moves
+ * nothing; [data-state="hover"] forces it on the catalogue page (/ui/mb).
+ *
+ * shadcn's parts are named slots: "image" (full bleed on top), "title" (in
+ * `titleAs`, h3 by default), "description", "action" (beside the title),
+ * the default slot (content) and "footer". A card whose content has its
+ * own layout (the home sections) puts it all in the default slot.
+ * `size` "sm" halves the padding. `tag` picks the element: article, li,
+ * div, or a (with `href`, the whole cell is the link). Other attributes
+ * pass through. */
+interface Props {
+  class?: string;
+  href?: string;
+  rel?: string;
+  size?: "default" | "sm";
+  tag?: "article" | "li" | "div" | "a";
+  target?: string;
+  titleAs?: "h2" | "h3";
+  [attribute: `data-${string}`]: unknown;
+}
+
+const {
+  size = "default",
+  tag = "article",
+  titleAs = "h3",
+  class: extraClass,
+  ...rest
+} = Astro.props;
+
+const Tag = tag;
+const Title = titleAs;
+const has = (name: string) => Astro.slots.has(name);
+const hasHeader = has("title") || has("description") || has("action");
+---
+
+<Tag class:list={["mb-card", `mb-card-${size}`, extraClass]} {...rest}>
+  {has("image") && (
+    <div class="mb-card-image">
+      <slot name="image" />
+    </div>
+  )}
+  {hasHeader && (
+    <div class="mb-card-header">
+      <div class="mb-card-heading">
+        {has("title") && (
+          <Title class="mb-card-title">
+            <slot name="title" />
+          </Title>
+        )}
+        {has("description") && (
+          <p class="mb-card-description">
+            <slot name="description" />
+          </p>
+        )}
+      </div>
+      {has("action") && (
+        <div class="mb-card-action">
+          <slot name="action" />
+        </div>
+      )}
+    </div>
+  )}
+  {has("default") && (
+    <div class="mb-card-content">
+      <slot />
+    </div>
+  )}
+  {has("footer") && (
+    <div class="mb-card-footer">
+      <slot name="footer" />
+    </div>
+  )}
+</Tag>
+
+<style>
+  .mb-card {
+    --mb-card-pad: var(--v2-space-lg);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+    padding: var(--mb-card-pad);
+    color: var(--ink);
+    background: var(--v2-bg);
+    border: 1px solid var(--mb-rule);
+    transition:
+      background-color var(--mb-snap),
+      box-shadow var(--mb-snap);
+  }
+
+  .mb-card-sm {
+    --mb-card-pad: var(--v2-space-md);
+    gap: 12px;
+  }
+
+  .mb-card:is(:hover, [data-state="hover"]) {
+    background: var(--v2-panel-elevated);
+    box-shadow: inset 0 3px 0 var(--blue);
+  }
+
+  .mb-card-image {
+    margin: calc(-1 * var(--mb-card-pad)) calc(-1 * var(--mb-card-pad)) 0;
+    border-bottom: 1px solid var(--mb-rule);
+  }
+
+  .mb-card-image :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .mb-card-header {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .mb-card-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .mb-card-title {
+    margin: 0;
+    font-family: var(--mb-display);
+    font-size: 20px;
+    font-weight: 750;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.035em;
+  }
+
+  .mb-card-sm .mb-card-title {
+    font-size: 17px;
+  }
+
+  .mb-card-description {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .mb-card-action {
+    flex-shrink: 0;
+  }
+
+  .mb-card-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .mb-card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding-top: var(--v2-space-md);
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  @media (max-width: 880px) {
+    .mb-card-default {
+      --mb-card-pad: var(--v2-space-md);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-card {
+      transition: none;
+    }
+  }
+</style>

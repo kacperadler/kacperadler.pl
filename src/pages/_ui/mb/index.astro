@@ -1,0 +1,77 @@
+---
+/* /ui/mb - the minimal brutalism components (src/components/mb/): the home
+ * page's sections built from them, then the catalogue of every component
+ * with its variants and states. A dev tool: astro.config.mjs routes it for
+ * `astro dev` only.
+ *
+ * Its own document, not BaseLayout (which brings the current header,
+ * ribbons and glass): BaseHead with noindex, the site's tokens and global
+ * styles, the mb page frame. The only script is mobile-sheet.ts - never
+ * contact-form.ts, which would POST the forms here to the production
+ * NocoDB; the form states are forced instead. */
+
+import BaseHead from "@/components/layout/base-head.astro";
+import Link from "@/components/mb/link.astro";
+import PageFrame from "@/components/mb/page-frame.astro";
+import Contact from "@/components/mb/sections/contact.astro";
+import Experience from "@/components/mb/sections/experience.astro";
+import Hero from "@/components/mb/sections/hero.astro";
+import HowIWork from "@/components/mb/sections/how-i-work.astro";
+import Services from "@/components/mb/sections/services.astro";
+import { siteConfig } from "@/data/site-config";
+import "@/styles/tokens.css";
+import "@/styles/global.css";
+import Catalogue from "./catalogue.astro";
+---
+
+<!doctype html>
+<html lang={siteConfig.lang}>
+  <head>
+    <BaseHead
+      description="Komponenty minimal brutalism - narzędzie deweloperskie."
+      noindex
+      title="Minimal brutalism"
+    />
+  </head>
+  <body>
+    <PageFrame>
+      <main>
+        <nav aria-label="Katalogi" class="container mb-ui-bar">
+          <Link href="/ui" variant="nav">Obecny katalog</Link>
+          <Link href="/ui/proposal/minimal-brutalism" variant="nav"
+            >Propozycja minimal brutalism</Link
+          >
+        </nav>
+        <Hero />
+        <Services />
+        <HowIWork />
+        <Experience />
+        <Contact />
+        <Catalogue />
+      </main>
+    </PageFrame>
+  </body>
+</html>
+
+<script>
+  import "@/scripts/mobile-sheet.ts";
+</script>
+
+<style>
+  main {
+    padding: 0 0 96px;
+  }
+
+  .mb-ui-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding-top: var(--v2-space-md);
+  }
+
+  @media (max-width: 880px) {
+    main {
+      padding-bottom: 64px;
+    }
+  }
+</style>

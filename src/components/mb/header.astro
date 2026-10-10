@@ -1,0 +1,115 @@
+---
+import { contactCta, primaryNav } from "@/data/navigation";
+import Brand from "./brand.astro";
+import Button from "./button.astro";
+import Link from "./link.astro";
+
+/* Header: sticky on the solid substrate under an ink rule, no glass. The
+ * brand, the nav links ([data-nav-link], `.active` from
+ * scripts/nav-active.ts), the sm contact CTA ([data-nav-cta]) and, at 880px
+ * and below instead of the links, the menu button that opens the mobile
+ * sheet ([data-menu-open], aria-controls="mobile-sheet"). A page link
+ * ("/realizacje/") is active on its page and the pages below it,
+ * aria-current="page" only on the page itself. */
+const links = await primaryNav();
+const path = Astro.url.pathname;
+---
+
+<div class="mb-header" data-nav-wrap>
+  <nav aria-label="Główna nawigacja" class="mb-nav">
+    <Brand />
+
+    <div class="mb-nav-links">
+      {links.map((link) => {
+        const inPage = !link.href.includes("#") && path.startsWith(link.href);
+        return (
+          <Link
+            aria-current={inPage && path === link.href ? "page" : undefined}
+            class={inPage ? "active" : undefined}
+            data-nav-link
+            href={link.href}
+            variant="nav"
+          >
+            {link.label}
+          </Link>
+        );
+      })}
+    </div>
+
+    <div class="mb-nav-tail">
+      <Button
+        data-nav-cta
+        href={contactCta.href}
+        iconEnd="lucide:arrow-right"
+        size="sm"
+      >
+        {contactCta.label}
+      </Button>
+
+      <span class="mb-menu">
+        <Button
+          aria-controls="mobile-sheet"
+          aria-expanded="false"
+          aria-label="Otwórz menu"
+          data-menu-open
+          iconStart="lucide:menu"
+          size="icon-sm"
+          variant="outline"
+        />
+      </span>
+    </div>
+  </nav>
+</div>
+
+<style>
+  .mb-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--v2-bg);
+    border-bottom: 1px solid var(--mb-rule);
+  }
+
+  .mb-nav {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--container);
+    padding: 14px var(--v2-space-md);
+    margin: 0 auto;
+  }
+
+  .mb-nav-links {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .mb-nav-tail {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .mb-menu {
+    display: none;
+  }
+
+  @media (max-width: 880px) {
+    .mb-nav-links {
+      display: none;
+    }
+
+    .mb-menu {
+      display: inline-flex;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .mb-nav,
+    .mb-nav-tail {
+      gap: 8px;
+    }
+  }
+</style>

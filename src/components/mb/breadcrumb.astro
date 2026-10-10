@@ -1,0 +1,158 @@
+---
+import { Icon } from "astro-icon/components";
+
+/* Breadcrumb: nav[aria-label="Okruszki"] > ol of `items`; an item with
+ * `href` is a link, the last one is the current page (aria-current="page",
+ * never a link).
+ *   separator "chevron" | "slash"  drawn between items, hidden from
+ *                                  assistive tech
+ *   collapse                       with more than three items, the middle
+ *                                  ones fold into an ellipsis; their names
+ *                                  stay in a visually hidden label
+ * The row wraps instead of scrolling. */
+interface Crumb {
+  href?: string;
+  label: string;
+}
+
+interface Props {
+  collapse?: boolean;
+  items: readonly Crumb[];
+  separator?: "chevron" | "slash";
+}
+
+const { collapse = false, items, separator = "chevron" } = Astro.props;
+
+type Entry = { crumb: Crumb; kind: "crumb" } | { hidden: string; kind: "more" };
+type View =
+  | { hidden: string; kind: "more" }
+  | { kind: "current" | "link" | "text"; label: string; href?: string };
+
+const folded = collapse && items.length > 3;
+const entries: Entry[] = folded
+  ? [
+      { crumb: items[0] as Crumb, kind: "crumb" },
+      {
+        hidden: items
+          .slice(1, -2)
+          .map((item) => item.label)
+          .join(", "),
+        kind: "more",
+      },
+      ...items.slice(-2).map((crumb): Entry => ({ crumb, kind: "crumb" })),
+    ]
+  : items.map((crumb): Entry => ({ crumb, kind: "crumb" }));
+const views: View[] = entries.map((entry, index): View => {
+  if (entry.kind === "more") {
+    return entry;
+  }
+  const { href, label } = entry.crumb;
+  if (index === entries.length - 1) {
+    return { kind: "current", label };
+  }
+  return href ? { href, kind: "link", label } : { kind: "text", label };
+});
+const separatorIcon =
+  separator === "slash" ? "lucide:slash" : "lucide:chevron-right";
+---
+
+<nav aria-label="Okruszki" class="mb-breadcrumb">
+  <ol>
+    {views.map((view, index) => (
+      <>
+        <li class="mb-crumb">
+          {view.kind === "more" && (
+            <span class="mb-crumb-more">
+              <Icon aria-hidden="true" name="lucide:ellipsis" />
+              <span class="sr-only">Pominięte: {view.hidden}</span>
+            </span>
+          )}
+          {view.kind === "current" && (
+            <span aria-current="page" class="mb-crumb-current">
+              {view.label}
+            </span>
+          )}
+          {view.kind === "link" && (
+            <a class="mb-crumb-link" href={view.href}>
+              {view.label}
+            </a>
+          )}
+          {view.kind === "text" && <span>{view.label}</span>}
+        </li>
+        {index < views.length - 1 && (
+          <li aria-hidden="true" class="mb-crumb-separator">
+            <Icon name={separatorIcon} />
+          </li>
+        )}
+      </>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .mb-breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--ink-2);
+    list-style: none;
+  }
+
+  .mb-crumb {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .mb-crumb-link {
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: transparent;
+    text-underline-offset: 4px;
+    transition:
+      color var(--mb-snap),
+      text-decoration-color var(--mb-snap);
+  }
+
+  .mb-crumb-link:is(:hover, [data-state="hover"]) {
+    color: var(--ink);
+    text-decoration-color: var(--blue);
+  }
+
+  .mb-crumb-current {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .mb-crumb-more {
+    display: inline-flex;
+  }
+
+  .mb-crumb-more :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  .mb-crumb-separator {
+    display: inline-flex;
+    color: var(--muted);
+  }
+
+  .mb-crumb-separator :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-crumb-link {
+      transition: none;
+    }
+  }
+</style>

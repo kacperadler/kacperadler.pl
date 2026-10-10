@@ -1,0 +1,132 @@
+---
+import Label from "./label.astro";
+
+/* Field: a <Label>, the control in the slot (Input / Textarea / Checkbox /
+ * a group of Radio), an optional description and the error line.
+ *   - `name` lands in [data-field], which scripts/contact-form.ts looks up
+ *     to set and clear [data-invalid]; `invalid` renders it up front (the
+ *     catalogue at /ui/mb). The error shows in mono behind a coral rule
+ *     while the field is invalid.
+ *   - With `for` the label is a <label> pointing at the control; without it
+ *     (a radio group labelled by its own aria-label) a plain span.
+ *   - `orientation`: vertical (label above), horizontal (label beside), or
+ *     responsive (beside once the field is at least 480px wide, through a
+ *     container query).
+ *   - `required` marks the label; the control carries `required` itself. */
+interface Props {
+  description?: string;
+  disabled?: boolean;
+  errorMessage: string;
+  for?: string;
+  invalid?: boolean;
+  label: string;
+  name: string;
+  orientation?: "vertical" | "horizontal" | "responsive";
+  required?: boolean;
+}
+
+const {
+  description,
+  disabled = false,
+  errorMessage,
+  for: forId,
+  invalid = false,
+  label,
+  name,
+  orientation = "vertical",
+  required = false,
+} = Astro.props;
+---
+
+<div
+  data-disabled={disabled ? "true" : undefined}
+  data-field={name}
+  data-invalid={invalid ? "true" : undefined}
+  class:list={["mb-field", `mb-field-${orientation}`]}
+>
+  <div class="mb-field-grid">
+    <Label disabled={disabled} for={forId}
+      >{label}{required && (
+        <span aria-hidden="true" class="mb-field-required">
+          *
+        </span>
+      )}</Label
+    >
+    <div class="mb-field-control">
+      <slot />
+      {description && <p class="mb-field-description">{description}</p>}
+      <span class="mb-field-error">{errorMessage}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mb-field-responsive {
+    container-type: inline-size;
+  }
+
+  .mb-field-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .mb-field-horizontal .mb-field-grid {
+    grid-template-columns: minmax(0, 160px) minmax(0, 1fr);
+    gap: 8px 16px;
+    align-items: start;
+  }
+
+  .mb-field-horizontal .mb-field-grid > :global(.mb-label) {
+    padding-top: 14px;
+  }
+
+  @container (min-width: 480px) {
+    .mb-field-responsive .mb-field-grid {
+      grid-template-columns: minmax(0, 160px) minmax(0, 1fr);
+      gap: 8px 16px;
+      align-items: start;
+    }
+
+    .mb-field-responsive .mb-field-grid > :global(.mb-label) {
+      padding-top: 14px;
+    }
+  }
+
+  .mb-field-control {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .mb-field-required {
+    margin-left: 4px;
+    color: var(--blue);
+  }
+
+  .mb-field-description {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  [data-disabled] .mb-field-description {
+    color: var(--muted);
+  }
+
+  .mb-field-error {
+    display: none;
+    padding-left: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--error);
+    border-left: 2px solid var(--error);
+  }
+
+  [data-invalid] .mb-field-error {
+    display: block;
+  }
+</style>

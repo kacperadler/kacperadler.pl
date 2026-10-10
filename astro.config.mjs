@@ -9,10 +9,11 @@ import icon from "astro-icon";
 const r = (path) => fileURLToPath(new URL(path, import.meta.url));
 
 /* The component catalogue and the design proposals are a dev tool: `astro
- * dev` serves them at /ui, /ui/proposal and /ui/proposal/<id>, the
- * production build never sees them (no dist/ui/, no sitemap entry). The
- * pages live in src/pages/_ui/, which Astro skips when it collects routes,
- * and this integration routes them only for the dev server. */
+ * dev` serves them at /ui, /ui/mb (the minimal brutalism components),
+ * /ui/proposal and /ui/proposal/<id>, the production build never sees them
+ * (no dist/ui/, no sitemap entry). The pages live in src/pages/_ui/, which
+ * Astro skips when it collects routes, and this integration routes them
+ * only for the dev server. */
 /** @type {import("astro").AstroIntegration} */
 const uiCatalogue = {
   hooks: {
@@ -21,6 +22,10 @@ const uiCatalogue = {
         injectRoute({
           entrypoint: "./src/pages/_ui/index.astro",
           pattern: "/ui",
+        });
+        injectRoute({
+          entrypoint: "./src/pages/_ui/mb/index.astro",
+          pattern: "/ui/mb",
         });
         injectRoute({
           entrypoint: "./src/pages/_ui/proposal/index.astro",

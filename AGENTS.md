@@ -61,7 +61,7 @@ Package manager: **bun** (Node 22+; `bun` musi być w `PATH`, bo pre-commit hook
 
 ```bash
 bun install            # install deps
-bun dev                # dev server (Umami script NIE jest renderowany); katalog komponentów pod /ui (tylko dev)
+bun dev                # dev server (Umami script NIE jest renderowany); katalog komponentów pod /ui, minimal brutalism pod /ui/mb (tylko dev)
 bun run build          # production build → dist/
 bun run preview        # preview prod build (port domyślny 4321; testy używają 4329)
 bun run check          # astro check (type-check .astro)
@@ -97,6 +97,7 @@ Source of truth wizualny: `DESIGN.md`. Stan w kodzie:
 - **UI primitives** w `src/components/ui/`: `button.astro`, `card.astro` (idle solid → hover glass, domyślnie `data-spotlight`), `input.astro` (`.v2-input`), `textarea.astro` (`.v2-textarea`), `field.astro` (etykieta + komunikat błędu, `[data-field]` dla `contact-form.ts`), `radio.astro`, `badge.astro` (`outline | filled`, `fillOnCardHover`), `tag.astro`, `status-pill.astro`, `link.astro` (`inline | nav | footer`, opcjonalna ikona). Używaj ich przed pisaniem nowego komponentu.
 - **Katalog komponentów** - `src/pages/_ui/catalogue.astro` (komponent), strona `src/pages/_ui/index.astro`, routowana na `/ui` tylko w `astro dev` (integracja w `astro.config.mjs`; build jej nie zna). Pokazuje każdy komponent z `ui/` we wszystkich wariantach i stanach. Stany wymuszone przez `[data-state="hover" | "focus-visible" | "focus"]`, `.active`, `disabled` - selektory siedzą w komponentach obok prawdziwych `:hover` / `:focus`, więc nowy komponent albo stan dopisujesz w obu miejscach. Typografia: `.prose` z `src/styles/prose.css` (port @tailwindcss/typography, ładowany tylko przez katalog).
 - **Propozycje designu** - `/ui/proposal` (lista) i `/ui/proposal/<id>` (kopia strony głównej + cały katalog z nałożoną propozycją, pasek przełączania u góry), tylko w `astro dev`, strony w `src/pages/_ui/proposal/`. Propozycja to sam folder `src/styles/proposals/<id>/`: `proposal.css` (reguły pod `[data-proposal="<id>"]`, tokeny na `html[data-proposal="<id>"]`, fonty woff2 z licencją obok, przez względny `url()`) + `meta.json` (`name`, jednolinijkowy `description`, `references: [{ label, url }]`), czytane przez `src/lib/proposals.ts`. `BaseLayout` z propem `proposal` ustawia `data-proposal` na `<html>`; CSS propozycji jest inline w `<body>`, po stylach komponentów, więc wygrywa remis specyficzności. Kolory zostają z `tokens.css`. `baseline` to obecny design bez nadpisań - wzór do skopiowania.
+- **Minimal brutalism** - kierunek, na który przechodzi strona: komponenty w `src/components/mb/` (warianty i rozmiary za shadcn/ui, Astro + scoped CSS, tokeny `--mb-*` w `mb/tokens.css` z palety `tokens.css`, sekcje strony głównej w `mb/sections/`, rama strony w `page-frame.astro`) na `/ui/mb` (`src/pages/_ui/mb/`, tylko `astro dev`): najpierw sekcje strony głównej, potem katalog wszystkich komponentów z wymuszonymi stanami. Własny dokument (`BaseHead` + `page-frame.astro`, nie `BaseLayout`), ładuje tylko `mobile-sheet.ts` - nigdy `contact-form.ts`, który wysyła do produkcyjnego NocoDB; stany formularza są wymuszone propem `state`. Żadna strona produkcyjna ich nie importuje - landing przechodzi na nie w KA0069 (mapa nazw propów w `DESIGN.md`). Do tego czasu copy sekcji jest w dwóch miejscach (`sections/` i `mb/sections/`).
 - **Canonical Button** - `button.astro` jest jedynym source'em CTA. Variants `primary | ghost`, sizes `md | sm` (sm = header). Primary hover: `--blue-wash` 4px ring + 12% darken + arrow icon fly-through cycle (translateX z opacity 0 dla "teleport" iluzji, bez rewind on hover-out). Ghost hover: glass. Stan `data-state="submitting"` pokazuje CSS-only spinner. Wszystkie transition'y `0.25s ease`. Używany w: header (z `data-nav-cta` żeby `nav-active.ts` mógł włączyć `.active`), hero CTAs, mobile sheet CTA, contact form, 404.
 - Sekcje (`src/components/sections/`): hero (status card), services (2x2 grid + ghost number), how-i-work (vertical timeline + lucide icons per step + glass dot rail), experience ("Współpracowałem z" logo wall + optional `badge` schema field dla zleceń), contact (vertical stack + glass focus + min-height lock). Layout chrome: header, footer (2-zone glass), mobile sheet (glass overlay + animated open/close), EU funding disclosure. OG image (`src/pages/og-default.png.ts`) w ciemnej palecie.
 
@@ -104,7 +105,7 @@ Source of truth wizualny: `DESIGN.md`. Stan w kodzie:
 
 ```
 src/
-├── components/{ui,layout,sections,contact}/   # kebab-case
+├── components/{ui,layout,sections,contact,mb}/   # kebab-case; mb/ = minimal brutalism (tylko /ui/mb do KA0069)
 ├── content/{services,experience}/  # JSON
 ├── content/{case-studies,blog}/    # MDX; blog pusty
 ├── content.config.ts      # Zod schemas collections
@@ -116,7 +117,7 @@ src/
 ├── lib/                   # seo, case-studies, proposals
 └── assets/                # me.jpg (OG), experience/ logotypy, logotyp_fundusze_eu.png
 
-tests/e2e/       # Playwright specs (a11y, case-studies, contact-form, mobile-sheet, nav-active, services-grid, skip-link; ui-catalogue i ui-proposals na dev serverze)
+tests/e2e/       # Playwright specs (a11y, case-studies, contact-form, mobile-sheet, nav-active, services-grid, skip-link; ui-catalogue, ui-mb i ui-proposals na dev serverze)
 tests/fixtures/  # case studies dla buildów e2e: przykładowy i pusty
 spec/            # vision.md + tickets (spec/features/<id>/)
 .agents/harness/ # kryteria review / audit / retro + styleguide

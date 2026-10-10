@@ -203,7 +203,9 @@ test.describe("design proposals (astro dev)", () => {
     await expect(page.locator("style[data-proposal-css]")).toHaveCount(0);
 
     // And into the proposals again from /ui.
-    await switcher(page).getByRole("link").click();
+    await switcher(page)
+      .getByRole("link", { name: "Propozycje designu" })
+      .click();
     await expect(page).toHaveURL(`${DEV_URL}/ui/proposal`);
     await page.getByRole("link", { exact: true, name: "Baseline" }).click();
     await expect(page).toHaveURL(`${DEV_URL}/ui/proposal/baseline`);

@@ -1,0 +1,50 @@
+---
+/* Accordion: <AccordionItem>s in the slot, native <details>/<summary>, so it
+ * works without JavaScript.
+ *   type "single"    one item open at a time: every item's <details> gets
+ *                    the same `name` (the platform closes the others). The
+ *                    name has to be unique on the page, or two accordions
+ *                    close each other's items.
+ *   type "multiple"  items open and close on their own.
+ *   bordered         the items sit in one ink frame; plain: hairlines only.
+ * Items mark their <details> with `data-mb-accordion-item`; the name is
+ * written into those tags after the slot renders. */
+type Props =
+  | { bordered?: boolean; class?: string; type: "multiple" }
+  | { bordered?: boolean; class?: string; name: string; type: "single" };
+
+const { bordered = false, class: extraClass } = Astro.props;
+
+const ITEM_TAG = /<details(?=[^>]*\sdata-mb-accordion-item[\s>=])/g;
+
+const items = await Astro.slots.render("default");
+const html =
+  Astro.props.type === "single"
+    ? items.replace(
+        ITEM_TAG,
+        `<details name="${Astro.props.name.replaceAll("&", "&amp;").replaceAll('"', "&quot;")}"`
+      )
+    : items;
+---
+
+<div
+  class:list={[
+    "mb-accordion",
+    { "mb-accordion-bordered": bordered },
+    extraClass,
+  ]}
+>
+  <Fragment set:html={html} />
+</div>
+
+<style>
+  .mb-accordion {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-accordion-bordered {
+    border: 1px solid var(--mb-rule);
+  }
+</style>

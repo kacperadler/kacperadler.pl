@@ -1,0 +1,219 @@
+---
+/* Prose: typography for long-form copy (case studies, blog posts, legal
+ * pages) - the Markdown / MDX body goes in the slot as bare tags. Sizes and
+ * rhythm are @tailwindcss/typography's (as in src/styles/prose.css), the
+ * look is minimal brutalism: heavy Geist headings, h2 under an ink rule,
+ * blue square bullets and mono counters, the quote behind a blue rule,
+ * code in a hairline box, the table fully ruled.
+ *
+ * A standalone `mb-prose` class: the site's `.prose` (global.css) never
+ * reaches it. Descendant rules go through :global(), the tags come from
+ * the caller's scope. A <pre> scrolls inside its own box and table cells
+ * wrap, so neither widens the page. */
+interface Props {
+  class?: string;
+}
+
+const { class: extraClass } = Astro.props;
+---
+
+<div class:list={["mb-prose", extraClass]}><slot /></div>
+
+<style>
+  .mb-prose {
+    max-width: 65ch;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink-2);
+    overflow-wrap: break-word;
+  }
+
+  .mb-prose > :global(:first-child) {
+    margin-top: 0;
+  }
+
+  .mb-prose > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  .mb-prose :global(p) {
+    margin: 1.25em 0;
+  }
+
+  .mb-prose :global(.lead) {
+    margin: 1.2em 0;
+    font-size: 1.25em;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .mb-prose :global(:is(h1, h2, h3, h4)) {
+    font-family: var(--mb-display);
+    color: var(--ink);
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .mb-prose :global(h1) {
+    margin: 0 0 0.8888889em;
+    font-size: 2.25em;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  .mb-prose :global(h2) {
+    padding-top: 0.6em;
+    margin: 2em 0 1em;
+    font-size: 1.5em;
+    font-weight: 800;
+    line-height: 1.3333333;
+    border-top: 1px solid var(--mb-rule);
+  }
+
+  .mb-prose :global(h3) {
+    margin: 1.6em 0 0.6em;
+    font-size: 1.25em;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+
+  .mb-prose :global(h4) {
+    margin: 1.5em 0 0.5em;
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .mb-prose :global(:is(h2, h3, h4) + *) {
+    margin-top: 0;
+  }
+
+  .mb-prose :global(a) {
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--blue);
+    text-underline-offset: 4px;
+    transition: color var(--mb-snap);
+  }
+
+  .mb-prose :global(a:hover) {
+    color: var(--blue);
+  }
+
+  .mb-prose :global(strong) {
+    font-weight: 650;
+    color: var(--ink);
+  }
+
+  .mb-prose :global(:is(ul, ol)) {
+    padding-inline-start: 1.625em;
+    margin: 1.25em 0;
+  }
+
+  .mb-prose :global(ul) {
+    list-style-type: square;
+  }
+
+  .mb-prose :global(ol) {
+    list-style-type: decimal;
+  }
+
+  .mb-prose :global(:is(ul, ol) :is(ul, ol)) {
+    margin: 0.75em 0;
+  }
+
+  .mb-prose :global(li) {
+    padding-inline-start: 0.375em;
+    margin: 0.5em 0;
+  }
+
+  .mb-prose :global(ul > li::marker) {
+    color: var(--blue);
+  }
+
+  .mb-prose :global(ol > li::marker) {
+    font-family: var(--mono);
+    font-size: 0.9em;
+    color: var(--blue);
+  }
+
+  .mb-prose :global(blockquote) {
+    padding-inline-start: 1em;
+    margin: 1.6em 0;
+    font-weight: 500;
+    color: var(--ink);
+    border-inline-start: 3px solid var(--blue);
+  }
+
+  .mb-prose :global(hr) {
+    height: 0;
+    margin: 3em 0;
+    border: 0;
+    border-top: 1px solid var(--mb-rule);
+  }
+
+  .mb-prose :global(code) {
+    padding: 0.1em 0.35em;
+    font-family: var(--mono);
+    font-size: 0.875em;
+    font-weight: 500;
+    color: var(--ink);
+    border: 1px solid var(--mb-hair);
+  }
+
+  .mb-prose :global(pre) {
+    padding: 0.8571429em 1.1428571em;
+    margin: 1.7142857em 0;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.875em;
+    line-height: 1.7142857;
+    color: var(--ink-2);
+    background: var(--v2-bg);
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-prose :global(pre code) {
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+    border: 0;
+  }
+
+  .mb-prose :global(table) {
+    width: 100%;
+    margin: 2em 0;
+    font-size: 0.875em;
+    line-height: 1.7142857;
+    border-collapse: collapse;
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-prose :global(:is(th, td)) {
+    padding: 0.5714286em 0.75em;
+    vertical-align: baseline;
+    text-align: start;
+    overflow-wrap: anywhere;
+    border: 1px solid var(--muted);
+  }
+
+  .mb-prose :global(thead th) {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    font-weight: 600;
+    vertical-align: middle;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom-color: var(--mb-rule);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-prose :global(a) {
+      transition: none;
+    }
+  }
+</style>

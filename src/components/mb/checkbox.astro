@@ -1,0 +1,158 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { Icon } from "astro-icon/components";
+
+/* Checkbox: a native input (appearance: none) drawn as an 18px square in a
+ * muted frame; hover: the ink frame; checked: a blue block with a lucide
+ * check; disabled: the flat panel; aria-invalid="true": a coral frame.
+ * With `label` (and optionally `description`, tied by aria-describedby) it
+ * renders its row; `id` is then required to tie the label. Native input
+ * attributes (name / value / checked / disabled) pass through.
+ *
+ * `state` forces a look on the catalogue page (/ui/mb): "hover" on the row,
+ * "focus-visible" on the input. */
+interface Props extends Omit<HTMLAttributes<"input">, "type"> {
+  description?: string;
+  label?: string;
+  state?: "hover" | "focus-visible";
+}
+
+const {
+  description,
+  label,
+  state,
+  class: extraClass,
+  id,
+  ...rest
+} = Astro.props;
+const descriptionId = description && id ? `${id}-description` : undefined;
+---
+
+<div
+  data-state={state === "hover" ? state : undefined}
+  class:list={["mb-checkbox-row", extraClass]}
+>
+  <span class="mb-checkbox">
+    <input
+      aria-describedby={descriptionId}
+      class="mb-checkbox-input"
+      data-state={state === "focus-visible" ? state : undefined}
+      id={id}
+      type="checkbox"
+      {...rest}
+    >
+    <Icon aria-hidden="true" class="mb-checkbox-mark" name="lucide:check" />
+  </span>
+  {label && (
+    <div class="mb-checkbox-text">
+      <label class="mb-checkbox-label" for={id}>
+        {label}
+      </label>
+      {description && (
+        <p class="mb-checkbox-description" id={descriptionId}>
+          {description}
+        </p>
+      )}
+    </div>
+  )}
+</div>
+
+<style>
+  .mb-checkbox-row {
+    display: inline-flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .mb-checkbox {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+  }
+
+  .mb-checkbox-input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    appearance: none;
+    cursor: pointer;
+    background: var(--v2-bg);
+    border: 1px solid var(--muted);
+    border-radius: 0;
+    transition:
+      background-color var(--mb-snap),
+      border-color var(--mb-snap);
+  }
+
+  .mb-checkbox-row:is(:hover, [data-state="hover"]) .mb-checkbox-input {
+    border-color: var(--ink);
+  }
+
+  .mb-checkbox-input:checked {
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .mb-checkbox-input[aria-invalid="true"] {
+    border-color: var(--error);
+  }
+
+  .mb-checkbox-input:disabled {
+    cursor: not-allowed;
+    background: var(--v2-panel);
+    border-color: var(--mb-hair);
+  }
+
+  .mb-checkbox-input:checked:disabled {
+    background: var(--muted);
+    border-color: var(--muted);
+  }
+
+  .mb-checkbox :global(.mb-checkbox-mark) {
+    position: absolute;
+    inset: 2px;
+    width: 14px;
+    height: 14px;
+    color: var(--v2-bg);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .mb-checkbox-input:checked + :global(.mb-checkbox-mark) {
+    opacity: 1;
+  }
+
+  .mb-checkbox-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mb-checkbox-label {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .mb-checkbox-description {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  .mb-checkbox-row:has(:disabled) .mb-checkbox-label {
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-checkbox-input {
+      transition: none;
+    }
+  }
+</style>

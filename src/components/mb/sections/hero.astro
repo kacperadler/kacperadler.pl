@@ -1,0 +1,227 @@
+---
+import meImage from "@/assets/me.jpg";
+import { siteConfig } from "@/data/site-config";
+import Avatar from "../avatar.astro";
+import Button from "../button.astro";
+import StatusPill from "../status-pill.astro";
+
+/* Hero (#top): a heavy headline on the bare substrate beside the status
+ * card, a framed cell whose rows read as a ruled table (label | value).
+ * Copy as in sections/hero.astro. */
+---
+
+<section class="mb-hero" id="top">
+  <div class="container mb-hero-grid">
+    <div class="mb-hero-text">
+      <h1>
+        Buduję <em>interfejsy</em> dla produktów,<br>
+        z których ludzie korzystają codziennie.
+      </h1>
+
+      <p class="mb-hero-sub">
+        Agenci AI i automatyzacje, aplikacje mobilne, webowe, narzędzia B2B i
+        landing pages - od architektury po deploy. Pracuję w sprintach, async, z
+        zespołami produktowymi w PL/EU.
+      </p>
+
+      <div class="mb-hero-ctas">
+        <Button href="#contact" iconEnd="lucide:arrow-right"
+          >Porozmawiajmy</Button
+        >
+        <Button href="#how" variant="outline">Zobacz proces</Button>
+      </div>
+    </div>
+
+    <aside aria-label="Stan obecny" class="mb-hero-status">
+      <div class="mb-status-id">
+        <Avatar
+          alt={`${siteConfig.name} - ${siteConfig.role}`}
+          size="lg"
+          src={meImage}
+        />
+        <div class="mb-status-id-text">
+          <p class="mb-status-name">{siteConfig.name}</p>
+          <p class="mb-status-meta">
+            <span>{siteConfig.role}</span>
+            <span>Polska</span>
+          </p>
+          <StatusPill>Otwarty na nowe współprace</StatusPill>
+        </div>
+      </div>
+
+      <dl class="mb-status-rows">
+        <div class="mb-status-row">
+          <dt>Stack</dt>
+          <dd>React Native · TypeScript · Astro</dd>
+        </div>
+        <div class="mb-status-row">
+          <dt>Teraz</dt>
+          <dd>Frontend dev w&nbsp;ReX</dd>
+        </div>
+        <div class="mb-status-row">
+          <dt>Odpowiadam</dt>
+          <dd>zwykle w&nbsp;24h</dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .mb-hero {
+    padding: var(--v2-space-xl) 0;
+  }
+
+  .mb-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: var(--v2-space-xl);
+    align-items: center;
+  }
+
+  .mb-hero-text {
+    min-width: 0;
+  }
+
+  h1 {
+    max-width: 22ch;
+    margin: 0 0 24px;
+    font-family: var(--mb-display);
+    font-size: clamp(40px, 5.8vw, 70px);
+    font-weight: 800;
+    line-height: 0.98;
+    color: var(--ink);
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+  }
+
+  h1 em {
+    font-style: normal;
+    text-decoration: underline;
+    text-decoration-thickness: 0.1em;
+    text-decoration-color: var(--blue);
+    text-decoration-skip-ink: none;
+    text-underline-offset: 0.08em;
+  }
+
+  .mb-hero-sub {
+    max-width: 56ch;
+    margin: 0 0 32px;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .mb-hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .mb-hero-status {
+    display: flex;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+    padding: var(--v2-space-lg);
+    background: var(--v2-bg);
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-status-id {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .mb-status-id-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .mb-status-name {
+    margin: 0;
+    font-family: var(--mb-display);
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--ink);
+    letter-spacing: -0.035em;
+  }
+
+  .mb-status-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0 0 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .mb-status-rows {
+    margin: 0;
+  }
+
+  .mb-status-row {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 12px;
+    align-items: baseline;
+    padding: 12px 0;
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-status-row:last-child {
+    padding-bottom: 0;
+  }
+
+  .mb-status-row dt {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .mb-status-row dd {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  @media (max-width: 880px) {
+    .mb-hero {
+      padding: var(--v2-space-lg) 0;
+    }
+
+    .mb-hero-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--v2-space-lg);
+      align-items: stretch;
+    }
+
+    .mb-hero-status {
+      padding: var(--v2-space-md);
+    }
+  }
+
+  @media (max-width: 400px) {
+    .mb-status-id {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .mb-status-row {
+      grid-template-columns: 88px minmax(0, 1fr);
+    }
+  }
+</style>

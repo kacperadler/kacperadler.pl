@@ -1,0 +1,150 @@
+---
+import { Icon } from "astro-icon/components";
+
+/* Badge: a square mono chip, with shadcn/ui's variants.
+ *   default      a solid blue block (current role, "Zlecenie")
+ *   secondary    the raised panel in a hairline
+ *   outline      a muted frame (year range, step duration)
+ *   destructive  a coral block
+ *   ghost        no frame
+ *   link         ink text over a blue underline
+ * `iconStart` / `iconEnd` take an Iconify name; a <Spinner decorative /> in
+ * the slot shows work in progress. `href` renders an <a>.
+ * `fillOnCellHover` paints an outline badge as the default one while its
+ * <Card> is hovered (process steps); the catalogue forces that hover with
+ * [data-state="hover"] on the card. */
+interface Props {
+  class?: string;
+  fillOnCellHover?: boolean;
+  href?: string;
+  iconEnd?: string;
+  iconStart?: string;
+  variant?:
+    | "default"
+    | "secondary"
+    | "outline"
+    | "destructive"
+    | "ghost"
+    | "link";
+  [attribute: `data-${string}`]: unknown;
+}
+
+const {
+  variant = "default",
+  fillOnCellHover = false,
+  href,
+  iconStart,
+  iconEnd,
+  class: extraClass,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? "a" : "span";
+---
+
+<Tag
+  href={href}
+  class:list={[
+    "mb-badge",
+    `mb-badge-${variant}`,
+    { "mb-badge-fill-on-hover": fillOnCellHover },
+    extraClass,
+  ]}
+  {...rest}
+>
+  {iconStart && <Icon aria-hidden="true" name={iconStart} />}
+  <slot />
+  {iconEnd && <Icon aria-hidden="true" name={iconEnd} />}
+</Tag>
+
+<style>
+  .mb-badge {
+    display: inline-flex;
+    flex-shrink: 0;
+    gap: 4px;
+    align-items: center;
+    padding: 3px 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    transition:
+      background-color var(--mb-snap),
+      border-color var(--mb-snap),
+      color var(--mb-snap);
+  }
+
+  .mb-badge :global(svg) {
+    width: 12px;
+    height: 12px;
+  }
+
+  .mb-badge-default,
+  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-badge-fill-on-hover {
+    color: var(--v2-bg);
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .mb-badge-secondary {
+    background: var(--v2-panel-elevated);
+    border-color: var(--mb-hair);
+  }
+
+  .mb-badge-outline {
+    border-color: var(--muted);
+  }
+
+  .mb-badge-destructive {
+    color: var(--v2-bg);
+    background: var(--error);
+    border-color: var(--error);
+  }
+
+  .mb-badge-link {
+    padding-inline: 0;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--blue);
+    text-underline-offset: 3px;
+  }
+
+  /* As a link: the same switch as the button it stands for. */
+  a.mb-badge-default:is(:hover, [data-state="hover"]) {
+    background: var(--blue-2);
+    border-color: var(--blue-2);
+  }
+
+  a.mb-badge-destructive:is(:hover, [data-state="hover"]) {
+    background: color-mix(in srgb, var(--error) 80%, var(--ink));
+  }
+
+  a:is(.mb-badge-secondary, .mb-badge-outline):is(
+    :hover,
+    [data-state="hover"]
+  ) {
+    color: var(--ink);
+    border-color: var(--mb-rule);
+  }
+
+  a.mb-badge-ghost:is(:hover, [data-state="hover"]) {
+    color: var(--ink);
+    background: var(--v2-panel-elevated);
+  }
+
+  a.mb-badge-link:is(:hover, [data-state="hover"]) {
+    color: var(--blue);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-badge {
+      transition: none;
+    }
+  }
+</style>

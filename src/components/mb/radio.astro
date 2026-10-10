@@ -1,0 +1,165 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/* Radio, in two looks:
+ *   default  a native input (appearance: none) drawn as an 18px square in a
+ *            muted frame, the label beside it; checked: a blue square inset
+ *            in the frame
+ *   choice   the input is visually hidden and `label` is a square chip (the
+ *            contact form's project type); hover: the ink frame; checked: a
+ *            solid blue block; keyboard focus: the ring around the chip
+ * Disabled: the flat panel, muted text. Invalid: a coral frame, from
+ * [data-invalid] on the enclosing <Field> or aria-invalid on the input.
+ * Native input attributes (name / value / checked / disabled) pass through.
+ *
+ * `state` forces a look on the catalogue page (/ui/mb): "hover" on the
+ * label, "focus-visible" on the input. */
+interface Props extends Omit<HTMLAttributes<"input">, "type"> {
+  label: string;
+  state?: "hover" | "focus-visible";
+  variant?: "default" | "choice";
+}
+
+const {
+  label,
+  state,
+  variant = "default",
+  class: extraClass,
+  ...rest
+} = Astro.props;
+---
+
+<label
+  data-state={state === "hover" ? state : undefined}
+  class:list={["mb-radio", `mb-radio-${variant}`, extraClass]}
+>
+  <input
+    class="mb-radio-input"
+    data-state={state === "focus-visible" ? state : undefined}
+    type="radio"
+    {...rest}
+  >
+  <span class="mb-radio-label">{label}</span>
+</label>
+
+<style>
+  .mb-radio {
+    position: relative;
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .mb-radio:has(:disabled) {
+    cursor: not-allowed;
+  }
+
+  /* Choice: the chip; the input is visually hidden. */
+  .mb-radio-choice .mb-radio-input {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .mb-radio-choice .mb-radio-label {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-2);
+    letter-spacing: -0.01em;
+    border: 1px solid var(--muted);
+    transition:
+      background-color var(--mb-snap),
+      border-color var(--mb-snap),
+      color var(--mb-snap);
+  }
+
+  /* Default: the square. */
+  .mb-radio-default .mb-radio-input {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    appearance: none;
+    cursor: inherit;
+    background: var(--v2-bg);
+    border: 1px solid var(--muted);
+    border-radius: 0;
+    transition:
+      background-color var(--mb-snap),
+      border-color var(--mb-snap),
+      box-shadow var(--mb-snap);
+  }
+
+  .mb-radio-default:is(:hover, [data-state="hover"]) .mb-radio-input {
+    border-color: var(--ink);
+  }
+
+  .mb-radio-default .mb-radio-input:checked {
+    background: var(--blue);
+    border-color: var(--blue);
+    box-shadow: inset 0 0 0 3px var(--v2-bg);
+  }
+
+  .mb-radio-default .mb-radio-input[aria-invalid="true"],
+  :global([data-invalid]) .mb-radio-default .mb-radio-input {
+    border-color: var(--error);
+  }
+
+  .mb-radio-default .mb-radio-input:disabled {
+    background: var(--v2-panel);
+    border-color: var(--mb-hair);
+  }
+
+  .mb-radio-default .mb-radio-input:checked:disabled {
+    background: var(--muted);
+    box-shadow: inset 0 0 0 3px var(--v2-panel);
+  }
+
+  .mb-radio-default:has(:disabled) .mb-radio-label {
+    color: var(--muted);
+  }
+
+  /* Choice: the chip states. */
+  .mb-radio-choice:is(:hover, [data-state="hover"]) .mb-radio-label {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .mb-radio-choice .mb-radio-input:checked + .mb-radio-label {
+    font-weight: 600;
+    color: var(--v2-bg);
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .mb-radio-choice
+    .mb-radio-input:is(:focus-visible, [data-state="focus-visible"])
+    + .mb-radio-label {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .mb-radio-choice .mb-radio-input[aria-invalid="true"] + .mb-radio-label,
+  :global([data-invalid]) .mb-radio-choice .mb-radio-label {
+    border-color: var(--error);
+  }
+
+  .mb-radio-choice .mb-radio-input:disabled + .mb-radio-label {
+    color: var(--muted);
+    background: var(--v2-panel);
+    border-color: var(--mb-hair);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-radio-default .mb-radio-input,
+    .mb-radio-choice .mb-radio-label {
+      transition: none;
+    }
+  }
+</style>

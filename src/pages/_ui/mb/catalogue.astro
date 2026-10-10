@@ -1,0 +1,1509 @@
+---
+/* The minimal brutalism catalogue - every component in src/components/mb/
+ * with its variants, sizes and states side by side. Rendered by /ui/mb
+ * (index.astro), which astro.config.mjs routes for `astro dev` only.
+ *
+ * States are forced, not waited for: [data-state="hover"],
+ * [data-state="focus-visible"], [data-state="focus"], the real `.active`
+ * class and `disabled` attribute. The components own those selectors next
+ * to the real :hover / :focus ones, so a forced state is the real paint.
+ * Every id here starts with `mb-`; every radio and accordion group has a
+ * name of its own. */
+import { Image } from "astro:assets";
+import meImage from "@/assets/me.jpg";
+import Accordion from "@/components/mb/accordion.astro";
+import AccordionItem from "@/components/mb/accordion-item.astro";
+import Alert from "@/components/mb/alert.astro";
+import Avatar from "@/components/mb/avatar.astro";
+import AvatarGroup from "@/components/mb/avatar-group.astro";
+import Badge from "@/components/mb/badge.astro";
+import Brand from "@/components/mb/brand.astro";
+import Breadcrumb from "@/components/mb/breadcrumb.astro";
+import Button from "@/components/mb/button.astro";
+import Card from "@/components/mb/card.astro";
+import CellGrid from "@/components/mb/cell-grid.astro";
+import Checkbox from "@/components/mb/checkbox.astro";
+import ContactForm from "@/components/mb/contact-form.astro";
+import Field from "@/components/mb/field.astro";
+import FieldSet from "@/components/mb/field-set.astro";
+import Input from "@/components/mb/input.astro";
+import Label from "@/components/mb/label.astro";
+import Link from "@/components/mb/link.astro";
+import MobileSheet from "@/components/mb/mobile-sheet.astro";
+import Pagination from "@/components/mb/pagination.astro";
+import Prose from "@/components/mb/prose.astro";
+import Radio from "@/components/mb/radio.astro";
+import SectionHead from "@/components/mb/section-head.astro";
+import Separator from "@/components/mb/separator.astro";
+import Spinner from "@/components/mb/spinner.astro";
+import StatusPill from "@/components/mb/status-pill.astro";
+import Tag from "@/components/mb/tag.astro";
+import Textarea from "@/components/mb/textarea.astro";
+
+type Forced = "idle" | "hover" | "focus-visible";
+const forced = (state: string) =>
+  state === "hover" || state === "focus-visible" ? state : undefined;
+
+type ButtonVariant =
+  | "default"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "destructive"
+  | "link";
+type ButtonState =
+  | "idle"
+  | "hover"
+  | "focus-visible"
+  | "active"
+  | "disabled"
+  | "loading";
+
+const buttonStates: readonly ButtonState[] = [
+  "idle",
+  "hover",
+  "focus-visible",
+  "disabled",
+  "loading",
+];
+const buttonRows: readonly {
+  label: string;
+  text: string;
+  variant: ButtonVariant;
+}[] = [
+  { label: "Default", text: "Porozmawiajmy", variant: "default" },
+  { label: "Secondary", text: "Zobacz proces", variant: "secondary" },
+  { label: "Outline", text: "Zobacz proces", variant: "outline" },
+  { label: "Ghost", text: "Zobacz proces", variant: "ghost" },
+  { label: "Destructive", text: "Usuń wiadomość", variant: "destructive" },
+  { label: "Link", text: "Wszystkie współprace", variant: "link" },
+];
+// `.active` is the header CTA at #contact: default only.
+const defaultButtonStates: readonly ButtonState[] = [
+  "idle",
+  "hover",
+  "focus-visible",
+  "active",
+  "disabled",
+  "loading",
+];
+
+const textSizes = ["xs", "sm", "default", "lg"] as const;
+const iconSizes = ["icon-xs", "icon-sm", "icon", "icon-lg"] as const;
+
+const badgeVariants = [
+  "default",
+  "secondary",
+  "outline",
+  "destructive",
+  "ghost",
+  "link",
+] as const;
+
+const checkboxStates = [
+  "unchecked",
+  "checked",
+  "hover",
+  "focus-visible",
+  "disabled",
+  "disabled checked",
+  "invalid",
+] as const;
+
+const radioOptions = ["Aplikacja webowa", "Landing page", "Inne"] as const;
+const radioStates = [
+  "checked",
+  "hover",
+  "focus-visible",
+  "disabled",
+  "invalid",
+] as const;
+
+const inputStates = [
+  "default",
+  "filled",
+  "focus",
+  "disabled",
+  "invalid",
+  "required",
+] as const;
+const textareaStates = ["default", "focus", "disabled", "invalid"] as const;
+
+const crumbs = [
+  { href: "/", label: "Strona główna" },
+  { href: "/realizacje/", label: "Realizacje" },
+  { href: "/realizacje/", label: "2025" },
+  { label: "Panel dla zespołu sprzedaży" },
+] as const;
+const pageHref = (page: number) => `#mb-pagination-${page}`;
+
+const formStates = [
+  { caption: "idle", state: "idle" },
+  { caption: "focus", focus: true, state: "idle" },
+  { caption: "error-validation", state: "error-validation" },
+  { caption: "error-submit", state: "error-submit" },
+  { caption: "submitting", state: "submitting" },
+  { caption: "success", state: "success" },
+] as const;
+
+const linkStates: readonly Forced[] = ["idle", "hover", "focus-visible"];
+---
+
+<div class="mb-ui">
+  <div class="container">
+    <header class="mb-ui-head">
+      <p class="mb-ui-kicker">Narzędzie deweloperskie · tylko astro dev</p>
+      <h2 class="mb-ui-title">Katalog: minimal brutalism</h2>
+      <p class="mb-ui-lede">
+        Każdy komponent z <code>src/components/mb/</code> we wszystkich
+        wariantach, rozmiarach i stanach - warianty i rozmiary za shadcn/ui.
+        Stany są wymuszone atrybutami (<code>data-state</code>,
+        <code>.active</code>, <code>disabled</code>), więc widać je naraz.
+        Powyżej strona główna złożona z tych samych komponentów.
+      </p>
+    </header>
+
+    <section aria-labelledby="mb-button" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-button">Przycisk</h2>
+      <p class="mb-ui-note">
+        <code>button.astro</code>
+        - warianty <code>default</code>, <code>secondary</code>,
+        <code>outline</code>, <code>ghost</code>, <code>destructive</code>,
+        <code>link</code>. Active (klasa <code>.active</code>) to CTA w nagłówku
+        przy sekcji kontaktu, dlatego tylko default. Loading to
+        <code>loading</code>
+        (albo <code>data-state="submitting"</code> z formularza).
+      </p>
+      {buttonRows.map((row) => (
+        <div class="mb-ui-row">
+          <p class="mb-ui-row-label">{row.label}</p>
+          <div class="mb-ui-grid">
+            {(row.variant === "default"
+              ? defaultButtonStates
+              : buttonStates
+            ).map((state) => (
+              <div class="mb-ui-sample">
+                <div class="mb-ui-stage">
+                  <Button
+                    class={state === "active" ? "active" : undefined}
+                    data-state={forced(state)}
+                    disabled={state === "disabled"}
+                    iconEnd={
+                      row.variant === "default"
+                        ? "lucide:arrow-right"
+                        : undefined
+                    }
+                    loading={state === "loading"}
+                    variant={row.variant}
+                  >
+                    {row.text}
+                  </Button>
+                </div>
+                <p class="mb-ui-caption">{state}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Rozmiary</p>
+        <div class="mb-ui-grid">
+          {textSizes.map((size) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <Button iconEnd="lucide:arrow-right" size={size}>
+                  Porozmawiajmy
+                </Button>
+              </div>
+              <p class="mb-ui-caption">{size}</p>
+            </div>
+          ))}
+          {iconSizes.map((size) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <Button
+                  aria-label="Dodaj"
+                  iconStart="lucide:plus"
+                  size={size}
+                  variant="outline"
+                />
+              </div>
+              <p class="mb-ui-caption">{size}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Z ikoną i jako link</p>
+        <div class="mb-ui-grid">
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Button iconStart="lucide:mail" variant="outline">Napisz</Button>
+            </div>
+            <p class="mb-ui-caption">iconStart</p>
+          </div>
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Button iconEnd="lucide:arrow-right" variant="secondary">
+                Dalej
+              </Button>
+            </div>
+            <p class="mb-ui-caption">iconEnd</p>
+          </div>
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Button href="#mb-button" iconEnd="lucide:arrow-right">
+                Porozmawiajmy
+              </Button>
+            </div>
+            <p class="mb-ui-caption">href</p>
+          </div>
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Button disabled href="#mb-button" variant="outline">
+                Zobacz proces
+              </Button>
+            </div>
+            <p class="mb-ui-caption">href, disabled</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-spinner" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-spinner">Spinner</h2>
+      <p class="mb-ui-note">
+        <code>spinner.astro</code>
+        - lucide <code>loader-circle</code>, rozmiar <code>1em</code>. Sam jest
+        statusem „Ładowanie”; w przycisku i badge'u (<code>decorative</code>)
+        jest ukryty przed czytnikiem.
+      </p>
+      <div class="mb-ui-grid">
+        {(["sm", "default", "lg"] as const).map((size) => (
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Spinner size={size} />
+            </div>
+            <p class="mb-ui-caption">{size}</p>
+          </div>
+        ))}
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <Button loading>Wysyłanie</Button>
+          </div>
+          <p class="mb-ui-caption">w przycisku</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <Badge variant="secondary"
+              ><Spinner decorative />
+              Synchronizacja</Badge
+            >
+          </div>
+          <p class="mb-ui-caption">w badge'u</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-badge" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-badge">Badge</h2>
+      <p class="mb-ui-note">
+        <code>badge.astro</code>
+        - <code>outline</code> to lata współpracy i czas etapu,
+        <code>default</code>
+        to <em>teraz</em> i <em>Zlecenie</em>.
+        <code>fillOnCellHover</code>
+        wypełnia badge, gdy jego karta jest pod kursorem (etap procesu, w sekcji
+        „Karta i siatka”).
+      </p>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Warianty</p>
+        <div class="mb-ui-grid">
+          {badgeVariants.map((variant) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <Badge variant={variant}>
+                  {variant === "outline" ? "2022–2024" : "teraz"}
+                </Badge>
+              </div>
+              <p class="mb-ui-caption">{variant}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Z ikoną i jako link</p>
+        <div class="mb-ui-grid">
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Badge iconStart="lucide:check" variant="default">Wysłano</Badge>
+            </div>
+            <p class="mb-ui-caption">iconStart</p>
+          </div>
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Badge iconEnd="lucide:arrow-right" variant="outline"
+                >Więcej</Badge
+              >
+            </div>
+            <p class="mb-ui-caption">iconEnd</p>
+          </div>
+          {linkStates.map((state) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <Badge
+                  data-state={forced(state)}
+                  href="#mb-badge"
+                  variant="outline"
+                >
+                  React
+                </Badge>
+              </div>
+              <p class="mb-ui-caption">href, {state}</p>
+            </div>
+          ))}
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Badge href="#mb-badge" variant="link">Realizacja</Badge>
+            </div>
+            <p class="mb-ui-caption">link, href</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-alert" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-alert">Alert</h2>
+      <p class="mb-ui-note">
+        <code>alert.astro</code>
+        - <code>default</code> i <code>destructive</code>; ikona, tytuł (slot
+        <code>title</code>), opis, akcja (slot <code>action</code>).
+        <code>role="alert"</code>
+        domyślnie, tu <code>role="status"</code>, bo nic się nie zmienia.
+      </p>
+      <div class="mb-ui-grid mb-ui-grid-wide">
+        <div class="mb-ui-sample">
+          <Alert role="status">
+            <Fragment slot="title">Odpowiadam w ciągu 24 godzin</Fragment>
+            Napisz krótko, co budujesz i w jakim terminie.
+          </Alert>
+          <p class="mb-ui-caption">default</p>
+        </div>
+        <div class="mb-ui-sample">
+          <Alert icon="lucide:bell" role="status">
+            <Fragment slot="title">Nowa realizacja</Fragment>
+            Panel dla zespołu sprzedaży jest już opisany.
+            <Button href="#mb-alert" size="sm" slot="action" variant="outline">
+              Zobacz
+            </Button>
+          </Alert>
+          <p class="mb-ui-caption">default, akcja</p>
+        </div>
+        <div class="mb-ui-sample">
+          <Alert role="status" variant="destructive">
+            Coś poszło nie tak. Spróbuj ponownie za chwilę albo napisz mailem na
+            <a href="mailto:kontakt@kacperadler.pl">kontakt@kacperadler.pl</a>.
+          </Alert>
+          <p class="mb-ui-caption">destructive</p>
+        </div>
+        <div class="mb-ui-sample">
+          <Alert role="status" variant="destructive">
+            <Fragment slot="title">Nie wysłano wiadomości</Fragment>
+            Serwer nie odpowiedział.
+            <Button size="sm" slot="action" variant="destructive">
+              Ponów
+            </Button>
+          </Alert>
+          <p class="mb-ui-caption">destructive, tytuł i akcja</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-avatar" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-avatar">Avatar</h2>
+      <p class="mb-ui-note">
+        <code>avatar.astro</code>
+        - kwadrat w linii tuszu; zdjęcie przez <code>&lt;Image&gt;</code>, bez
+        <code>src</code>
+        inicjały (decyzja w buildzie).
+        <code>avatar-group.astro</code>
+        - nachodzące avatary i licznik „+N”.
+      </p>
+      <div class="mb-ui-grid">
+        {(["sm", "default", "lg"] as const).map((size) => (
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Avatar alt="Kacper Adler" size={size} src={meImage} />
+            </div>
+            <p class="mb-ui-caption">{size}, zdjęcie</p>
+          </div>
+        ))}
+        {(["sm", "default", "lg"] as const).map((size) => (
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Avatar alt="Kacper Adler" fallback="KA" size={size} />
+            </div>
+            <p class="mb-ui-caption">{size}, inicjały</p>
+          </div>
+        ))}
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <Avatar alt="Kacper Adler, dostępny" badge="dot" src={meImage} />
+          </div>
+          <p class="mb-ui-caption">badge: dot</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <Avatar
+              alt="Kacper Adler, zweryfikowany"
+              badge="lucide:check"
+              fallback="KA"
+              size="lg"
+            />
+          </div>
+          <p class="mb-ui-caption">badge: ikona</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <AvatarGroup count={3}>
+              <Avatar alt="Kacper Adler" src={meImage} />
+              <Avatar alt="Anna Nowak" fallback="AN" />
+              <Avatar alt="Jan Kowalski" fallback="JK" />
+            </AvatarGroup>
+          </div>
+          <p class="mb-ui-caption">grupa, +3</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-separator" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-separator">Separator</h2>
+      <p class="mb-ui-note">
+        <code>separator.astro</code>
+        - włos, poziomy albo pionowy; dekoracyjny (<code>role="none"</code>)
+        albo <code>role="separator"</code>.
+      </p>
+      <div class="mb-ui-grid mb-ui-grid-wide">
+        <div class="mb-ui-sample">
+          <div class="mb-ui-panel">
+            <p class="mb-ui-copy">Kacper Adler</p>
+            <Separator class="mb-ui-separator-h" />
+            <p class="mb-ui-copy">Inżynier oprogramowania</p>
+          </div>
+          <p class="mb-ui-caption">horizontal</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-panel mb-ui-inline">
+            <span class="mb-ui-copy">Usługi</span>
+            <Separator decorative={false} orientation="vertical" />
+            <span class="mb-ui-copy">Proces</span>
+            <Separator decorative={false} orientation="vertical" />
+            <span class="mb-ui-copy">Kontakt</span>
+          </div>
+          <p class="mb-ui-caption">vertical, role="separator"</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-label" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-label">Etykieta</h2>
+      <p class="mb-ui-note">
+        <code>label.astro</code>
+        - mono, wersaliki; <code>disabled</code> wycisza ją razem z polem.
+      </p>
+      <div class="mb-ui-grid mb-ui-grid-wide">
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stack">
+            <Label for="mb-label-default">Twój email</Label>
+            <Input
+              id="mb-label-default"
+              placeholder="twoj@email.pl"
+              type="email"
+            />
+          </div>
+          <p class="mb-ui-caption">default</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stack">
+            <Label disabled for="mb-label-disabled">Twój email</Label>
+            <Input
+              disabled
+              id="mb-label-disabled"
+              placeholder="twoj@email.pl"
+              type="email"
+            />
+          </div>
+          <p class="mb-ui-caption">disabled</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-checkbox" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-checkbox">Pole wyboru</h2>
+      <p class="mb-ui-note">
+        <code>checkbox.astro</code>
+        - natywny checkbox (<code>appearance: none</code>), kwadrat; zaznaczony
+        to niebieski blok z <code>check</code>; <code>aria-invalid</code> -
+        koralowa ramka.
+      </p>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Stany</p>
+        <div class="mb-ui-grid">
+          {checkboxStates.map((state) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <Checkbox
+                  aria-invalid={state === "invalid" ? "true" : undefined}
+                  checked={state === "checked" || state === "disabled checked"}
+                  disabled={state.startsWith("disabled")}
+                  id={`mb-checkbox-${state.replace(" ", "-")}`}
+                  label="Zgoda"
+                  state={
+                    state === "hover" || state === "focus-visible"
+                      ? state
+                      : undefined
+                  }
+                />
+              </div>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Z opisem i w grupie</p>
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Checkbox
+                checked
+                description="Odpowiem tylko na ten adres, nie zapiszę go do newslettera."
+                id="mb-checkbox-description"
+                label="Zgadzam się na kontakt mailowy"
+              />
+            </div>
+            <p class="mb-ui-caption">z opisem</p>
+          </div>
+          <div class="mb-ui-sample">
+            <FieldSet legend="Zakres" legendVariant="label">
+              <Checkbox
+                id="mb-checkbox-group-design"
+                label="Projekt interfejsu"
+              />
+              <Checkbox
+                checked
+                id="mb-checkbox-group-build"
+                label="Wdrożenie"
+              />
+              <Checkbox id="mb-checkbox-group-care" label="Opieka po starcie" />
+            </FieldSet>
+            <p class="mb-ui-caption">grupa (fieldset)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-radio" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-radio">Radio</h2>
+      <p class="mb-ui-note">
+        <code>radio.astro</code>
+        - <code>default</code> (kwadrat) i <code>choice</code> (chip z
+        formularza kontaktowego). Nieprawidłowy stan z
+        <code>[data-invalid]</code>
+        na polu albo <code>aria-invalid</code>.
+      </p>
+      {(["default", "choice"] as const).map((variant) => (
+        <div class="mb-ui-row">
+          <p class="mb-ui-row-label">{variant}</p>
+          <div class="mb-ui-grid mb-ui-grid-wide">
+            {radioStates.map((state) => (
+              <div class="mb-ui-sample">
+                <div
+                  aria-label={`Typ projektu (${variant}, ${state})`}
+                  class:list={[
+                    "mb-ui-radios",
+                    { "mb-ui-radios-column": variant === "default" },
+                  ]}
+                  role="radiogroup"
+                >
+                  {/* Only the first option carries a forced state, as one
+                   * pointer or one keyboard focus would. */}
+                  {radioOptions.map((option, i) => (
+                    <Radio
+                      aria-invalid={state === "invalid" ? "true" : undefined}
+                      checked={
+                        i === 0 && state !== "hover" && state !== "invalid"
+                      }
+                      disabled={state === "disabled"}
+                      label={option}
+                      name={`mb-radio-${variant}-${state}`}
+                      state={i === 0 ? forced(state) : undefined}
+                      value={option}
+                      variant={variant}
+                    />
+                  ))}
+                </div>
+                <p class="mb-ui-caption">{state}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section aria-labelledby="mb-form" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-form">Pola formularza</h2>
+      <p class="mb-ui-note">
+        <code>field.astro</code>
+        (etykieta, opis, komunikat błędu) z <code>input.astro</code> i
+        <code>textarea.astro</code>; <code>field-set.astro</code> grupuje pola
+        pod legendą.
+      </p>
+
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Input</p>
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          {inputStates.map((state) => (
+            <div class="mb-ui-sample">
+              <Field
+                disabled={state === "disabled"}
+                errorMessage="Podaj prawidłowy adres email."
+                for={`mb-input-${state}`}
+                invalid={state === "invalid"}
+                label="Twój email"
+                name={`mb-input-${state}`}
+                required={state === "required"}
+              >
+                <Input
+                  data-state={state === "focus" ? "focus" : undefined}
+                  disabled={state === "disabled"}
+                  id={`mb-input-${state}`}
+                  placeholder="twoj@email.pl"
+                  required={state === "required"}
+                  type="email"
+                  value={
+                    state === "filled" || state === "focus"
+                      ? "kontakt@firma.pl"
+                      : undefined
+                  }
+                />
+              </Field>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+          <div class="mb-ui-sample">
+            <Field
+              description="PDF albo obraz, do 10 MB."
+              errorMessage="Plik jest za duży."
+              for="mb-input-file"
+              label="Załącznik"
+              name="mb-input-file"
+            >
+              <Input id="mb-input-file" type="file" />
+            </Field>
+            <p class="mb-ui-caption">file</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Textarea</p>
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          {textareaStates.map((state) => (
+            <div class="mb-ui-sample">
+              <Field
+                disabled={state === "disabled"}
+                errorMessage="Dodaj krótki opis projektu."
+                for={`mb-textarea-${state}`}
+                invalid={state === "invalid"}
+                label="Wiadomość"
+                name={`mb-textarea-${state}`}
+              >
+                <Textarea
+                  data-state={state === "focus" ? "focus" : undefined}
+                  disabled={state === "disabled"}
+                  id={`mb-textarea-${state}`}
+                  placeholder="Opisz krótko, o co chodzi."
+                  value={
+                    state === "focus"
+                      ? "Sklep na Astro, start w marcu."
+                      : undefined
+                  }
+                />
+              </Field>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Układ pola</p>
+        <div class="mb-ui-stack-lg mb-ui-narrow">
+          {(["vertical", "horizontal", "responsive"] as const).map(
+            (orientation) => (
+              <div class="mb-ui-sample">
+                <Field
+                  description="Na ten adres przyjdzie odpowiedź."
+                  errorMessage="Podaj prawidłowy adres email."
+                  for={`mb-field-${orientation}`}
+                  label="Twój email"
+                  name={`mb-field-${orientation}`}
+                  orientation={orientation}
+                >
+                  <Input
+                    id={`mb-field-${orientation}`}
+                    placeholder="twoj@email.pl"
+                    type="email"
+                  />
+                </Field>
+                <p class="mb-ui-caption">{orientation}</p>
+              </div>
+            )
+          )}
+        </div>
+      </div>
+
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Grupa pól</p>
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          <div class="mb-ui-sample">
+            <FieldSet
+              description="Wystarczy email i dwa zdania."
+              legend="Dane kontaktowe"
+            >
+              <Field
+                errorMessage="Podaj imię."
+                for="mb-fieldset-name"
+                label="Imię"
+                name="mb-fieldset-name"
+              >
+                <Input id="mb-fieldset-name" placeholder="Anna" />
+              </Field>
+              <Separator />
+              <Field
+                errorMessage="Podaj prawidłowy adres email."
+                for="mb-fieldset-email"
+                invalid
+                label="Twój email"
+                name="mb-fieldset-email"
+              >
+                <Input id="mb-fieldset-email" type="email" value="anna@" />
+              </Field>
+            </FieldSet>
+            <p class="mb-ui-caption">legend, separator, błąd</p>
+          </div>
+          <div class="mb-ui-sample">
+            <FieldSet disabled legend="Faktura" legendVariant="label">
+              <Field
+                disabled
+                errorMessage="Podaj NIP."
+                for="mb-fieldset-nip"
+                label="NIP"
+                name="mb-fieldset-nip"
+              >
+                <Input
+                  disabled
+                  id="mb-fieldset-nip"
+                  placeholder="000-000-00-00"
+                />
+              </Field>
+            </FieldSet>
+            <p class="mb-ui-caption">label, disabled</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-accordion" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-accordion">Akordeon</h2>
+      <p class="mb-ui-note">
+        <code>accordion.astro</code>
+        z <code>accordion-item.astro</code> - natywne
+        <code>&lt;details&gt;</code>, działa bez JavaScriptu.
+        <code>single</code>
+        (wspólne <code>name</code>, otwarty jeden naraz) i
+        <code>multiple</code>; zwykły i <code>bordered</code>.
+      </p>
+      <div class="mb-ui-grid mb-ui-grid-wide">
+        <div class="mb-ui-sample" id="mb-accordion-single">
+          <Accordion name="mb-accordion-single" type="single">
+            <AccordionItem open title="Ile trwa wycena?">
+              <p>2–3 dni po rozmowie. Dostajesz zakres, kolejność i koszt.</p>
+            </AccordionItem>
+            <AccordionItem title="Czy pracujesz z zespołem?">
+              <p>Tak - async, w sprintach, z zespołami produktowymi w PL/EU.</p>
+            </AccordionItem>
+            <AccordionItem disabled title="Czy robisz sklepy na zamówienie?">
+              <p>Nie w tej chwili.</p>
+            </AccordionItem>
+          </Accordion>
+          <p class="mb-ui-caption">
+            single, otwarty pierwszy, wyłączony trzeci
+          </p>
+        </div>
+        <div class="mb-ui-sample" id="mb-accordion-multiple">
+          <Accordion bordered type="multiple">
+            <AccordionItem title="Rozmowa">
+              <p>Krótkie spotkanie albo wymiana maili.</p>
+            </AccordionItem>
+            <AccordionItem title="Plan i wycena">
+              <p>Dokument: co robimy, w jakiej kolejności i za ile.</p>
+            </AccordionItem>
+            <AccordionItem title="Realizacja">
+              <p>Małe etapy - co tydzień coś, co działa.</p>
+            </AccordionItem>
+          </Accordion>
+          <p class="mb-ui-caption">multiple, bordered</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-breadcrumb" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-breadcrumb">Okruszki</h2>
+      <p class="mb-ui-note">
+        <code>breadcrumb.astro</code>
+        - ostatni element to bieżąca strona (<code>aria-current="page"</code>);
+        separator <code>chevron</code> albo <code>slash</code>;
+        <code>collapse</code>
+        zwija środek w wielokropek.
+      </p>
+      <div class="mb-ui-stack-lg">
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage"><Breadcrumb items={crumbs.slice(1)} /></div>
+          <p class="mb-ui-caption">chevron</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <Breadcrumb items={crumbs.slice(1)} separator="slash" />
+          </div>
+          <p class="mb-ui-caption">slash</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage"><Breadcrumb collapse items={crumbs} /></div>
+          <p class="mb-ui-caption">collapse</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-pagination" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-pagination">Paginacja</h2>
+      <p class="mb-ui-note">
+        <code>pagination.astro</code>
+        - bieżąca strona w ramce (<code>aria-current="page"</code>), reszta
+        ghost; wielokropki liczone z <code>current</code> i
+        <code>total</code>; zwykłe linki, bez JavaScriptu.
+      </p>
+      <div class="mb-ui-stack-lg">
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <Pagination current={5} href={pageHref} total={12} />
+          </div>
+          <p class="mb-ui-caption">numbers, 5 z 12</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <Pagination current={1} href={pageHref} total={3} />
+          </div>
+          <p class="mb-ui-caption">numbers, pierwsza</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <Pagination
+              current={12}
+              href={pageHref}
+              total={12}
+              variant="icons"
+            />
+          </div>
+          <p class="mb-ui-caption">icons, ostatnia</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-link" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-link">Link</h2>
+      <p class="mb-ui-note">
+        <code>link.astro</code>
+        - <code>inline</code> w treści, <code>nav</code> w nagłówku (<code
+          >.active</code
+        >
+        ustawia <code>nav-active.ts</code>),
+        <code>footer</code>
+        z ikoną albo bez, <code>case</code> (<em>Zobacz realizację</em>).
+      </p>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Inline</p>
+        <div class="mb-ui-grid">
+          {linkStates.map((state) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <p class="mb-ui-copy">
+                  Szczegóły:
+                  <Link
+                    data-state={forced(state)}
+                    href="#mb-link"
+                    variant="inline"
+                  >
+                    polityka prywatności
+                  </Link>
+                </p>
+              </div>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Nav</p>
+        <div class="mb-ui-grid">
+          {["idle", "hover", "focus-visible", "active"].map((state) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <Link
+                  aria-current={state === "active" ? "location" : undefined}
+                  class={state === "active" ? "active" : undefined}
+                  data-state={forced(state)}
+                  href="#mb-link"
+                  variant="nav"
+                >
+                  Usługi
+                </Link>
+              </div>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Footer</p>
+        <div class="mb-ui-grid">
+          {linkStates.map((state) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <Link
+                  data-state={forced(state)}
+                  href="#mb-link"
+                  variant="footer"
+                >
+                  Polityka prywatności
+                </Link>
+              </div>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+          {linkStates.map((state) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <Link
+                  data-state={forced(state)}
+                  href="#mb-link"
+                  icon="lucide:mail"
+                  variant="footer"
+                >
+                  Email
+                </Link>
+              </div>
+              <p class="mb-ui-caption">z ikoną, {state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Case</p>
+        <div class="mb-ui-grid">
+          {linkStates.map((state) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <Link data-state={forced(state)} href="#mb-link" variant="case">
+                  Zobacz realizację
+                  <span class="sr-only"> - ReX</span>
+                </Link>
+              </div>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-tag" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-tag">Tag i status pill</h2>
+      <p class="mb-ui-note">
+        <code>tag.astro</code>
+        - technologie na karcie usługi, bez wersalików, żeby odróżniały się od
+        badge'y. <code>status-pill.astro</code> - karta statusu w hero i menu
+        mobilne.
+      </p>
+      <div class="mb-ui-grid mb-ui-grid-wide">
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <ul class="mb-ui-tags">
+              <Tag as="li">React</Tag>
+              <Tag as="li">TypeScript</Tag>
+              <Tag as="li">Astro</Tag>
+            </ul>
+          </div>
+          <p class="mb-ui-caption">tag</p>
+        </div>
+        <div class="mb-ui-sample">
+          <div class="mb-ui-stage">
+            <StatusPill>Otwarty na nowe współprace</StatusPill>
+          </div>
+          <p class="mb-ui-caption">status pill</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-card" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-card">Karta i siatka</h2>
+      <p class="mb-ui-note">
+        <code>card.astro</code>
+        - komórka w linii tuszu; hover rozjaśnia ją od środka (jaśniejszy panel,
+        niebieska linia u góry) i nic nie przesuwa. Części to sloty:
+        <code>image</code>, <code>title</code>, <code>description</code>,
+        <code>action</code>, treść, <code>footer</code>.
+        <code>cell-grid.astro</code>
+        - komórki dzielą linie.
+      </p>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Stany</p>
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          {(["idle", "hover"] as const).map((state) => (
+            <div class="mb-ui-sample">
+              <Card data-state={forced(state)} tag="div">
+                <span slot="title">Rozmowa</span>
+                <Badge fillOnCellHover slot="action" variant="outline">
+                  ~ 30 min
+                </Badge>
+                Krótka rozmowa o celu projektu, terminie i tym, co blokuje.
+              </Card>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Części i rozmiary</p>
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          <div class="mb-ui-sample">
+            <Card>
+              <Image
+                alt="Kacper Adler"
+                class="mb-ui-card-image"
+                height={240}
+                slot="image"
+                src={meImage}
+                width={480}
+              />
+              <Fragment slot="title">Panel dla zespołu sprzedaży</Fragment>
+              <Fragment slot="description">ReX · 2024–2025</Fragment>
+              <Badge slot="action">Zlecenie</Badge>
+              Narzędzie wewnętrzne: lejek, raporty i import leadów w jednym
+              miejscu.
+              <Fragment slot="footer">
+                <Button href="#mb-card" iconEnd="lucide:arrow-right" size="sm">
+                  Zobacz realizację
+                </Button>
+                <Button href="#mb-card" size="sm" variant="ghost">
+                  Wszystkie
+                </Button>
+              </Fragment>
+            </Card>
+            <p class="mb-ui-caption">default, wszystkie części</p>
+          </div>
+          <div class="mb-ui-sample">
+            <Card size="sm">
+              <Fragment slot="title">Landing pages</Fragment>
+              <Fragment slot="description">Strony, które sprzedają.</Fragment>
+              Szybkie, dostępne, mierzalne.
+            </Card>
+            <p class="mb-ui-caption">sm</p>
+          </div>
+          <div class="mb-ui-sample">
+            <Card href="#mb-card" size="sm" tag="a">
+              <Fragment slot="title">Cała karta jako link</Fragment>
+              <Fragment slot="description">tag="a", z href</Fragment>
+            </Card>
+            <p class="mb-ui-caption">jako link</p>
+          </div>
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Siatka komórek</p>
+        <div class="mb-ui-stack-lg">
+          <CellGrid columns={2}>
+            {["Aplikacje webowe", "Aplikacje mobilne", "Agenci AI"].map(
+              (title) => (
+                <Card size="sm" tag="div">
+                  <span slot="title">{title}</span>
+                  Komórki dzielą linię; nieparzysta ostatnia zajmuje cały
+                  wiersz.
+                </Card>
+              )
+            )}
+          </CellGrid>
+          <p class="mb-ui-caption">columns=2</p>
+          <CellGrid min="220px">
+            {["ReX", "PwC", "Apptension", "Payloo"].map((title) => (
+              <Card size="sm" tag="div">
+                <span slot="title">{title}</span>
+                Tyle kolumn, ile się zmieści.
+              </Card>
+            ))}
+          </CellGrid>
+          <p class="mb-ui-caption">min=220px</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-section-head" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-section-head">Nagłówek sekcji</h2>
+      <p class="mb-ui-note">
+        <code>section-head.astro</code>
+        - numerowana etykieta („01 /”, licznik <code>mb-section</code>),
+        nagłówek z lewej (<code>&lt;em&gt;</code>
+        podkreślone na niebiesko), lead z prawej; jedna kolumna od 880px w dół.
+      </p>
+      <div class="mb-ui-counter">
+        <SectionHead as="h3" label="Proces">
+          Od <em>rozmowy</em> do <em>produktu</em>.
+          <Fragment slot="lede">
+            Biorąc pod uwagę Twoje potrzeby, skupiam się na znalezieniu
+            najlepszego rozwiązania dla Ciebie.
+          </Fragment>
+        </SectionHead>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-frame" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-frame">Rama strony</h2>
+      <p class="mb-ui-note">
+        <code>page-frame.astro</code>
+        - ta strona stoi w niej: dwa włosy na krawędziach kontenera, skip link,
+        nagłówek (<code>header.astro</code>), stopka (<code>footer.astro</code>)
+        i menu mobilne (<code>mobile-sheet.astro</code>, poniżej 880px pod
+        przyciskiem menu). Tu marka i podgląd menu.
+      </p>
+      <div class="mb-ui-row">
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage"><Brand /></div>
+            <p class="mb-ui-caption">brand, sm (nagłówek)</p>
+          </div>
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage"><Brand size="lg" /></div>
+            <p class="mb-ui-caption">brand, lg (stopka)</p>
+          </div>
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Button
+                class="active"
+                href="#mb-frame"
+                iconEnd="lucide:arrow-right"
+                size="sm"
+              >
+                Porozmawiajmy
+              </Button>
+            </div>
+            <p class="mb-ui-caption">CTA nagłówka, active</p>
+          </div>
+        </div>
+      </div>
+      <div class="mb-ui-row mb-ui-sheet">
+        <p class="mb-ui-row-label">Menu mobilne (podgląd)</p>
+        <MobileSheet preview />
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-prose" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-prose">Typografia</h2>
+      <p class="mb-ui-note">
+        <code>prose.astro</code>
+        - treść z Markdown / MDX (realizacje, blog, strony prawne); rytm
+        @tailwindcss/typography, wygląd minimal brutalism.
+      </p>
+      <div class="mb-ui-panel">
+        <Prose>
+          <h1>Nagłówek pierwszego stopnia</h1>
+          <p class="lead">
+            Lead - akapit otwierający, większy i cichszy od reszty tekstu.
+          </p>
+          <p>
+            Zwykły akapit z <strong>pogrubieniem</strong>, <em>kursywą</em>,
+            <a href="#mb-prose">linkiem w treści</a>
+            i kodem w linii:
+            <code>bun run build</code>. Tekst ciągnie się przez kilka linii,
+            żeby było widać interlinię i szerokość kolumny.
+          </p>
+          <h2>Nagłówek drugiego stopnia</h2>
+          <p>Akapit pod nagłówkiem drugiego stopnia.</p>
+          <ul>
+            <li>Pierwszy punkt listy</li>
+            <li>
+              Drugi punkt, z listą zagnieżdżoną:
+              <ul>
+                <li>punkt zagnieżdżony</li>
+              </ul>
+            </li>
+            <li>Trzeci punkt</li>
+          </ul>
+          <h3>Nagłówek trzeciego stopnia</h3>
+          <ol>
+            <li>Rozmowa</li>
+            <li>Plan i wycena</li>
+            <li>Realizacja</li>
+          </ol>
+          <blockquote>
+            <p>Cytat - wyróżniony fragment z linią po lewej.</p>
+          </blockquote>
+          <h4>Nagłówek czwartego stopnia</h4>
+          <pre><code>const greeting = "Cześć";
+console.log(greeting);</code></pre>
+          <table>
+            <thead>
+              <tr>
+                <th>Etap</th>
+                <th>Czas</th>
+                <th>Wynik</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Rozmowa</td>
+                <td>~ 30 min</td>
+                <td>Zakres i termin</td>
+              </tr>
+              <tr>
+                <td>Plan i wycena</td>
+                <td>2–3 dni</td>
+                <td>Wycena etapami</td>
+              </tr>
+            </tbody>
+          </table>
+        </Prose>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-contact-form" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-contact-form">Formularz kontaktowy</h2>
+      <p class="mb-ui-note">
+        <code>contact-form.astro</code>
+        w każdym stanie <code>data-state</code>, który ustawia
+        <code>contact-form.ts</code>
+        (tu nie jest ładowany - stany są wymuszone, nic nie trafia do NocoDB).
+        Focus to email w stanie
+        <code>data-state="focus"</code>: arkusz dostaje twardy cień.
+      </p>
+      <div class="mb-ui-grid mb-ui-grid-form">
+        {formStates.map((sample) => (
+          <div class="mb-ui-sample" data-form-sample={sample.caption}>
+            <ContactForm
+              forceFocus={"focus" in sample}
+              idPrefix={`mb-form-${sample.caption}`}
+              state={sample.state}
+            />
+            <p class="mb-ui-caption">{sample.caption}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</div>
+
+<style>
+  .mb-ui {
+    padding: var(--v2-space-2xl) 0 0;
+  }
+
+  .mb-ui-head {
+    max-width: 70ch;
+    padding-top: var(--v2-space-md);
+    margin-bottom: var(--v2-space-xl);
+    border-top: 1px solid var(--mb-rule);
+  }
+
+  .mb-ui-kicker {
+    margin: 0 0 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .mb-ui-title {
+    margin: 0 0 16px;
+    font-family: var(--mb-display);
+    font-size: clamp(32px, 4.6vw, 54px);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+
+  .mb-ui-lede,
+  .mb-ui-note {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .mb-ui-note {
+    max-width: 80ch;
+    margin-bottom: var(--v2-space-md);
+    font-size: 14px;
+  }
+
+  .mb-ui-lede code,
+  .mb-ui-note code {
+    font-family: var(--mono);
+    font-size: 0.9em;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+
+  .mb-ui-section {
+    padding-top: var(--v2-space-lg);
+    margin-bottom: var(--v2-space-xl);
+    border-top: 1px solid var(--mb-rule);
+  }
+
+  .mb-ui-h2 {
+    margin: 0 0 8px;
+    font-family: var(--mb-display);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+
+  .mb-ui-row {
+    margin-bottom: var(--v2-space-lg);
+  }
+
+  .mb-ui-row-label {
+    margin: 0 0 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  .mb-ui-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
+    gap: var(--v2-space-md);
+  }
+
+  .mb-ui-grid-wide {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  }
+
+  .mb-ui-grid-form {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));
+    gap: var(--v2-space-lg);
+  }
+
+  .mb-ui-sample {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  /* Room around a sample so rings and hard shadows show. */
+  .mb-ui-stage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    min-height: 72px;
+    padding: 12px 16px 12px 12px;
+  }
+
+  .mb-ui-caption {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    letter-spacing: 0.04em;
+  }
+
+  .mb-ui-copy {
+    margin: 0;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .mb-ui-panel {
+    padding: var(--v2-space-lg);
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-ui-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .mb-ui-panel :global(.mb-ui-separator-h) {
+    margin: 12px 0;
+  }
+
+  .mb-ui-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mb-ui-stack-lg {
+    display: flex;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+  }
+
+  .mb-ui-narrow {
+    max-width: 720px;
+  }
+
+  .mb-ui-radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mb-ui-radios-column {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mb-ui-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mb-ui-counter {
+    counter-reset: mb-section;
+  }
+
+  .mb-ui-sheet {
+    max-width: 400px;
+  }
+
+  :global(.mb-ui-card-image) {
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+  }
+
+  @media (max-width: 880px) {
+    .mb-ui-panel {
+      padding: var(--v2-space-md);
+    }
+  }
+</style>

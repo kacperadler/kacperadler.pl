@@ -1,0 +1,88 @@
+---
+import { getCollection } from "astro:content";
+import Card from "../card.astro";
+import CellGrid from "../cell-grid.astro";
+import SectionHead from "../section-head.astro";
+import Tag from "../tag.astro";
+
+/* Services (#services): the services collection as a two-column cell
+ * table (one column at 880px and below, an odd last cell spans the row).
+ * The index is a mono figure that turns blue with its cell. */
+const services = (await getCollection("services")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+
+<section class="mb-services" id="services">
+  <div class="container">
+    <SectionHead label="Usługi">
+      Obszary w&nbsp;których <em>działam</em>.
+      <Fragment slot="lede">
+        Moje doświadczenie pozwala mi na pracę w wielu technologiach<br>i
+        projektach.
+      </Fragment>
+    </SectionHead>
+
+    <CellGrid columns={2}>
+      {services.map((service, idx) => (
+        <Card>
+          <span slot="title">{service.data.title}</span>
+          <span aria-hidden="true" class="mb-service-num" slot="action">
+            {String(idx + 1).padStart(2, "0")}
+          </span>
+          <p class="mb-service-desc">{service.data.description}</p>
+          <ul class="mb-service-tags" slot="footer">
+            {service.data.tags.map((tag) => (
+              <Tag as="li">{tag}</Tag>
+            ))}
+          </ul>
+        </Card>
+      ))}
+    </CellGrid>
+  </div>
+</section>
+
+<style>
+  .mb-services {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  .mb-service-num {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--ink-2);
+    letter-spacing: 0.04em;
+    transition: color var(--mb-snap);
+  }
+
+  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-service-num {
+    color: var(--blue);
+  }
+
+  .mb-service-desc {
+    margin: 0;
+  }
+
+  .mb-service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 880px) {
+    .mb-services {
+      margin-top: var(--v2-space-xl);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-service-num {
+      transition: none;
+    }
+  }
+</style>

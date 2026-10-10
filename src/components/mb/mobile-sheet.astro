@@ -1,0 +1,183 @@
+---
+import { Icon } from "astro-icon/components";
+import { contactCta, primaryNav } from "@/data/navigation";
+import Button from "./button.astro";
+import StatusPill from "./status-pill.astro";
+
+/* Mobile sheet: the full-screen menu on the solid substrate, no glass. The
+ * hooks are scripts/mobile-sheet.ts's: id="mobile-sheet", [data-menu-close],
+ * [data-sheet-link], data-mobile-sheet="open" while open. Closed it is
+ * visibility: hidden, so nothing inside takes focus. It switches in and
+ * out with an opacity snap (--mb-snap), no slide.
+ *
+ * `preview` renders a static, always-visible copy for the catalogue
+ * (/ui/mb): no id, no dialog role, no hooks, so the script never touches
+ * it. */
+interface Props {
+  preview?: boolean;
+}
+
+const { preview = false } = Astro.props;
+const links = await primaryNav();
+const dialog = preview
+  ? { "aria-label": "Menu mobilne (podgląd)", role: "group" as const }
+  : {
+      "aria-hidden": "true" as const,
+      "aria-label": "Menu mobilne",
+      "aria-modal": "true" as const,
+      "data-mobile-sheet": true,
+      id: "mobile-sheet",
+      role: "dialog" as const,
+    };
+const linkHook = preview ? {} : { "data-sheet-link": true };
+const closeHook = preview ? {} : { "data-menu-close": true };
+---
+
+<div class:list={["mb-sheet", { "mb-sheet-preview": preview }]} {...dialog}>
+  <span class="mb-sheet-close">
+    <Button
+      aria-label="Zamknij menu"
+      iconStart="lucide:x"
+      size="icon-sm"
+      variant="outline"
+      {...closeHook}
+    />
+  </span>
+
+  <div class="mb-sheet-content">
+    <StatusPill>Otwarty na nowe współprace</StatusPill>
+
+    <nav
+      aria-label={preview ? "Menu główne (podgląd)" : "Menu główne"}
+      class="mb-sheet-nav"
+    >
+      {links.map((link) => (
+        <a class="mb-sheet-link" href={link.href} {...linkHook}>
+          <span>{link.label}</span>
+          <Icon
+            aria-hidden="true"
+            class="mb-sheet-arrow"
+            name="lucide:arrow-right"
+          />
+        </a>
+      ))}
+    </nav>
+
+    <span class="mb-sheet-cta">
+      <Button
+        href={contactCta.href}
+        iconEnd="lucide:arrow-right"
+        size="lg"
+        {...linkHook}
+      >
+        {contactCta.label}
+      </Button>
+    </span>
+  </div>
+</div>
+
+<style>
+  .mb-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    visibility: hidden;
+    flex-direction: column;
+    padding: 80px var(--v2-space-md) 32px;
+    pointer-events: none;
+    background: var(--v2-bg);
+    opacity: 0;
+    /* Closing: visibility waits out the fade. */
+    transition:
+      opacity var(--mb-snap),
+      visibility 0s linear 0.12s;
+  }
+
+  .mb-sheet[data-mobile-sheet="open"] {
+    visibility: visible;
+    pointer-events: auto;
+    opacity: 1;
+    /* Opening: visibility is not transitioned, the sheet shows at once. */
+    transition: opacity var(--mb-snap);
+  }
+
+  .mb-sheet-preview {
+    position: relative;
+    inset: auto;
+    z-index: auto;
+    visibility: visible;
+    min-height: 560px;
+    pointer-events: auto;
+    border: 1px solid var(--mb-rule);
+    opacity: 1;
+  }
+
+  .mb-sheet-close {
+    position: absolute;
+    top: 14px;
+    right: var(--v2-space-md);
+  }
+
+  .mb-sheet-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .mb-sheet-nav {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--mb-rule);
+  }
+
+  .mb-sheet-link {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    font-family: var(--mb-display);
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--ink);
+    letter-spacing: -0.04em;
+    border-bottom: 1px solid var(--mb-rule);
+  }
+
+  .mb-sheet-link :global(.mb-sheet-arrow) {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: var(--ink-2);
+    transition:
+      color var(--mb-snap),
+      transform var(--mb-snap);
+  }
+
+  .mb-sheet-link:is(:hover, :focus-visible, [data-state="hover"])
+    :global(.mb-sheet-arrow) {
+    color: var(--blue);
+    transform: translateX(4px);
+  }
+
+  .mb-sheet-cta {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+  }
+
+  /* Under reduced motion global.css gives every element a 0.01ms
+   * transition of `all`, so the children would fade their inherited
+   * visibility in too and still be hidden when scripts/mobile-sheet.ts
+   * focuses the close button. Nothing in the sheet transitions here. */
+  @media (prefers-reduced-motion: reduce) {
+    .mb-sheet,
+    .mb-sheet[data-mobile-sheet="open"],
+    .mb-sheet :global(*) {
+      transition-property: none;
+    }
+  }
+</style>

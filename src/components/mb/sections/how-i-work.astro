@@ -1,0 +1,183 @@
+---
+import { Icon } from "astro-icon/components";
+import { processSteps } from "@/data/process";
+import Badge from "../badge.astro";
+import Card from "../card.astro";
+import SectionHead from "../section-head.astro";
+
+/* Process (#how): the steps stack into one ruled column beside a 1px ink
+ * rail with square numbered marks; a mark fills blue with its step, the
+ * duration badge too (fillOnCellHover). */
+---
+
+<section class="mb-how" id="how">
+  <div class="container">
+    <SectionHead label="Proces">
+      Od <em>rozmowy</em> do <em>produktu</em>.
+      <Fragment slot="lede">
+        Biorąc pod uwagę Twoje potrzeby, skupiam się na znalezieniu najlepszego
+        rozwiązania dla Ciebie.
+      </Fragment>
+    </SectionHead>
+
+    <ol class="mb-how-steps">
+      {processSteps.map((step) => (
+        <li class="mb-step">
+          <div aria-hidden="true" class="mb-step-marker">
+            <span class="mb-step-dot">{step.num}</span>
+          </div>
+          <Card tag="div">
+            <div class="mb-step-head">
+              <Icon aria-hidden="true" class="mb-step-icon" name={step.icon} />
+              <h3>{step.title}</h3>
+              <Badge fillOnCellHover variant="outline">
+                {step.badge}
+              </Badge>
+            </div>
+            <p class="mb-step-desc">{step.description}</p>
+          </Card>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .mb-how {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  .mb-how-steps {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mb-step {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: var(--v2-space-md);
+  }
+
+  .mb-step + .mb-step {
+    margin-top: -1px;
+  }
+
+  .mb-step-marker {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .mb-step-marker::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    content: "";
+    background: var(--mb-rule);
+  }
+
+  /* The rail runs from the first mark to the last. */
+  .mb-step:first-child .mb-step-marker::before {
+    top: var(--v2-space-lg);
+  }
+
+  .mb-step:last-child .mb-step-marker::before {
+    bottom: auto;
+    height: var(--v2-space-lg);
+  }
+
+  .mb-step-dot {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-top: var(--v2-space-lg);
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--v2-bg);
+    border: 1px solid var(--mb-rule);
+    transition:
+      background-color var(--mb-snap),
+      border-color var(--mb-snap),
+      color var(--mb-snap);
+  }
+
+  .mb-step:has(:global(.mb-card:is(:hover, [data-state="hover"])))
+    .mb-step-dot {
+    color: var(--v2-bg);
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .mb-step-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .mb-step-head :global(.mb-step-icon) {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: var(--blue);
+  }
+
+  .mb-step-head h3 {
+    flex: 1;
+    margin: 0;
+    font-family: var(--mb-display);
+    font-size: 20px;
+    font-weight: 750;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.035em;
+  }
+
+  .mb-step-desc {
+    max-width: 70ch;
+    margin: 0;
+  }
+
+  @media (max-width: 880px) {
+    .mb-how {
+      margin-top: var(--v2-space-xl);
+    }
+
+    .mb-step {
+      grid-template-columns: 40px minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .mb-step-dot {
+      width: 36px;
+      height: 36px;
+      margin-top: var(--v2-space-md);
+      font-size: 13px;
+    }
+
+    .mb-step:first-child .mb-step-marker::before {
+      top: var(--v2-space-md);
+    }
+
+    .mb-step:last-child .mb-step-marker::before {
+      height: var(--v2-space-md);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-step-dot {
+      transition: none;
+    }
+  }
+</style>
