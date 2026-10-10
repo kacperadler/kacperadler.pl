@@ -1,0 +1,18 @@
+{
+  "description": "Siatka działa jak uruchomiony instrument: linie sekcji i komórek rysują się, gdy wchodzą na ekran (komórka obrysowana zgodnie z ruchem wskazówek zegara, jak pióro plotera), a sekcja podaje postęp, potem swój wiersz. Każda komórka ma współrzędną (B03); pod kursorem jej linie biegną niebieskim krzyżem przez całą ramę, a współrzędna staje na lewej krawędzi ramy. Karta statusu to odczyt systemu: „na żywo”, strefa czasowa i tykający czas, od kiedy tu jesteś.",
+  "name": "Live grid",
+  "references": [
+    {
+      "label": "MDN - Scroll-driven animations",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_scroll-driven_animations"
+    },
+    {
+      "label": "MDN - CSS anchor positioning",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning"
+    },
+    {
+      "label": "Ploter",
+      "url": "https://en.wikipedia.org/wiki/Plotter"
+    }
+  ]
+}
