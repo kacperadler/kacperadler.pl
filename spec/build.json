@@ -26,9 +26,9 @@
   {
     "id": "KA0004",
     "title": "Harness gap: no `test` script, so `npm test` fails",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0004-harness-gap-no-test-script-so-npm-test-fails/ticket.md",
-    "updated": "2026-10-10T12:28:08.232Z",
+    "updated": "2026-10-10T12:51:10.646Z",
     "after": [
       "KA0003"
     ]

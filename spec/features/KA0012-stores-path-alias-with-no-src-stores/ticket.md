@@ -37,3 +37,4 @@ In:
 
 - 2026-10-10: Source: F5 of KA0002
 - 2026-10-10: The human approved it.
+- 2026-10-10: The human: merge once its review passes (or h review-needed says no review).
