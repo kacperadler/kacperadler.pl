@@ -13,7 +13,7 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `astro.config.mjs` (`icon()`), `node_modules/astro-icon/dist/vite-plugin-astro-icon.js:30`
 - What: `bun run build` prints `[WARN] [astro-icon] Failed to load icons from "src/icons": ENOENT` because the project has no local icon folder (all icons come from `@iconify-json/lucide`). The 1.2.0 plugin logs the failed `readdir` as a warning. Output is unaffected; the warning is noise in every build and CI log.
 - Suggestion: find the astro-icon option that skips local icons (or point `iconDir` at an existing folder) so the build is warning-free; no icon changes.
-- Status: open
+- Status: ticket KA0013
 
 ## F2. `@types/node` 26 typechecks against a newer Node than CI and Docker run
 
@@ -22,4 +22,22 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `package.json` (`@types/node`), `.github/workflows/ci.yml` (`node-version: "22"`)
 - What: the ticket asked for every package on its latest release, so `@types/node` moved 25 → 26, while CI builds on Node 22. A Node 23-26 API used in `src/` or a config would typecheck and then fail at build time on Node 22.
 - Suggestion: either pin `@types/node` to the runtime major (`^22`) and accept that `bun outdated` lists it, or move CI to the Node major the types describe once it is LTS.
-- Status: open
+- Status: ticket KA0014
+
+## F3. The mobile menu lost its accessible name
+
+- Kind: bug
+- Found by: 2026-10-10-review-deps-and-astro-7-96cfb551 (review), 2026-10-10
+- Where: `src/components/layout/mobile-sheet.astro`
+- What: Biome 2.5 forbids `aria-label` on a plain `div`; the attribute was removed, so the menu has no name.
+- Suggestion: a role that takes a name (dialog or nav).
+- Status: ticket KA0015
+
+## F4. README still said Cloudflare Pages on the version line
+
+- Kind: cleanup
+- Found by: 2026-10-10-review-deps-and-astro-7-96cfb551 (review), 2026-10-10
+- Where: `README.md`
+- What: a stale host on the line the branch touched.
+- Suggestion: none.
+- Status: fixed in 74e5530 (the merge of main took KA0002's README)

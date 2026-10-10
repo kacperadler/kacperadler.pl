@@ -19,9 +19,9 @@
   {
     "id": "KA0003",
     "title": "Update dependencies, Astro to the newest release",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0003-update-dependencies-astro-to-the-newest-release/ticket.md",
-    "updated": "2026-10-10T12:49:38.226Z"
+    "updated": "2026-10-10T12:50:16.731Z"
   },
   {
     "id": "KA0004",
@@ -64,9 +64,9 @@
   {
     "id": "KA0009",
     "title": "The privacy policy says the site stores a theme preference in `localStorage`",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0009-the-privacy-policy-says-the-site-stores-a-theme-preference-in-localstorage/ticket.md",
-    "updated": "2026-10-10T12:49:52.153Z"
+    "updated": "2026-10-10T12:50:28.035Z"
   },
   {
     "id": "KA0010",
@@ -85,8 +85,29 @@
   {
     "id": "KA0012",
     "title": "`@/stores` path alias with no `src/stores`",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0012-stores-path-alias-with-no-src-stores/ticket.md",
-    "updated": "2026-10-10T12:49:52.353Z"
+    "updated": "2026-10-10T12:50:28.246Z"
+  },
+  {
+    "id": "KA0013",
+    "title": "astro-icon 1.2 warns on every build about a missing `src/icons`",
+    "status": "planning",
+    "path": "spec/features/KA0013-astro-icon-1-2-warns-on-every-build-about-a-missing-src-icons/ticket.md",
+    "updated": "2026-10-10T12:50:16.727Z"
+  },
+  {
+    "id": "KA0014",
+    "title": "`@types/node` 26 typechecks against a newer Node than CI and Docker run",
+    "status": "planning",
+    "path": "spec/features/KA0014-types-node-26-typechecks-against-a-newer-node-than-ci-and-docker-run/ticket.md",
+    "updated": "2026-10-10T12:50:16.729Z"
+  },
+  {
+    "id": "KA0015",
+    "title": "The mobile menu has no accessible name",
+    "status": "planning",
+    "path": "spec/features/KA0015-the-mobile-menu-has-no-accessible-name/ticket.md",
+    "updated": "2026-10-10T12:50:34.599Z"
   }
 ]

@@ -7,6 +7,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 ### Added
 
 - KA0001 Onboarding: vision and criteria for kacperadler.pl (87eb449)
+- KA0003 Update dependencies, Astro to the newest release (8412871)
 - KA0005 The dropped email-templates offer is still on the site (d80d012)
 
 ### Changed
