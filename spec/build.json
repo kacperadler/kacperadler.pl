@@ -209,9 +209,9 @@
   {
     "id": "KA0028",
     "title": "Case studies in MDX: collection, list and page",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0028-case-studies-in-mdx-instead-of-placeholder-projects/ticket.md",
-    "updated": "2026-10-10T15:19:05.390Z"
+    "updated": "2026-10-10T15:21:09.808Z"
   },
   {
     "id": "KA0029",
@@ -387,9 +387,9 @@
   {
     "id": "KA0047",
     "title": "review.md still says package.json has no test script",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0047-review-md-still-says-package-json-has-no-test-script/ticket.md",
-    "updated": "2026-10-10T15:15:59.426Z"
+    "updated": "2026-10-10T15:20:17.751Z"
   },
   {
     "id": "KA0048",

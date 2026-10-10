@@ -38,3 +38,4 @@ Out:
 
 - 2026-10-10: The human: redesign before KA0029-KA0035: browse the site on agent:<port>; a /ui page listing our components with variants and states; /ui/proposal/<id> pages to try several directions (minimal, brutalism, modernist, computer, professional, ...); colors stay, the font may change; components card, button, link, badge etc.; typography from Tailwind prose or our own override. He likes Sentry's style and https://www.aibizneslab.pl/, minimalism and brutalism, and wants to find his own unique style.
 - 2026-10-10: The coordinator: Tailwind stays out (vision, Not the goal); the prose typography is ported as plain CSS from @tailwindcss/typography's default values, no Tailwind dependency. /ui pages are a dev tool: not in the production build.
+- 2026-10-10: Budget raised to 14 USD by the coordinator: the job ran out at 8 USD with a large uncommitted change (six new ui components, 16 files edited, /ui page in progress).
