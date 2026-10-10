@@ -13,4 +13,13 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/components/mb/pagination.astro` (`jump` prop)
 - What: the "go to page" field is a GET form that sends `<action>?<param>=<n>`. A prerendered page never sees that query (Astro strips it, `node_modules/astro/dist/core/request.js:19-21`), and Astro's `paginate()` builds path URLs (`/blog/2/`), so on today's static production build the jump would land on page 1. Only the dev-only `/ui` (now `prerender = false`) reads it.
 - Suggestion: when a paginated list ships (blog, case studies), serve it on demand with the Node adapter the vision already plans, or add an nginx rewrite from `?strona=<n>` to the path page; out: a JavaScript redirect.
-- Status: open
+- Status: ticket KA0078
+
+## F2. Two collapsed breadcrumbs with the same items share one popover id
+
+- Kind: risk
+- Found by: 2026-10-10-review-mb-fixes-round-1-35d5dc14 (review), 2026-10-10
+- Where: `src/components/mb/breadcrumb.astro:60`
+- What: the menu id is a hash of the items, so two identical collapsed breadcrumbs on one page would share it.
+- Suggestion: none until a page renders two.
+- Status: dropped (no page renders breadcrumb twice; the limit is documented in the component)

@@ -564,9 +564,9 @@
   {
     "id": "KA0071",
     "title": "Minimal brutalism components: the human's first round of fixes",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0071-minimal-brutalism-components-the-human-s-first-round-of-fixes/ticket.md",
-    "updated": "2026-10-10T20:49:53.702Z",
+    "updated": "2026-10-10T21:02:47.678Z",
     "after": [
       "KA0069"
     ]
@@ -619,5 +619,12 @@
     "status": "planned",
     "path": "spec/features/KA0077-signature-proposal-live-grid/ticket.md",
     "updated": "2026-10-10T20:44:40.471Z"
+  },
+  {
+    "id": "KA0078",
+    "title": "Pagination jump needs a page that reads its query",
+    "status": "planning",
+    "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
+    "updated": "2026-10-10T21:02:47.675Z"
   }
 ]
