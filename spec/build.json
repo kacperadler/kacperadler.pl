@@ -9,9 +9,9 @@
   {
     "id": "KA0002",
     "title": "Docs match the code and the harness standards (AGENTS.md)",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0002-docs-match-the-code-and-the-harness-standards-agents-md/ticket.md",
-    "updated": "2026-10-10T12:24:27.858Z",
+    "updated": "2026-10-10T12:37:25.285Z",
     "after": ["KA0001"]
   },
   {
@@ -39,8 +39,8 @@
   {
     "id": "KA0006",
     "title": "Em-dashes left in generated text and docs",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0006-em-dashes-left-in-generated-text-and-docs/ticket.md",
-    "updated": "2026-10-10T12:34:45.583Z"
+    "updated": "2026-10-10T12:37:43.075Z"
   }
 ]
