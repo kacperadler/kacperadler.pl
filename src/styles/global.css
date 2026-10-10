@@ -55,7 +55,7 @@ button {
   font-family: var(--display);
   font-size: 14px;
   font-weight: 500;
-  color: light-dark(var(--paper), var(--paper-2));
+  color: var(--paper-2);
   background: var(--ink);
   transform: translateY(calc(-100% - 16px));
   transition: transform 0.18s ease;
