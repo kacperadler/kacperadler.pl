@@ -40,3 +40,4 @@ In:
 - 2026-10-10: Source: F2 of KA0025
 - 2026-10-10: The coordinator folded KA0048 (dead dates.ts) and the README offer line into this ticket.
 - 2026-10-10: Approved by the coordinator as a small cleanup that follows the human's decisions; merge after PASS needs the human.
+- 2026-10-10: The human: merge, right after KA0028.
