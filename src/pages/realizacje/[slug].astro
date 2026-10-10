@@ -1,9 +1,9 @@
 ---
 import { getCollection, render } from "astro:content";
+import Badge from "@/components/mb/badge.astro";
 import Button from "@/components/mb/button.astro";
 import Prose from "@/components/mb/prose.astro";
 import SectionHead from "@/components/mb/section-head.astro";
-import Tag from "@/components/mb/tag.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
 import type { CaseStudy } from "@/lib/case-studies";
 
@@ -47,7 +47,11 @@ const { Content } = await render(caseStudy);
           <dt>Stack</dt>
           <dd>
             <ul class="mb-case-stack">
-              {stack.map((tech) => <Tag as="li">{tech}</Tag>)}
+              {stack.map((tech) => (
+                <li>
+                  <Badge variant="tag">{tech}</Badge>
+                </li>
+              ))}
             </ul>
           </dd>
         </div>

@@ -3,19 +3,24 @@ import type { HTMLAttributes } from "astro/types";
 import { Icon } from "astro-icon/components";
 
 /* Text link in four looks:
- *   inline  ink text over a 2px blue underline; hover: blue text
- *   nav     header navigation in Geist; an ink bar snaps in under it on
- *           hover; `.active` (scripts/nav-active.ts on [data-nav-link]) is
- *           a blue bar under blue text
- *   footer  ink-2 list link, underlined on hover; the optional icon before
- *           it turns blue
+ *   inline  ink text over a 2px blue underline; hover: blue text, the
+ *           underline thickens to 3px; press: blue-2 text
+ *   nav     header navigation in Geist; an ink bar draws in under it from
+ *           the left on hover; `.active` (scripts/nav-active.ts on
+ *           [data-nav-link]) is a blue bar under blue text; press: the
+ *           blue bar and text it is about to become
+ *   footer  ink-2 list link, an underline fades in on hover; the optional
+ *           icon before it turns blue; press: blue text
  *   case    "Zobacz realizację": heavy ink text over a blue underline, the
  *           icon after it (an arrow by default) nudges 3px right on hover
+ *           and 6px on press
  * `icon` takes an Iconify name. The label is trimmed and touches the tags:
- * whitespace inside the <a> would be underlined and outlined.
+ * whitespace inside the <a> would be underlined and outlined. The focus
+ * ring (global.css) grows out of the edge instead of popping.
  *
- * The catalogue (/ui) forces states with [data-state="hover"] and
- * [data-state="focus-visible"] (the ring itself comes from global.css). */
+ * The catalogue (/ui) forces states with [data-state="hover"],
+ * [data-state="pressed"] and [data-state="focus-visible"] (the ring itself
+ * comes from global.css). */
 interface Props extends HTMLAttributes<"a"> {
   href: string;
   icon?: string;
@@ -45,17 +50,30 @@ const iconAfter = variant === "case";
 >
 
 <style>
+  :where(.mb-link) {
+    outline-offset: 0;
+  }
+
   .mb-link-inline {
     color: var(--ink);
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-decoration-color: var(--blue);
     text-underline-offset: 4px;
-    transition: color var(--mb-snap);
+    transition:
+      color var(--mb-snap),
+      text-decoration-thickness var(--mb-snap),
+      outline-offset var(--mb-snap);
   }
 
   .mb-link-inline:is(:hover, [data-state="hover"]) {
     color: var(--blue);
+    text-decoration-thickness: 3px;
+  }
+
+  .mb-link-inline:is(:active, [data-state="pressed"]) {
+    color: var(--blue-2);
+    text-decoration-thickness: 3px;
   }
 
   .mb-link-nav {
@@ -67,7 +85,9 @@ const iconAfter = variant === "case";
     font-weight: 600;
     color: var(--ink-2);
     letter-spacing: -0.015em;
-    transition: color var(--mb-snap);
+    transition:
+      color var(--mb-snap),
+      outline-offset var(--mb-snap);
   }
 
   .mb-link-nav::after {
@@ -80,7 +100,9 @@ const iconAfter = variant === "case";
     background: var(--ink);
     transform: scaleX(0);
     transform-origin: left center;
-    transition: transform var(--mb-snap);
+    transition:
+      background-color var(--mb-snap),
+      transform var(--mb-snap);
   }
 
   .mb-link-nav:is(:hover, [data-state="hover"]) {
@@ -99,6 +121,15 @@ const iconAfter = variant === "case";
     background: var(--blue);
   }
 
+  .mb-link-nav:is(:active, [data-state="pressed"]) {
+    color: var(--blue);
+  }
+
+  .mb-link-nav:is(:active, [data-state="pressed"])::after {
+    background: var(--blue);
+    transform: scaleX(1);
+  }
+
   .mb-link-case {
     display: inline-flex;
     gap: 6px;
@@ -111,6 +142,13 @@ const iconAfter = variant === "case";
     text-decoration-thickness: 2px;
     text-decoration-color: var(--blue);
     text-underline-offset: 4px;
+    transition:
+      color var(--mb-snap),
+      outline-offset var(--mb-snap);
+  }
+
+  .mb-link-case:is(:active, [data-state="pressed"]) {
+    color: var(--blue-2);
   }
 
   .mb-link-case :global(svg) {
@@ -127,7 +165,14 @@ const iconAfter = variant === "case";
     align-items: center;
     font-size: 14px;
     color: var(--ink-2);
-    transition: color var(--mb-snap);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: transparent;
+    text-underline-offset: 4px;
+    transition:
+      color var(--mb-snap),
+      text-decoration-color var(--mb-snap),
+      outline-offset var(--mb-snap);
   }
 
   .mb-link-footer :global(svg) {
@@ -139,22 +184,38 @@ const iconAfter = variant === "case";
 
   .mb-link-footer:is(:hover, [data-state="hover"]) {
     color: var(--ink);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
+    text-decoration-color: var(--ink);
   }
 
-  .mb-link-footer:is(:hover, [data-state="hover"]) :global(svg) {
+  .mb-link-footer:is(:active, [data-state="pressed"]) {
+    color: var(--blue);
+    text-decoration-color: var(--blue);
+  }
+
+  .mb-link-footer:is(
+      :hover,
+      :active,
+      [data-state="hover"],
+      [data-state="pressed"]
+    )
+    :global(svg) {
     color: var(--blue);
   }
+
   .mb-link-case:is(:hover, [data-state="hover"]) :global(svg) {
     transform: translateX(3px);
   }
 
+  .mb-link-case:is(:active, [data-state="pressed"]) :global(svg) {
+    transform: translateX(6px);
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .mb-link,
     .mb-link-inline,
     .mb-link-nav,
     .mb-link-nav::after,
+    .mb-link-case,
     .mb-link-footer,
     .mb-link-footer :global(svg),
     .mb-link-case :global(svg) {

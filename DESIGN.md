@@ -142,35 +142,35 @@ Two faces, both self-hosted variable woff2:
 
 ## Components
 
-Every component is one `.astro` file in `src/components/mb/` with scoped CSS, shown with each variant and state at `/ui`. States there are forced with `[data-state="hover" | "focus-visible" | "focus"]`, `.active` and `disabled`; each component declares those selectors next to its real `:hover` / `:focus`, so changing a state means changing one rule. Names and sets follow shadcn/ui (Astro and plain CSS, no React, Base UI, Tailwind or shadcn); shadcn's sub-components are named slots (card `image` / `title` / `description` / `action` / `footer`, alert `title` / `action`), breadcrumb and pagination take data props.
+Every component is one `.astro` file in `src/components/mb/` with scoped CSS, shown with each variant and state at `/ui`. States there are forced with `[data-state="hover" | "pressed" | "focus-visible" | "focus"]`, `.active` and `disabled`; each component declares those selectors next to its real `:hover` / `:active` / `:focus`, so changing a state means changing one rule. Names and sets follow shadcn/ui (Astro and plain CSS, no React, Base UI, Tailwind or shadcn); shadcn's sub-components are named slots (card `image` / `title` / `description` / `action` / `footer`, alert `title` / `action`), breadcrumb and pagination take data props.
 
 | Component | Variants and sizes |
 | --------- | ------------------ |
-| `button` | `default` (blue block, ink rule, hard ink shadow; hover `blue-2` and the shadow 2px further; `.active` an ink block with no shadow), `secondary`, `outline`, `ghost`, `destructive`, `link`; sizes `xs` 28 / `sm` 36 / `default` 44 / `lg` 52px and the square `icon-xs` / `icon-sm` / `icon` / `icon-lg` (need `aria-label`); `iconStart` / `iconEnd` (nudges 3px right on hover), `href`, `loading` |
-| `badge` | `default` (`teraz`, `Zlecenie`), `secondary`, `outline` (year range, step duration), `destructive`, `ghost`, `link`; icons, `href`, `fillOnCellHover` |
+| `button` | `default` (blue block, ink rule, hard ink shadow; hover `blue-2` and the shadow 2px further; press: it sinks into its shadow; `.active` an ink block with no shadow), `secondary`, `outline`, `ghost`, `destructive`, `link` (press: a step darker); sizes `xs` 28 / `sm` 36 / `default` 44 / `lg` 52px and the square `icon-xs` / `icon-sm` / `icon` / `icon-lg` (need `aria-label`); `iconStart` / `iconEnd` (nudges 3px right on hover), `href`, `loading` |
+| `badge` | `default` (`teraz`, `Zlecenie`), `secondary`, `outline` (year range, step duration), `destructive`, `ghost`, `link`, `tag` (a technology: the `muted` frame, not caps), `status` (availability: `ink` text in a `blue` frame behind a square `blue` dot); icons, `href` (press: an ink block), `fillOnCellHover` |
 | `alert` | `default`, `destructive` (the send-error banner) |
 | `avatar`, `avatar-group` | `sm` / `default` / `lg` (32 / 48 / 96px); image or initials (decided at build time), `badge`, "+N" count |
-| `radio` | `default` (a square), `choice` (the contact form chip) |
-| `checkbox`, `input`, `textarea`, `label`, `field`, `field-set`, `separator`, `spinner` | shadcn's states; `field` orientation `vertical` / `horizontal` / `responsive` |
-| `accordion`, `accordion-item` | `single` / `multiple`, plain / `bordered`; native `<details>` |
-| `breadcrumb`, `pagination` | chevron / slash, collapse; numbers / icons |
+| `radio` | `default` (a square), `choice` (the contact form chip; the same 1px frame and type weight in every state, so checking one moves nothing) |
+| `checkbox`, `input`, `textarea`, `label`, `field`, `field-set`, `separator`, `spinner` | shadcn's states; hover shows an unchecked checkbox's check faintly; `field` orientation `vertical` / `horizontal` / `responsive` |
+| `accordion`, `accordion-item` | `single` / `multiple`, plain / `bordered`; native `<details>`, height and chevron animate |
+| `breadcrumb`, `pagination` | chevron / slash, collapse (the ellipsis opens the hidden pages as a native popover menu); numbers / icons, `jump` (a GET form to a page number) |
 | `card`, `cell-grid` | `default` / `sm`; cells share their rules |
-| not in shadcn | `link` (`inline` / `nav` / `footer` / `case`), `tag`, `status-pill`, `section-head`, `prose`, `brand`, `header`, `footer`, `mobile-sheet`, `page-frame`, `contact-form`, `sections/*` |
+| not in shadcn | `link` (`inline` / `nav` / `footer` / `case`), `section-head`, `prose`, `brand`, `header`, `footer`, `mobile-sheet`, `page-frame`, `contact-form`, `sections/*` |
 
 ### Page frame
 `page-frame.astro` goes straight inside `<body>`: the edge hairlines, the skip link, `header.astro` (sticky on the substrate under an `ink` rule: brand, nav links, the `sm` contact CTA; below 880px the menu button instead of the links; at 400px and below the CTA drops its arrow and the row wraps rather than scroll sideways), the page, `footer.astro` (under an `ink` rule: brand and tagline, two link columns, the copyright under a hairline), the EU funding band (`layout/eu-funding.astro`, white - its logos need a white ground) and, as a sibling, `mobile-sheet.astro` (the full-screen menu on the substrate, switched in with an opacity snap). `BaseLayout` wraps every production page in it; `/ui` and `/ui/proposal/<id>` are their own documents around it, without `contact-form.ts`.
 
 ### Cells
-`card.astro` is a cell: `base` fill in a 1px `ink` rule, 32px padding (16px on `sm`). Hover lights it from inside - `panel-elevated` under a 3px `blue` top rule - and moves nothing; a service number turns `blue`, an experience logo goes from grey to colour, a `fillOnCellHover` badge fills. The hero status card and the case study facts are framed tables of `label | value` rows under hairlines.
+`card.astro` is a cell: `base` fill in a 1px `ink` rule, 32px padding (16px on `sm`). Hover lights it from inside - `panel-elevated` under a 3px `blue` top rule that draws in from the left - and moves nothing; a service number turns `blue`, an experience logo goes from grey to colour, a `fillOnCellHover` badge fills. The hero status card and the case study facts are framed tables of `label | value` rows under hairlines.
 
 ### Hard shadow
-The one hard offset shadow (`--mb-shift`, no blur) marks what the visitor acts on: the default button (`ink`), and the contact form sheet while the email or the message is being written in, or after it is sent (`blue`). The project-type chips are left out of that on purpose, so a click on one does not flicker it.
+The one hard offset shadow (`--mb-shift`, no blur) marks what the visitor acts on: the default button (`ink`; pressed, the button sinks into it and it is gone), and the contact form sheet while the email or the message is being written in, or after it is sent (`blue`). The project-type chips are left out of that on purpose, so a click on one does not flicker it.
 
 ### Links
-`inline` (ink text over a 2px `blue` underline; hover `blue` text), `nav` (an ink bar snaps in under it on hover; `.active` is a `blue` bar under `blue` text), `footer` (`ink-2`, underlined on hover, an optional leading icon turns `blue`), `case` ("Zobacz realizację": heavy ink text over a `blue` underline, the arrow after it nudges 3px right; the company name is in its accessible name).
+`inline` (ink text over a 2px `blue` underline; hover `blue` text and a 3px underline), `nav` (an ink bar draws in under it from the left on hover; `.active` is a `blue` bar under `blue` text; press: blue), `footer` (`ink-2`, an underline fades in on hover, an optional leading icon turns `blue`), `case` ("Zobacz realizację": heavy ink text over a `blue` underline, the arrow after it nudges 3px right on hover and 6px on press; the company name is in its accessible name).
 
 ### Form fields
-Idle: a `muted` frame. Focus: an `ink` frame and the hard `blue` shadow. Invalid (`[data-invalid]` on the field or `aria-invalid`): a coral frame and a mono error line behind a coral rule. Disabled: a flat `panel`. The script hooks are `contact-form.ts`'s: `data-contact-wrap` (`data-state`: `idle | submitting | error-validation | error-submit | success`), `data-contact-form`, `data-field`, `data-invalid`, `data-submit`, `data-form-error`, `data-form-success`, `data-form-reset`, the `website` honeypot.
+Idle: a `muted` frame. Hover: an `ink-2` frame. Focus: an `ink` frame and the hard `blue` shadow shifting out from under it. Invalid (`[data-invalid]` on the field or `aria-invalid`): a coral frame and a mono error line behind a coral rule. Disabled: a flat `panel`. The script hooks are `contact-form.ts`'s: `data-contact-wrap` (`data-state`: `idle | submitting | error-validation | error-submit | success`), `data-contact-form`, `data-field`, `data-invalid`, `data-submit`, `data-form-error`, `data-form-success`, `data-form-reset`, the `website` honeypot.
 
 ### Prose
 `prose.astro` (`mb-prose`) sets Markdown / MDX bodies - legal pages, case studies: the rhythm of @tailwindcss/typography at 65ch, heavy Geist headings with h2 under an `ink` rule, `blue` square bullets and mono counters, the quote behind a `blue` rule, code in a hairline box, the table fully ruled. A `<pre>` scrolls in its own box and table cells wrap, so neither widens the page.
@@ -187,10 +187,12 @@ Idle: a `muted` frame. Focus: an `ink` frame and the hard `blue` shadow. Invalid
 
 ## Motion
 
-- Every state change is `--mb-snap` (`0.12s linear`): a switch, not a drift. Nothing slides, lifts or fades over time; accordions snap open with no height animation, the mobile sheet switches in with an opacity snap.
-- Hover never moves an element: buttons deepen their shadow, cells light from inside, links swap colour or underline.
+- Every state change is `--mb-snap` (`0.12s linear`): a switch, not a drift. What opens animates in that time and no longer: an accordion item's height (`::details-content` with `interpolate-size`) and its chevron's half turn; the breadcrumb menu and the mobile sheet switch in with an opacity snap.
+- Hover never moves an element: buttons deepen their shadow, cells light from inside and draw their top rule in, link underlines draw in, thicken or fade in, input frames go `ink-2`, an unchecked checkbox shows its check faintly. Arrows (`iconEnd`, the `case` link, the sheet links) nudge right.
+- Press (`:active`) is the one state that moves an element itself: the default button sinks into its own shadow; the `case` and sheet arrows nudge further. Everything else answers a press in fill or colour - a step darker, or an ink block on a link badge.
+- Focus: the ring (`global.css`, 2px `blue`) grows out of the element's edge to its offset instead of popping in; fields shift their hard `blue` shadow out.
 - No always-on motion: no ambient background, no pulsing dots. The spinner turns only while a form is being sent.
-- `prefers-reduced-motion: reduce` collapses every transition and animation (`global.css`) and stops the spinner; each animated component has its own reduced-motion block. The mobile sheet sets `transition-property: none` on its children there, so focus reaches the close button the moment it opens.
+- `prefers-reduced-motion: reduce` collapses every transition and animation (`global.css`) and stops the spinner; each animated component has its own reduced-motion block, so hover, press, focus and opening all snap. The mobile sheet sets `transition-property: none` on its children there, so focus reaches the close button the moment it opens.
 
 ## Do's and Don'ts
 
@@ -202,4 +204,4 @@ Idle: a `muted` frame. Focus: an `ink` frame and the hard `blue` shadow. Invalid
 - ❌ **Don't** add a second accent color. Navy is the only chromatic element.
 - ❌ **Don't** use solid white (`#fff`) - text tops out at the warm `ink` (`#ece7dc`). The EU funding band is the one exception: its logos need a white ground.
 - ❌ **Don't** add soft or chromatic drop shadows. The only shadow is the hard `--mb-shift` offset on what the visitor acts on.
-- ❌ **Don't** move a hovered element (`translateY` and the like). State shows in fill, rule and shadow.
+- ❌ **Don't** move a hovered element (`translateY` and the like). State shows in fill, rule and shadow; only a pressed default button moves, into its own shadow.

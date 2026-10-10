@@ -8,8 +8,10 @@
  * tokens and global styles, the page frame. The only script is
  * mobile-sheet.ts - never contact-form.ts (which BaseLayout loads), which
  * would POST the forms here to the production NocoDB; the form states are
- * forced instead. */
-
+ * forced instead.
+ *
+ * Rendered on request (prerender = false), so Astro.url keeps its query:
+ * the pagination jump sample in the catalogue reads ?strona=. */
 import BaseHead from "@/components/layout/base-head.astro";
 import Link from "@/components/mb/link.astro";
 import PageFrame from "@/components/mb/page-frame.astro";
@@ -17,6 +19,8 @@ import { siteConfig } from "@/data/site-config";
 import "@/styles/tokens.css";
 import "@/styles/global.css";
 import Catalogue from "./catalogue.astro";
+
+export const prerender = false;
 ---
 
 <!doctype html>

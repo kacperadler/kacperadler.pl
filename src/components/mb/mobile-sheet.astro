@@ -1,8 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
 import { contactCta, primaryNav } from "@/data/navigation";
+import Badge from "./badge.astro";
 import Button from "./button.astro";
-import StatusPill from "./status-pill.astro";
 
 /* Mobile sheet: the full-screen menu on the solid substrate, no glass. The
  * hooks are scripts/mobile-sheet.ts's: id="mobile-sheet", [data-menu-close],
@@ -45,7 +45,7 @@ const closeHook = preview ? {} : { "data-menu-close": true };
   </span>
 
   <div class="mb-sheet-content">
-    <StatusPill>Otwarty na nowe współprace</StatusPill>
+    <Badge variant="status">Otwarty na nowe współprace</Badge>
 
     <nav
       aria-label={preview ? "Menu główne (podgląd)" : "Menu główne"}
@@ -145,6 +145,18 @@ const closeHook = preview ? {} : { "data-menu-close": true };
     color: var(--ink);
     letter-spacing: -0.04em;
     border-bottom: 1px solid var(--mb-rule);
+    transition:
+      color var(--mb-snap),
+      outline-offset var(--mb-snap);
+  }
+
+  /* The focus ring (global.css) grows out of the edge instead of popping. */
+  :where(.mb-sheet-link) {
+    outline-offset: 0;
+  }
+
+  .mb-sheet-link:is(:active, [data-state="pressed"]) {
+    color: var(--blue);
   }
 
   .mb-sheet-link :global(.mb-sheet-arrow) {
@@ -161,6 +173,11 @@ const closeHook = preview ? {} : { "data-menu-close": true };
     :global(.mb-sheet-arrow) {
     color: var(--blue);
     transform: translateX(4px);
+  }
+
+  .mb-sheet-link:is(:active, [data-state="pressed"]) :global(.mb-sheet-arrow) {
+    color: var(--blue);
+    transform: translateX(8px);
   }
 
   .mb-sheet-cta {

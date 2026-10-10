@@ -5,24 +5,31 @@ import Spinner from "./spinner.astro";
 /* Button in minimal brutalism, with shadcn/ui's variant and size set.
  *   default      blue block in an ink rule with the hard ink shadow; hover:
  *                lighter blue, the shadow reaches 2px further (the button
- *                stays put); `.active` (the header CTA at #contact): an ink
- *                block with no shadow - pressed flat, you are there
- *   secondary    a raised panel in a hairline; hover: the ink rule
- *   outline      an ink rule; hover: an inverted ink block
- *   ghost        no rule; hover: the raised panel
- *   destructive  a coral block in an ink rule; hover: lighter coral
- *   link         ink text over a blue underline; hover: blue text
+ *                stays put); press: it sinks into its shadow (moves onto
+ *                the spot the shadow held, the shadow goes); `.active` (the
+ *                header CTA at #contact): an ink block with no shadow -
+ *                pressed flat, you are there
+ *   secondary    a raised panel in a hairline; hover: the ink rule; press:
+ *                the flat panel
+ *   outline      an ink rule; hover: an inverted ink block; press: ink-2
+ *   ghost        no rule; hover: the raised panel; press: the flat panel
+ *   destructive  a coral block in an ink rule; hover: lighter coral; press:
+ *                lighter still
+ *   link         ink text over a blue underline; hover: blue text; press:
+ *                blue-2 text
  * Sizes xs 28 / sm 36 / default 44 / lg 52 px high; icon-xs, icon-sm, icon
  * and icon-lg are the same heights, square, and need `aria-label` and the
- * icon in `iconStart`. `iconEnd` nudges 3px right on hover.
+ * icon in `iconStart`. `iconEnd` nudges 3px right on hover. The focus ring
+ * (global.css) grows out of the edge instead of popping.
  *
- * Disabled and loading: a flat panel in a hairline, muted text. `loading`
- * swaps the icons for a spinner and sets aria-busy; scripts/contact-form.ts
- * reaches the same look with [data-state="submitting"] + disabled.
- * `href` renders an <a> (a disabled one loses its href).
+ * Disabled and loading: a flat panel in a hairline, muted text, nothing
+ * moves. `loading` swaps the icons for a spinner and sets aria-busy;
+ * scripts/contact-form.ts reaches the same look with
+ * [data-state="submitting"] + disabled. `href` renders an <a> (a disabled
+ * one loses its href).
  *
- * The catalogue (/ui) forces states with [data-state="hover"] and
- * [data-state="focus-visible"] (the ring is global.css's); `.active` is a
+ * The catalogue (/ui) forces states with [data-state="hover"],
+ * [data-state="pressed"] and [data-state="focus-visible"]; `.active` is a
  * real class. Other attributes (data-nav-cta, data-submit, aria-*) pass
  * through to the element. */
 type Variant =
@@ -146,7 +153,15 @@ const busy = loading ? "true" : undefined;
       background-color var(--mb-snap),
       color var(--mb-snap),
       border-color var(--mb-snap),
-      box-shadow var(--mb-snap);
+      box-shadow var(--mb-snap),
+      transform var(--mb-snap),
+      outline-offset var(--mb-snap);
+  }
+
+  /* Below global.css's :focus-visible, so the ring keeps its offset there
+   * and grows to it from the edge. */
+  :where(.mb-btn) {
+    outline-offset: 0;
   }
 
   .mb-btn :global(.mb-btn-icon) {
@@ -286,6 +301,39 @@ const busy = loading ? "true" : undefined;
     color: var(--blue);
   }
 
+  /* Pressed. The `.active` CTA is already flat and stays so; disabled and
+   * loading buttons do not move. */
+  .mb-btn-default:not(
+    .active,
+    [disabled],
+    [aria-disabled="true"],
+    .mb-btn-loading
+  ):is(:active, [data-state="pressed"]) {
+    background: var(--blue-2);
+    box-shadow: 0 0 0 var(--mb-rule);
+    transform: translate(var(--mb-btn-shift), var(--mb-btn-shift));
+  }
+
+  .mb-btn:is(.mb-btn-secondary, .mb-btn-ghost):is(
+    :active,
+    [data-state="pressed"]
+  ) {
+    background: var(--v2-panel);
+  }
+
+  .mb-btn-outline:is(:active, [data-state="pressed"]) {
+    color: var(--v2-bg);
+    background: var(--ink-2);
+  }
+
+  .mb-btn-destructive:is(:active, [data-state="pressed"]) {
+    background: color-mix(in srgb, var(--error) 65%, var(--ink));
+  }
+
+  .mb-btn-link:is(:active, [data-state="pressed"]) {
+    color: var(--blue-2);
+  }
+
   /* Disabled and loading: flat, muted, nothing moves. */
   .mb-btn:is(
     [disabled],
@@ -298,6 +346,7 @@ const busy = loading ? "true" : undefined;
     background: var(--v2-panel);
     border-color: var(--mb-hair);
     box-shadow: none;
+    transform: none;
   }
 
   .mb-btn-link:is(

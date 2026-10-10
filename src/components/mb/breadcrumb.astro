@@ -7,8 +7,15 @@ import { Icon } from "astro-icon/components";
  *   separator "chevron" | "slash"  drawn between items, hidden from
  *                                  assistive tech
  *   collapse                       with more than three items, the middle
- *                                  ones fold into an ellipsis; their names
- *                                  stay in a visually hidden label
+ *                                  ones fold into an ellipsis button that
+ *                                  opens them as a menu
+ * The menu is a native popover (popover="auto", no JavaScript): the button
+ * is its invoker (announced expanded / collapsed), Tab walks from it into
+ * the links, Esc and a click outside close it, focus returns to the
+ * button. It hangs under the button where the browser has CSS anchor
+ * positioning, in the middle of the viewport where it has not, and
+ * switches in with an opacity snap. Its id comes from the items, so two
+ * identical collapsed breadcrumbs on one page would share one menu.
  * The row wraps instead of scrolling. */
 interface Crumb {
   href?: string;
@@ -23,22 +30,18 @@ interface Props {
 
 const { collapse = false, items, separator = "chevron" } = Astro.props;
 
-type Entry = { crumb: Crumb; kind: "crumb" } | { hidden: string; kind: "more" };
+type Entry =
+  | { crumb: Crumb; kind: "crumb" }
+  | { hidden: readonly Crumb[]; kind: "more" };
 type View =
-  | { hidden: string; kind: "more" }
+  | { hidden: readonly Crumb[]; kind: "more" }
   | { kind: "current" | "link" | "text"; label: string; href?: string };
 
 const folded = collapse && items.length > 3;
 const entries: Entry[] = folded
   ? [
       { crumb: items[0] as Crumb, kind: "crumb" },
-      {
-        hidden: items
-          .slice(1, -2)
-          .map((item) => item.label)
-          .join(", "),
-        kind: "more",
-      },
+      { hidden: items.slice(1, -2), kind: "more" },
       ...items.slice(-2).map((crumb): Entry => ({ crumb, kind: "crumb" })),
     ]
   : items.map((crumb): Entry => ({ crumb, kind: "crumb" }));
@@ -54,18 +57,49 @@ const views: View[] = entries.map((entry, index): View => {
 });
 const separatorIcon =
   separator === "slash" ? "lucide:slash" : "lucide:chevron-right";
+
+// A stable id for the popover, the same on every build: a polynomial hash
+// of the items, kept below 2^31.
+let hash = 7;
+for (const char of JSON.stringify(items)) {
+  hash = (hash * 31 + (char.codePointAt(0) ?? 0)) % 2_147_483_647;
+}
+const menuId = `mb-crumbs-${hash.toString(36)}`;
 ---
 
 <nav aria-label="Okruszki" class="mb-breadcrumb">
   <ol>
     {views.map((view, index) => (
       <>
-        <li class="mb-crumb">
+        <li
+          class:list={["mb-crumb", { "mb-crumb-more": view.kind === "more" }]}
+        >
           {view.kind === "more" && (
-            <span class="mb-crumb-more">
-              <Icon aria-hidden="true" name="lucide:ellipsis" />
-              <span class="sr-only">Pominięte: {view.hidden}</span>
-            </span>
+            <>
+              <button
+                aria-label="Pokaż pominięte strony"
+                class="mb-crumb-more-trigger"
+                popovertarget={menuId}
+                type="button"
+              >
+                <Icon aria-hidden="true" name="lucide:ellipsis" />
+              </button>
+              <div class="mb-crumb-menu" id={menuId} popover="auto">
+                <ul>
+                  {view.hidden.map((crumb) => (
+                    <li>
+                      {crumb.href ? (
+                        <a class="mb-crumb-menu-item" href={crumb.href}>
+                          {crumb.label}
+                        </a>
+                      ) : (
+                        <span class="mb-crumb-menu-item">{crumb.label}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
           )}
           {view.kind === "current" && (
             <span aria-current="page" class="mb-crumb-current">
@@ -118,7 +152,13 @@ const separatorIcon =
     text-underline-offset: 4px;
     transition:
       color var(--mb-snap),
-      text-decoration-color var(--mb-snap);
+      text-decoration-color var(--mb-snap),
+      outline-offset var(--mb-snap);
+  }
+
+  /* The focus ring (global.css) grows out of the edge instead of popping. */
+  :where(.mb-crumb-link, .mb-crumb-more-trigger, .mb-crumb-menu-item) {
+    outline-offset: 0;
   }
 
   .mb-crumb-link:is(:hover, [data-state="hover"]) {
@@ -126,18 +166,124 @@ const separatorIcon =
     text-decoration-color: var(--blue);
   }
 
+  .mb-crumb-link:is(:active, [data-state="pressed"]) {
+    color: var(--blue);
+  }
+
   .mb-crumb-current {
     font-weight: 600;
     color: var(--ink);
   }
 
+  /* The ellipsis: a square cell that frames itself on hover and stays
+   * framed in ink while its menu is open. */
   .mb-crumb-more {
-    display: inline-flex;
+    anchor-scope: --mb-crumb-more;
   }
 
-  .mb-crumb-more :global(svg) {
+  .mb-crumb-more-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 24px;
+    padding: 0;
+    color: var(--ink-2);
+    anchor-name: --mb-crumb-more;
+    border: 1px solid transparent;
+    transition:
+      background-color var(--mb-snap),
+      border-color var(--mb-snap),
+      color var(--mb-snap),
+      outline-offset var(--mb-snap);
+  }
+
+  .mb-crumb-more-trigger :global(svg) {
     width: 16px;
     height: 16px;
+  }
+
+  .mb-crumb-more-trigger:is(:hover, [data-state="hover"]) {
+    color: var(--ink);
+    border-color: var(--mb-hair);
+  }
+
+  .mb-crumb-more:has(:popover-open) .mb-crumb-more-trigger {
+    color: var(--ink);
+    border-color: var(--mb-rule);
+  }
+
+  .mb-crumb-more-trigger:is(:active, [data-state="pressed"]) {
+    background: var(--v2-panel);
+  }
+
+  .mb-crumb-menu {
+    min-width: 180px;
+    padding: 0;
+    color: var(--ink-2);
+    background: var(--v2-bg);
+    border: 1px solid var(--mb-rule);
+    border-radius: 0;
+    opacity: 0;
+    transition:
+      opacity var(--mb-snap),
+      overlay var(--mb-snap) allow-discrete,
+      display var(--mb-snap) allow-discrete;
+  }
+
+  .mb-crumb-menu:popover-open {
+    opacity: 1;
+  }
+
+  @starting-style {
+    .mb-crumb-menu:popover-open {
+      opacity: 0;
+    }
+  }
+
+  @supports (position-area: bottom) {
+    .mb-crumb-menu {
+      inset: auto;
+      margin: 6px 0 0;
+      position-anchor: --mb-crumb-more;
+      position-area: bottom span-right;
+      position-try-fallbacks: flip-inline;
+    }
+  }
+
+  .mb-crumb-menu ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mb-crumb-menu li + li {
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-crumb-menu-item {
+    display: block;
+    padding: 10px 14px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--ink-2);
+    transition:
+      background-color var(--mb-snap),
+      color var(--mb-snap),
+      outline-offset var(--mb-snap);
+  }
+
+  .mb-crumb-menu-item:focus-visible {
+    outline-offset: -4px;
+  }
+
+  a.mb-crumb-menu-item:is(:hover, [data-state="hover"]) {
+    color: var(--ink);
+    background: var(--v2-panel-elevated);
+  }
+
+  a.mb-crumb-menu-item:is(:active, [data-state="pressed"]) {
+    background: var(--v2-panel);
   }
 
   .mb-crumb-separator {
@@ -151,7 +297,10 @@ const separatorIcon =
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .mb-crumb-link {
+    .mb-crumb-link,
+    .mb-crumb-more-trigger,
+    .mb-crumb-menu,
+    .mb-crumb-menu-item {
       transition: none;
     }
   }

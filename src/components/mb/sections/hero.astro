@@ -2,8 +2,8 @@
 import meImage from "@/assets/me.jpg";
 import { siteConfig } from "@/data/site-config";
 import Avatar from "../avatar.astro";
+import Badge from "../badge.astro";
 import Button from "../button.astro";
-import StatusPill from "../status-pill.astro";
 
 /* Hero (#top): a heavy headline on the bare substrate beside the status
  * card, a framed cell whose rows read as a ruled table (label | value). */
@@ -44,7 +44,7 @@ import StatusPill from "../status-pill.astro";
             <span>{siteConfig.role}</span>
             <span>Polska</span>
           </p>
-          <StatusPill>Otwarty na nowe współprace</StatusPill>
+          <Badge variant="status">Otwarty na nowe współprace</Badge>
         </div>
       </div>
 

@@ -1,15 +1,22 @@
 ---
 import { Icon } from "astro-icon/components";
 
-/* Badge: a square mono chip, with shadcn/ui's variants.
+/* Badge: a square mono chip, with shadcn/ui's variants and two of its own.
  *   default      a solid blue block (current role, "Zlecenie")
  *   secondary    the raised panel in a hairline
  *   outline      a muted frame (year range, step duration)
  *   destructive  a coral block
  *   ghost        no frame
  *   link         ink text over a blue underline
+ *   tag          a technology on a service card or a case study: the muted
+ *                frame in its own case (not caps), so a row of tags reads
+ *                apart from the caps badges
+ *   status       availability (hero status card, mobile sheet): ink text in
+ *                a blue frame behind a square blue dot
  * `iconStart` / `iconEnd` take an Iconify name; a <Spinner decorative /> in
- * the slot shows work in progress. `href` renders an <a>.
+ * the slot shows work in progress. `href` renders an <a>: hover as the
+ * button it stands for, press (or [data-state="pressed"]) an ink block, and
+ * the focus ring snaps out from the edge.
  * `fillOnCellHover` paints an outline badge as the default one while its
  * <Card> is hovered (process steps); the catalogue forces that hover with
  * [data-state="hover"] on the card. */
@@ -25,7 +32,9 @@ interface Props {
     | "outline"
     | "destructive"
     | "ghost"
-    | "link";
+    | "link"
+    | "tag"
+    | "status";
   [attribute: `data-${string}`]: unknown;
 }
 
@@ -76,7 +85,13 @@ const Tag = href ? "a" : "span";
     transition:
       background-color var(--mb-snap),
       border-color var(--mb-snap),
-      color var(--mb-snap);
+      color var(--mb-snap),
+      outline-offset var(--mb-snap);
+  }
+
+  /* The focus ring (global.css) grows out of the edge instead of popping. */
+  :where(.mb-badge) {
+    outline-offset: 0;
   }
 
   .mb-badge :global(svg) {
@@ -115,6 +130,35 @@ const Tag = href ? "a" : "span";
     text-underline-offset: 3px;
   }
 
+  .mb-badge-tag {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: normal;
+    border-color: var(--muted);
+  }
+
+  .mb-badge-status {
+    gap: 8px;
+    align-self: flex-start;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: normal;
+    border-color: var(--blue);
+  }
+
+  .mb-badge-status::before {
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    content: "";
+    background: var(--blue);
+  }
+
   /* As a link: the same switch as the button it stands for. */
   a.mb-badge-default:is(:hover, [data-state="hover"]) {
     background: var(--blue-2);
@@ -125,10 +169,12 @@ const Tag = href ? "a" : "span";
     background: color-mix(in srgb, var(--error) 80%, var(--ink));
   }
 
-  a:is(.mb-badge-secondary, .mb-badge-outline):is(
-    :hover,
-    [data-state="hover"]
-  ) {
+  a:is(
+    .mb-badge-secondary,
+    .mb-badge-outline,
+    .mb-badge-tag,
+    .mb-badge-status
+  ):is(:hover, [data-state="hover"]) {
     color: var(--ink);
     border-color: var(--mb-rule);
   }
@@ -140,6 +186,19 @@ const Tag = href ? "a" : "span";
 
   a.mb-badge-link:is(:hover, [data-state="hover"]) {
     color: var(--blue);
+  }
+
+  /* Pressed: the inverted ink block, as the button at its target. */
+  a.mb-badge:is(:active, [data-state="pressed"]) {
+    color: var(--v2-bg);
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+
+  a.mb-badge-link:is(:active, [data-state="pressed"]) {
+    color: var(--blue-2);
+    background: transparent;
+    border-color: transparent;
   }
 
   @media (prefers-reduced-motion: reduce) {
