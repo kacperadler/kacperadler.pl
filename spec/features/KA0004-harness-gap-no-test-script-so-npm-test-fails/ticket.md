@@ -6,7 +6,7 @@
   "title": "Harness gap: no `test` script, so `npm test` fails",
   "date": "2026-10-10",
   "after": [
-    "KA0016"
+    "KA0022"
   ]
 }
 ```

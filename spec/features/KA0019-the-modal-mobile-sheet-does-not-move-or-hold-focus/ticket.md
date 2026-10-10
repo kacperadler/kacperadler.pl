@@ -6,7 +6,7 @@
   "title": "The modal mobile sheet does not move or hold focus",
   "date": "2026-10-10",
   "after": [
-    "KA0016"
+    "KA0022"
   ]
 }
 ```

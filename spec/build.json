@@ -28,9 +28,9 @@
     "title": "Harness gap: no `test` script, so `npm test` fails",
     "status": "done",
     "path": "spec/features/KA0004-harness-gap-no-test-script-so-npm-test-fails/ticket.md",
-    "updated": "2026-10-10T12:57:44.515Z",
+    "updated": "2026-10-10T13:22:23.073Z",
     "after": [
-      "KA0016"
+      "KA0022"
     ]
   },
   {
@@ -142,9 +142,9 @@
     "title": "The modal mobile sheet does not move or hold focus",
     "status": "planned",
     "path": "spec/features/KA0019-the-modal-mobile-sheet-does-not-move-or-hold-focus/ticket.md",
-    "updated": "2026-10-10T13:04:54.981Z",
+    "updated": "2026-10-10T13:22:23.268Z",
     "after": [
-      "KA0016"
+      "KA0022"
     ]
   },
   {
