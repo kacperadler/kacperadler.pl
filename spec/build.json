@@ -363,9 +363,9 @@
   {
     "id": "KA0044",
     "title": "Design proposal: minimal brutalism",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0044-design-proposal-minimal-brutalism/ticket.md",
-    "updated": "2026-10-10T17:21:15.927Z",
+    "updated": "2026-10-10T17:42:49.203Z",
     "after": [
       "KA0038"
     ]
