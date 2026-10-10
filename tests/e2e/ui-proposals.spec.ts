@@ -162,15 +162,19 @@ test.describe("design proposals (astro dev)", () => {
     await expect(card).toHaveCSS("border-top-left-radius", "5px");
   });
 
-  test("has no detectable WCAG 2.1 AA violations", async ({ page }) => {
-    await page.goto("/ui/proposal/baseline", { waitUntil: "networkidle" });
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-      .exclude("astro-dev-toolbar")
-      .analyze();
+  for (const { id } of proposals) {
+    test(`/ui/proposal/${id} has no detectable WCAG 2.1 AA violations`, async ({
+      page,
+    }) => {
+      await page.goto(`/ui/proposal/${id}`, { waitUntil: "networkidle" });
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+        .exclude("astro-dev-toolbar")
+        .analyze();
 
-    expect(results.violations).toEqual([]);
-  });
+      expect(results.violations).toEqual([]);
+    });
+  }
 
   test("the switcher moves between the proposals and the current design", async ({
     page,
