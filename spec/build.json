@@ -71,9 +71,9 @@
   {
     "id": "KA0010",
     "title": "Code comments still point at `v2-layout` and `body.v2-body`",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0010-code-comments-still-point-at-v2-layout-and-body-v2-body/ticket.md",
-    "updated": "2026-10-10T12:53:20.718Z"
+    "updated": "2026-10-10T13:03:24.724Z"
   },
   {
     "id": "KA0011",
@@ -109,9 +109,9 @@
   {
     "id": "KA0015",
     "title": "The mobile menu has no accessible name",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0015-the-mobile-menu-has-no-accessible-name/ticket.md",
-    "updated": "2026-10-10T13:01:12.684Z"
+    "updated": "2026-10-10T13:04:37.715Z"
   },
   {
     "id": "KA0016",
@@ -136,5 +136,22 @@
     "status": "dropped",
     "path": "spec/features/KA0018-bun-run-test-e2e-fails-when-another-worktree-s-job-holds-port-4329/ticket.md",
     "updated": "2026-10-10T13:03:15.412Z"
+  },
+  {
+    "id": "KA0019",
+    "title": "The modal mobile sheet does not move or hold focus",
+    "status": "planned",
+    "path": "spec/features/KA0019-the-modal-mobile-sheet-does-not-move-or-hold-focus/ticket.md",
+    "updated": "2026-10-10T13:04:54.981Z",
+    "after": [
+      "KA0016"
+    ]
+  },
+  {
+    "id": "KA0020",
+    "title": "Parallel worktrees collide on the e2e preview port 4329",
+    "status": "dropped",
+    "path": "spec/features/KA0020-parallel-worktrees-collide-on-the-e2e-preview-port-4329/ticket.md",
+    "updated": "2026-10-10T13:04:54.782Z"
   }
 ]
