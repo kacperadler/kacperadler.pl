@@ -21,6 +21,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0043 Design proposal: professional (86692e8)
 - KA0044 Design proposal: minimal brutalism (7913cf5)
 - KA0065 Design proposal: minimal brutalism computer (b0634b2)
+- KA0067 Keep only the minimal brutalism proposal (85fb50e)
 
 ### Fixed
 
