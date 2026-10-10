@@ -9,10 +9,12 @@
   {
     "id": "KA0002",
     "title": "Docs match the code and the harness standards (AGENTS.md)",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0002-docs-match-the-code-and-the-harness-standards-agents-md/ticket.md",
-    "updated": "2026-10-10T12:41:41.048Z",
-    "after": ["KA0001"]
+    "updated": "2026-10-10T12:43:01.976Z",
+    "after": [
+      "KA0001"
+    ]
   },
   {
     "id": "KA0003",
@@ -27,7 +29,9 @@
     "status": "planned",
     "path": "spec/features/KA0004-harness-gap-no-test-script-so-npm-test-fails/ticket.md",
     "updated": "2026-10-10T12:28:08.232Z",
-    "after": ["KA0003"]
+    "after": [
+      "KA0003"
+    ]
   },
   {
     "id": "KA0005",
@@ -49,5 +53,40 @@
     "status": "dropped",
     "path": "spec/features/KA0007-em-dash-left-in-the-ka0001-review-record/ticket.md",
     "updated": "2026-10-10T12:42:50.796Z"
+  },
+  {
+    "id": "KA0008",
+    "title": "`DESIGN.md` still describes `/v2` and the theme toggle",
+    "status": "planning",
+    "path": "spec/features/KA0008-design-md-still-describes-v2-and-the-theme-toggle/ticket.md",
+    "updated": "2026-10-10T12:43:01.970Z"
+  },
+  {
+    "id": "KA0009",
+    "title": "The privacy policy says the site stores a theme preference in `localStorage`",
+    "status": "planning",
+    "path": "spec/features/KA0009-the-privacy-policy-says-the-site-stores-a-theme-preference-in-localstorage/ticket.md",
+    "updated": "2026-10-10T12:43:01.972Z"
+  },
+  {
+    "id": "KA0010",
+    "title": "Code comments still point at `v2-layout` and `body.v2-body`",
+    "status": "planning",
+    "path": "spec/features/KA0010-code-comments-still-point-at-v2-layout-and-body-v2-body/ticket.md",
+    "updated": "2026-10-10T12:43:01.973Z"
+  },
+  {
+    "id": "KA0011",
+    "title": "Claude Code may no longer load the agent conventions",
+    "status": "dropped",
+    "path": "spec/features/KA0011-claude-code-may-no-longer-load-the-agent-conventions/ticket.md",
+    "updated": "2026-10-10T12:43:23.947Z"
+  },
+  {
+    "id": "KA0012",
+    "title": "`@/stores` path alias with no `src/stores`",
+    "status": "planning",
+    "path": "spec/features/KA0012-stores-path-alias-with-no-src-stores/ticket.md",
+    "updated": "2026-10-10T12:43:01.975Z"
   }
 ]
