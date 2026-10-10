@@ -18,3 +18,4 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 
 - KA0002 Docs match the code and the harness standards (AGENTS.md) (237e8a7)
 - KA0006 Em-dashes left in generated text and docs (f8e8e2e)
+- KA0012 `@/stores` path alias with no `src/stores` (aa7a919)
