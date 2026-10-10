@@ -13,7 +13,7 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/data/navigation.ts:8`
 - What: the comment says to restore `{ label: "Realizacje", href: "#projects" }` once case studies land. KA0028 removed the `projects` collection; no `#projects` anchor exists on the page, and case studies now live at `/realizacje/<slug>/`, reached from the "Z kim pracowałem" cards.
 - Suggestion: once the first case study ships (KA0030-KA0035), decide whether the nav gets a "Realizacje" entry (pointing at `#experience` or a `/realizacje/` list page, see F2) and replace or drop the comment. The case study content stays out.
-- Status: open
+- Status: fixed in 8eed06f
 
 ## F2. `/realizacje/` has no index page
 
@@ -22,4 +22,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/pages/realizacje/`
 - What: KA0028 builds `/realizacje/<slug>/` only; the list of case studies is the links in "Z kim pracowałem". A visitor who trims the URL to `/realizacje/` gets the 404 page.
 - Suggestion: once two or more case studies exist, either add `src/pages/realizacje/index.astro` listing them (in the sitemap and `llms*.txt`) or make nginx redirect `/realizacje/` to `/#experience`. Product call which.
-- Status: open
+- Status: fixed in 8eed06f
