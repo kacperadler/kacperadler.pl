@@ -1,9 +1,15 @@
 ---
 import { getCollection } from "astro:content";
 import { siteConfig } from "@/data/site-config";
-import { personSchema, professionalServiceSchema, websiteSchema } from "@/lib/seo";
+import {
+  personSchema,
+  professionalServiceSchema,
+  websiteSchema,
+} from "@/lib/seo";
 
-const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
+const services = (await getCollection("services")).sort(
+  (a, b) => a.data.order - b.data.order
+);
 const profServiceSchema = professionalServiceSchema(services);
 
 interface Props {
@@ -24,73 +30,93 @@ const fullTitle = title
   ? `${title} - ${siteConfig.name}`
   : `${siteConfig.name} - ${siteConfig.role}`;
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? siteConfig.url).toString();
+const canonical = new URL(
+  Astro.url.pathname,
+  Astro.site ?? siteConfig.url
+).toString();
 const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
 ---
 
-<meta charset="utf-8" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
-<meta content={Astro.generator} name="generator" />
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<meta content={Astro.generator} name="generator">
 
 <title>{fullTitle}</title>
-<meta content={description} name="description" />
-<link href={canonical} rel="canonical" />
+<meta content={description} name="description">
+<link href={canonical} rel="canonical">
 
 {noindex && <meta content="noindex, nofollow" name="robots" />}
 
-<link href="/favicon.svg" rel="icon" type="image/svg+xml" />
-<link href="/favicon.ico" rel="icon" sizes="any" />
+<link href="/favicon.svg" rel="icon" type="image/svg+xml">
+<link href="/favicon.ico" rel="icon" sizes="any">
 
-<meta content="#0a0c10" name="theme-color" />
+<meta content="#0a0c10" name="theme-color">
 
-<link as="font" crossorigin href="/fonts/Geist-Variable.woff2" rel="preload" type="font/woff2" />
+<link
+  as="font"
+  crossorigin
+  href="/fonts/Geist-Variable.woff2"
+  rel="preload"
+  type="font/woff2"
+>
 <link
   as="font"
   crossorigin
   href="/fonts/GeistMono-Variable.woff2"
   rel="preload"
   type="font/woff2"
+>
+
+<meta content="website" property="og:type">
+<meta content={fullTitle} property="og:title">
+<meta content={description} property="og:description">
+<meta content={canonical} property="og:url">
+<meta content={ogImageUrl} property="og:image">
+<meta content={siteConfig.locale.replace("-", "_")} property="og:locale">
+<meta content={siteConfig.name} property="og:site_name">
+
+<meta content="summary_large_image" name="twitter:card">
+<meta content={fullTitle} name="twitter:title">
+<meta content={description} name="twitter:description">
+<meta content={ogImageUrl} name="twitter:image">
+
+<link href="/sitemap-index.xml" rel="sitemap">
+
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={JSON.stringify(personSchema)}
 />
-
-<meta content="website" property="og:type" />
-<meta content={fullTitle} property="og:title" />
-<meta content={description} property="og:description" />
-<meta content={canonical} property="og:url" />
-<meta content={ogImageUrl} property="og:image" />
-<meta content={siteConfig.locale.replace("-", "_")} property="og:locale" />
-<meta content={siteConfig.name} property="og:site_name" />
-
-<meta content="summary_large_image" name="twitter:card" />
-<meta content={fullTitle} name="twitter:title" />
-<meta content={description} name="twitter:description" />
-<meta content={ogImageUrl} name="twitter:image" />
-
-<link href="/sitemap-index.xml" rel="sitemap" />
-
-<script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
-<script type="application/ld+json" is:inline set:html={JSON.stringify(websiteSchema)} />
-<script type="application/ld+json" is:inline set:html={JSON.stringify(profServiceSchema)} />
-{
-  /* Umami analytics, self-hosted at analytics.kacperadler.pl. PROD-only
-   * so dev pageviews don't pollute the data.
-   *
-   * The script tag is injected via JS after window 'load' (via
-   * requestIdleCallback with a 2.5s timeout fallback) instead of being
-   * inlined in HTML head. That way the /api/send tracking ping happens
-   * AFTER FCP/LCP and stays off Lighthouse's critical path - the
-   * analytics roundtrip used to add ~270ms to "Maximum critical path
-   * latency" with the script tag in head. astro:page-load reload re-
-   * fires on every ClientRouter view transition (equivalent to the
-   * data-astro-rerun attribute on a static script tag).
-   *
-   * is:inline so Astro doesn't try to process the script src; the
-   * defer attribute on the injected tag keeps it non-blocking even
-   * after load. data-do-not-track lets visitors who set DNT opt out
-   * via Umami's own logic. */
-  import.meta.env.PROD && (
-    <script
-      is:inline
-      set:html={`
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={JSON.stringify(websiteSchema)}
+/>
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={JSON.stringify(profServiceSchema)}
+/>
+{/* Umami analytics, self-hosted at analytics.kacperadler.pl. PROD-only
+ * so dev pageviews don't pollute the data.
+ *
+ * The script tag is injected via JS after window 'load' (via
+ * requestIdleCallback with a 2.5s timeout fallback) instead of being
+ * inlined in HTML head. That way the /api/send tracking ping happens
+ * AFTER FCP/LCP and stays off Lighthouse's critical path - the
+ * analytics roundtrip used to add ~270ms to "Maximum critical path
+ * latency" with the script tag in head. astro:page-load reload re-
+ * fires on every ClientRouter view transition (equivalent to the
+ * data-astro-rerun attribute on a static script tag).
+ *
+ * is:inline so Astro doesn't try to process the script src; the
+ * defer attribute on the injected tag keeps it non-blocking even
+ * after load. data-do-not-track lets visitors who set DNT opt out
+ * via Umami's own logic. */}
+{import.meta.env.PROD && (
+  <script
+    is:inline
+    set:html={`
         (() => {
           const src = ${JSON.stringify(`${siteConfig.analytics.umamiUrl}/script.js`)};
           const id = ${JSON.stringify(siteConfig.analytics.umamiWebsiteId)};
@@ -118,6 +144,5 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
           });
         })();
       `}
-    />
-  )
-}
+  />
+)}

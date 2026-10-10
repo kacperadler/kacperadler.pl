@@ -13,7 +13,12 @@ import { contactCta, primaryNav } from "@/data/navigation";
   id="mobile-sheet"
   role="dialog"
 >
-  <button aria-label="Zamknij menu" class="sheet-close" data-menu-close type="button">
+  <button
+    aria-label="Zamknij menu"
+    class="sheet-close"
+    data-menu-close
+    type="button"
+  >
     <Icon aria-hidden="true" name="lucide:x" />
   </button>
 
@@ -24,10 +29,12 @@ import { contactCta, primaryNav } from "@/data/navigation";
     </span>
 
     <nav aria-label="Menu główne" class="sheet-nav">
-      {primaryNav.map((link) => <a class="sheet-link" data-sheet-link href={link.href}>
-        <span>{link.label}</span>
-        <Icon aria-hidden="true" name="lucide:arrow-right" />
-      </a>)}
+      {primaryNav.map((link) => (
+        <a class="sheet-link" data-sheet-link href={link.href}>
+          <span>{link.label}</span>
+          <Icon aria-hidden="true" name="lucide:arrow-right" />
+        </a>
+      ))}
     </nav>
 
     <Button

@@ -12,7 +12,7 @@ export default defineConfig({
   // Astro 7 defaults to 'jsx' whitespace rules, which drop the space between
   // inline elements written on separate lines (e.g. "Ostatnia aktualizacja:"
   // and its date). Keep the HTML-aware compression the templates are written for;
-  // .prettierrc mirrors it as astroCompressHTML so formatting never changes output.
+  // Biome formats .astro markup by the same HTML whitespace rules.
   compressHTML: true,
 
   // astro-icon 1.2 has no option to skip local icons and warns when iconDir is
