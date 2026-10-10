@@ -26,11 +26,11 @@
   {
     "id": "KA0004",
     "title": "Harness gap: no `test` script, so `npm test` fails",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0004-harness-gap-no-test-script-so-npm-test-fails/ticket.md",
-    "updated": "2026-10-10T12:53:58.794Z",
+    "updated": "2026-10-10T12:57:44.515Z",
     "after": [
-      "KA0003"
+      "KA0016"
     ]
   },
   {
@@ -109,8 +109,15 @@
   {
     "id": "KA0015",
     "title": "The mobile menu has no accessible name",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0015-the-mobile-menu-has-no-accessible-name/ticket.md",
-    "updated": "2026-10-10T12:56:22.261Z"
+    "updated": "2026-10-10T12:56:39.437Z"
+  },
+  {
+    "id": "KA0016",
+    "title": "The e2e suite cannot start Astro 7 preview: it detaches",
+    "status": "planning",
+    "path": "spec/features/KA0016-the-e2e-suite-cannot-start-astro-7-preview-it-detaches/ticket.md",
+    "updated": "2026-10-10T12:57:28.368Z"
   }
 ]
