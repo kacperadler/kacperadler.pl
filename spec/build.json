@@ -323,9 +323,9 @@
   {
     "id": "KA0040",
     "title": "Design proposal: brutalist",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0040-design-proposal-brutalist/ticket.md",
-    "updated": "2026-10-10T17:11:25.331Z",
+    "updated": "2026-10-10T17:20:59.772Z",
     "after": [
       "KA0038"
     ]
@@ -353,9 +353,9 @@
   {
     "id": "KA0043",
     "title": "Design proposal: professional",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0043-design-proposal-professional/ticket.md",
-    "updated": "2026-10-10T15:03:31.393Z",
+    "updated": "2026-10-10T17:15:51.221Z",
     "after": [
       "KA0038"
     ]
