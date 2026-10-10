@@ -1,0 +1,779 @@
+/* Brutalist - raw and deliberate: hard edges, thick ink borders, a visible
+ * line grid, a grotesk in headlines and copy, flat blocks of the site's
+ * palette. No radius, no glass, no glow, no spotlight: a state is shown by
+ * a hard (unblurred) offset shadow or by inverting a block's colors.
+ *
+ * Specificity. Astro scopes a component selector with one
+ * [data-astro-cid-*] per compound: `.radio span` ships as
+ * `.radio[cid] span[cid]`. The scope below counts once, so a rule over a
+ * component selector of k compounds repeats [data-proposal] k - 1 more
+ * times to tie it (this file loads last, a tie is a win):
+ *   k = 1  [data-proposal="brutalist"] .btn
+ *   k = 2  [data-proposal="brutalist"][data-proposal] .service-panel h3
+ *   k = 3  [data-proposal="brutalist"][data-proposal][data-proposal]
+ *            .radio input:checked + span
+ * Global selectors (global.css, prose.css, base-layout.astro) carry no cid.
+ *
+ * Colors are the palette tokens only, never a mix. Fonts: Space Grotesk
+ * (SIL OFL 1.1, OFL.txt) next to this file, Geist Mono from the site. */
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("./space-grotesk-latin-wght.woff2") format("woff2-variations");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Latin Extended: the Polish ą ć ę ł ń ś ź ż. */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("./space-grotesk-latin-ext-wght.woff2") format("woff2-variations");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+html[data-proposal="brutalist"] {
+  --display: "Space Grotesk", "Geist", system-ui, sans-serif;
+  --sans: "Space Grotesk", "Geist", system-ui, sans-serif;
+
+  /* Square everything: panels, buttons, chips, the avatar, the dots. */
+  --v2-radius-xs: 0;
+  --v2-radius-sm: 0;
+  --v2-radius-md: 0;
+  --v2-radius-lg: 0;
+  --v2-radius-full: 0;
+
+  /* The vocabulary: one border width, one heavy rule, two shadow offsets. */
+  --brut-rule: 2px;
+  --brut-rule-heavy: 3px;
+  --brut-shift: 8px;
+  --brut-shift-sm: 4px;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Atmosphere: a line grid instead of dots, no ribbons. */
+
+[data-proposal="brutalist"] .bg-stage {
+  background-image:
+    linear-gradient(var(--v2-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--v2-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+[data-proposal="brutalist"] :is(.ribbon, .fade-h, .fade-v) {
+  display: none;
+}
+
+/* The spotlight wash and ring: off on every card. */
+[data-proposal="brutalist"] .hero-status::before,
+[data-proposal="brutalist"] .hero-status::after,
+[data-proposal="brutalist"] .v2-card::before,
+[data-proposal="brutalist"] .v2-card::after,
+[data-proposal="brutalist"] .v2-contact-link::before,
+[data-proposal="brutalist"] .v2-contact-link::after,
+[data-proposal="brutalist"] .contact-form-host::before,
+[data-proposal="brutalist"] .contact-form-host::after {
+  display: none;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Chrome: header, footer, mobile sheet. Solid, ruled, no glass. */
+
+[data-proposal="brutalist"] .nav-wrap,
+[data-proposal="brutalist"] .nav-wrap.scrolled {
+  background: var(--v2-bg);
+  border-bottom: var(--brut-rule-heavy) solid var(--ink);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"] .brand {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+[data-proposal="brutalist"][data-proposal] .brand b {
+  font-weight: 700;
+}
+
+[data-proposal="brutalist"] .mark {
+  color: var(--paper);
+  box-shadow: none;
+}
+
+[data-proposal="brutalist"] :is(.menu-btn, .sheet-close) {
+  border: var(--brut-rule) solid var(--ink);
+}
+
+[data-proposal="brutalist"] .site-footer {
+  background: var(--v2-panel);
+  border-top: var(--brut-rule-heavy) solid var(--ink);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"] .footer-col-title {
+  color: var(--ink);
+}
+
+[data-proposal="brutalist"] .footer-bottom {
+  border-top: 1px solid var(--muted);
+}
+
+[data-proposal="brutalist"] .sheet {
+  background: var(--v2-bg);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"] .sheet-link {
+  font-size: 28px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-bottom: var(--brut-rule) solid var(--ink);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Section primitives: left-aligned under a heavy rule, uppercase grotesk,
+ * <em> as a flat blue block. */
+
+[data-proposal="brutalist"] .section-head {
+  max-width: none;
+  padding-top: var(--v2-space-md);
+  margin: 0 0 var(--v2-space-lg);
+  text-align: left;
+  border-top: var(--brut-rule-heavy) solid var(--ink);
+}
+
+[data-proposal="brutalist"] .section-head h2 {
+  max-width: 22ch;
+  font-size: clamp(32px, 5.5vw, 60px);
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+
+/* Running text without an italic in the face: mono instead of a faux
+ * slant. */
+[data-proposal="brutalist"] :is(p, li, td) em {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  font-style: normal;
+}
+
+[data-proposal="brutalist"] .section-head h2 em,
+[data-proposal="brutalist"] .hero h1 em {
+  padding: 0 0.12em;
+  color: var(--v2-bg);
+  background: var(--blue);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+[data-proposal="brutalist"] .section-lede {
+  max-width: 60ch;
+  margin: 0;
+}
+
+[data-proposal="brutalist"] .eyebrow {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* The section label: an inverted ink block. */
+[data-proposal="brutalist"] .eyebrow-section {
+  justify-content: flex-start;
+  padding: 4px 8px;
+  color: var(--v2-bg);
+  background: var(--ink);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Button: uppercase grotesk in a 2px frame.
+ *   primary  ink block, blue shadow; hover: blue block, ink shadow;
+ *            active (the header CTA at #contact): blue block in an ink
+ *            frame with a dark inner ring, no shadow - pressed into place
+ *   ghost    ink frame; hover: inverted ink block
+ *   disabled / loading: dashed muted frame, muted text, no shadow */
+
+[data-proposal="brutalist"] .btn {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border: var(--brut-rule) solid transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"] .btn-primary {
+  color: var(--v2-bg);
+  background: var(--ink);
+  border-color: var(--ink);
+  box-shadow: var(--brut-shift-sm) var(--brut-shift-sm) 0 var(--blue);
+}
+
+[data-proposal="brutalist"] .btn-primary.active {
+  color: var(--v2-bg);
+  background: var(--blue);
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 2px var(--v2-bg);
+}
+
+[data-proposal="brutalist"] .btn-primary:is(:hover, [data-state="hover"]) {
+  color: var(--v2-bg);
+  background: var(--blue);
+  border-color: var(--blue);
+  box-shadow: var(--brut-shift-sm) var(--brut-shift-sm) 0 var(--ink);
+}
+
+[data-proposal="brutalist"] .btn-ghost {
+  color: var(--ink);
+  background: transparent;
+  border-color: var(--ink);
+}
+
+[data-proposal="brutalist"] .btn-ghost:is(:hover, [data-state="hover"]) {
+  color: var(--v2-bg);
+  background: var(--ink);
+  border-color: var(--ink);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"] .btn:is([disabled], [data-state="submitting"]) {
+  color: var(--muted);
+  background: transparent;
+  border-color: var(--muted);
+  border-style: dashed;
+  box-shadow: none;
+  opacity: 1;
+}
+
+/* The loading spinner: a square turning on its corner. */
+[data-proposal="brutalist"] .btn-spinner {
+  border-radius: 0;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Link. */
+
+[data-proposal="brutalist"] .link-inline {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+[data-proposal="brutalist"] .link-inline:is(:hover, [data-state="hover"]) {
+  color: var(--v2-bg);
+  text-decoration: none;
+  background: var(--blue);
+}
+
+/* Nav: a mono label; hover inverts it to an ink block, .active is a blue
+ * block (no growing underline). */
+[data-proposal="brutalist"] .link-nav {
+  padding: 8px 10px;
+  margin: 0 2px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+[data-proposal="brutalist"] .link-nav::after {
+  display: none;
+}
+
+[data-proposal="brutalist"] .link-nav:is(:hover, [data-state="hover"]) {
+  color: var(--v2-bg);
+  background: var(--ink);
+}
+
+[data-proposal="brutalist"] .link-nav.active {
+  color: var(--v2-bg);
+  background: var(--blue);
+}
+
+[data-proposal="brutalist"] .link-footer:is(:hover, [data-state="hover"]) {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+[data-proposal="brutalist"] .link-footer svg {
+  color: var(--ink-2);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Badge, tag, status pill: square mono chips.
+ *   badge outline  ink-2 frame; filled: a flat blue block
+ *   tag            muted frame, not uppercased, so a tag row reads apart
+ *                  from the badges
+ *   status pill    a flat blue block with a square dark dot */
+
+[data-proposal="brutalist"] .badge {
+  padding: 3px 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-width: var(--brut-rule);
+}
+
+[data-proposal="brutalist"] .badge-outline {
+  color: var(--ink-2);
+  border-color: var(--ink-2);
+}
+
+[data-proposal="brutalist"] .badge-filled,
+[data-proposal="brutalist"]
+  .v2-card:is(:hover, [data-state="hover"])
+  .badge-card-hover {
+  color: var(--v2-bg);
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+[data-proposal="brutalist"] .tag {
+  color: var(--ink-2);
+  border: var(--brut-rule) solid var(--muted);
+}
+
+[data-proposal="brutalist"] .status-pill {
+  padding: 6px 10px;
+  font-weight: 600;
+  color: var(--v2-bg);
+  letter-spacing: 0.02em;
+  background: var(--blue);
+}
+
+[data-proposal="brutalist"] .status-pill-dot {
+  background: var(--v2-bg);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Card: a solid panel in an ink frame; hover throws a hard blue block
+ * behind it. The card does not move. */
+
+[data-proposal="brutalist"] .v2-card {
+  background: var(--v2-panel);
+  border: var(--brut-rule) solid var(--ink);
+}
+
+[data-proposal="brutalist"] .v2-card:is(:hover, [data-state="hover"]) {
+  border-color: var(--ink);
+  box-shadow: var(--brut-shift) var(--brut-shift) 0 var(--blue);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"][data-proposal] .ui-card h3,
+[data-proposal="brutalist"][data-proposal] .service-panel h3,
+[data-proposal="brutalist"][data-proposal] .step-panel h3,
+[data-proposal="brutalist"][data-proposal] .exp-panel h3,
+[data-proposal="brutalist"][data-proposal] .form-success-card h3 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Form fields: mono text in a 2px ink frame on the dark substrate.
+ *   focus     blue frame + hard blue shadow
+ *   error     coral frame + hard coral shadow, the message as a coral
+ *             block; focus on an invalid field adds the blue outline
+ *   disabled  dashed muted frame, muted text
+ *   radio     a square chip; checked: a flat blue block */
+
+[data-proposal="brutalist"] .field-label {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+[data-proposal="brutalist"] :is(.v2-input, .v2-textarea) {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--v2-bg);
+  border: var(--brut-rule) solid var(--ink);
+}
+
+[data-proposal="brutalist"] :is(.v2-input, .v2-textarea)::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+[data-proposal="brutalist"]
+  :is(.v2-input, .v2-textarea):is(:focus, [data-state="focus"]) {
+  border-color: var(--blue);
+  box-shadow: var(--brut-shift-sm) var(--brut-shift-sm) 0 var(--blue);
+}
+
+[data-proposal="brutalist"] :is(.v2-input, .v2-textarea):disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  background: transparent;
+  border-color: var(--muted);
+  border-style: dashed;
+}
+
+[data-proposal="brutalist"] .field[data-invalid] :is(.v2-input, .v2-textarea) {
+  border-color: var(--error);
+  box-shadow: var(--brut-shift-sm) var(--brut-shift-sm) 0 var(--error);
+}
+
+[data-proposal="brutalist"]
+  .field[data-invalid]
+  :is(.v2-input, .v2-textarea):is(:focus, [data-state="focus"]) {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
+[data-proposal="brutalist"] .err {
+  align-self: flex-start;
+  padding: 2px 6px;
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--v2-bg);
+  background: var(--error);
+}
+
+[data-proposal="brutalist"][data-proposal] .radio span {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  letter-spacing: 0.06em;
+  border: var(--brut-rule) solid var(--ink-2);
+}
+
+[data-proposal="brutalist"][data-proposal]
+  .radio:is(:hover, [data-state="hover"])
+  span {
+  color: var(--ink);
+  border-color: var(--ink);
+  box-shadow: var(--brut-shift-sm) var(--brut-shift-sm) 0 var(--ink);
+}
+
+[data-proposal="brutalist"][data-proposal] .radio:has(input:disabled) span {
+  color: var(--muted);
+  cursor: not-allowed;
+  border-color: var(--muted);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+[data-proposal="brutalist"][data-proposal] .field[data-invalid] .radio span {
+  border-color: var(--error);
+}
+
+[data-proposal="brutalist"][data-proposal][data-proposal]
+  .radio
+  input:checked
+  + span {
+  font-weight: 700;
+  color: var(--v2-bg);
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+[data-proposal="brutalist"][data-proposal][data-proposal]
+  .radio
+  input:is(:focus-visible, [data-state="focus-visible"])
+  + span {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Hero: a huge grotesk headline on the grid; the status card is the one
+ * block that always carries its hard shadow. */
+
+[data-proposal="brutalist"] .hero-grid {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+}
+
+[data-proposal="brutalist"] .hero h1 {
+  max-width: 20ch;
+  font-size: clamp(40px, 6vw, 68px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+[data-proposal="brutalist"] .hero-status {
+  background: var(--v2-panel);
+  border: var(--brut-rule) solid var(--ink);
+  box-shadow: var(--brut-shift) var(--brut-shift) 0 var(--blue);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"] .hero-avatar {
+  border: var(--brut-rule) solid var(--ink);
+  box-shadow: none;
+  filter: grayscale(100%);
+}
+
+[data-proposal="brutalist"] .status-name {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+[data-proposal="brutalist"] .status-rows {
+  gap: 0;
+}
+
+[data-proposal="brutalist"] .status-row {
+  padding: 10px 0;
+  border-top: 1px solid var(--muted);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Services: the number is a blue figure; on hover it turns into a blue
+ * block. */
+
+[data-proposal="brutalist"] .service-num {
+  padding: 2px 6px;
+  font-weight: 700;
+  color: var(--blue);
+  opacity: 1;
+}
+
+[data-proposal="brutalist"][data-proposal] .service-panel:hover .service-num {
+  color: var(--v2-bg);
+  background: var(--blue);
+  opacity: 1;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Process: square numbered blocks on a solid ink rail. */
+
+[data-proposal="brutalist"] .step-marker::before {
+  background: var(--ink);
+}
+
+[data-proposal="brutalist"] .step-dot {
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--v2-bg);
+  border: var(--brut-rule) solid var(--ink);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"][data-proposal]
+  .step-item:has(.step-panel:hover)
+  .step-dot {
+  color: var(--v2-bg);
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Contact: the links stacked in a narrow column beside the form, framed
+ * in ink; a link inverts on hover, the form throws its hard shadow on
+ * hover, on focus and on success. */
+
+[data-proposal="brutalist"] .contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  align-items: start;
+}
+
+[data-proposal="brutalist"] .contact-links {
+  grid-template-columns: 1fr;
+  max-width: none;
+  margin: 0;
+}
+
+[data-proposal="brutalist"] .v2-contact-link {
+  background: var(--v2-panel);
+  border: var(--brut-rule) solid var(--ink);
+}
+
+[data-proposal="brutalist"] .v2-contact-link:hover {
+  color: var(--v2-bg);
+  background: var(--ink);
+  border-color: var(--ink);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"]
+  .v2-contact-link:hover
+  :is(.v2-contact-icon, .v2-contact-label, .v2-contact-value) {
+  color: var(--v2-bg);
+}
+
+[data-proposal="brutalist"] .contact-form-host {
+  max-width: none;
+  margin: 0;
+}
+
+[data-proposal="brutalist"]
+  .contact-form-host:is(
+    :hover,
+    :has(input[type="email"]:focus, textarea:focus),
+    :has([data-state="success"])
+  ) {
+  --card: var(--v2-panel);
+  background: none;
+  box-shadow: var(--brut-shift) var(--brut-shift) 0 var(--blue);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+[data-proposal="brutalist"] :is(.form, .form-success-card) {
+  background: var(--v2-panel);
+  border: var(--brut-rule) solid var(--ink);
+}
+
+[data-proposal="brutalist"] .form-error {
+  background: var(--v2-bg);
+  border: var(--brut-rule) solid var(--error);
+}
+
+[data-proposal="brutalist"] .success-mark {
+  border-radius: 0;
+}
+
+@media (max-width: 880px) {
+  [data-proposal="brutalist"] .hero-grid,
+  [data-proposal="brutalist"] .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Prose: uppercase headings, h2 under a heavy rule, square bullets, the
+ * quote and the code as framed blocks, the table as a full grid with an
+ * inverted head. */
+
+[data-proposal="brutalist"] .prose :is(h1, h2) {
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+[data-proposal="brutalist"] .prose h1 {
+  font-weight: 700;
+  line-height: 1;
+}
+
+[data-proposal="brutalist"] .prose h2 {
+  padding-top: 0.5em;
+  border-top: var(--brut-rule-heavy) solid var(--ink);
+}
+
+[data-proposal="brutalist"] .prose a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+[data-proposal="brutalist"] .prose a:hover {
+  color: var(--v2-bg);
+  text-decoration: none;
+  background: var(--blue);
+}
+
+[data-proposal="brutalist"] .prose ul {
+  list-style-type: square;
+}
+
+[data-proposal="brutalist"] .prose ol > li::marker {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--blue);
+}
+
+[data-proposal="brutalist"] .prose blockquote {
+  padding: 0.75em 1em;
+  font-style: normal;
+  background: var(--v2-bg);
+  border-inline-start: 6px solid var(--blue);
+}
+
+[data-proposal="brutalist"] .prose code {
+  padding: 0 0.3em;
+  background: var(--v2-bg);
+}
+
+[data-proposal="brutalist"] .prose code::before,
+[data-proposal="brutalist"] .prose code::after {
+  content: none;
+}
+
+[data-proposal="brutalist"] .prose pre {
+  background: var(--v2-bg);
+  border: var(--brut-rule) solid var(--ink);
+  border-radius: 0;
+}
+
+[data-proposal="brutalist"] .prose pre code {
+  padding: 0;
+}
+
+[data-proposal="brutalist"] .prose table {
+  border: var(--brut-rule) solid var(--ink);
+}
+
+[data-proposal="brutalist"] .prose thead {
+  border-bottom: var(--brut-rule) solid var(--ink);
+}
+
+[data-proposal="brutalist"]
+  .prose
+  :is(th, td, th:first-child, td:first-child, th:last-child, td:last-child) {
+  padding: 0.5714286em 0.75em;
+  border: 1px solid var(--muted);
+}
+
+[data-proposal="brutalist"] .prose thead th {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  vertical-align: middle;
+  color: var(--v2-bg);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--ink);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * Catalogue frame (/ui): the same heavy rules and frames. */
+
+[data-proposal="brutalist"] .ui-section {
+  border-top: var(--brut-rule-heavy) solid var(--ink);
+}
+
+[data-proposal="brutalist"] .ui-h2 {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+[data-proposal="brutalist"][data-proposal] .ui-head h1 {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+
+[data-proposal="brutalist"] :is(.ui-panel, .ui-form-surface) {
+  border: var(--brut-rule) solid var(--ink);
+}
