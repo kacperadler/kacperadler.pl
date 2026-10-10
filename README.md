@@ -2,14 +2,14 @@
 
 Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS).
 
-Migracja prototypu (`example.html`) do produkcyjnego Astro 6 hostowanego na Cloudflare Pages.
+Migracja prototypu (`example.html`) do produkcyjnego Astro 7 hostowanego na Cloudflare Pages.
 
 > Plan i decyzje architektoniczne: [`project-plan.md`](./project-plan.md)
 > Konwencje pracy z asystentem: [`CLAUDE.md`](./CLAUDE.md)
 
 ## Stack
 
-- **[Astro 6](https://docs.astro.build)** (TypeScript strict, kontent collections)
+- **[Astro 7](https://docs.astro.build)** (TypeScript strict, kontent collections)
 - **Vanilla CSS** + scoped `<style>` w `.astro` - theming `light | dark | system` przez `light-dark()` + `color-scheme`, jeden akcent (navy)
 - **[Ultracite](https://www.ultracite.ai/)** (Biome 2) - lint + format dla TS/JS/JSON/CSS
 - **[Prettier](https://prettier.io)** + `prettier-plugin-astro` - formatowanie `*.astro` (Biome ich nie obsługuje natywnie)

@@ -8,7 +8,11 @@
       "!**/node_modules",
       "!**/bun.lock",
       "!**/example.html",
-      "!**/public"
+      "!**/public",
+      // Vendor logos served through <img>; Biome 2.5 started parsing SVG.
+      "!**/*.svg",
+      // Written by the harness (h), not by hand.
+      "!spec/build.json"
     ]
   },
   "overrides": [

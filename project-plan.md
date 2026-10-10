@@ -17,7 +17,7 @@ Migracja `example.html` (single-file prototyp) do produkcyjnego projektu Astro h
 ## 2. Stack - final list
 
 ### Core
-- **Astro 6.x** (TypeScript strict) - zainstalowane: 6.1.10
+- **Astro 7.x** (TypeScript strict) - zainstalowane: 7.3.8
 - **`@astrojs/check`** + `typescript` - type checking dla `.astro`
 - **`@astrojs/mdx`** - pod blog i case-studies projektów (Faza 3)
 - **`@astrojs/sitemap`** - auto-sitemap (Faza 6)
