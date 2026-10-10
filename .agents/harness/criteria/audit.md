@@ -8,7 +8,7 @@ What in the repository today works against `spec/vision.md`, or will cost the ne
 
 - A regression against `spec/vision.md` `## What stays true`: Lighthouse scores, bundle or image weight, an axe violation, motion that ignores `prefers-reduced-motion`, content that needs JavaScript, a cookie or third-party script, non-Polish copy.
 - Docs that drift from the code: `AGENTS.md`, `README.md`, `DESIGN.md` describing files, routes or hosting that no longer exist.
-- Dead code: the placeholder projects in `src/content/projects/` nothing renders, the empty `src/content/blog` collection, components or scripts nothing imports.
+- Dead code: an empty content collection such as `src/content/blog`, components or scripts nothing imports.
 - Versions pinned out of step: `packageManager` in `package.json` and the `oven/bun` image in `Dockerfile` against the Node version in `.github/workflows/ci.yml`.
 - Em-dashes (U+2014) in copy, docs or generated text, such as `src/pages/llms.txt.ts`, `src/pages/llms-full.txt.ts` and `DESIGN.md`.
 - The site saying something the vision no longer does, such as an offer item that was dropped.

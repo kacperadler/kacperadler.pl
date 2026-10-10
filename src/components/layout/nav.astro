@@ -3,6 +3,11 @@ import { Icon } from "astro-icon/components";
 import Button from "@/components/ui/button.astro";
 import { contactCta, primaryNav } from "@/data/navigation";
 import { siteConfig } from "@/data/site-config";
+
+const links = await primaryNav();
+// A page link ("/realizacje/") is active on its page and the pages below
+// it; aria-current="page" only on the page itself.
+const path = Astro.url.pathname;
 ---
 
 <nav aria-label="Główna nawigacja" class="nav">
@@ -16,11 +21,19 @@ import { siteConfig } from "@/data/site-config";
   </a>
 
   <div class="nav-links">
-    {primaryNav.map((link) => (
-      <a data-nav-link href={link.href}>
-        {link.label}
-      </a>
-    ))}
+    {links.map((link) => {
+      const inPage = !link.href.includes("#") && path.startsWith(link.href);
+      return (
+        <a
+          aria-current={inPage && path === link.href ? "page" : undefined}
+          class:list={{ active: inPage }}
+          data-nav-link
+          href={link.href}
+        >
+          {link.label}
+        </a>
+      );
+    })}
   </div>
 
   <div class="nav-tail">

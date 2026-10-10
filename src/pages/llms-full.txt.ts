@@ -6,6 +6,7 @@
 import { getCollection } from "astro:content";
 import { processSteps } from "@/data/process";
 import { siteConfig } from "@/data/site-config";
+import { caseStudyPath, sortedCaseStudies } from "@/lib/case-studies";
 
 export const prerender = true;
 
@@ -17,6 +18,8 @@ export async function GET(): Promise<Response> {
   const experience = (await getCollection("experience")).sort(
     (a, b) => a.data.order - b.data.order
   );
+
+  const caseStudies = await sortedCaseStudies();
 
   const servicesBlock = services
     .map(
@@ -58,6 +61,37 @@ ${item.data.description}`;
     })
     .join("\n\n");
 
+  // The MDX body's own headings (## and below) are pushed two levels down so
+  // they nest under the case study's ### heading.
+  const caseStudyEntries = caseStudies
+    .map(
+      (c) => `### ${c.data.company} (${c.data.period})
+
+**Rola**: ${c.data.role}
+
+**Stack**: ${c.data.stack.join(", ")}
+
+**Strona**: ${siteConfig.url}${caseStudyPath(c)}
+
+${c.data.summary}
+
+${(c.body ?? "").trim().replace(/^(#{1,4}) /gm, "##$1 ")}`
+    )
+    .join("\n\n");
+
+  const caseStudiesBlock =
+    caseStudies.length > 0
+      ? `## Realizacje
+
+Opisy wybranych współprac: kontekst, moja rola, stack i efekt. Lista: ${siteConfig.url}/realizacje/
+
+${caseStudyEntries}
+
+---
+
+`
+      : "";
+
   const body = `# ${siteConfig.name} - ${siteConfig.role}
 
 > ${siteConfig.tagline}
@@ -92,7 +126,7 @@ ${experienceBlock}
 
 ---
 
-## Kontakt
+${caseStudiesBlock}## Kontakt
 
 Najszybciej przez formularz na ${siteConfig.url}#contact (odpowiadam w ciągu 24h) albo bezpośrednio:
 
