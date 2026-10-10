@@ -20,14 +20,14 @@ Does the branch do what its ticket asks, with every check below green, without b
 ## FAIL when any one holds
 
 - Any command above fails.
-- The branch breaks a rule in `CLAUDE.md` `## Don't` (the `/v2` and v2-layout wording there is stale; the rule behind it still holds).
+- The branch breaks a rule in `AGENTS.md` `## Don't`.
 - The diff adds an em-dash (U+2014) anywhere: copy, docs, comments, generated text.
 - The diff breaks a line of `spec/vision.md` `## What stays true`: adds cookies or a third-party tracker, English copy, a light theme, motion that ignores `prefers-reduced-motion`, or content that needs JavaScript to show.
 - The diff brings in something `spec/vision.md` `## Not the goal` names: Tailwind, an adapter other than the Node one or anything rendered on demand (`prerender = false`) besides the lead-store API route, a CMS, React or another islands framework, always-on foreground animation, Cloudflare Pages or D1 config.
 
 ## How code here should look
 
-As `.agents/harness/criteria/styleguide.md` says, with `CLAUDE.md` `## Konwencje` and `DESIGN.md` behind it.
+As `.agents/harness/criteria/styleguide.md` says, with `AGENTS.md` `## Konwencje` and `DESIGN.md` behind it.
 
 ## What a worker branch usually looks like
 
@@ -36,7 +36,7 @@ As `.agents/harness/criteria/styleguide.md` says, with `CLAUDE.md` `## Konwencje
 
 ## Not reasons to FAIL
 
-- Stale text in `CLAUDE.md`, `README.md` or `project-plan.md` the branch did not touch (KA0002).
+- Stale text in `DESIGN.md` the branch did not touch (KA0002 findings, F1), or in the history parts of `project-plan.md`.
 - Outdated dependencies (KA0003).
 - `npm test` failing because `package.json` has no `test` script (KA0001 findings, F1).
 - Em-dashes already in files, on lines the branch did not add.

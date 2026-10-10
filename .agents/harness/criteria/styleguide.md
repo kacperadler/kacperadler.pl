@@ -2,9 +2,9 @@
 
 The conventions live in the repository; read them there, this file does not copy them:
 
-- `CLAUDE.md`: `## Stack` (with `### Integracje runtime`), `## Konwencje`, `## Don't`, `## Komendy`, `## Hosting`. There is no `AGENTS.md` yet; KA0002 moves `CLAUDE.md` to it.
+- `AGENTS.md`: `## Stack` (with `### Integracje runtime`), `## Konwencje`, `## Don't`, `## Komendy`, `## Hosting`, `## Wygląd`, `## Struktura`.
 - `DESIGN.md`: the tokens in the frontmatter, `## Components`, `## Motion`, `## Do's and Don'ts`. Read it before touching anything visual.
-- `CLAUDE.md` `## v2 redesign track` and `## Struktura`, `README.md` and `project-plan.md` are partly stale: v2 already lives at `/` (commit `6e1b55e`), `/v2`, `src/layouts/v2-layout.astro`, `body.v2-body` and the theme toggle are gone, and the host is Dokploy; Cloudflare Pages is not considered, and `wrangler.toml` is a leftover. Where they disagree with the code, the code is right. KA0002 fixes them.
+- `project-plan.md` is history: its phases are closed and its plan sections describe what was intended then. `DESIGN.md` still names `/v2`, `v2.astro`, `body.v2-body` and the theme toggle in places (KA0002 findings, F1). Where a doc disagrees with the code, the code is right.
 
 What follows is only what those files do not say.
 
@@ -33,4 +33,4 @@ What follows is only what those files do not say.
 - Em-dashes (U+2014), anywhere: copy, docs, comments, generated text. Never add one.
 - English user-facing copy.
 - Cookies, third-party scripts or trackers.
-- Reviving the theming machinery (`data-theme`, a theme toggle, light values) the docs still describe.
+- Reviving the theming machinery (`data-theme`, a theme toggle, light values) that `project-plan.md` and `DESIGN.md` still describe.
