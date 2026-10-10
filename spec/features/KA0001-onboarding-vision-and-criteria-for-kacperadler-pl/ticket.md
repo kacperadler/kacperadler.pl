@@ -35,3 +35,4 @@ Out:
 ## Decisions
 
 - 2026-10-10: The human asked to clone git@github.com:kacperadler/kacperadler.pl.git and onboard it; prefix KA.
+- 2026-10-10: The human answered the onboarding questions: 1 portfolio of what he does, offer web apps, internal tools, landings, business-card sites, mobile apps, plus AI agents in companies, automation, and Claude Code / Codex training; email templates dropped; success = contact forms sent; 2 ok, but NocoDB will be replaced by storing leads in SQLite; 3 ok; 4 ok; 5 Dokploy now, Cloudflare Pages considered; docs to update (KA0002); 6 ok, docs follow our standards, CLAUDE.md -> AGENTS.md (KA0002); 7 ok; 8 never add em-dashes; 9 ok; 10 ok; 11 update packages (KA0003).

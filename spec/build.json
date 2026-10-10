@@ -2,8 +2,25 @@
   {
     "id": "KA0001",
     "title": "Onboarding: vision and criteria for kacperadler.pl",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0001-onboarding-vision-and-criteria-for-kacperadler-pl/ticket.md",
-    "updated": "2026-10-10T11:56:14.069Z"
+    "updated": "2026-10-10T11:56:14.383Z"
+  },
+  {
+    "id": "KA0002",
+    "title": "Docs match the code and the harness standards (AGENTS.md)",
+    "status": "planning",
+    "path": "spec/features/KA0002-docs-match-the-code-and-the-harness-standards-agents-md/ticket.md",
+    "updated": "2026-10-10T12:08:20.037Z",
+    "after": [
+      "KA0001"
+    ]
+  },
+  {
+    "id": "KA0003",
+    "title": "Update dependencies, Astro to the newest release",
+    "status": "planning",
+    "path": "spec/features/KA0003-update-dependencies-astro-to-the-newest-release/ticket.md",
+    "updated": "2026-10-10T12:07:58.153Z"
   }
 ]
