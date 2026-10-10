@@ -18,7 +18,7 @@ What in the repository today works against `spec/vision.md`, or will cost the ne
 - Single dependency bumps; Dependabot (`.github/dependabot.yml`) opens them, and KA0003 carries the backlog.
 - Anything already covered by an open ticket (KA0002 docs, KA0003 dependencies).
 - Style or taste with no rule behind it in `.agents/harness/criteria/styleguide.md`, `CLAUDE.md` or `DESIGN.md`.
-- `wrangler.toml`: Cloudflare Pages is still being considered.
+- `wrangler.toml` and the Cloudflare Pages notes in the docs: KA0002 removes them.
 
 ## Priorities
 

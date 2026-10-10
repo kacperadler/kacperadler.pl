@@ -4,7 +4,7 @@ The conventions live in the repository; read them there, this file does not copy
 
 - `CLAUDE.md`: `## Stack` (with `### Integracje runtime`), `## Konwencje`, `## Don't`, `## Komendy`, `## Hosting`. There is no `AGENTS.md` yet; KA0002 moves `CLAUDE.md` to it.
 - `DESIGN.md`: the tokens in the frontmatter, `## Components`, `## Motion`, `## Do's and Don'ts`. Read it before touching anything visual.
-- `CLAUDE.md` `## v2 redesign track` and `## Struktura`, `README.md` and `project-plan.md` are partly stale: v2 already lives at `/` (commit `6e1b55e`), `/v2`, `src/layouts/v2-layout.astro`, `body.v2-body` and the theme toggle are gone, and production is Dokploy, not Cloudflare Pages. Where they disagree with the code, the code is right. KA0002 fixes them.
+- `CLAUDE.md` `## v2 redesign track` and `## Struktura`, `README.md` and `project-plan.md` are partly stale: v2 already lives at `/` (commit `6e1b55e`), `/v2`, `src/layouts/v2-layout.astro`, `body.v2-body` and the theme toggle are gone, and the host is Dokploy; Cloudflare Pages is not considered, and `wrangler.toml` is a leftover. Where they disagree with the code, the code is right. KA0002 fixes them.
 
 What follows is only what those files do not say.
 

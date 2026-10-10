@@ -23,7 +23,7 @@ Does the branch do what its ticket asks, with every check below green, without b
 - The branch breaks a rule in `CLAUDE.md` `## Don't` (the `/v2` and v2-layout wording there is stale; the rule behind it still holds).
 - The diff adds an em-dash (U+2014) anywhere: copy, docs, comments, generated text.
 - The diff breaks a line of `spec/vision.md` `## What stays true`: adds cookies or a third-party tracker, English copy, a light theme, motion that ignores `prefers-reduced-motion`, or content that needs JavaScript to show.
-- The diff brings in something `spec/vision.md` `## Not the goal` names: Tailwind, an adapter other than the Node one or anything rendered on demand (`prerender = false`) besides the lead-store API route, a CMS, React or another islands framework, always-on foreground animation.
+- The diff brings in something `spec/vision.md` `## Not the goal` names: Tailwind, an adapter other than the Node one or anything rendered on demand (`prerender = false`) besides the lead-store API route, a CMS, React or another islands framework, always-on foreground animation, Cloudflare Pages or D1 config.
 
 ## How code here should look
 
