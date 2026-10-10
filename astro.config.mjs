@@ -21,7 +21,6 @@ export default defineConfig({
         "@/styles": r("./src/styles"),
         "@/data": r("./src/data"),
         "@/content": r("./src/content"),
-        "@/stores": r("./src/stores"),
         "@/assets": r("./src/assets"),
       },
     },
