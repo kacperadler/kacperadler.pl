@@ -17,6 +17,7 @@ Both configs map `@/stores` to `src/stores`, which does not exist (nanostores wa
 No dead path alias: `@/stores` goes from the configs until a store exists.
 
 - Kind: cleanup
+- Model: haiku
 
 Evidence:
 - `tsconfig.json:13`, `astro.config.mjs:24`
@@ -24,14 +25,15 @@ Evidence:
 
 ## Done means
 
-- The fix, with a test that proves it: remove the alias from both files; `project-plan.md` Faza 0 lists it as history and stays as it is.
-- `npm test` and `npm run check` pass. The structure test holds.
+- `@/stores` is gone from `tsconfig.json` and `astro.config.mjs`; nothing imports it; `project-plan.md` stays as it is.
+- `bun run lint`, `bun run check`, `bunx prettier --check "**/*.astro"`, `bun run build` and `bun run test:e2e` pass.
 
 ## Scope
 
 In:
-- remove the alias from both files; `project-plan.md` Faza 0 lists it as history and stays as it is.
+- `tsconfig.json`, `astro.config.mjs`.
 
 ## Decisions
 
 - 2026-10-10: Source: F5 of KA0002
+- 2026-10-10: The human approved it.

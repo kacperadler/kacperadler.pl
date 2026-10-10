@@ -19,9 +19,9 @@
   {
     "id": "KA0003",
     "title": "Update dependencies, Astro to the newest release",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0003-update-dependencies-astro-to-the-newest-release/ticket.md",
-    "updated": "2026-10-10T12:39:30.979Z"
+    "updated": "2026-10-10T12:49:38.226Z"
   },
   {
     "id": "KA0004",
@@ -64,9 +64,9 @@
   {
     "id": "KA0009",
     "title": "The privacy policy says the site stores a theme preference in `localStorage`",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0009-the-privacy-policy-says-the-site-stores-a-theme-preference-in-localstorage/ticket.md",
-    "updated": "2026-10-10T12:43:01.972Z"
+    "updated": "2026-10-10T12:49:52.153Z"
   },
   {
     "id": "KA0010",
@@ -85,8 +85,8 @@
   {
     "id": "KA0012",
     "title": "`@/stores` path alias with no `src/stores`",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0012-stores-path-alias-with-no-src-stores/ticket.md",
-    "updated": "2026-10-10T12:43:01.975Z"
+    "updated": "2026-10-10T12:49:52.353Z"
   }
 ]

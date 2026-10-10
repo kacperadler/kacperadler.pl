@@ -24,14 +24,15 @@ Evidence:
 
 ## Done means
 
-- The fix, with a test that proves it: remove the `localStorage` paragraphs from the privacy policy (the site stores nothing in the browser), drop `localStorage` from the terms' technical requirements, and bump `lastUpdated` on both; copy commits per page.
-- `npm test` and `npm run check` pass. The structure test holds.
+- The privacy policy no longer says the site stores a theme (or anything else) in `localStorage`; the terms no longer require `localStorage`; `lastUpdated` bumped on both; `grep -rn 'localStorage\|ka:theme' src/pages` finds nothing; no em-dash added; one `copy(...)` commit per page.
+- `bun run lint`, `bun run check`, `bunx prettier --check "**/*.astro"`, `bun run build` and `bun run test:e2e` pass.
 
 ## Scope
 
 In:
-- remove the `localStorage` paragraphs from the privacy policy (the site stores nothing in the browser), drop `localStorage` from the terms' technical requirements, and bump `lastUpdated` on both; copy commits per page.
+- `src/pages/polityka-prywatnosci.md`, `src/pages/regulamin.md`.
 
 ## Decisions
 
 - 2026-10-10: Source: F2 of KA0002
+- 2026-10-10: The human approved it.
