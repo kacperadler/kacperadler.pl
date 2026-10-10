@@ -40,3 +40,4 @@ Out:
 - 2026-10-10: Source: F2 of KA0026 (the hero and status card present only a frontend engineer).
 - 2026-10-10: The human: "Inżynier oprogramowania" instead of developer; approved.
 - 2026-10-10: After KA0026, which also edits the hero.
+- 2026-10-10: The human: merge; the status card keeps "Frontend dev w ReX" (his actual title there).

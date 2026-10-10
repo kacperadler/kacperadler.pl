@@ -209,9 +209,9 @@
   {
     "id": "KA0028",
     "title": "Case studies in MDX: collection, list and page",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0028-case-studies-in-mdx-instead-of-placeholder-projects/ticket.md",
-    "updated": "2026-10-10T15:10:35.624Z"
+    "updated": "2026-10-10T15:12:18.298Z"
   },
   {
     "id": "KA0029",
@@ -286,9 +286,9 @@
   {
     "id": "KA0036",
     "title": "Kacper is a software engineer, not a frontend engineer",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0036-kacper-is-a-software-engineer-not-a-frontend-engineer/ticket.md",
-    "updated": "2026-10-10T14:49:11.508Z",
+    "updated": "2026-10-10T15:15:50.959Z",
     "after": [
       "KA0026"
     ]
@@ -387,9 +387,9 @@
   {
     "id": "KA0047",
     "title": "review.md still says package.json has no test script",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0047-review-md-still-says-package-json-has-no-test-script/ticket.md",
-    "updated": "2026-10-10T15:11:35.166Z"
+    "updated": "2026-10-10T15:15:59.426Z"
   },
   {
     "id": "KA0048",
