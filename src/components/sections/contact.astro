@@ -10,13 +10,18 @@ import { siteConfig } from "@/data/site-config";
       <p class="eyebrow eyebrow-section">Kontakt</p>
       <h2>Porozmawiajmy o&nbsp;Twoim <em>pomyśle</em>.</h2>
       <p class="section-lede">
-        Napisz krótko: co budujesz, w jakim terminie i co Cię blokuje. Odpowiem w ciągu 24 godzin.
+        Napisz krótko: co budujesz, w jakim terminie i co Cię blokuje. Odpowiem
+        w ciągu 24 godzin.
       </p>
     </header>
 
     <div class="contact-grid">
       <div class="contact-links">
-        <a class="v2-contact-link" data-spotlight href={`mailto:${siteConfig.email}`}>
+        <a
+          class="v2-contact-link"
+          data-spotlight
+          href={`mailto:${siteConfig.email}`}
+        >
           <Icon aria-hidden="true" class="v2-contact-icon" name="lucide:mail" />
           <span class="v2-contact-label">Email</span>
           <span class="v2-contact-value">{siteConfig.email}</span>
@@ -28,7 +33,11 @@ import { siteConfig } from "@/data/site-config";
           rel="noopener"
           target="_blank"
         >
-          <Icon aria-hidden="true" class="v2-contact-icon" name="lucide:linkedin" />
+          <Icon
+            aria-hidden="true"
+            class="v2-contact-icon"
+            name="lucide:linkedin"
+          />
           <span class="v2-contact-label">LinkedIn</span>
           <span class="v2-contact-value">/in/kacperadler</span>
         </a>

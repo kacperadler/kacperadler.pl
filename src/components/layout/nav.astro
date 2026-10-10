@@ -6,15 +6,21 @@ import { siteConfig } from "@/data/site-config";
 ---
 
 <nav aria-label="Główna nawigacja" class="nav">
-  <a aria-label={`${siteConfig.name} - Strona główna`} class="brand" href="/#top">
+  <a
+    aria-label={`${siteConfig.name} - Strona główna`}
+    class="brand"
+    href="/#top"
+  >
     <span aria-hidden="true" class="mark">k</span>
     <span><b>Kacper</b> <em>Adler</em></span>
   </a>
 
   <div class="nav-links">
-    {primaryNav.map((link) => <a data-nav-link href={link.href}>
-      {link.label}
-    </a>)}
+    {primaryNav.map((link) => (
+      <a data-nav-link href={link.href}>
+        {link.label}
+      </a>
+    ))}
   </div>
 
   <div class="nav-tail">

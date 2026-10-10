@@ -37,10 +37,12 @@ const projectTypes: readonly ProjectType[] = [
     <div class="field" data-field="type">
       <span class="field-label">Typ projektu</span>
       <div aria-label="Typ projektu" class="radios" role="radiogroup">
-        {projectTypes.map((opt) => <label class="radio">
-          <input name="type" type="radio" value={opt.value} />
-          <span>{opt.label}</span>
-        </label>)}
+        {projectTypes.map((opt) => (
+          <label class="radio">
+            <input name="type" type="radio" value={opt.value} />
+            <span>{opt.label}</span>
+          </label>
+        ))}
       </div>
       <span class="err">Wybierz typ projektu.</span>
     </div>
@@ -64,7 +66,13 @@ const projectTypes: readonly ProjectType[] = [
     -->
     <div aria-hidden="true" class="hp">
       <label for="hp-website">Strona WWW (zostaw puste)</label>
-      <input autocomplete="off" id="hp-website" name="website" tabindex="-1" type="text" />
+      <input
+        autocomplete="off"
+        id="hp-website"
+        name="website"
+        tabindex="-1"
+        type="text"
+      >
     </div>
 
     <div class="form-error" data-form-error role="alert">
@@ -86,7 +94,12 @@ const projectTypes: readonly ProjectType[] = [
     </div>
   </form>
 
-  <div aria-live="polite" class="form-success-card" data-form-success role="status">
+  <div
+    aria-live="polite"
+    class="form-success-card"
+    data-form-success
+    role="status"
+  >
     <div aria-hidden="true" class="success-mark">
       <Icon name="lucide:check" />
     </div>

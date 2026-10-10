@@ -37,3 +37,5 @@ Out:
 ## Decisions
 
 - 2026-10-10: The human: focus on developing KA first; remove `.claude`, `.vscode`, `.zed`; with Biome, Prettier is not needed; look over the repo for what to clean and what to keep; drop `project-plan.md`, turn what is left into tickets, and improve `README.md`.
+- 2026-10-10: The human: delete .editorconfig (F3); the coordinator folds F1, F2, F4 into this branch too.
+- 2026-10-10: The human: merge after PASS.

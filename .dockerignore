@@ -17,19 +17,23 @@ blob-report/
 .github/
 .gitignore
 
-# IDE / OS noise
+# Editor and agent settings (gitignored, may sit in a local checkout)
 .vscode/
+.zed/
+.claude/
 .idea/
 .DS_Store
 
-# Tooling that doesn't need to be in the build context
+# Tooling and harness files that don't need to be in the build context
 .husky/
-.claude/
+.agents/
+spec/
 
 # Logs and env
 *.log
 .env
 .env.*
 
-# Docs (AGENTS.md, README, project-plan.md aren't part of the build)
+# Docs at the root (AGENTS.md, README, DESIGN.md, ...) aren't part of the
+# build. Root-only on purpose: src/pages/*.md are pages.
 *.md

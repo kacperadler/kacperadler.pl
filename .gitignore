@@ -26,9 +26,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
-# jetbrains setting folder
+# editor and agent settings - personal, not part of the repo
 .idea/
-
-# Claude Code - personal session allowlist (project settings.json is committed)
-.claude/settings.local.json
+.vscode/
+.zed/
+.claude/
 .h/

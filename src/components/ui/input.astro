@@ -12,7 +12,7 @@ type Props = HTMLAttributes<"input">;
 const { class: extraClass, ...rest } = Astro.props;
 ---
 
-<input class:list={["v2-input", extraClass]} {...rest} />
+<input class:list={["v2-input", extraClass]} {...rest}>
 
 <style>
   .v2-input {
