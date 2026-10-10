@@ -16,7 +16,8 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 - **Vanilla CSS** + scoped `<style>` w `.astro`. **Dark-only**: `color-scheme: dark` na `:root` w `src/styles/tokens.css`, jedna ciemna wartość na kolor (bez par `light-dark()`). Jeden akcent (navy). **Bez Tailwinda** - design system na customowych tokenach (zob. `tokens.css` + `DESIGN.md`).
 - **Ultracite (Biome)** - lint + format dla TS/JS/JSON/CSS
 - **Prettier + prettier-plugin-astro** - formatowanie `*.astro` (Biome je lintuje, ale nie formatuje). `astroCompressHTML` w `.prettierrc` musi zgadzać się z `compressHTML` w `astro.config.mjs`, inaczej format zmienia render.
-- **Content Collections** (Zod, `src/content.config.ts`) dla services / projects / experience / blog
+- **Content Collections** (Zod, `src/content.config.ts`) dla services / experience (JSON) oraz caseStudies / blog (MDX)
+- **Case studies** (`@astrojs/mdx`) - `src/content/case-studies/<id>.mdx`, strona `/realizacje/<slug>/` (`src/pages/realizacje/[slug].astro`), opcjonalne pole `experience` linkuje wpis w "Z kim pracowałem" (jeden case study na wpis, nieistniejący wpis wywala build). Build e2e (`E2E_FIXTURES=1`, ustawiane w `playwright.config.ts`) czyta `tests/fixtures/case-studies`, dopóki `src/content/case-studies` nie ma żadnego `.mdx`.
 - **Markdown pages** dla treści statycznej (polityka prywatności, regulamin) - `src/pages/*.md` z `layout: "@/layouts/legal-layout.astro"`
 
 ### Integracje runtime
@@ -99,17 +100,19 @@ Source of truth wizualny: `DESIGN.md`. Stan w kodzie:
 ```
 src/
 ├── components/{ui,layout,sections,contact}/   # kebab-case
-├── content/{services,projects,experience,blog}/  # JSON; blog pusty
+├── content/{services,experience}/  # JSON
+├── content/{case-studies,blog}/    # MDX; blog pusty
 ├── content.config.ts      # Zod schemas collections
 ├── data/                  # site-config, navigation, process
 ├── layouts/               # base-layout, legal-layout
-├── pages/                 # index, 404, *.md (legal), og-default.png.ts, llms.txt.ts, llms-full.txt.ts
+├── pages/                 # index, 404, *.md (legal), realizacje/[slug], og-default.png.ts, llms.txt.ts, llms-full.txt.ts
 ├── scripts/               # vanilla TS: contact-form, mobile-sheet, nav-active, nav-scroll, spotlight
 ├── styles/                # tokens.css, global.css
-├── lib/                   # seo, dates
+├── lib/                   # seo, dates, case-studies
 └── assets/                # me.jpg (OG), experience/ logotypy, logotyp_fundusze_eu.png
 
-tests/e2e/       # Playwright specs (a11y, contact-form, mobile-sheet, nav-active, skip-link)
+tests/e2e/       # Playwright specs (a11y, case-studies, contact-form, mobile-sheet, nav-active, services-grid, skip-link)
+tests/fixtures/  # przykładowy case study dla buildu e2e
 spec/            # vision.md + tickets (spec/features/<id>/)
 .agents/harness/ # kryteria review / audit / retro + styleguide
 Dockerfile, nginx.conf  # produkcja na Dokploy

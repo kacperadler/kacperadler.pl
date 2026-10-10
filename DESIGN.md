@@ -193,6 +193,10 @@ Used in Experience to render the `Współpracowałem z` cards. Grid `auto-fill, 
 - Logo image at the top (grayscale + opacity 0.6 idle, full color + opacity 1 on hover - uniform wall feel that rewards engagement).
 - Company name (`display` 18px), role (mono blue 12px), description (sans 14px).
 - Optional `badge` field on the data entry overrides the default year-range pill - used for engagements like `"Zlecenie"`. Filled `blue-wash` styling, same vocab as `.status-pill` and the current-role `teraz` pill.
+- An entry with a case study (`experience` field on a `caseStudies` entry) ends with a `Zobacz realizację` link: mono 12px `blue`, `lucide:arrow-right` that shifts 3px right on hover, underline on hover; the company name is in its accessible name. Entries without one render without it.
+
+### Case study page
+`/realizacje/<slug>/`: same 70ch column as the legal pages. Header: `blue` eyebrow `Realizacja`, display h1 (company), summary lede (sans 18px), then a facts list (role, period, stack chips) between two `v2-line` rules. The MDX body uses the shared `.prose` styles from `global.css` (also used by the legal pages). Closes with a primary `Napisz do mnie` and a ghost `Wszystkie współprace`.
 
 ### Buttons
 - **Primary** - `ink` background, `paper-2` text, `sm` radius. **Hover:** background darkens 12% toward black + a 4px `--blue-wash` ring (the same ring used in `.active`, so hover previews the "you arrived" state). The button does not lift - it stays planted, glass-style. Arrow icon (`lucide:arrow-right` via `icon` prop) cycles through a translateX + opacity:0 teleport on hover so it appears to "fly through" rather than reverse. All button transitions are unified at `0.25s ease`. One primary per screen.
