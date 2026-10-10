@@ -363,9 +363,9 @@
   {
     "id": "KA0044",
     "title": "Design proposal: minimal brutalism",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0044-design-proposal-minimal-brutalism/ticket.md",
-    "updated": "2026-10-10T15:03:31.599Z",
+    "updated": "2026-10-10T17:21:15.927Z",
     "after": [
       "KA0038"
     ]
@@ -450,9 +450,9 @@
   {
     "id": "KA0056",
     "title": "The axe check runs only on the baseline proposal",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0056-the-axe-check-runs-only-on-the-baseline-proposal/ticket.md",
-    "updated": "2026-10-10T17:14:07.114Z"
+    "updated": "2026-10-10T17:21:20.787Z"
   },
   {
     "id": "KA0057",

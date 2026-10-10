@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F1 of KA0039
+- 2026-10-10: Dropped by the coordinator: KA0040 (9ae67a7) runs axe on every proposal folder.
