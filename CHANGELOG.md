@@ -17,6 +17,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0039 Design proposal: minimal (354a688)
 - KA0040 Design proposal: brutalist (9ae67a7)
 - KA0041 Design proposal: modernist (c8267fd)
+- KA0043 Design proposal: professional (86692e8)
 
 ### Fixed
 

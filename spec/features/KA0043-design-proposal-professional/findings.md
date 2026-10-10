@@ -13,7 +13,7 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/components/contact/contact-form.astro` (`.form-error`, `.contact-form-wrap[data-state="error-submit"] .form-error { display: flex }`)
 - What: the banner is a flex row whose children are the icon, a bare text node, the `<a>` with the email and the trailing `.`; the text and the link become separate flex items with the 10px gap between them. On `/` at 1440px, with `data-state="error-submit"` set on `[data-contact-wrap]`, the link sits 468px from the banner's left edge as its own column and the period stands apart after a gap ("kontakt@kacperadler.pl ."); in a narrower form (the professional proposal's two-column contact at 1440px) the sentence wraps inside its column while the email stays in another.
 - Suggestion: wrap the message (text, link and period) in one `<span>` (or `<p>`) so it is a single flex item next to the icon. Out: the banner's look.
-- Status: open
+- Status: ticket KA0062
 
 ## F2. The header brand wraps to two lines on a 390px phone
 
@@ -22,4 +22,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/components/layout/nav.astro` (`.brand`, `.nav-tail`)
 - What: at 390px the brand, the "Porozmawiajmy" CTA and the menu button do not fit one row, so "Kacper" and "Adler" break onto two lines; `.nav .brand` measures 46.5px tall on both `/ui/proposal/baseline` and `/ui/proposal/professional` (one line would be about 28px).
 - Suggestion: keep the brand on one line (`white-space: nowrap`) and give the room elsewhere on narrow screens, for example a smaller CTA padding or the CTA only in the mobile sheet below a breakpoint. Out: the brand mark itself.
-- Status: open
+- Status: ticket KA0063

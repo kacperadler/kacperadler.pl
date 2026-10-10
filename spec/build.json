@@ -343,9 +343,9 @@
   {
     "id": "KA0042",
     "title": "Design proposal: computer",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0042-design-proposal-computer/ticket.md",
-    "updated": "2026-10-10T17:14:23.061Z",
+    "updated": "2026-10-10T17:29:50.596Z",
     "after": [
       "KA0038"
     ]
@@ -353,9 +353,9 @@
   {
     "id": "KA0043",
     "title": "Design proposal: professional",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0043-design-proposal-professional/ticket.md",
-    "updated": "2026-10-10T17:15:51.221Z",
+    "updated": "2026-10-10T17:32:50.733Z",
     "after": [
       "KA0038"
     ]
@@ -488,5 +488,19 @@
     "status": "dropped",
     "path": "spec/features/KA0061-axe-runs-only-on-the-baseline-proposal/ticket.md",
     "updated": "2026-10-10T17:15:41.214Z"
+  },
+  {
+    "id": "KA0062",
+    "title": "The send-error banner splits its sentence into flex columns",
+    "status": "planning",
+    "path": "spec/features/KA0062-the-send-error-banner-splits-its-sentence-into-flex-columns/ticket.md",
+    "updated": "2026-10-10T17:32:50.729Z"
+  },
+  {
+    "id": "KA0063",
+    "title": "The header brand wraps to two lines on a 390px phone",
+    "status": "planning",
+    "path": "spec/features/KA0063-the-header-brand-wraps-to-two-lines-on-a-390px-phone/ticket.md",
+    "updated": "2026-10-10T17:32:50.732Z"
   }
 ]
