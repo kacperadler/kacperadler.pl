@@ -4,13 +4,13 @@ The conventions live in the repository; read them there, this file does not copy
 
 - `AGENTS.md`: `## Stack` (with `### Integracje runtime`), `## Konwencje`, `## Don't`, `## Komendy`, `## Hosting`, `## Wygląd`, `## Struktura`.
 - `DESIGN.md`: the tokens in the frontmatter, `## Components`, `## Motion`, `## Do's and Don'ts`. Read it before touching anything visual.
-- `project-plan.md` is history: its phases are closed and its plan sections describe what was intended then. Where a doc disagrees with the code, the code is right.
+- Where a doc disagrees with the code, the code is right.
 
 What follows is only what those files do not say.
 
 ## Shape
 
-- One ticket is the scope of a branch. The phases in `project-plan.md` are history, not a limit.
+- One ticket is the scope of a branch.
 - Copy changes go in their own `copy(<section>): ...` commits, one section per commit, apart from code changes.
 - A change in behaviour comes with a new or updated spec in `tests/e2e/`.
 - A change to tokens (`src/styles/tokens.css`), the brand mark or the palette updates `DESIGN.md` in the same branch.
@@ -33,4 +33,4 @@ What follows is only what those files do not say.
 - Em-dashes (U+2014), anywhere: copy, docs, comments, generated text. Never add one.
 - English user-facing copy.
 - Cookies, third-party scripts or trackers.
-- Reviving the theming machinery (`data-theme`, a theme toggle, light values) that `project-plan.md` still describes.
+- Reviving the theming machinery (`data-theme`, a theme toggle, light values).

@@ -18,7 +18,7 @@ export const siteConfig = {
   nocodbFormUrl:
     "https://crm.kacperadler.pl/api/v1/db/public/shared-view/3f05fcfa-3df7-4e2a-9eb1-4c9538c14c12/rows",
   ogImage: "/og-default.png",
-  role: "Frontend Engineer",
+  role: "Inżynier oprogramowania",
   social: {
     github: "https://github.com/kacperadler",
     linkedin: "https://www.linkedin.com/in/kacperadler/",

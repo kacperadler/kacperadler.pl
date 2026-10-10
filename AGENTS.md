@@ -6,7 +6,6 @@ Portfolio Kacpra Adlera - Frontend Engineer (~5 lat, React/TS). Produkcyjnie pod
 - **Kryteria review, styleguide, audyt: `.agents/harness/criteria/`.**
 - **Jednostka pracy to ticket (`spec/features/<id>/ticket.md`)** - jego Scope i Decisions wyznaczają granice zmiany.
 - **Design system: `DESIGN.md`** - frontmatter z tokenami + proza z rationale, bazowa lektura przy dotykaniu wyglądu.
-- `project-plan.md` to historia projektu (fazy 0-8), nie plan do realizacji.
 
 Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 
@@ -15,9 +14,12 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 - **Astro 7** (TypeScript strict, output static, `<ClientRouter />` z `astro:transitions`; `compressHTML: true` - HTML-aware whitespace z Astro 6, nie domyślne `'jsx'`)
 - **Vanilla CSS** + scoped `<style>` w `.astro`. **Dark-only**: `color-scheme: dark` na `:root` w `src/styles/tokens.css`, jedna ciemna wartość na kolor (bez par `light-dark()`). Jeden akcent (navy). **Bez Tailwinda** - design system na customowych tokenach (zob. `tokens.css` + `DESIGN.md`).
 - **Ultracite (Biome)** - lint + format dla TS/JS/JSON/CSS i `.astro` (`html.experimentalFullSupportEnabled` w `biome.jsonc`: Biome formatuje cały plik, razem z markupem)
-- **Content Collections** (Zod, `src/content.config.ts`) dla services / experience (JSON) oraz caseStudies / blog (MDX)
+- **Content Collections** (Zod z `astro/zod`, `src/content.config.ts`) dla services / experience (JSON) oraz caseStudies / blog (MDX)
 - **Case studies** (`@astrojs/mdx`) - `src/content/case-studies/<id>.mdx`, strona `/realizacje/<slug>/` (`src/pages/realizacje/[slug].astro`), lista `/realizacje/` (`src/pages/realizacje/[...index].astro`) i pozycja "Realizacje" w menu (`primaryNav()` w `src/data/navigation.ts`) - obie budowane tylko, gdy istnieje choć jeden case study, opcjonalne pole `experience` linkuje wpis w "Z kim pracowałem" (jeden case study na wpis, nieistniejący wpis wywala build). Build e2e (`E2E_FIXTURES=1`, ustawiane w `playwright.config.ts`) czyta `tests/fixtures/case-studies`, dopóki `src/content/case-studies` nie ma żadnego `.mdx`; ten sam run buduje też `dist-no-case-studies/` z `E2E_FIXTURES=none` (pusty `tests/fixtures/no-case-studies`) dla stanu bez case studies.
 - **Markdown pages** dla treści statycznej (polityka prywatności, regulamin) - `src/pages/*.md` z `layout: "@/layouts/legal-layout.astro"`
+- **Ikony**: `astro-icon` + `@iconify-json/lucide` (`<Icon name="lucide:..." />`), nie inline SVG.
+- **Fonty**: self-hosted Geist + Geist Mono (variable woff2 w `public/fonts`, `font-display: swap`, preload w `base-head.astro`) - bez zewnętrznych CDN.
+- **SEO**: `@astrojs/sitemap` + `public/robots.txt`; JSON-LD (`Person`, `WebSite`, `ProfessionalService`) z `src/lib/seo.ts` w `base-head.astro`; OG image (1200×630) generowany w buildzie przez sharp z SVG (`src/pages/og-default.png.ts`).
 
 ### Integracje runtime
 
@@ -30,6 +32,9 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 - **Symbole w plikach**: camelCase dla zmiennych/funkcji, PascalCase dla typów.
 - **Path aliasy**: `@/components`, `@/layouts`, `@/lib`, `@/scripts`, `@/styles`, `@/data`, `@/content`, `@/assets`.
 - **Active section**: IntersectionObserver, **nie** scroll listener.
+- **Nav scroll**: `nav-scroll.ts` przełącza `.scrolled` na `[data-nav-wrap]` po >12px, rAF-throttled.
+- **A11y baseline**: skip link (`.skip-link` → `#top`), globalny `:focus-visible` outline, `aria-current="location"` na aktywnym linku nav, `aria-busy` na submit i `aria-live="polite"` na success formularza, nagłówki liniowo h1 → h2 → h3. Mobile sheet to modal: reszta `<body>` dostaje `inert`, Tab zawija się w sheecie, Esc / X / link zamykają i oddają fokus triggerowi, scroll body zablokowany.
+- **Email**: zwykły `mailto:` z `siteConfig.email`, bez obfuskacji.
 - **Form submission**: state machine na wrapperze (`data-contact-wrap[data-state]`) - `idle | submitting | error-validation | error-submit | success`. Submit handler w **capture phase** (`addEventListener('submit', ..., true)`) inaczej ClientRouter rezetuje state przed `setTimeout`.
 - **`prefers-reduced-motion`** szanowany w każdej animowanej tranzycji.
 - **Tracking custom events**: `window.umami?.track(name, data)` - używaj optional chaining, w dev `umami` nie istnieje.
@@ -73,7 +78,7 @@ Pre-commit hook: `lint-staged` (ultracite fix dla TS/JS/JSON/CSS/`.astro`) + `as
 **Dokploy** (self-hosted, własny serwer). Cloudflare Pages nie jest rozważany.
 
 - Build type: **Dockerfile** w repo (multi-stage `oven/bun:1.4.3-alpine` → `nginx:1.30-alpine`)
-- `nginx.conf` w repo: gzip, security headers (X-Frame-Options/X-Content-Type-Options/Referrer-Policy/Permissions-Policy), cache rules (immutable dla `/_astro/` + fontów, 30d dla obrazków, must-revalidate dla HTML). Headers przez `map`, NIE per-`location` - `add_header` nie dziedziczy.
+- `nginx.conf` w repo: gzip, security headers (X-Frame-Options/X-Content-Type-Options/Referrer-Policy/Permissions-Policy), cache rules (immutable dla `/_astro/` + fontów, 30d dla obrazków, must-revalidate dla HTML). Headers przez `map`, NIE per-`location` - `add_header` nie dziedziczy. Bez SPA fallbacku: `try_files $uri $uri/ $uri.html`, a nieznany URI dostaje `error_page 404 /404.html`.
 - Container port: **80**, Traefik-routed przez Dokploy z Let's Encrypt cert
 - W build stage `apk add fontconfig ttf-dejavu` - librsvg w `og-default.png.ts` potrzebuje fontu z polskimi diakrytykami, inaczej tofu boxes
 - Lokalny test (obowiązkowy przy zmianie `Dockerfile`, `nginx.conf` lub `og-default.png.ts`): `docker build -t kacperadler-pl-test . && docker run --rm -p 8089:80 kacperadler-pl-test`
@@ -116,5 +121,4 @@ spec/            # vision.md + tickets (spec/features/<id>/)
 Dockerfile, nginx.conf  # produkcja na Dokploy
 DESIGN.md        # design system
 AGENTS.md        # ten plik
-project-plan.md  # historia projektu (fazy)
 ```
