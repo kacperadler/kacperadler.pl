@@ -109,7 +109,7 @@ const classes = ["btn", `btn-${variant}`, size === "sm" && "btn-sm", extraClass]
 
   .btn-primary {
     padding: 14px 22px;
-    color: light-dark(var(--paper), var(--paper-2));
+    color: var(--paper-2);
     background: var(--ink);
   }
 
@@ -128,7 +128,7 @@ const classes = ["btn", `btn-${variant}`, size === "sm" && "btn-sm", extraClass]
   .btn-ghost:hover {
     background: color-mix(in srgb, var(--v2-panel) 55%, transparent);
     border-color: color-mix(in srgb, var(--v2-line) 60%, transparent);
-    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.05));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
     -webkit-backdrop-filter: saturate(160%) blur(20px);
     backdrop-filter: saturate(160%) blur(20px);
   }

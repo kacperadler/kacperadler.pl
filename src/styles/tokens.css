@@ -1,7 +1,5 @@
-/* Design tokens. Site is dark-only after the v2 migration: `color-scheme: dark`
- * on :root locks every `light-dark()` call to its dark value, so the light
- * values below act as documentation of what the palette would look like in
- * light mode but never render. Future cleanup can drop the pairs entirely. */
+/* Design tokens. The site is dark-only (`color-scheme: dark` on :root), so
+ * every color below has a single dark value. */
 
 @font-face {
   font-family: "Geist";
@@ -20,23 +18,23 @@
 }
 
 :root {
-  --ink: light-dark(#141416, #ece7dc);
-  --ink-2: light-dark(#2a2a2f, #c8c3b8);
-  --muted: light-dark(#6b6b74, #9d9c95);
-  --line: light-dark(rgba(20, 20, 22, 0.12), rgba(236, 231, 220, 0.14));
-  --line-2: light-dark(rgba(20, 20, 22, 0.06), rgba(236, 231, 220, 0.07));
+  --ink: #ece7dc;
+  --ink-2: #c8c3b8;
+  --muted: #9d9c95;
+  --line: rgba(236, 231, 220, 0.14);
+  --line-2: rgba(236, 231, 220, 0.07);
 
-  /* Surface tokens reused by the v1 contact form via CSS variable inheritance.
+  /* Surface tokens reused by the contact form via CSS variable inheritance.
    * --paper is the input surface; --card is the form card bg (overridden to
    * --v2-panel on .contact-form-host); --paper-2 is the button text color. */
-  --paper: light-dark(#f6f3ec, #0f1116);
-  --paper-2: light-dark(#efeadd, #161922);
-  --card: light-dark(#ffffff, #171a22);
+  --paper: #0f1116;
+  --paper-2: #161922;
+  --card: #171a22;
 
   /* Brand accent - the only chromatic color in the palette. */
-  --blue: light-dark(#1e3a5f, #8eaed8);
-  --blue-2: light-dark(#2a4d7f, #b4c8e6);
-  --blue-wash: light-dark(rgba(30, 58, 95, 0.08), rgba(142, 174, 216, 0.1));
+  --blue: #8eaed8;
+  --blue-2: #b4c8e6;
+  --blue-wash: rgba(142, 174, 216, 0.1);
 
   /* Typography stacks. */
   --display: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
@@ -48,11 +46,11 @@
   /* Surface palette: --v2-bg is the substrate behind everything, --v2-panel
    * sits one step lighter so the panel radius reveals the substrate between
    * blocks. --v2-grid is the dot-grid tint painted on top of the substrate. */
-  --v2-bg: light-dark(#ebe7df, #0a0c10);
-  --v2-panel: light-dark(#f6f3ec, #14171c);
-  --v2-panel-elevated: light-dark(#fbf9f5, #1a1e26);
-  --v2-grid: light-dark(rgba(20, 20, 22, 0.05), rgba(236, 231, 220, 0.045));
-  --v2-line: light-dark(rgba(20, 20, 22, 0.1), rgba(236, 231, 220, 0.1));
+  --v2-bg: #0a0c10;
+  --v2-panel: #14171c;
+  --v2-panel-elevated: #1a1e26;
+  --v2-grid: rgba(236, 231, 220, 0.045);
+  --v2-line: rgba(236, 231, 220, 0.1);
 
   /* Radius scale - tweak any of these and every component picks it up. */
   --v2-radius-xs: 6px;

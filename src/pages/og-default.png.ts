@@ -15,8 +15,8 @@ import { siteConfig } from "@/data/site-config";
 
 export const prerender = true;
 
-/* v2 dark-mode palette. Lifted from tokens.css light-dark() dark
- * sides; v2 is dark-only so OG follows the same default. */
+/* Dark palette lifted from tokens.css; the site is dark-only, so OG
+ * follows the same colors. */
 const BG = "#0a0c10";
 const INK = "#ece7dc";
 const INK_2 = "#c8c3b8";

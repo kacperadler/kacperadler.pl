@@ -13,7 +13,7 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 ## Stack
 
 - **Astro 7** (TypeScript strict, output static, `<ClientRouter />` z `astro:transitions`; `compressHTML: true` - HTML-aware whitespace z Astro 6, nie domyślne `'jsx'`)
-- **Vanilla CSS** + scoped `<style>` w `.astro`. **Dark-only**: `color-scheme: dark` na `:root` w `src/styles/tokens.css` blokuje każde `light-dark()` na wartości ciemnej (jasne wartości w parach są martwe, nie renderują się). Jeden akcent (navy). **Bez Tailwinda** - design system na customowych tokenach (zob. `tokens.css` + `DESIGN.md`).
+- **Vanilla CSS** + scoped `<style>` w `.astro`. **Dark-only**: `color-scheme: dark` na `:root` w `src/styles/tokens.css`, jedna ciemna wartość na kolor (bez par `light-dark()`). Jeden akcent (navy). **Bez Tailwinda** - design system na customowych tokenach (zob. `tokens.css` + `DESIGN.md`).
 - **Ultracite (Biome)** - lint + format dla TS/JS/JSON/CSS
 - **Prettier + prettier-plugin-astro** - formatowanie `*.astro` (Biome je lintuje, ale nie formatuje). `astroCompressHTML` w `.prettierrc` musi zgadzać się z `compressHTML` w `astro.config.mjs`, inaczej format zmienia render.
 - **Content Collections** (Zod, `src/content.config.ts`) dla services / projects / experience / blog
