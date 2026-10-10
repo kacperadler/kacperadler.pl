@@ -1,95 +1,250 @@
 # KA0068 - Plan
 
-- Job: 2026-10-10-plan-ticket-spec-feature-121bb851
-- Planned at: 38ef06ae69372f500420ffdf659ab81d5be6ea7d
+- Job: 2026-10-10-plan-ticket-spec-feature-3964c018
+- Planned at: 7f235168c1b88ee38fe11deffb5319f739c094b1
 
 ## Approach
-This builds a separate set of minimal brutalism components in `src/components/mb/` and shows them on a new dev-only page, `/ui/mb`. The look is taken from `src/styles/proposals/minimal-brutalism/proposal.css`: thin ink lines, no radius, no glass, no spotlight, heavy Geist headlines, Geist Mono labels, and a hard shadow only on the primary button and on the form while someone is typing in it. No production page, layout, `src/components/ui/`, `src/styles/` file or the proposal itself changes, so the built site stays byte-identical. I built twice on HEAD and `cmp` of `dist/index.html` matched, so before/after comparison is a valid check.
+Components and variants, for your ok before building. Variant and size names follow shadcn/ui's base docs (`ui.shadcn.com/docs/components/base/<name>`, read for every component below). The brutalist look comes from `proposal.css`.
 
-- **Tokens**: `src/components/mb/tokens.css` defines only the proposal's own words: `--mb-rule` (ink), `--mb-hair` (`--v2-line`), `--mb-shift` (4px), `--mb-snap` (`0.12s linear`) and `--mb-display` (Geist). They point at palette variables that already exist in `src/styles/tokens.css`, which stays untouched. Editing it would change the hash of the production CSS file and so the home HTML.
-- **Components**: one `.astro` file each, with scoped styles. Class names start with `mb-` so they never meet the global `.prose`, `.section-head`, `.eyebrow` and spotlight selectors in `global.css`. Props match `src/components/ui/` so KA0069 can swap imports. Forced states (`[data-state="hover"|"focus-visible"|"focus"]`, `.active`, `disabled`) sit next to the real `:hover`/`:focus`, as in `/ui`. Each component has its own `prefers-reduced-motion` block, on top of the global rule in `global.css`. The list:
-  - button: primary/ghost, md/sm, active, disabled, loading. The arrow nudges 3px; the arrow has `flex-shrink: 0`, as KA0058 asks.
-  - link: inline/nav/footer, plus `case` for "Zobacz realizację".
-  - badge (outline/filled, fills on cell hover), tag, status pill.
-  - cell and cell grid: cells share their 1px lines. Hover makes the cell lighter with a 3px blue top line, and nothing moves.
-  - input, textarea, radio, field. Field keeps the `data-field` / `data-invalid` hooks that `contact-form.ts` uses.
-  - section head: "01 /" label, headline left, lede right. The number is a CSS counter with empty alt text, as in the proposal.
-  - typography block: `mb-prose`, standalone. It does not depend on `prose.css` or the global `.prose`.
-- **Page frame**: the page sits on a solid substrate. Two hairlines at the container edges are drawn by fixed pseudo-elements, not by a background gradient, so axe can compute text contrast. The frame also holds:
-  - the skip link and the header (brand, nav links, small CTA, menu button);
-  - the footer and the mobile sheet, with the same data hooks as today (`data-nav-wrap`, `data-nav-cta`, `data-nav-link`, `id="mobile-sheet"`, `data-menu-open/close`, `data-sheet-link`);
-  - the existing `layout/eu-funding.astro`, used as is.
+- **button**
+  - Variants: default (solid blue, ink rule, hard shadow on hover), secondary (raised panel), outline (ink rule; today's ghost), ghost (no border, panel on hover), destructive (coral), link (ink text, blue underline).
+  - Sizes: xs 28px, sm 36px (header), default 44px (today's md), lg 52px, and the square icon-xs, icon-sm, icon, icon-lg.
+  - Extras: icon at the start or end, `href` renders an `<a>`.
+  - States: hover, focus-visible, active, disabled, loading (spinner and disabled; `data-state="submitting"` still works for `contact-form.ts`).
+- **spinner**: a lucide `loader-circle` sized by `1em`; three sizes on the page, and shown inside a button and a badge.
+- **badge**
+  - Variants: default (solid blue), secondary, outline (muted frame), destructive, ghost, link.
+  - Extras: icon start or end, spinner, as a link, and `fillOnCellHover` (process steps).
+- **alert**: default and destructive; icon, title, description, action.
+- **avatar**
+  - Sizes: sm, default, lg; square, image or initials.
+  - Extras: a badge (dot or icon), and a group with a "+N" count.
+- **separator**: horizontal and vertical, as a hairline.
+- **label**: default and disabled.
+- **checkbox**
+  - States: unchecked, checked, hover, focus-visible, disabled, invalid.
+  - Layouts: with a description, and a group.
+- **radio**
+  - Variants: default (square box) and choice (the chip the contact form uses today).
+  - States: checked, hover, focus-visible, disabled, invalid.
+- **input**: default, focus, disabled, invalid, file, required.
+- **textarea**: default, focus, disabled, invalid.
+- **field**
+  - Orientation: vertical, horizontal, responsive.
+  - Parts: label, description, error.
+  - States: invalid and disabled.
+  - Plus a field set with a legend (`legend` or `label` look) and a separator between fields.
+- **accordion**
+  - Variants: single (one item open at a time) and multiple; plain and bordered.
+  - States: open by default, disabled item.
+- **breadcrumb**: link, current page, chevron or slash separator, and a collapsed form with an ellipsis.
+- **pagination**: numbered (current page, previous and next with text, ellipsis) and icons only.
+- **card**
+  - Sizes: default and sm.
+  - Parts: header, title, description, action, content, footer, image.
+  - States: hover (lighter panel and a blue top rule; nothing moves).
+  - Plus the cell grid, where cells share their 1px rules.
+- **Not in shadcn, from the ticket and the proposal**
+  - link: inline, nav (hover, active), footer, case.
+  - tag and status pill.
+  - section head: "01 /", headline on the left, lede on the right.
+  - the typography block.
+  - the page frame: substrate with edge hairlines, skip link, header, footer, mobile sheet.
+- **Home sections**: hero, services, how I work, experience and contact (with the contact form in every state), built from the above.
 
-  I read "page frame" to include header, footer and sheet because KA0069 moves those onto mb (see Open questions).
-- **Home sections**: `src/components/mb/sections/` rebuilds hero (with the status card), services, how-i-work, experience and contact (with the contact form) from these components. They use the same data (`getCollection`, `processSteps`, `siteConfig`, `caseStudiesByExperience`), the same Polish copy and the same section ids, so KA0069 only changes imports.
-- **The `/ui/mb` page**: its own HTML document with `BaseHead` (noindex), `tokens.css`, `global.css` and the mb frame. It cannot use `BaseLayout`, which brings the old header, ribbons and glass. On the page:
-  - The home sections come first (the hero holds `#top`), then the catalogue: every component in every variant and state, and the contact form in each wrapper state (idle, submitting, error-validation, error-submit, success).
-  - Grids use `min(100%, …)` column minimums, so nothing scrolls sideways at 360px (the KA0066 bug).
-  - The page loads only `mobile-sheet.ts`, so the menu works at 360px. It does not load `contact-form.ts`: that script POSTs to the production NocoDB with no dev guard (`src/scripts/contact-form.ts:134`), so form states are forced instead of submitted.
-  - A small nav links to `/ui` and `/ui/proposal/minimal-brutalism` for comparison.
-- **Route**: one more `injectRoute` (`/ui/mb`) in the dev-only `uiCatalogue` integration in `astro.config.mjs`.
+**What changes.** A new folder `src/components/mb/` gets one `.astro` file per component, each with scoped plain CSS. There are no new dependencies: no React, Base UI, Tailwind or shadcn. They are shown on a new dev-only page, `/ui/mb`.
+
+- **Look.** From `proposal.css`: 1px ink rules, no radius, no glass, no spotlight, heavy Geist headlines, Geist Mono labels.
+  - The hard shadow (`--mb-shift`) is only on the default button and on the contact form while it is being filled in.
+  - Every state change is `--mb-snap` (0.12s linear). Accordions snap open, with no height animation.
+- **Tokens.** `src/components/mb/tokens.css` defines `--mb-rule`, `--mb-hair`, `--mb-shift`, `--mb-snap` and `--mb-display`, built only from palette variables already in `src/styles/tokens.css`. That file stays untouched, so the hash of the production CSS does not move.
+- **Prop shapes are shadcn's, not `src/components/ui/`'s**: `variant`/`size` replace `primary|ghost` and `md|sm`.
+  - KA0069 therefore swaps imports and renames a few props: primary → default, ghost → outline, sm stays sm, badge filled → default, card → card, radio → `variant="choice"`.
+  - Data hooks stay identical: `data-field`, `data-invalid`, `data-submit`, `data-nav-cta`, `data-nav-link`, `data-menu-open`/`data-menu-close`, `data-sheet-link`, `id="mobile-sheet"`.
+- **Composition.**
+  - shadcn's sub-components become Astro named slots, for example card slots `title`/`description`/`action`/`footer`/`image`, and alert slots `title`/`action`.
+  - Breadcrumb and pagination become data props: `items`, and `current`/`total`/`href`.
+  - Accordion is native `<details>`/`<summary>`, so it works without JavaScript. Single uses a shared `name` attribute; a disabled item renders its trigger as a plain row that cannot be focused.
+  - Checkbox and radio are native inputs with `appearance: none`.
+- **Forced states** (`[data-state="hover"|"focus-visible"|"focus"]`, `.active`, `disabled`) sit next to the real `:hover`/`:focus`, as in `/ui`. Class names start with `mb-`, so the global `.prose`, `.section-head`, `.eyebrow` and spotlight selectors in `global.css` never reach them. Each animated component has its own `prefers-reduced-motion` block.
+- **Page frame**: header, footer and mobile sheet are built here, so KA0069 only swaps imports. `layout/eu-funding.astro` is reused as is.
+- **Home sections** in `src/components/mb/sections/` use the same data (`getCollection`, `processSteps`, `siteConfig`, `caseStudiesByExperience`), the same Polish copy and the same section ids.
+- **`/ui/mb`** is its own HTML document: `BaseHead` with noindex, `tokens.css`, `global.css`, and the mb frame. It cannot use `BaseLayout`, which brings the old header, ribbons and glass.
+  - Order: home sections first (the hero holds `#top`), then the catalogue.
+  - It loads only `mobile-sheet.ts`, never `contact-form.ts`, which POSTs to the production NocoDB with no dev guard (`src/scripts/contact-form.ts:134`). Form states are forced, not submitted.
+- **Routing and links**
+  - `/ui` gets one link to `/ui/mb`.
+  - One more `injectRoute` goes in the dev-only `uiCatalogue` integration.
+- **Left alone**
+  - Every production page, `src/components/ui/`, `src/components/layout/`, `src/styles/`, the proposal, and every script.
+  - shadcn extras that need components outside the list: the breadcrumb dropdown (DropdownMenu), button groups, input groups, and the `rounded` example, which brutalism does not use.
 
 ## Not available directly
-- none
+- **Avatar fallback when the image fails to load.** Base UI's Avatar switches to the fallback at runtime when the image fails. A static Astro component has no such hook (checked in shadcn's avatar docs, "Composition" and "API Reference"; the Base UI root manages the image loading state).
+  - Option 1: decide at build time. With `src` it shows the image, without `src` it shows the initials. Local images go through `astro:assets`, which fails the build when the file is missing. Cost: none. Risk: a remote URL that breaks shows its alt text.
+  - Option 2: an inline `onerror` that swaps to the initials. Cost: a few lines of JS per avatar. Risk: one more script, and it does nothing without JavaScript.
+  - Option 3: initials painted underneath the image. Cost: CSS only. Risk: a broken image icon or the alt text may still draw over them, depending on the browser.
+  - Recommendation: Option 1. The plan follows it.
 
 ## Files
-- `src/components/mb/tokens.css`: the `--mb-*` tokens on `:root`, built from existing palette variables. Imported by `page-frame.astro`.
-- `src/components/mb/button.astro`: same props as `ui/button.astro`, mb look as described in Approach. Keeps `data-state="submitting"` for `contact-form.ts`.
-- `src/components/mb/link.astro`: `inline | nav | footer | case` and the optional icon. Nav hover draws an ink bar; active is a blue bar with blue text.
-- `src/components/mb/badge.astro`, `tag.astro`, `status-pill.astro`: square chips. Badge has `outline | filled` and `fillOnCellHover`.
-- `src/components/mb/cell.astro`: the cell. `tag` can be article/li/div/a; the `a` form is used for contact links.
-- `src/components/mb/cell-grid.astro`: the grid with shared lines (gap 0, 1px padding back, cells pulled -1px). Column minimum as a prop wrapped in `min(100%, …)`, and the odd last cell spans the row.
-- `src/components/mb/input.astro`, `textarea.astro`, `radio.astro`, `field.astro`: muted frame. Focus is an ink frame plus the hard blue shadow; error is a coral frame with the message in mono behind a coral line; disabled is a flat panel; radio is a square chip that turns solid blue when checked.
-- `src/components/mb/section-head.astro`: label, headline slot (`<em>` gets a thick blue underline) and lede. Counter-numbered, stacks to one column at 880px and below.
-- `src/components/mb/prose.astro`: the typography block, with descendant rules via `:global()`. Covers `.lead`, h1-h4, lists, blockquote, inline code, pre and table. Pre and table scroll inside their own box, never the page.
-- `src/components/mb/page-frame.astro`, `header.astro`, `footer.astro`, `mobile-sheet.astro`, `brand.astro`: the frame described in Approach. The closed sheet stays `visibility: hidden`.
-- `src/components/mb/sections/hero.astro`, `services.astro`, `how-i-work.astro`, `experience.astro`, `contact.astro`, `src/components/mb/contact-form.astro`: the home sections, with the same copy, data, ids and contact-form hooks (`data-contact-wrap`, `data-contact-form`, `data-submit`, `data-form-error`, `data-form-success`, `data-form-reset`, honeypot). The contact form gains `state` (the wrapper's starting `data-state`) and `idPrefix`, so the catalogue can show several instances without duplicate ids.
-- `src/pages/_ui/mb/index.astro`: the `/ui/mb` document, as described in Approach.
-- `src/pages/_ui/mb/catalogue.astro`: the h2 sections Przycisk, Link, Badge i tag, Status pill, Komórka i siatka, Pola formularza, Nagłówek sekcji, Rama strony, Typografia, Formularz kontaktowy. All in mb style, with ids prefixed `mb-`.
-- `astro.config.mjs`: `injectRoute({ entrypoint: "./src/pages/_ui/mb/index.astro", pattern: "/ui/mb" })` inside the `command === "dev"` branch, and the comment updated.
-- `tests/e2e/ui-mb.spec.ts`: new spec (see How to test).
-- `DESIGN.md`: a new section "Minimal brutalism (`src/components/mb/`, `/ui/mb`)" with the tokens, the vocabulary from Approach, and a note that KA0069 makes it the site's design. The frontmatter stays, because production does not change yet.
-- `AGENTS.md`:
-  - `## Wygląd`: a bullet for `src/components/mb/` and `/ui/mb`.
-  - `## Struktura`: `components/{ui,layout,sections,contact,mb}` and `ui-mb` in the e2e list.
-  - `## Komendy`: `/ui/mb` next to `/ui` on the `bun dev` line.
+- **Tokens**
+  - `src/components/mb/tokens.css`: the `--mb-*` tokens on `:root`, built from palette variables. Imported by `page-frame.astro`.
+- **Buttons and status**
+  - `src/components/mb/button.astro`:
+    - Props: `variant`, `size`, `iconStart`, `iconEnd`, `href`, `loading`, `type`, `disabled`.
+    - Icon sizes require `aria-label` (the type rejects a missing one).
+    - The end arrow nudges 3px and keeps `flex-shrink: 0` (KA0058).
+    - `loading` or `[data-state="submitting"]` shows the spinner and sets `aria-busy`.
+  - `src/components/mb/spinner.astro`:
+    - Shown alone, it is `role="status"` with `aria-label="Ładowanie"`.
+    - Inside a button or a badge (`decorative`), it is `aria-hidden`, so the button's name stays its label.
+    - It stops spinning under reduced motion.
+  - `src/components/mb/badge.astro`: six variants, `iconStart`/`iconEnd`, `href`, `fillOnCellHover`.
+  - `src/components/mb/alert.astro`: `variant`, `icon`, slots `title`/`action`. `role="alert"` by default; `role` can be overridden, so the contact form can keep its own live regions.
+- **Identity**
+  - `src/components/mb/avatar.astro`:
+    - Props: `size`, `src` (`ImageMetadata` through `<Image>`, or a string), `alt`, `fallback` (initials), `badge` (`dot` or an icon name).
+    - Square, 1px ink rule.
+  - `src/components/mb/avatar-group.astro`: overlapping avatars and an optional `count` ("+3").
+  - `src/components/mb/separator.astro`: `orientation`, `decorative` (`role="none"`, otherwise `role="separator"` with `aria-orientation`).
+- **Form controls**
+  - `src/components/mb/label.astro`: mono label; `disabled` mutes it.
+  - `src/components/mb/checkbox.astro`: native checkbox, square box, a lucide `check` mark when checked, a coral frame with `aria-invalid`.
+  - `src/components/mb/radio.astro`: `variant: "default" | "choice"`, `label`, `state`; native attributes pass through to the input.
+  - `src/components/mb/input.astro`, `src/components/mb/textarea.astro`:
+    - Idle: a muted frame.
+    - Focus: an ink frame and the hard blue shadow.
+    - Invalid: a coral frame, from `[data-invalid]` on the field or from `aria-invalid`.
+    - Disabled: a flat panel.
+    - File: a styled `::file-selector-button`.
+  - `src/components/mb/field.astro`:
+    - Props: `label`, `for`, `name` (→ `data-field`), `description`, `errorMessage`, `invalid`, `disabled`, `orientation`.
+    - The error shows in mono behind a coral line.
+    - `responsive` switches through a container query.
+  - `src/components/mb/field-set.astro`: `<fieldset>` with a legend (`legendVariant: "legend" | "label"`) and a description; fields stack inside it.
+- **Navigation and disclosure**
+  - `src/components/mb/accordion.astro`, `src/components/mb/accordion-item.astro`:
+    - Accordion: `type: "single" | "multiple"`, `name`, `bordered`.
+    - Item: `title`, `open`, `disabled`.
+    - Uses `<details name>`; the `chevron-down` icon rotates with `--mb-snap`.
+  - `src/components/mb/breadcrumb.astro`: `items: { label, href? }[]`, `separator: "chevron" | "slash"`, `collapse`.
+    - It renders `nav[aria-label="Okruszki"]` > `ol`.
+    - The last item gets `aria-current="page"`.
+    - The ellipsis is `aria-hidden` and the collapsed middle has a hidden label.
+  - `src/components/mb/pagination.astro`: `current`, `total`, `href(page)`, `variant: "numbers" | "icons"`.
+    - It renders `nav[aria-label="Paginacja"]`.
+    - The current page gets `aria-current="page"` and the outline look; the rest are ghost.
+    - Labels: "Poprzednia" / "Następna".
+    - Ellipses are computed.
+    - Previous and next are plain `<a>` links (no JavaScript).
+- **Links and chips**
+  - `src/components/mb/link.astro`: `inline | nav | footer | case`, optional icon.
+    - Nav: an ink bar on hover; active is a blue bar with blue text.
+  - `src/components/mb/tag.astro`: square chip in a muted frame, lower case.
+  - `src/components/mb/status-pill.astro`: square chip, ink text in a blue frame behind a square blue dot.
+- **Cards and layout**
+  - `src/components/mb/card.astro`: `size`, `tag` (article/li/div/a), slots `image`/`title`/`description`/`action`/default/`footer`, `titleAs` (h2/h3), and the hover look.
+  - `src/components/mb/cell-grid.astro`:
+    - Shared rules: gap 0, 1px padding back, cells pulled -1px.
+    - The column minimum wraps in `min(100%, …)`.
+    - An odd last cell spans the row.
+  - `src/components/mb/section-head.astro`:
+    - A counter-numbered label; `<em>` in the headline gets a thick blue underline; a lede beside it.
+    - Stacks to one column at 880px and below.
+  - `src/components/mb/prose.astro`:
+    - Standalone `mb-prose` with descendant rules via `:global()`: `.lead`, h1-h4, lists, blockquote, code, pre, table.
+    - Pre and table scroll inside their own box, never the page.
+- **Page frame**
+  - `src/components/mb/page-frame.astro`, `src/components/mb/header.astro`, `src/components/mb/footer.astro`, `src/components/mb/mobile-sheet.astro`, `src/components/mb/brand.astro`:
+    - A solid substrate, with the two edge hairlines drawn by fixed pseudo-elements and hidden below the container width.
+    - Skip link, header (brand, nav, sm button, menu button), footer, and the sheet with the hooks above.
+    - The closed sheet is `visibility: hidden`, as in `layout/mobile-sheet.astro`.
+- **Home sections**
+  - `src/components/mb/sections/hero.astro`, `services.astro`, `how-i-work.astro`, `experience.astro`, `contact.astro`, and `src/components/mb/contact-form.astro`:
+    - Same copy, data, ids and contact-form hooks (`data-contact-wrap`, `data-contact-form`, `data-submit`, `data-form-error`, `data-form-success`, `data-form-reset`, honeypot).
+    - The form gains `state` (the wrapper's starting `data-state`) and `idPrefix`.
+- **Pages**
+  - `src/pages/_ui/mb/index.astro`: the `/ui/mb` document.
+    - A small nav links to `/ui` and `/ui/proposal/minimal-brutalism` for comparison.
+    - `<Image>` of `src/assets/me.jpg` feeds the avatar samples.
+  - `src/pages/_ui/mb/catalogue.astro`:
+    - One h2 section per entry in the component list (Polish names): Przycisk, Spinner, Badge, Alert, Avatar, Separator, Etykieta, Pole wyboru, Radio, Pola formularza, Akordeon, Okruszki, Paginacja, Link, Tag i status pill, Karta i siatka, Nagłówek sekcji, Rama strony, Typografia, Formularz kontaktowy.
+    - Every variant, size and state is laid out in `min(100%, …)` grids; ids are prefixed `mb-`.
+  - `src/pages/_ui/index.astro`: a second link inside the existing `nav[aria-label="Propozycje designu"]`: `<Link href="/ui/mb" variant="nav">Minimal brutalism</Link>`.
+- **Config**
+  - `astro.config.mjs`: `injectRoute({ entrypoint: "./src/pages/_ui/mb/index.astro", pattern: "/ui/mb" })` in the `command === "dev"` branch, with the header comment updated.
+- **Tests**
+  - `tests/e2e/ui-mb.spec.ts`: new spec (see How to test).
+  - `tests/e2e/ui-proposals.spec.ts`: line 206 `switcher(page).getByRole("link")` becomes `getByRole("link", { name: "Propozycje designu" })`. With two links in that nav, the unnamed locator would hit Playwright strict mode.
+- **Docs**
+  - `DESIGN.md`: a new section "Minimal brutalism (`src/components/mb/`, `/ui/mb`)" covering:
+    - the tokens and the vocabulary;
+    - the variant map against shadcn;
+    - the KA0069 prop renames;
+    - a note that it becomes the site's design in KA0069.
+
+    The frontmatter stays.
+  - `AGENTS.md`:
+    - `## Wygląd`: a bullet for `src/components/mb/` and `/ui/mb`.
+    - `## Struktura`: `components/{ui,layout,sections,contact,mb}`, and `ui-mb` in the e2e list.
+    - `## Komendy`: `/ui/mb` next to `/ui` on the `bun dev` line.
 
 ## Risks
-- **Production build changes**: only `src/pages/_ui/mb/` imports mb, and Astro does not build `_`-prefixed pages unless they are injected. Check: build on HEAD and after, then `cmp dist/index.html` and an identical `ls -R dist`.
-- **Contrast axe cannot compute** (it reports "incomplete" instead of passing when text sits over a background image or pseudo-element): the frame hairlines are pseudo-elements and the substrate is a solid color. The smoke run also lists `color-contrast` entries in `results.incomplete`. Palette pairs as I read them:
-  - `--v2-bg` on `--blue` (≈9:1);
-  - `--muted` on `--v2-bg` (≈7:1);
-  - `--error` on `--v2-bg` (6.7:1, per the `tokens.css` comment).
+- **Production build changes.** Only `src/pages/_ui/mb/` imports `mb`. Astro skips `_` pages unless a route is injected, and that happens in dev only.
+  - Check: on HEAD I ran `bun run build` twice and `cmp dist/index.html` matched, and `dist` has no `ui` directory. So a before/after `cmp` and an identical `ls -R dist` are a valid check.
+- **Contrast axe cannot compute.** The substrate is a solid color and the hairlines are pseudo-elements, so axe can compute contrast.
+  - Palette pairs as I read them:
+    - `--v2-bg` on `--blue` ≈ 8.5:1;
+    - `--v2-bg` on `--error` ≈ 6.7:1 (destructive button and badge);
+    - `--muted` on `--v2-panel` ≈ 6.5:1;
+    - `--muted` on `--v2-bg` ≈ 7:1.
+  - Disabled text uses `--muted`, not low opacity, so it passes even where axe does not exempt it.
+  - The smoke run also lists `color-contrast` entries in `results.incomplete`.
 - **Sideways scroll at 360px**:
-  - grids use `min(100%, …)` (KA0066);
-  - the right hairline would sit past the viewport, so the hairlines are hidden under the container width;
-  - the contact email gets `overflow-wrap: anywhere`;
-  - pre and table scroll inside their own box;
-  - header at 360px: brand, small CTA and menu button must fit.
-- **Hidden focusables in the closed sheet** (axe `aria-hidden-focus`): the closed sheet uses `visibility: hidden`, as `layout/mobile-sheet.astro` does.
-- **Duplicate ids and radio groups** with several form instances on one page: `idPrefix`; radios group per form.
-- **Real leads from dev**: `contact-form.ts` is not loaded on `/ui/mb`.
-- **Copy drift**: until KA0069 the section copy exists twice (old and mb sections). KA0069 deletes the old ones; any copy edit in between has to touch both.
-- **Breaking `ui-proposals.spec.ts`**: it expects the "Propozycje designu" nav on `/ui` to hold exactly one link, so `/ui` gets no link to `/ui/mb`.
+  - `min(100%, …)` grids (KA0066);
+  - hairlines hidden below the container width;
+  - `overflow-wrap: anywhere` on the contact email;
+  - pre, table, pagination and breadcrumb wrap or scroll inside their own box;
+  - header: brand, sm button and menu button must fit;
+  - the size rows (xs to lg, four icon sizes) wrap.
+- **Hidden focusables.**
+  - The closed sheet is `visibility: hidden`.
+  - Closed `<details>` content is not focusable.
+  - The disabled accordion row has no tab stop.
+- **Duplicate ids and radio or checkbox groups across many samples.** `idPrefix` on the form, and a unique `name` per sample group, so one accordion's `name` does not tie into another.
+- **Real leads from dev.** `contact-form.ts` is not loaded on `/ui/mb`.
+- **The swap in KA0069 is no longer import-only.** shadcn prop names differ from `ui/`. `DESIGN.md` lists the renames, and the hooks stay identical.
+- **Copy drift.** Until KA0069 the section copy exists twice; a copy edit in between has to touch both.
+- **`/ui` link breaking specs.** `ui-proposals.spec.ts:206` is adjusted. `ui-catalogue.spec.ts` asserts no `/ui` links on the production home page, which is unaffected.
 
 ## How to test
-- **`/ui/mb` renders each component with every state forced, plus the home sections**: `ui-mb.spec.ts` (dev server, `reducedMotion: "reduce"`):
+- **`/ui/mb` renders every component with every state forced, plus the home sections.** `ui-mb.spec.ts` on the dev server, with `reducedMotion: "reduce"`:
   - every catalogue h2 by exact name, and `#top`, `#services`, `#how`, `#experience`, `#contact` visible;
-  - a forced hover on the primary button paints like a real hover (`background-color`, `box-shadow`, `color`);
-  - a forced cell hover matches a real one, the cell's `fillOnCellHover` badge included;
+  - a forced hover on the default button paints like a real hover (`background-color`, `box-shadow`, `color`);
+  - a forced card hover matches a real one, including the card's `fillOnCellHover` badge;
   - a forced input focus matches a real focus, and the form-host shadow appears with it;
-  - the error sample shows `.mb-err` and a `rgb(224, 122, 112)` border.
-- **Components live in `src/components/mb/`, production unchanged**:
-  - spec: production `/ui/mb` and `/ui/mb/` return 404. The existing `ui-catalogue.spec.ts` already checks the sitemap and home links for `/ui`.
-  - manual: `test ! -e dist/ui`, `cmp` of `dist/index.html` against the HEAD build, and a grep showing no `components/mb` import outside `src/components/mb` and `src/pages/_ui/mb`.
-- **AA contrast, axe zero at 1440 and 360, no sideways scroll at 360**:
-  - spec: axe (wcag2a/2aa/21a/21aa, excluding `astro-dev-toolbar`) at 1440×900 and 360×800; at 360, `document.documentElement.scrollWidth <= clientWidth`.
-  - smoke: review `results.incomplete`.
-- **Motion respects `prefers-reduced-motion`**: smoke with a throwaway Playwright script. Under `reduce`, the button, cell and link `transition-duration` are 0.01ms or less and the loading spinner does not spin; without it, transitions read 0.12s. Plus a check that every mb component with a transition has its reduced-motion block.
-- **e2e covers rendering, axe and absence from the build**: the spec above.
-- **Mobile sheet works on `/ui/mb`**: smoke at 360. The menu button opens the sheet, the rest of the page goes inert, Esc closes it and focus returns to the button.
-- **`bun run lint`, `bun run check`, `bun run build`, `bun run test:e2e` pass**: run all four. On HEAD, lint and check pass (95 files, 0 errors) and build is deterministic.
+  - the error sample shows its message and a `rgb(224, 122, 112)` border;
+  - in the single accordion, opening the second item closes the first; in the multiple accordion, both stay open;
+  - the current breadcrumb and pagination items carry `aria-current="page"`.
+- **Components in `src/components/mb/`, production unchanged.**
+  - Spec: `/ui/mb` and `/ui/mb/` return 404 on the production build.
+  - Manual:
+    - `test ! -e dist/ui`;
+    - `cmp dist/index.html` against the HEAD build;
+    - grep: no `components/mb` import outside `src/components/mb` and `src/pages/_ui/mb`.
+- **`/ui` links to `/ui/mb`.** Spec: on `/ui`, the "Minimal brutalism" link goes to `/ui/mb`. `ui-proposals.spec.ts` passes with its line 206 change.
+- **Axe zero at 1440 and 360, no sideways scroll at 360.**
+  - Spec: axe (wcag2a/2aa/21a/21aa, excluding `astro-dev-toolbar`) at 1440×900 and 360×800; at 360, `scrollWidth <= clientWidth`.
+  - Smoke: review `results.incomplete`.
+- **Motion respects `prefers-reduced-motion`.** A throwaway Playwright script checks:
+  - under `reduce`: button, card, link, checkbox and accordion chevron `transition-duration` is 0.01ms or less, and the spinner's `animation-name` is `none` or its duration 0.01ms or less;
+  - without `reduce`: transitions read 0.12s.
+
+  Plus a check that every `mb` file with a transition or animation has a reduced-motion block.
+- **Mobile sheet works on `/ui/mb`.** Smoke at 360: the menu opens the sheet, the rest goes inert, Esc closes it and focus returns to the button.
+- **`bun run lint`, `bun run check`, `bun run build`, `bun run test:e2e` pass.** Run all four.
+  - On HEAD I ran lint (83 files, no fixes), check (0 errors) and build (twice, identical).
+  - `test:e2e` was not run on HEAD here.
 
 ## Open questions
-- I read "page frame" as the substrate with its edge hairlines plus header, footer and mobile sheet, because KA0069 moves the header and footer onto mb. If you meant only the substrate, header, footer and sheet move to KA0069 and this ticket gets smaller.
-- A link from `/ui` to `/ui/mb` needs `src/pages/_ui/index.astro`, which is outside this ticket's Scope. Without it, `/ui/mb` is reached by typing the URL until KA0069 moves it to `/ui`. Should I add it?
+- Badge: the Decision lists default, secondary, outline and destructive. shadcn's badge API also has ghost and link, and the list above includes them so the set matches shadcn. Keep them, or drop to the four?
