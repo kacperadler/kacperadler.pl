@@ -2,7 +2,11 @@
 import { Icon } from "astro-icon/components";
 import Card from "@/components/ui/card.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
-import { type CaseStudy, caseStudyPath, sortedCaseStudies } from "@/lib/case-studies";
+import {
+  type CaseStudy,
+  caseStudyPath,
+  sortedCaseStudies,
+} from "@/lib/case-studies";
 
 /* /realizacje/ - the list of case studies. A rest param with an undefined
  * value builds the directory index, and getStaticPaths returns no path
@@ -11,7 +15,9 @@ import { type CaseStudy, caseStudyPath, sortedCaseStudies } from "@/lib/case-stu
 
 export async function getStaticPaths() {
   const all = await sortedCaseStudies();
-  return all.length > 0 ? [{ params: { index: undefined }, props: { caseStudies: all } }] : [];
+  return all.length > 0
+    ? [{ params: { index: undefined }, props: { caseStudies: all } }]
+    : [];
 }
 
 interface Props {
@@ -31,21 +37,25 @@ const { caseStudies } = Astro.props;
         <p class="eyebrow eyebrow-section">Realizacje</p>
         <h1>Wybrane <em>realizacje</em>.</h1>
         <p class="section-lede">
-          Kontekst, moja rola, stack i efekt - po jednej historii z firm, z którymi pracowałem.
+          Kontekst, moja rola, stack i efekt - po jednej historii z firm, z
+          którymi pracowałem.
         </p>
       </header>
 
       <ul class="case-list">
-        {caseStudies.map((caseStudy) => <Card class="case-panel" tag="li">
-          <span class="case-period">{caseStudy.data.period}</span>
-          <h2>{caseStudy.data.company}</h2>
-          <div class="case-role">{caseStudy.data.role}</div>
-          <p class="case-summary">{caseStudy.data.summary}</p>
-          <a class="case-link" href={caseStudyPath(caseStudy)}>
-            Zobacz realizację<span class="sr-only"> - {caseStudy.data.company}</span>
-            <Icon aria-hidden="true" name="lucide:arrow-right" />
-          </a>
-        </Card>)}
+        {caseStudies.map((caseStudy) => (
+          <Card class="case-panel" tag="li">
+            <span class="case-period">{caseStudy.data.period}</span>
+            <h2>{caseStudy.data.company}</h2>
+            <div class="case-role">{caseStudy.data.role}</div>
+            <p class="case-summary">{caseStudy.data.summary}</p>
+            <a class="case-link" href={caseStudyPath(caseStudy)}>
+              Zobacz realizację
+              <span class="sr-only"> - {caseStudy.data.company}</span>
+              <Icon aria-hidden="true" name="lucide:arrow-right" />
+            </a>
+          </Card>
+        ))}
       </ul>
     </div>
   </main>

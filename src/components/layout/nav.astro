@@ -11,7 +11,11 @@ const path = Astro.url.pathname;
 ---
 
 <nav aria-label="Główna nawigacja" class="nav">
-  <a aria-label={`${siteConfig.name} - Strona główna`} class="brand" href="/#top">
+  <a
+    aria-label={`${siteConfig.name} - Strona główna`}
+    class="brand"
+    href="/#top"
+  >
     <span aria-hidden="true" class="mark">k</span>
     <span><b>Kacper</b> <em>Adler</em></span>
   </a>
@@ -19,14 +23,16 @@ const path = Astro.url.pathname;
   <div class="nav-links">
     {links.map((link) => {
       const inPage = !link.href.includes("#") && path.startsWith(link.href);
-      return <a
-        aria-current={inPage && path === link.href ? "page" : undefined}
-        class:list={{ active: inPage }}
-        data-nav-link
-        href={link.href}
-      >
-        {link.label}
-      </a>;
+      return (
+        <a
+          aria-current={inPage && path === link.href ? "page" : undefined}
+          class:list={{ active: inPage }}
+          data-nav-link
+          href={link.href}
+        >
+          {link.label}
+        </a>
+      );
     })}
   </div>
 

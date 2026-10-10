@@ -37,8 +37,8 @@ const caseStudies = await caseStudiesByExperience();
       <p class="eyebrow eyebrow-section">Współprace</p>
       <h2>Z kim <em>pracowałem</em>.</h2>
       <p class="section-lede">
-        Tworzyłem projekty i współpracowałem z firmami z różnych branż - od korporacji po
-        side-projekty.
+        Tworzyłem projekty i współpracowałem z firmami z różnych branż - od
+        korporacji po side-projekty.
       </p>
     </header>
 
@@ -64,27 +64,34 @@ const caseStudies = await caseStudiesByExperience();
           metaFilled = false;
         }
         const caseStudy = caseStudies.get(item.id);
-        return <Card class="exp-panel" tag="li">
-          <header class="exp-head">
-            <div class="exp-logo-wrap">
-              <img
-                alt={item.data.company}
-                class="exp-logo"
-                height={logo.height}
-                src={logo.src}
-                width={logo.width}
-              />
-            </div>
-            <span class:list={["exp-meta", { "exp-meta-now": metaFilled }]}>{metaLabel}</span>
-          </header>
-          <h3>{item.data.company}</h3>
-          <div class="exp-role">{item.data.role}</div>
-          <p class="exp-desc">{item.data.description}</p>
-          {caseStudy && <a class="case-link" href={caseStudyPath(caseStudy)}>
-            Zobacz realizację<span class="sr-only"> - {item.data.company}</span>
-            <Icon aria-hidden="true" name="lucide:arrow-right" />
-          </a>}
-        </Card>;
+        return (
+          <Card class="exp-panel" tag="li">
+            <header class="exp-head">
+              <div class="exp-logo-wrap">
+                <img
+                  alt={item.data.company}
+                  class="exp-logo"
+                  height={logo.height}
+                  src={logo.src}
+                  width={logo.width}
+                />
+              </div>
+              <span class:list={["exp-meta", { "exp-meta-now": metaFilled }]}>
+                {metaLabel}
+              </span>
+            </header>
+            <h3>{item.data.company}</h3>
+            <div class="exp-role">{item.data.role}</div>
+            <p class="exp-desc">{item.data.description}</p>
+            {caseStudy && (
+              <a class="case-link" href={caseStudyPath(caseStudy)}>
+                Zobacz realizację
+                <span class="sr-only"> - {item.data.company}</span>
+                <Icon aria-hidden="true" name="lucide:arrow-right" />
+              </a>
+            )}
+          </Card>
+        );
       })}
     </ul>
   </div>

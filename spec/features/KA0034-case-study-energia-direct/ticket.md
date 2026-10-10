@@ -39,3 +39,4 @@ Out:
 
 - 2026-10-10: Source: the human asked for one case study ticket per entry in "Z kim pracowałem".
 - 2026-10-10: After KA0028. Needs from the human: what he can say about the work at Energia Direct (and what not).
+- 2026-10-10: The human: the redesign (KA0037-KA0044) comes first; this waits.

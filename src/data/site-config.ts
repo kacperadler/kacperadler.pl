@@ -7,7 +7,7 @@ export const siteConfig = {
     umamiWebsiteId: "937a952a-548b-4e9d-ba9a-d511be5454f6",
   },
   description:
-    "Aplikacje webowe, narzędzia B2B i landing pages - od architektury po deploy. Pracuję w sprintach, async, z zespołami produktowymi w PL/EU.",
+    "Agenci AI i automatyzacje, aplikacje webowe, narzędzia B2B i landing pages - od architektury po deploy. Pracuję w sprintach, async, z zespołami produktowymi w PL/EU.",
   email: "kontakt@kacperadler.pl",
   lang: "pl",
   locale: "pl-PL",

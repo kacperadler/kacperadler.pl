@@ -16,7 +16,12 @@ interface Props extends HTMLAttributes<"article"> {
   tag?: "article" | "li" | "div";
 }
 
-const { tag = "article", spotlight = true, class: extraClass, ...rest } = Astro.props;
+const {
+  tag = "article",
+  spotlight = true,
+  class: extraClass,
+  ...rest
+} = Astro.props;
 const Tag = tag;
 const dataAttrs = spotlight ? { "data-spotlight": true } : {};
 ---

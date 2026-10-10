@@ -20,7 +20,12 @@ const {
   ...rest
 } = Astro.props;
 
-const classes = ["btn", `btn-${variant}`, size === "sm" && "btn-sm", extraClass];
+const classes = [
+  "btn",
+  `btn-${variant}`,
+  size === "sm" && "btn-sm",
+  extraClass,
+];
 ---
 
 {href ? (

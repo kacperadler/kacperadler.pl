@@ -1,6 +1,0 @@
-dist/
-.astro/
-node_modules/
-bun.lock
-public/
-example.html
