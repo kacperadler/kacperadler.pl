@@ -8,7 +8,9 @@
       "!**/node_modules",
       "!**/bun.lock",
       "!**/example.html",
-      "!**/public"
+      "!**/public",
+      // Written by the harness (`h`), which formats it its own way.
+      "!spec/build.json"
     ]
   },
   "overrides": [
