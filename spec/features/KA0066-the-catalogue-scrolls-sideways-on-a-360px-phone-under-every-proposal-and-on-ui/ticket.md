@@ -4,7 +4,10 @@
 {
   "id": "KA0066",
   "title": "The catalogue scrolls sideways on a 360px phone, under every proposal and on /ui",
-  "date": "2026-10-10"
+  "date": "2026-10-10",
+  "after": [
+    "KA0067"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F1 of KA0065
+- 2026-10-10: After KA0067: the catalogue fix applies to what is left.

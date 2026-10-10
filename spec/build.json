@@ -522,6 +522,36 @@
     "title": "The catalogue scrolls sideways on a 360px phone, under every proposal and on /ui",
     "status": "planning",
     "path": "spec/features/KA0066-the-catalogue-scrolls-sideways-on-a-360px-phone-under-every-proposal-and-on-ui/ticket.md",
-    "updated": "2026-10-10T18:18:44.202Z"
+    "updated": "2026-10-10T18:31:07.316Z",
+    "after": [
+      "KA0067"
+    ]
+  },
+  {
+    "id": "KA0067",
+    "title": "Keep only the minimal brutalism proposal",
+    "status": "planned",
+    "path": "spec/features/KA0067-keep-only-the-minimal-brutalism-proposal/ticket.md",
+    "updated": "2026-10-10T18:31:07.513Z"
+  },
+  {
+    "id": "KA0068",
+    "title": "Minimal brutalism components in the /ui catalogue",
+    "status": "planning",
+    "path": "spec/features/KA0068-minimal-brutalism-components-in-the-ui-catalogue/ticket.md",
+    "updated": "2026-10-10T18:31:06.920Z",
+    "after": [
+      "KA0067"
+    ]
+  },
+  {
+    "id": "KA0069",
+    "title": "The landing page in minimal brutalism",
+    "status": "planned",
+    "path": "spec/features/KA0069-the-landing-page-in-minimal-brutalism/ticket.md",
+    "updated": "2026-10-10T18:31:07.910Z",
+    "after": [
+      "KA0068"
+    ]
   }
 ]
