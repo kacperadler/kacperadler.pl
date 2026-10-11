@@ -21,14 +21,16 @@ The rulers in blueprint-live stand still while the page scrolls, as in blueprint
 ## Done means
 
 - On `/ui/proposal/blueprint-live`, the rulers' ticks stay in the same place on screen while the page scrolls (the `bl-sheet` scroll animation and its keyframes are gone); the draw-down on load stays; under `prefers-reduced-motion` they stand complete.
-- The proposal's header comment no longer says the ticks travel with the sheet.
+- Every piece that draws on scroll (rules, dimension lines, cell frames, ticks, labels) draws once when it comes on screen and then stays drawn: scrolling back up or down never undraws it. This replaces KA0080's "scrolling back undraws". If CSS alone cannot keep it, a small script in `src/pages/_ui/proposal/[id].astro` that marks a piece drawn is allowed, only for blueprint-live; without the script or under `prefers-reduced-motion` everything stands drawn.
+- The proposal's header comment no longer says the ticks travel with the sheet or that scrolling back undraws.
+- An e2e test scrolls a section into view, then back above it, and checks its rule is still fully drawn.
 - An e2e test scrolls `/ui/proposal/blueprint-live` and checks the rulers' computed `mask-position` is the same before and after the scroll.
 - `bun run lint`, `bun run check`, `bun run build`, `bun run test:e2e` pass.
 
 ## Scope
 
 In:
-- `src/styles/proposals/blueprint-live/`, `tests/e2e/ui-proposals.spec.ts`.
+- `src/styles/proposals/blueprint-live/`, `tests/e2e/ui-proposals.spec.ts`, `src/pages/_ui/proposal/[id].astro` only if a script is needed.
 
 Out:
 - Other proposals, the live site.
@@ -36,3 +38,4 @@ Out:
 ## Decisions
 
 - 2026-10-11: The human: the lines on the right and left in blueprint-live are not static, while in blueprint they are (photo); taken as approval.
+- 2026-10-11: The human: a line drawn on scroll should stay once its element was on screen, not vanish when scrolling back up; the side rulers draw in and then stand still (second photo `rulers-moving-2.jpg`). Added to this ticket, same file.
