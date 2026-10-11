@@ -580,13 +580,20 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
       await page.waitForTimeout(1000);
       expect(await headDrawing(head)).toEqual(undrawn);
 
-      // Whole on the screen, the pen starts. Held at 0.3 of the drawing:
-      // only the rule, running out.
+      // Whole on the screen, the pen starts. Each stage eases on its own:
+      // a tenth into the rule's stage it has drawn less than a tenth (a
+      // smoothstep's 0.028), nine tenths in, more than nine (0.972).
       await raise(head, height + 20);
       await expect(head).toHaveAttribute("data-bl-drawn", "");
+      await penAt(head, 0.06);
+      expect((await headDrawing(head)).rule).toBeCloseTo(0.028, 2);
+      await penAt(head, 0.54);
+      expect((await headDrawing(head)).rule).toBeCloseTo(0.972, 2);
+
+      // Held at 0.3 of the drawing: only the rule, halfway out.
       await penAt(head, 0.3);
       const ruling = await headDrawing(head);
-      expect(ruling.rule).toBeCloseTo(0.3 / 0.6, 2);
+      expect(ruling.rule).toBeCloseTo(0.5, 2);
       expect(ruling).toMatchObject({
         brace: 0,
         callout: 0,
@@ -676,12 +683,12 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
           `${part}${pseudo}`
         ).toBe(true);
       }
-      // No piece follows the scroll: each plays once, on the clock, in
-      // --bl-pen (or the hero's second), however fast it was scrolled.
+      // No piece follows the scroll: each plays once, on the clock, over
+      // the same --bl-pen, however fast it was scrolled.
       for (const d of pieces) {
         expect(d.onScroll, d.piece).toBe(false);
         expect(d.iterations, d.piece).toBe(1);
-        expect([800, 1000], d.piece).toContain(d.durationMs);
+        expect(d.durationMs, d.piece).toBe(1800);
       }
       await expect
         .poll(async () =>
@@ -703,10 +710,9 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
       for (const d of all) {
         expect(d.iterations, d.piece).toBe(1);
         expect(d.onScroll, d.piece).toBe(false);
+        expect(d.durationMs, d.piece).toBe(1800);
       }
-      const onLoad = all
-        .filter((d) => d.durationMs === 1000)
-        .map((d) => d.piece);
+      const onLoad = all.map((d) => d.piece);
       expect(
         onLoad.some(
           (piece) =>
@@ -731,11 +737,9 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
             .map((a) => a.finished)
         )
       );
-      expect(
-        (await drawings(page))
-          .filter((d) => d.durationMs === 1000)
-          .map((d) => [d.piece, d.progress])
-      ).toEqual(onLoad.map((piece) => [piece, 1]));
+      expect((await drawings(page)).map((d) => [d.piece, d.progress])).toEqual(
+        onLoad.map((piece) => [piece, 1])
+      );
     });
   }
 
@@ -757,14 +761,14 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
     expect(await frame()).toEqual(["0", "0"]);
 
     // Whole on the screen, and not a pixel further: the frame and the
-    // number play through within the pen's 0.8s.
+    // number play through within the pen's 1.8s.
     await raise(card, height + 10);
-    await expect.poll(frame, { timeout: 1500 }).toEqual(["1", "1"]);
+    await expect.poll(frame, { timeout: 3000 }).toEqual(["1", "1"]);
     await expect(card).toHaveCSS("border-top-color", NO_COLOR);
     expect(
       (await drawings(page))
         .filter((d) => d.piece.includes(".mb-card") && d.progress === 1)
-        .some((d) => d.durationMs === 800 && !d.onScroll)
+        .some((d) => d.durationMs === 1800 && !d.onScroll)
     ).toBe(true);
   });
 
@@ -833,8 +837,8 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
       d.piece.includes(".mb-frame")
     );
     expect(rulers.map((d) => [d.piece, d.onScroll, d.durationMs])).toEqual([
-      ["bl-draw div.mb-frame ::before", false, 1000],
-      ["bl-draw div.mb-frame ::after", false, 1000],
+      ["bl-draw div.mb-frame ::before", false, 1800],
+      ["bl-draw div.mb-frame ::after", false, 1800],
     ]);
   });
 
