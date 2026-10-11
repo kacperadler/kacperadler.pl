@@ -643,5 +643,12 @@
     "after": [
       "KA0079"
     ]
+  },
+  {
+    "id": "KA0081",
+    "title": "Blueprint-live: the rulers stand still as in blueprint",
+    "status": "planned",
+    "path": "spec/features/KA0081-blueprint-live-the-rulers-stand-still-as-in-blueprint/ticket.md",
+    "updated": "2026-10-11T07:55:03.723Z"
   }
 ]
