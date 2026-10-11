@@ -47,15 +47,42 @@ const { proposal } = Astro.props;
       title={`Propozycja: ${proposal.name}`}
     />
     <script is:inline>
-      /* blueprint-live: a piece once drawn stays drawn. Inline in <head> so
-       * the attribute is on <html> before the first paint (without it the
-       * proposal stands drawn); an animation that ends on scroll ends
-       * forward or back, so either way it is marked. */
+      /* blueprint-live: marks <html> data-bl-live (inline in <head>, so
+       * before the first paint; without it the proposal stands drawn), then
+       * marks each part data-bl-drawn once it is whole on the screen, or
+       * fills it when taller, and stops watching it; its proposal.css then
+       * draws the part on a clock. A part scrolled past the top of the
+       * screen before the observer saw it whole (a fast scroll) is marked
+       * too. A catalogue section is watched by its heading. The observer
+       * reports in steps of 1% of the part's area, so "whole" allows 3%
+       * short of it. */
       if (document.documentElement.dataset.proposal === "blueprint-live") {
         document.documentElement.dataset.blLive = "";
-        document.addEventListener("animationend", (event) => {
-          if (event.animationName === "bl-draw") {
-            event.target.dataset.blDrawn = "";
+        document.addEventListener("DOMContentLoaded", () => {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                const box = entry.boundingClientRect;
+                const screen = entry.rootBounds;
+                const whole = Math.min(box.height, screen.height);
+                const seen =
+                  entry.intersectionRect.height >= whole * 0.97 ||
+                  box.bottom <= screen.top;
+                if (whole > 0 && seen) {
+                  const part = entry.target.classList.contains("mb-ui-h2")
+                    ? entry.target.parentElement
+                    : entry.target;
+                  part.dataset.blDrawn = "";
+                  observer.unobserve(entry.target);
+                }
+              }
+            },
+            { threshold: Array.from({ length: 101 }, (_, i) => i / 100) }
+          );
+          for (const part of document.querySelectorAll(
+            ".mb-section-head, .mb-ui-h2, .mb-card, .mb-step, .mb-footer, .mb-footer-bottom, .mb-hero-status"
+          )) {
+            observer.observe(part);
           }
         });
       }
