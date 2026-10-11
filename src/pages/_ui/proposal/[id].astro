@@ -46,6 +46,20 @@ const { proposal } = Astro.props;
       noindex
       title={`Propozycja: ${proposal.name}`}
     />
+    <script is:inline>
+      /* blueprint-live: a piece once drawn stays drawn. Inline in <head> so
+       * the attribute is on <html> before the first paint (without it the
+       * proposal stands drawn); an animation that ends on scroll ends
+       * forward or back, so either way it is marked. */
+      if (document.documentElement.dataset.proposal === "blueprint-live") {
+        document.documentElement.dataset.blLive = "";
+        document.addEventListener("animationend", (event) => {
+          if (event.animationName === "bl-draw") {
+            event.target.dataset.blDrawn = "";
+          }
+        });
+      }
+    </script>
   </head>
   <body>
     <style data-proposal-css is:inline set:html={proposal.css} />

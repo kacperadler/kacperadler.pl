@@ -202,6 +202,17 @@ const raise = (el: Locator, above: number) =>
     });
   }, above);
 
+// Scrolls the window to `top` and waits two frames, by which every scroll
+// timeline has moved its animations; returns where the window ended up.
+const settleAt = (page: Page, top: number) =>
+  page.evaluate(async (y) => {
+    window.scrollTo({ behavior: "instant", top: y });
+    const { promise, resolve } = Promise.withResolvers<void>();
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+    await promise;
+    return window.scrollY;
+  }, top);
+
 interface Drawing {
   durationMs: number;
   iterations: number;
@@ -520,7 +531,7 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
   };
 
   for (const width of [1440, 360]) {
-    test(`a section draws in order as it comes up and undraws on the way back at ${width}px`, async ({
+    test(`a section draws in order as it comes up and stays drawn on the way back at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ height: 900, width });
@@ -564,24 +575,21 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
       expect(results.violations).toEqual([]);
 
       // Up the screen: all of it, on the painted rule.
+      const drawn = {
+        border: NO_COLOR,
+        brace: 1,
+        callout: 1,
+        dimension: 1,
+        label: 1,
+        rule: 1,
+        ticks: 1,
+      };
       await raise(head, 600);
-      await expect
-        .poll(() => headDrawing(head))
-        .toEqual({
-          border: NO_COLOR,
-          brace: 1,
-          callout: 1,
-          dimension: 1,
-          label: 1,
-          rule: 1,
-          ticks: 1,
-        });
+      await expect.poll(() => headDrawing(head)).toEqual(drawn);
 
-      // Back to the top: undrawn again.
-      await page.evaluate(() =>
-        window.scrollTo({ behavior: "instant", top: 0 })
-      );
-      await expect.poll(() => headDrawing(head)).toEqual(undrawn);
+      // Back to the top, the section under the fold again: still drawn.
+      expect(await settleAt(page, 0)).toBe(0);
+      expect(await headDrawing(head)).toEqual(drawn);
     });
 
     test(`at the end of the page every piece is drawn, and nothing scrolls sideways, at ${width}px`, async ({
@@ -723,24 +731,96 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
     ).toBe("1");
   });
 
-  test("the rulers' ticks travel with the sheet", async ({ page }) => {
+  test("the rulers draw down on load and stand still while the page scrolls", async ({
+    page,
+  }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
     await page.goto("/ui/proposal/blueprint-live", {
       waitUntil: "networkidle",
     });
-    const ruler = () =>
-      page.evaluate(() => [
-        window.scrollY,
-        getComputedStyle(
-          document.querySelector(".mb-frame") as Element,
-          "::before"
-        ).maskPosition,
-      ]);
-    expect(await ruler()).toEqual([0, "0px 0px"]);
-    await page.evaluate(() =>
-      window.scrollTo({ behavior: "instant", top: 1234 })
+
+    // The ticks' place on screen, before and a frame after a scroll (the
+    // frame in which a scroll timeline would have moved them).
+    const [before, after, scrolled] = await page.evaluate(async () => {
+      const frame = document.querySelector(".mb-frame") as Element;
+      const ticks = () =>
+        ["::before", "::after"].map(
+          (pseudo) => getComputedStyle(frame, pseudo).maskPosition
+        );
+      const atTop = ticks();
+      window.scrollTo({ behavior: "instant", top: 1234 });
+      const { promise, resolve } = Promise.withResolvers<void>();
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      await promise;
+      return [atTop, ticks(), window.scrollY];
+    });
+    expect(scrolled).toBe(1234);
+    expect(after).toEqual(before);
+
+    // Drawn down once, on load, and on no scroll timeline.
+    const rulers = (await drawings(page)).filter((d) =>
+      d.piece.includes(".mb-frame")
     );
-    await expect.poll(ruler).toEqual([1234, "0px -1234px"]);
+    expect(rulers.map((d) => [d.piece, d.onScroll])).toEqual([
+      ["bl-draw div.mb-frame ::before", false],
+      ["bl-draw div.mb-frame ::after", false],
+    ]);
+  });
+
+  test("a cell scrolled back out half drawn stands drawn", async ({ page }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/ui/proposal/blueprint-live", {
+      waitUntil: "networkidle",
+    });
+    const card = page.locator("#experience .mb-card").first();
+    const progress = () =>
+      card.evaluate((el) =>
+        ["", "::before"].map((pseudo) =>
+          getComputedStyle(el, pseudo || null).getPropertyValue("--bl-p")
+        )
+      );
+    await raise(card, ((await card.boundingBox())?.height ?? 0) / 2);
+    await expect
+      .poll(async () => Number((await progress())[0]))
+      .toBeCloseTo(0.5, 1);
+
+    expect(await settleAt(page, 0)).toBe(0);
+    expect(await progress()).toEqual(["1", "1"]);
+  });
+
+  test.describe("without the page's script", () => {
+    test.use({ javaScriptEnabled: false });
+
+    test("the whole drawing stands, down to a section under the fold", async ({
+      page,
+    }) => {
+      await page.setViewportSize({ height: 900, width: 1440 });
+      await page.goto("/ui/proposal/blueprint-live");
+      expect(
+        await headDrawing(page.locator("#contact .mb-section-head"))
+      ).toMatchObject({
+        brace: 1,
+        callout: 1,
+        dimension: 1,
+        label: 1,
+        rule: 1,
+        ticks: 1,
+      });
+      expect(
+        await page.evaluate(() =>
+          [
+            [".mb-frame", "::before"],
+            [".mb-hero-status", null],
+            ["#contact .mb-card", null],
+          ].map(([selector, pseudo]) =>
+            getComputedStyle(
+              document.querySelector(selector as string) as Element,
+              pseudo
+            ).getPropertyValue("--bl-p")
+          )
+        )
+      ).toEqual(["1", "1", "1"]);
+    });
   });
 
   test("a browser without scroll-driven animations gets the whole drawing at once", async ({

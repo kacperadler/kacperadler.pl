@@ -10,14 +10,15 @@
  *     comes in; its item number is written on the top rule after
  *   - the process rail (a centre line) runs down step by step; the
  *     footer's rule runs out, then its hairline, then the sheet's legend
- *   - scrolling back undraws all of it, in reverse
+ *   - a piece once on the screen stays drawn: scrolling back never
+ *     undraws it (one scrolled away half drawn completes)
  *   - the hero is on the screen from the start, so it draws on load: the
  *     datum's cross grows from its centre, "X 0  Y 0" is written, the
  *     headline's brace runs out and gets its callout, and the title block
  *     traces its frame, its header and its table (on a narrow screen,
  *     where the title block sits under the fold, it draws on scroll like
- *     a cell); the rulers on the frame's edges run down, and their ticks
- *     then travel with the sheet as it scrolls, as in a CAD viewport
+ *     a cell); the rulers on the frame's edges run down, then stand
+ *     still while the page scrolls, as blueprint's do
  *   - under the cursor a cell is selected whole, as in blueprint: all
  *     four rules, grips on the corners, the item number on a blue box
  *     reading the cell's width
@@ -28,7 +29,8 @@
  * fonts and the hard shadow are the baseline's. Under
  * prefers-reduced-motion and in a browser without scroll-driven
  * animations nothing is animated and --bl-p stays 1: the drawing stands
- * complete, as blueprint's does. */
+ * complete, as blueprint's does; without the page's script too (see the
+ * motion section). */
 
 @property --bl-p {
   syntax: "<number>";
@@ -560,15 +562,19 @@ html[data-proposal="blueprint-live"] {
   }
 }
 
-/* The rulers' ticks move with the sheet, one px per px scrolled. */
-@keyframes bl-sheet {
-  from {
-    mask-position: 0 0;
-  }
-
-  to {
-    mask-position: 0 -1000000px;
-  }
+/* The page's script (src/pages/_ui/proposal/[id].astro) marks <html>
+ * data-bl-live, and marks an element data-bl-drawn once a drawing on it
+ * ends: scrolled through, or scrolled back out of. From then on its pieces
+ * stand drawn, whatever their scroll range says. Without the script the
+ * whole drawing stands. Only an !important declaration outranks an
+ * animation. */
+html[data-proposal="blueprint-live"]:not([data-bl-live]) *,
+html[data-proposal="blueprint-live"]:not([data-bl-live]) ::before,
+html[data-proposal="blueprint-live"]:not([data-bl-live]) ::after,
+[data-proposal="blueprint-live"] [data-bl-drawn],
+[data-proposal="blueprint-live"] [data-bl-drawn]::before,
+[data-proposal="blueprint-live"] [data-bl-drawn]::after {
+  --bl-p: 1 !important;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -652,7 +658,9 @@ html[data-proposal="blueprint-live"] {
       animation-range: cover 0% cover 200px;
     }
 
-    /* On load: the hero, and the rulers, which then follow the sheet. */
+    /* On load: the hero, and the rulers on the frame's edges. */
+    [data-proposal="blueprint-live"] .mb-frame::before,
+    [data-proposal="blueprint-live"] .mb-frame::after,
     [data-proposal="blueprint-live"] .mb-hero-grid::before,
     [data-proposal="blueprint-live"] .mb-hero-grid::after,
     [data-proposal="blueprint-live"] .mb-hero h1 em::before,
@@ -662,17 +670,6 @@ html[data-proposal="blueprint-live"] {
     [data-proposal="blueprint-live"] .mb-status-row,
     [data-proposal="blueprint-live"] .mb-status-row::before {
       animation: bl-draw 1s linear both;
-    }
-
-    [data-proposal="blueprint-live"] .mb-frame::before,
-    [data-proposal="blueprint-live"] .mb-frame::after {
-      animation:
-        bl-draw 1s linear both,
-        bl-sheet linear both;
-      animation-timeline: auto, scroll(root);
-      animation-range:
-        normal,
-        0px 1000000px;
     }
 
     /* One column: the title block is under the fold, it draws as it
