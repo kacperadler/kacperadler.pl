@@ -1,34 +1,37 @@
 /* Blueprint na żywo - blueprint's engineer's drawing (every mark is the
- * blueprint proposal's), drawn while you scroll, as live-grid draws its
- * grid. A pen plots each part in order:
+ * blueprint proposal's), drawn as each part comes on the screen. A pen
+ * plots each part in order:
  *
- *   - a section's rule runs out left to right as the section comes up;
- *     then the extension ticks grow out of it at both ends; then the
- *     dimension (the section's real width in px), the "§" label and the
- *     headline's brace are written; the brace's callout letter last
- *   - a cell's frame traces clockwise from its top-left corner as the cell
- *     comes in; its item number is written on the top rule after
+ *   - a section's rule runs out left to right; then the extension ticks
+ *     grow out of it at both ends; then the dimension (the section's real
+ *     width in px), the "§" label and the headline's brace are written;
+ *     the brace's callout letter last
+ *   - a cell's frame traces clockwise from its top-left corner; its item
+ *     number is written on the top rule after
  *   - the process rail (a centre line) runs down step by step; the
  *     footer's rule runs out, then its hairline, then the sheet's legend
- *   - scrolling back undraws all of it, in reverse
+ *   - a part starts once it is whole on the screen (or, taller than the
+ *     screen, fills it) and plays through on a clock, in the same time
+ *     however fast the page is scrolled; it does not follow the scroll,
+ *     never stops half drawn, and stays drawn when scrolled away
  *   - the hero is on the screen from the start, so it draws on load: the
  *     datum's cross grows from its centre, "X 0  Y 0" is written, the
  *     headline's brace runs out and gets its callout, and the title block
  *     traces its frame, its header and its table (on a narrow screen,
- *     where the title block sits under the fold, it draws on scroll like
- *     a cell); the rulers on the frame's edges run down, and their ticks
- *     then travel with the sheet as it scrolls, as in a CAD viewport
+ *     where the title block sits under the fold, it draws like a cell);
+ *     the rulers on the frame's edges run down, then stand still while
+ *     the page scrolls, as blueprint's do
  *   - under the cursor a cell is selected whole, as in blueprint: all
  *     four rules, grips on the corners, the item number on a blue box
  *     reading the cell's width
  *
  * Each drawn piece reads one number, --bl-p (0 undrawn, 1 drawn),
- * animated on that piece over its section's, cell's or step's scroll range
- * (or the hero's second on load), and draws its own stage of it. Palette,
- * fonts and the hard shadow are the baseline's. Under
- * prefers-reduced-motion and in a browser without scroll-driven
- * animations nothing is animated and --bl-p stays 1: the drawing stands
- * complete, as blueprint's does. */
+ * animated on that piece over --bl-pen once its part is on the screen (or
+ * on load, for the hero and the rulers), and draws its own stage of it.
+ * Palette, fonts and the hard shadow are the baseline's. Under
+ * prefers-reduced-motion and without the page's script nothing is
+ * animated and --bl-p stays 1: the drawing stands complete, as
+ * blueprint's does. */
 
 @property --bl-p {
   syntax: "<number>";
@@ -46,6 +49,21 @@ html[data-proposal="blueprint-live"] {
   /* The drawing's annotation type: small mono caps. */
   --bl-note: 500 10px / 1 var(--mono);
   --bl-grip: 7px;
+  /* How long the pen takes over a part: on load and once it is on the
+   * screen alike. */
+  --bl-pen: 1.8s;
+}
+
+/* Each drawn box (an element or a pseudo-element) draws one stage of
+ * --bl-p: it sets --bl-s, its stage's share of the pen run linearly from 0
+ * to 1, and draws by --bl-e, the same eased (a smoothstep: it starts and
+ * ends softly), so every stage eases on its own rather than the run as a
+ * whole. --bl-e is set here on every box, so it reads that box's own
+ * --bl-s. */
+[data-proposal="blueprint-live"] *,
+[data-proposal="blueprint-live"] ::before,
+[data-proposal="blueprint-live"] ::after {
+  --bl-e: calc(var(--bl-s) * var(--bl-s) * (3 - 2 * var(--bl-s)));
 }
 
 /* -- Frame: the edge hairlines become rulers -------------------------- */
@@ -53,10 +71,11 @@ html[data-proposal="blueprint-live"] {
 /* Drawn down from the top. */
 [data-proposal="blueprint-live"] .mb-frame::before,
 [data-proposal="blueprint-live"] .mb-frame::after {
+  --bl-s: var(--bl-p);
   width: 9px;
   background: var(--muted);
   opacity: 0.45;
-  clip-path: inset(0 0 calc((1 - var(--bl-p)) * 100%) 0);
+  clip-path: inset(0 0 calc((1 - var(--bl-e)) * 100%) 0);
   mask:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='64'%3E%3Cpath d='M0 0h1v64H0zM1 0h8v1H1zM1 16h3v1H1zM1 32h5v1H1zM1 48h3v1H1z'/%3E%3C/svg%3E")
     0 0 / 9px 64px repeat-y;
@@ -72,13 +91,13 @@ html[data-proposal="blueprint-live"] {
  * the drawing moves, in the motion section below): stage 0-0.6. */
 [data-proposal="blueprint-live"] .mb-section-head,
 [data-proposal="blueprint-live"] .mb-ui-section {
+  --bl-s: clamp(0, var(--bl-p) / 0.6, 1);
   position: relative;
-  view-timeline: --bl-head;
   background-image: linear-gradient(var(--mb-rule) 0 0);
   background-repeat: no-repeat;
-  background-origin: border-box;
   background-position: 0 0;
-  background-size: calc(clamp(0, var(--bl-p) / 0.6, 1) * 100%) 1px;
+  background-origin: border-box;
+  background-size: calc(var(--bl-e) * 100%) 1px;
 }
 
 [data-proposal="blueprint-live"] .mb-section-head {
@@ -90,6 +109,7 @@ html[data-proposal="blueprint-live"] {
  * /ui are drawn the same way), grown out of the rule: stage 0.6-0.7. */
 [data-proposal="blueprint-live"] .mb-section-head::before,
 [data-proposal="blueprint-live"] .mb-ui-section::before {
+  --bl-s: clamp(0, (var(--bl-p) - 0.6) * 10, 1);
   position: absolute;
   top: -6px;
   right: 0;
@@ -98,7 +118,7 @@ html[data-proposal="blueprint-live"] {
   pointer-events: none;
   content: "";
   border-inline: 1px solid var(--mb-rule);
-  clip-path: inset(calc((1 - clamp(0, (var(--bl-p) - 0.6) * 10, 1)) * 50%) 0);
+  clip-path: inset(calc((1 - var(--bl-e)) * 50%) 0);
 }
 
 /* The dimension: the element's own width, read from its container size
@@ -109,6 +129,7 @@ html[data-proposal="blueprint-live"] {
   [data-proposal="blueprint-live"] .mb-section-head::after,
   [data-proposal="blueprint-live"] .mb-ui-h2::after {
     --bl-w: tan(atan2(100cqw, 1px));
+    --bl-s: clamp(0, (var(--bl-p) - 0.7) * 5, 1);
     position: absolute;
     top: -1px;
     left: 50%;
@@ -119,9 +140,7 @@ html[data-proposal="blueprint-live"] {
     content: counter(bl-w) / "";
     counter-reset: bl-w var(--bl-w);
     background: var(--v2-bg);
-    clip-path: inset(
-      0 calc((1 - clamp(0, (var(--bl-p) - 0.7) * 5, 1)) * 100%) 0 0
-    );
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
     transform: translate(-50%, -50%);
   }
 }
@@ -129,10 +148,9 @@ html[data-proposal="blueprint-live"] {
 /* The label, written left to right with the dimension: stage 0.7-0.9. Its
  * box hugs the text, so the pen writes the words, not the empty row. */
 [data-proposal="blueprint-live"] .mb-section-label {
+  --bl-s: clamp(0, (var(--bl-p) - 0.7) * 5, 1);
   justify-self: start;
-  clip-path: inset(
-    0 calc((1 - clamp(0, (var(--bl-p) - 0.7) * 5, 1)) * 100%) 0 0
-  );
+  clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
 }
 
 [data-proposal="blueprint-live"] .mb-section-label::before {
@@ -159,6 +177,7 @@ html[data-proposal="blueprint-live"] {
 [data-proposal="blueprint-live"] .mb-hero h1 em::after {
   --bl-from: 0.7;
   --bl-rate: 5;
+  --bl-s: clamp(0, (var(--bl-p) - var(--bl-from)) * var(--bl-rate), 1);
   position: absolute;
   right: 0.02em;
   bottom: 0.02em;
@@ -168,14 +187,7 @@ html[data-proposal="blueprint-live"] {
   content: "";
   border: max(2px, 0.05em) solid var(--blue);
   border-top: 0;
-  clip-path: inset(
-    0
-      calc(
-        (1 - clamp(0, (var(--bl-p) - var(--bl-from)) * var(--bl-rate), 1)) *
-        100%
-      )
-      0 0
-  );
+  clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
 }
 
 /* The callout hangs off the brace's right end, written last: stage
@@ -184,6 +196,7 @@ html[data-proposal="blueprint-live"] {
 [data-proposal="blueprint-live"] .mb-hero h1 em::before {
   --bl-from: 0.9;
   --bl-rate: 10;
+  --bl-s: clamp(0, (var(--bl-p) - var(--bl-from)) * var(--bl-rate), 1);
   position: absolute;
   bottom: 0.02em;
   left: 100%;
@@ -194,18 +207,11 @@ html[data-proposal="blueprint-live"] {
   letter-spacing: 0;
   content: counter(bl-callout, upper-alpha) / "";
   background: var(--blue);
-  clip-path: inset(
-    0
-      calc(
-        (1 - clamp(0, (var(--bl-p) - var(--bl-from)) * var(--bl-rate), 1)) *
-        100%
-      )
-      0 0
-  );
+  clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
   transform: translateY(50%);
 }
 
-/* In the hero (one second on load) the brace runs out over 0.3-0.7 and
+/* In the hero (on load) the brace runs out over 0.3-0.7 and
  * the callout comes at 0.7-0.8, after the datum. */
 [data-proposal="blueprint-live"] .mb-hero h1 em::after {
   --bl-from: 0.3;
@@ -220,27 +226,27 @@ html[data-proposal="blueprint-live"] {
 /* -- Cells: a traced frame, item numbers on the rule, grips ----------- */
 
 /* The frame: four rules drawn by the background over the border, top,
- * right, bottom, left, clockwise from the top-left corner, each a fifth
- * of --bl-p (0-0.8). */
+ * right, bottom, left, clockwise from the top-left corner: one stage over
+ * --bl-p 0-0.8, eased as a whole, each rule a quarter of it. */
 [data-proposal="blueprint-live"] .mb-card {
+  --bl-s: clamp(0, var(--bl-p) / 0.8, 1);
   container-type: inline-size;
-  view-timeline: --bl-cell;
   counter-increment: bl-cell;
   background-image:
     linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0),
     linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0);
   background-repeat: no-repeat;
-  background-origin: border-box;
   background-position:
     0 0,
     100% 0,
     100% 100%,
     0 100%;
+  background-origin: border-box;
   background-size:
-    calc(clamp(0, var(--bl-p) * 5, 1) * 100%) 1px,
-    1px calc(clamp(0, var(--bl-p) * 5 - 1, 1) * 100%),
-    calc(clamp(0, var(--bl-p) * 5 - 2, 1) * 100%) 1px,
-    1px calc(clamp(0, var(--bl-p) * 5 - 3, 1) * 100%);
+    calc(clamp(0, var(--bl-e) * 4, 1) * 100%) 1px,
+    1px calc(clamp(0, var(--bl-e) * 4 - 1, 1) * 100%),
+    calc(clamp(0, var(--bl-e) * 4 - 2, 1) * 100%) 1px,
+    1px calc(clamp(0, var(--bl-e) * 4 - 3, 1) * 100%);
 }
 
 /* The 3px top rule gives way to the grips and the filled item number. */
@@ -253,6 +259,7 @@ html[data-proposal="blueprint-live"] {
  * text hangs out of. Written on the top rule once the frame is traced
  * (0.8-1). */
 [data-proposal="blueprint-live"] .mb-card::before {
+  --bl-s: clamp(0, var(--bl-p) * 5 - 4, 1);
   position: absolute;
   top: -1px;
   right: auto;
@@ -267,7 +274,7 @@ html[data-proposal="blueprint-live"] {
   pointer-events: none;
   content: counter(mb-section, decimal-leading-zero) "." counter(bl-cell) / "";
   background: var(--v2-bg);
-  clip-path: inset(0 calc((1 - clamp(0, var(--bl-p) * 5 - 4, 1)) * 100%) 0 0);
+  clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
   transform: translateY(-50%);
   transition:
     background-color var(--mb-snap),
@@ -347,8 +354,9 @@ html[data-proposal="blueprint-live"] {
 }
 
 /* Its cross: two 1px arms on a 17px square, grown from the centre (stage
- * 0-0.25 of the hero's second). */
+ * 0-0.25 of the hero's pen). */
 [data-proposal="blueprint-live"] .mb-hero-grid::before {
+  --bl-s: clamp(0, var(--bl-p) * 4, 1);
   position: absolute;
   top: var(--bl-datum);
   left: calc(var(--v2-space-md) - 8px);
@@ -356,14 +364,15 @@ html[data-proposal="blueprint-live"] {
   height: 17px;
   content: "";
   background:
-    linear-gradient(var(--blue) 0 0) 50% 50% /
-    calc(clamp(0, var(--bl-p) * 4, 1) * 100%) 1px no-repeat,
-    linear-gradient(var(--blue) 0 0) 50% 50% / 1px
-    calc(clamp(0, var(--bl-p) * 4, 1) * 100%) no-repeat;
+    linear-gradient(var(--blue) 0 0) 50% 50% / calc(var(--bl-e) * 100%) 1px
+    no-repeat,
+    linear-gradient(var(--blue) 0 0) 50% 50% / 1px calc(var(--bl-e) * 100%)
+    no-repeat;
 }
 
 /* Written next to it: stage 0.25-0.5. */
 [data-proposal="blueprint-live"] .mb-hero-grid::after {
+  --bl-s: clamp(0, (var(--bl-p) - 0.25) * 4, 1);
   position: absolute;
   top: calc(var(--bl-datum) + 4px);
   left: calc(var(--v2-space-md) + 14px);
@@ -372,37 +381,36 @@ html[data-proposal="blueprint-live"] {
   letter-spacing: 0.08em;
   white-space: pre;
   content: "X 0  Y 0" / "";
-  clip-path: inset(
-    0 calc((1 - clamp(0, (var(--bl-p) - 0.25) * 4, 1)) * 100%) 0 0
-  );
+  clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
 }
 
 /* The title block traces its frame like a cell (stage 0-0.6), writes its
  * header (0.5-0.8), rules its rows (0.6-0.85) and the column between label
- * and value (0.75-1). */
+ * and value (0.75-1). The frame is one stage, each rule a quarter of it. */
 [data-proposal="blueprint-live"] .mb-hero-status {
   --bl-pad: var(--v2-space-lg);
+  --bl-s: clamp(0, var(--bl-p) / 0.6, 1);
   gap: 0;
   padding: 0 var(--bl-pad) var(--bl-pad);
-  view-timeline: --bl-block;
   background-image:
     linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0),
     linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0);
   background-repeat: no-repeat;
-  background-origin: border-box;
   background-position:
     0 0,
     100% 0,
     100% 100%,
     0 100%;
+  background-origin: border-box;
   background-size:
-    calc(clamp(0, var(--bl-p) / 0.15, 1) * 100%) 1px,
-    1px calc(clamp(0, var(--bl-p) / 0.15 - 1, 1) * 100%),
-    calc(clamp(0, var(--bl-p) / 0.15 - 2, 1) * 100%) 1px,
-    1px calc(clamp(0, var(--bl-p) / 0.15 - 3, 1) * 100%);
+    calc(clamp(0, var(--bl-e) * 4, 1) * 100%) 1px,
+    1px calc(clamp(0, var(--bl-e) * 4 - 1, 1) * 100%),
+    calc(clamp(0, var(--bl-e) * 4 - 2, 1) * 100%) 1px,
+    1px calc(clamp(0, var(--bl-e) * 4 - 3, 1) * 100%);
 }
 
 [data-proposal="blueprint-live"] .mb-hero-status::before {
+  --bl-s: clamp(0, (var(--bl-p) - 0.5) / 0.3, 1);
   padding: 10px var(--bl-pad);
   margin: 0 calc(-1 * var(--bl-pad)) var(--v2-space-md);
   font: var(--bl-note);
@@ -411,9 +419,7 @@ html[data-proposal="blueprint-live"] {
   letter-spacing: 0.14em;
   content: "Rys. KA-001 · Arkusz 1/1" / "";
   border-bottom: 1px solid var(--mb-rule);
-  clip-path: inset(
-    0 calc((1 - clamp(0, (var(--bl-p) - 0.5) / 0.3, 1)) * 100%) 0 0
-  );
+  clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
 }
 
 [data-proposal="blueprint-live"] .mb-status-id {
@@ -422,7 +428,8 @@ html[data-proposal="blueprint-live"] {
 
 /* A row's hairlines, drawn by its background over the border. */
 [data-proposal="blueprint-live"] .mb-status-row {
-  --bl-row: calc(clamp(0, (var(--bl-p) - 0.6) / 0.25, 1) * 100%);
+  --bl-s: clamp(0, (var(--bl-p) - 0.6) / 0.25, 1);
+  --bl-row: calc(var(--bl-e) * 100%);
   position: relative;
   background-image: linear-gradient(var(--mb-hair) 0 0);
   background-repeat: no-repeat;
@@ -433,6 +440,7 @@ html[data-proposal="blueprint-live"] {
 
 /* The title block's column rule, between label and value, run down. */
 [data-proposal="blueprint-live"] .mb-status-row::before {
+  --bl-s: clamp(0, (var(--bl-p) - 0.75) * 4, 1);
   position: absolute;
   top: 0;
   bottom: 0;
@@ -440,9 +448,7 @@ html[data-proposal="blueprint-live"] {
   width: 1px;
   content: "";
   background: var(--mb-hair);
-  clip-path: inset(
-    0 0 calc((1 - clamp(0, (var(--bl-p) - 0.75) * 4, 1)) * 100%) 0
-  );
+  clip-path: inset(0 0 calc((1 - var(--bl-e)) * 100%) 0);
 }
 
 [data-proposal="blueprint-live"] .mb-status-row:last-child {
@@ -460,13 +466,10 @@ html[data-proposal="blueprint-live"] {
 
 /* -- Process: the rail is a centre line, run down per step ------------ */
 
-[data-proposal="blueprint-live"] .mb-step {
-  view-timeline: --bl-step;
-}
-
 [data-proposal="blueprint-live"] .mb-step-marker::before {
+  --bl-s: var(--bl-p);
   background: var(--mb-rule);
-  clip-path: inset(0 0 calc((1 - var(--bl-p)) * 100%) 0);
+  clip-path: inset(0 0 calc((1 - var(--bl-e)) * 100%) 0);
   mask:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='16'%3E%3Cpath d='M0 0h1v9H0zM0 12h1v1H0z'/%3E%3C/svg%3E")
     0 0 / 1px 16px repeat-y;
@@ -476,32 +479,31 @@ html[data-proposal="blueprint-live"] {
 
 /* The footer's rule runs out like a section's. */
 [data-proposal="blueprint-live"] .mb-footer {
-  view-timeline: --bl-foot;
+  --bl-s: var(--bl-p);
   background-image: linear-gradient(var(--mb-rule) 0 0);
   background-repeat: no-repeat;
-  background-origin: border-box;
   background-position: 0 0;
-  background-size: calc(var(--bl-p) * 100%) 1px;
+  background-origin: border-box;
+  background-size: calc(var(--bl-e) * 100%) 1px;
 }
 
 /* Then the bottom row's hairline (stage 0-0.6), then the legend
  * (0.6-1). */
 [data-proposal="blueprint-live"] .mb-footer-bottom {
-  view-timeline: --bl-legend;
+  --bl-s: clamp(0, var(--bl-p) / 0.6, 1);
   background-image: linear-gradient(var(--mb-hair) 0 0);
   background-repeat: no-repeat;
-  background-origin: border-box;
   background-position: 0 0;
-  background-size: calc(clamp(0, var(--bl-p) / 0.6, 1) * 100%) 1px;
+  background-origin: border-box;
+  background-size: calc(var(--bl-e) * 100%) 1px;
 }
 
 [data-proposal="blueprint-live"] .mb-footer-bottom::after {
+  --bl-s: clamp(0, (var(--bl-p) - 0.6) / 0.4, 1);
   margin-left: auto;
   text-transform: uppercase;
   content: "Wymiary w px · Skala 1:1 · Rys. KA-001" / "";
-  clip-path: inset(
-    0 calc((1 - clamp(0, (var(--bl-p) - 0.6) / 0.4, 1)) * 100%) 0 0
-  );
+  clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
 }
 
 /* -- Catalogue (/ui): its sections are paragraphs under dimensions too -- */
@@ -519,11 +521,10 @@ html[data-proposal="blueprint-live"] {
 
 /* Its "§" is written with the dimension: stage 0.7-0.9. */
 [data-proposal="blueprint-live"] .mb-ui-h2::before {
+  --bl-s: clamp(0, (var(--bl-p) - 0.7) * 5, 1);
   color: var(--blue);
   content: "§ " / "";
-  clip-path: inset(
-    0 calc((1 - clamp(0, (var(--bl-p) - 0.7) * 5, 1)) * 100%) 0 0
-  );
+  clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
 }
 
 @media (max-width: 880px) {
@@ -550,6 +551,8 @@ html[data-proposal="blueprint-live"] {
 
 /* -- Motion: the pen ---------------------------------------------------- */
 
+/* The run is linear on purpose: each stage eases itself (--bl-e), so an
+ * eased run would ease the stages in its middle twice and hurry them. */
 @keyframes bl-draw {
   from {
     --bl-p: 0;
@@ -560,132 +563,163 @@ html[data-proposal="blueprint-live"] {
   }
 }
 
-/* The rulers' ticks move with the sheet, one px per px scrolled. */
-@keyframes bl-sheet {
-  from {
-    mask-position: 0 0;
-  }
-
-  to {
-    mask-position: 0 -1000000px;
-  }
-}
-
+/* The page's script (src/pages/_ui/proposal/[id].astro) marks <html>
+ * data-bl-live, then marks an element data-bl-drawn once it is whole on
+ * the screen (or, taller than the screen, fills it): a section head, a
+ * catalogue section (by its heading), a cell, a process step, the footer
+ * and its bottom row, the title block. Until then its pieces stand
+ * undrawn; from then on the pen plays them through on a clock, the same
+ * --bl-pen however fast the page is scrolled, and they stay. Without the
+ * script nothing here applies and the drawing stands complete. */
 @media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    /* The rules are drawn by the backgrounds above, not the borders. */
-    [data-proposal="blueprint-live"] .mb-section-head,
-    [data-proposal="blueprint-live"] .mb-ui-section,
-    [data-proposal="blueprint-live"] .mb-footer,
-    [data-proposal="blueprint-live"] .mb-footer-bottom,
-    [data-proposal="blueprint-live"] .mb-status-row {
-      border-top-color: transparent;
-    }
+  /* The rules are drawn by the backgrounds above, not the borders. */
+  [data-proposal="blueprint-live"][data-bl-live] .mb-section-head,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-ui-section,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-footer,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-footer-bottom,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-status-row {
+    border-top-color: transparent;
+  }
 
-    [data-proposal="blueprint-live"] .mb-card,
-    [data-proposal="blueprint-live"] .mb-hero-status {
-      border-color: transparent;
-    }
+  [data-proposal="blueprint-live"][data-bl-live] .mb-card,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-hero-status {
+    border-color: transparent;
+  }
 
-    [data-proposal="blueprint-live"] .mb-status-row:last-child {
-      border-bottom-color: transparent;
-    }
+  [data-proposal="blueprint-live"][data-bl-live] .mb-status-row:last-child {
+    border-bottom-color: transparent;
+  }
 
-    /* A selected (or pressed) cell stands whole, drawn or not: the
-     * component's hover background takes the traced frame away, the
-     * border brings all four rules back, and its number is on at once. */
-    [data-proposal="blueprint-live"]
-      .mb-card:is(
-        :hover,
-        [data-state="hover"],
-        :active,
-        [data-state="pressed"]
-      ) {
-      border-color: var(--mb-rule);
-    }
+  /* A selected (or pressed) cell stands whole, drawn or not: the
+   * component's hover background takes the traced frame away, the
+   * border brings all four rules back. */
+  [data-proposal="blueprint-live"][data-bl-live]
+  .mb-card:is(:hover, [data-state="hover"], :active, [data-state="pressed"]) {
+    border-color: var(--mb-rule);
+  }
 
-    /* A section: rule, ticks, dimension, label, brace, callout. */
-    [data-proposal="blueprint-live"] .mb-section-head,
-    [data-proposal="blueprint-live"] .mb-section-head::before,
-    [data-proposal="blueprint-live"] .mb-section-head::after,
-    [data-proposal="blueprint-live"] .mb-section-label,
-    [data-proposal="blueprint-live"] .mb-section-title em::before,
-    [data-proposal="blueprint-live"] .mb-section-title em::after,
-    [data-proposal="blueprint-live"] .mb-ui-section,
-    [data-proposal="blueprint-live"] .mb-ui-section::before,
-    [data-proposal="blueprint-live"] .mb-ui-h2::before,
-    [data-proposal="blueprint-live"] .mb-ui-h2::after {
-      animation: bl-draw linear both;
-      animation-timeline: --bl-head;
-      animation-range: cover 0% cover 360px;
-    }
+  /* On load: the hero, and the rulers on the frame's edges. */
+  [data-proposal="blueprint-live"][data-bl-live] .mb-frame::before,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-frame::after,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-hero-grid::before,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-hero-grid::after,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-hero h1 em::before,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-hero h1 em::after,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-hero-status,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-hero-status::before,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-status-row,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-status-row::before {
+    animation: bl-draw var(--bl-pen) linear both;
+  }
 
-    /* A cell: frame, then number, while it comes in. */
-    [data-proposal="blueprint-live"] .mb-card,
-    [data-proposal="blueprint-live"] .mb-card::before {
-      animation: bl-draw linear both;
-      animation-timeline: --bl-cell;
-      animation-range: entry 0% entry 100%;
-    }
+  /* Not on the screen yet: undrawn. */
+  [data-proposal="blueprint-live"][data-bl-live]
+  .mb-section-head:not([data-bl-drawn]),
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head:not([data-bl-drawn])::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head:not([data-bl-drawn])::after,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head:not([data-bl-drawn])
+    .mb-section-label,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head:not([data-bl-drawn])
+    .mb-section-title
+    em::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head:not([data-bl-drawn])
+    .mb-section-title
+    em::after,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-ui-section:not([data-bl-drawn]),
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-ui-section:not([data-bl-drawn])::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-ui-section:not([data-bl-drawn])
+    .mb-ui-h2::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-ui-section:not([data-bl-drawn])
+    .mb-ui-h2::after,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-card:not([data-bl-drawn]),
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-card:not([data-bl-drawn])::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-step:not([data-bl-drawn])
+    .mb-step-marker::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-footer:not([data-bl-drawn]),
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-footer-bottom:not([data-bl-drawn]),
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-footer-bottom:not([data-bl-drawn])::after {
+    --bl-p: 0;
+  }
 
-    [data-proposal="blueprint-live"]
-      .mb-card:is(:hover, [data-state="hover"])::before {
+  /* On the screen: a section's rule, ticks, dimension, label, brace and
+   * callout; a cell's frame, then its number; a step of the rail; the
+   * footer's rule, hairline and legend. */
+  [data-proposal="blueprint-live"][data-bl-live]
+  .mb-section-head[data-bl-drawn],
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head[data-bl-drawn]::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head[data-bl-drawn]::after,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head[data-bl-drawn]
+    .mb-section-label,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head[data-bl-drawn]
+    .mb-section-title
+    em::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-section-head[data-bl-drawn]
+    .mb-section-title
+    em::after,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-ui-section[data-bl-drawn],
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-ui-section[data-bl-drawn]::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-ui-section[data-bl-drawn]
+    .mb-ui-h2::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-ui-section[data-bl-drawn]
+    .mb-ui-h2::after,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-card[data-bl-drawn],
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-card[data-bl-drawn]::before,
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-step[data-bl-drawn]
+    .mb-step-marker::before,
+  [data-proposal="blueprint-live"][data-bl-live] .mb-footer[data-bl-drawn],
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-footer-bottom[data-bl-drawn],
+  [data-proposal="blueprint-live"][data-bl-live]
+    .mb-footer-bottom[data-bl-drawn]::after {
+    animation: bl-draw var(--bl-pen) linear both;
+  }
+
+  /* One column: the title block is under the fold, it draws like a cell
+   * once it is on the screen. */
+  @media (max-width: 880px) {
+    [data-proposal="blueprint-live"][data-bl-live]
+      .mb-hero-status:not([data-bl-drawn]),
+    [data-proposal="blueprint-live"][data-bl-live]
+      .mb-hero-status:not([data-bl-drawn])::before,
+    [data-proposal="blueprint-live"][data-bl-live]
+      .mb-hero-status:not([data-bl-drawn])
+      .mb-status-row,
+    [data-proposal="blueprint-live"][data-bl-live]
+      .mb-hero-status:not([data-bl-drawn])
+      .mb-status-row::before {
+      --bl-p: 0;
       animation: none;
     }
+  }
 
-    [data-proposal="blueprint-live"] .mb-step-marker::before {
-      animation: bl-draw linear both;
-      animation-timeline: --bl-step;
-      animation-range: entry 0% entry 100%;
-    }
-
-    [data-proposal="blueprint-live"] .mb-footer {
-      animation: bl-draw linear both;
-      animation-timeline: --bl-foot;
-      animation-range: cover 0% cover 360px;
-    }
-
-    [data-proposal="blueprint-live"] .mb-footer-bottom,
-    [data-proposal="blueprint-live"] .mb-footer-bottom::after {
-      animation: bl-draw linear both;
-      animation-timeline: --bl-legend;
-      animation-range: cover 0% cover 200px;
-    }
-
-    /* On load: the hero, and the rulers, which then follow the sheet. */
-    [data-proposal="blueprint-live"] .mb-hero-grid::before,
-    [data-proposal="blueprint-live"] .mb-hero-grid::after,
-    [data-proposal="blueprint-live"] .mb-hero h1 em::before,
-    [data-proposal="blueprint-live"] .mb-hero h1 em::after,
-    [data-proposal="blueprint-live"] .mb-hero-status,
-    [data-proposal="blueprint-live"] .mb-hero-status::before,
-    [data-proposal="blueprint-live"] .mb-status-row,
-    [data-proposal="blueprint-live"] .mb-status-row::before {
-      animation: bl-draw 1s linear both;
-    }
-
-    [data-proposal="blueprint-live"] .mb-frame::before,
-    [data-proposal="blueprint-live"] .mb-frame::after {
-      animation:
-        bl-draw 1s linear both,
-        bl-sheet linear both;
-      animation-timeline: auto, scroll(root);
-      animation-range:
-        normal,
-        0px 1000000px;
-    }
-
-    /* One column: the title block is under the fold, it draws as it
-     * comes in. */
-    @media (max-width: 880px) {
-      [data-proposal="blueprint-live"] .mb-hero-status,
-      [data-proposal="blueprint-live"] .mb-hero-status::before,
-      [data-proposal="blueprint-live"] .mb-status-row,
-      [data-proposal="blueprint-live"] .mb-status-row::before {
-        animation-duration: auto;
-        animation-timeline: --bl-block;
-        animation-range: entry 0% entry 100%;
-      }
-    }
+  /* Under the cursor a cell's number is on at once, drawn or not. */
+  [data-proposal="blueprint-live"][data-bl-live]
+  .mb-card:is(:hover, [data-state="hover"])::before {
+    --bl-p: 1;
+    animation: none;
   }
 }

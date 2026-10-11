@@ -202,6 +202,39 @@ const raise = (el: Locator, above: number) =>
     });
   }, above);
 
+// Scrolls the window to `top` and waits two frames, by which the page's
+// IntersectionObserver has reported; returns where the window ended up.
+const settleAt = (page: Page, top: number) =>
+  page.evaluate(async (y) => {
+    window.scrollTo({ behavior: "instant", top: y });
+    const { promise, resolve } = Promise.withResolvers<void>();
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+    await promise;
+    return window.scrollY;
+  }, top);
+
+// Holds the pen over every piece inside `part` at `progress` of its
+// drawing (0 to 1), or lets it run on with `null`.
+const penAt = (part: Locator, progress: number | null) =>
+  part.evaluate((node, p) => {
+    for (const a of document.getAnimations()) {
+      const effect = a.effect as KeyframeEffect;
+      if (
+        a instanceof CSSAnimation &&
+        a.animationName === "bl-draw" &&
+        effect.target &&
+        node.contains(effect.target)
+      ) {
+        if (p === null) {
+          a.play();
+        } else {
+          a.pause();
+          a.currentTime = p * Number(effect.getComputedTiming().duration);
+        }
+      }
+    }
+  }, progress);
+
 interface Drawing {
   durationMs: number;
   iterations: number;
@@ -518,9 +551,18 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
     rule: 0,
     ticks: 0,
   };
+  const drawn = {
+    border: NO_COLOR,
+    brace: 1,
+    callout: 1,
+    dimension: 1,
+    label: 1,
+    rule: 1,
+    ticks: 1,
+  };
 
   for (const width of [1440, 360]) {
-    test(`a section draws in order as it comes up and undraws on the way back at ${width}px`, async ({
+    test(`a section draws in order once it is whole on the screen and stays drawn on the way back at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ height: 900, width });
@@ -528,16 +570,31 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
         waitUntil: "networkidle",
       });
       const head = page.locator("#contact .mb-section-head");
+      const height = (await head.boundingBox())?.height ?? 0;
 
       // Below the fold: nothing of it, its border included.
       await expect.poll(() => headDrawing(head)).toEqual(undrawn);
 
-      // 100px up (of the 360 it draws over): only the rule, running out.
-      await raise(head, 100);
-      await expect
-        .poll(async () => (await headDrawing(head)).rule)
-        .toBeCloseTo(100 / 360 / 0.6, 1);
-      expect(await headDrawing(head)).toMatchObject({
+      // Half on the screen: still nothing, however long it stays there.
+      await raise(head, height / 2);
+      await page.waitForTimeout(1000);
+      expect(await headDrawing(head)).toEqual(undrawn);
+
+      // Whole on the screen, the pen starts. Each stage eases on its own:
+      // a tenth into the rule's stage it has drawn less than a tenth (a
+      // smoothstep's 0.028), nine tenths in, more than nine (0.972).
+      await raise(head, height + 20);
+      await expect(head).toHaveAttribute("data-bl-drawn", "");
+      await penAt(head, 0.06);
+      expect((await headDrawing(head)).rule).toBeCloseTo(0.028, 2);
+      await penAt(head, 0.54);
+      expect((await headDrawing(head)).rule).toBeCloseTo(0.972, 2);
+
+      // Held at 0.3 of the drawing: only the rule, halfway out.
+      await penAt(head, 0.3);
+      const ruling = await headDrawing(head);
+      expect(ruling.rule).toBeCloseTo(0.5, 2);
+      expect(ruling).toMatchObject({
         brace: 0,
         callout: 0,
         dimension: 0,
@@ -545,14 +602,12 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
         ticks: 0,
       });
 
-      // 300px up: rule and ticks drawn; the dimension, the label and the
+      // At 0.8: rule and ticks drawn; the dimension, the label and the
       // brace being written together; the callout not yet.
-      await raise(head, 300);
-      await expect
-        .poll(async () => (await headDrawing(head)).label)
-        .toBeCloseTo((300 / 360 - 0.7) * 5, 1);
+      await penAt(head, 0.8);
       const writing = await headDrawing(head);
       expect(writing).toMatchObject({ callout: 0, rule: 1, ticks: 1 });
+      expect(writing.label).toBeCloseTo((0.8 - 0.7) * 5, 2);
       expect(writing.dimension).toBeCloseTo(writing.label, 3);
       expect(writing.brace).toBeCloseTo(writing.label, 3);
 
@@ -563,30 +618,19 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
         .analyze();
       expect(results.violations).toEqual([]);
 
-      // Up the screen: all of it, on the painted rule.
-      await raise(head, 600);
-      await expect
-        .poll(() => headDrawing(head))
-        .toEqual({
-          border: NO_COLOR,
-          brace: 1,
-          callout: 1,
-          dimension: 1,
-          label: 1,
-          rule: 1,
-          ticks: 1,
-        });
+      // Let go, the pen finishes: all of it, on the painted rule.
+      await penAt(head, null);
+      await expect.poll(() => headDrawing(head)).toEqual(drawn);
 
-      // Back to the top: undrawn again.
-      await page.evaluate(() =>
-        window.scrollTo({ behavior: "instant", top: 0 })
-      );
-      await expect.poll(() => headDrawing(head)).toEqual(undrawn);
+      // Back to the top, the section under the fold again: still drawn.
+      expect(await settleAt(page, 0)).toBe(0);
+      expect(await headDrawing(head)).toEqual(drawn);
     });
 
-    test(`at the end of the page every piece is drawn, and nothing scrolls sideways, at ${width}px`, async ({
+    test(`scrolled through, every part is drawn on a clock, and nothing scrolls sideways, at ${width}px`, async ({
       page,
     }) => {
+      test.setTimeout(90_000);
       await page.setViewportSize({ height: 900, width });
       await page.goto("/ui/proposal/blueprint-live", {
         waitUntil: "networkidle",
@@ -598,24 +642,33 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
             document.documentElement.clientWidth
         );
       expect(await sideways()).toBe(0);
-      await page.evaluate(() =>
-        window.scrollTo({
-          behavior: "instant",
-          top: document.documentElement.scrollHeight / 2,
-        })
+
+      // Down the page as a wheel does, 100px a frame.
+      const end = await page.evaluate(
+        () => document.documentElement.scrollHeight - window.innerHeight
       );
-      expect(await sideways()).toBe(0);
-      await page.evaluate(() =>
-        window.scrollTo({
-          behavior: "instant",
-          top: document.documentElement.scrollHeight,
-        })
-      );
+      for (let top = 0; top < end + 100; top += 100) {
+        // biome-ignore lint/performance/noAwaitInLoops: one frame at a time
+        await settleAt(page, top);
+      }
       expect(await sideways()).toBe(0);
 
-      const pieces = (await drawings(page)).filter((d) =>
-        d.piece.startsWith("bl-draw ")
-      );
+      // Every part on the page has been seen, so marked.
+      expect(
+        await page.evaluate(() =>
+          [
+            ...document.querySelectorAll(
+              ".mb-section-head, .mb-ui-section, .mb-card, .mb-step, .mb-footer, .mb-footer-bottom"
+            ),
+          ]
+            .filter(
+              (el) => el.checkVisibility() && !el.hasAttribute("data-bl-drawn")
+            )
+            .map((el) => el.outerHTML.slice(0, 80))
+        )
+      ).toEqual([]);
+
+      const pieces = await drawings(page);
       for (const [part, pseudo] of [
         ["mb-section-head", "::before"],
         ["mb-card", "::before"],
@@ -630,10 +683,17 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
           `${part}${pseudo}`
         ).toBe(true);
       }
+      // No piece follows the scroll: each plays once, on the clock, over
+      // the same --bl-pen, however fast it was scrolled.
+      for (const d of pieces) {
+        expect(d.onScroll, d.piece).toBe(false);
+        expect(d.iterations, d.piece).toBe(1);
+        expect(d.durationMs, d.piece).toBe(1800);
+      }
       await expect
         .poll(async () =>
           (await drawings(page))
-            .filter((d) => d.piece.startsWith("bl-draw ") && d.progress !== 1)
+            .filter((d) => d.progress !== 1)
             .map((d) => d.piece)
         )
         .toEqual([]);
@@ -649,11 +709,10 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
       const all = await drawings(page);
       for (const d of all) {
         expect(d.iterations, d.piece).toBe(1);
-        if (!d.onScroll) {
-          expect(d.durationMs, d.piece).toBe(1000);
-        }
+        expect(d.onScroll, d.piece).toBe(false);
+        expect(d.durationMs, d.piece).toBe(1800);
       }
-      const onLoad = all.filter((d) => !d.onScroll).map((d) => d.piece);
+      const onLoad = all.map((d) => d.piece);
       expect(
         onLoad.some(
           (piece) =>
@@ -661,7 +720,7 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
         )
       ).toBe(true);
       // Side by side the title block is on the screen and draws on load; in
-      // one column it is under the fold and draws as it comes in.
+      // one column it is under the fold and draws once it is on the screen.
       expect(onLoad.some((piece) => piece.includes(".mb-hero-status"))).toBe(
         width > 880
       );
@@ -673,20 +732,45 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
             .getAnimations()
             .filter(
               (a) =>
-                a instanceof CSSAnimation &&
-                a.animationName.startsWith("bl-") &&
-                a.timeline instanceof DocumentTimeline
+                a instanceof CSSAnimation && a.animationName.startsWith("bl-")
             )
             .map((a) => a.finished)
         )
       );
-      expect(
-        (await drawings(page))
-          .filter((d) => !d.onScroll)
-          .map((d) => [d.piece, d.progress])
-      ).toEqual(onLoad.map((piece) => [piece, 1]));
+      expect((await drawings(page)).map((d) => [d.piece, d.progress])).toEqual(
+        onLoad.map((piece) => [piece, 1])
+      );
     });
   }
+
+  test("a cell scrolled whole into view draws to the end by itself", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/ui/proposal/blueprint-live", {
+      waitUntil: "networkidle",
+    });
+    const card = page.locator("#experience .mb-card").first();
+    const height = (await card.boundingBox())?.height ?? 0;
+    const frame = () =>
+      card.evaluate((el) =>
+        ["", "::before"].map((pseudo) =>
+          getComputedStyle(el, pseudo || null).getPropertyValue("--bl-p")
+        )
+      );
+    expect(await frame()).toEqual(["0", "0"]);
+
+    // Whole on the screen, and not a pixel further: the frame and the
+    // number play through within the pen's 1.8s.
+    await raise(card, height + 10);
+    await expect.poll(frame, { timeout: 3000 }).toEqual(["1", "1"]);
+    await expect(card).toHaveCSS("border-top-color", NO_COLOR);
+    expect(
+      (await drawings(page))
+        .filter((d) => d.piece.includes(".mb-card") && d.progress === 1)
+        .some((d) => d.durationMs === 1800 && !d.onScroll)
+    ).toBe(true);
+  });
 
   test("a cell under the cursor is selected whole while it is still drawing", async ({
     page,
@@ -697,20 +781,20 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
     });
     const card = page.locator("#experience .mb-card").first();
     const height = (await card.boundingBox())?.height ?? 0;
-    await raise(card, height / 2);
-    await expect
-      .poll(() =>
-        card.evaluate((el) =>
-          Number(getComputedStyle(el).getPropertyValue("--bl-p"))
-        )
+    await raise(card, height + 10);
+    await expect(card).toHaveAttribute("data-bl-drawn", "");
+    await penAt(card, 0.5);
+    expect(
+      await card.evaluate((el) =>
+        getComputedStyle(el).getPropertyValue("--bl-p")
       )
-      .toBeCloseTo(0.5, 1);
+    ).toBe("0.5");
     await expect(card).toHaveCSS("border-top-color", NO_COLOR);
 
     const box = await card.boundingBox();
     await page.mouse.move(
       (box?.x ?? 0) + (box?.width ?? 0) / 2,
-      900 - height / 4
+      (box?.y ?? 0) + (box?.height ?? 0) / 2
     );
     await expect(card).not.toHaveCSS("border-top-color", NO_COLOR);
     const tag = await blueprintTag(card);
@@ -723,46 +807,49 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
     ).toBe("1");
   });
 
-  test("the rulers' ticks travel with the sheet", async ({ page }) => {
-    await page.setViewportSize({ height: 900, width: 1440 });
-    await page.goto("/ui/proposal/blueprint-live", {
-      waitUntil: "networkidle",
-    });
-    const ruler = () =>
-      page.evaluate(() => [
-        window.scrollY,
-        getComputedStyle(
-          document.querySelector(".mb-frame") as Element,
-          "::before"
-        ).maskPosition,
-      ]);
-    expect(await ruler()).toEqual([0, "0px 0px"]);
-    await page.evaluate(() =>
-      window.scrollTo({ behavior: "instant", top: 1234 })
-    );
-    await expect.poll(ruler).toEqual([1234, "0px -1234px"]);
-  });
-
-  test("a browser without scroll-driven animations gets the whole drawing at once", async ({
+  test("the rulers draw down on load and stand still while the page scrolls", async ({
     page,
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
     await page.goto("/ui/proposal/blueprint-live", {
       waitUntil: "networkidle",
     });
-    expect((await drawings(page)).length).toBeGreaterThan(0);
 
-    // The motion is gated on support: as such a browser, fail the gate.
-    const gate = "@supports (animation-timeline: view())";
-    const css = page.locator("style[data-proposal-css]");
-    expect(await css.textContent()).toContain(gate);
-    await css.evaluate((el, from) => {
-      el.textContent = (el.textContent ?? "").replace(
-        from,
-        "@supports (animation-timeline: no-such-timeline())"
-      );
-    }, gate);
-    await expectDrawnAtOnce(page);
+    // The ticks' place on screen, before and two frames after a scroll.
+    const [before, after, scrolled] = await page.evaluate(async () => {
+      const frame = document.querySelector(".mb-frame") as Element;
+      const ticks = () =>
+        ["::before", "::after"].map(
+          (pseudo) => getComputedStyle(frame, pseudo).maskPosition
+        );
+      const atTop = ticks();
+      window.scrollTo({ behavior: "instant", top: 1234 });
+      const { promise, resolve } = Promise.withResolvers<void>();
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      await promise;
+      return [atTop, ticks(), window.scrollY];
+    });
+    expect(scrolled).toBe(1234);
+    expect(after).toEqual(before);
+
+    // Drawn down once, on load, on the clock.
+    const rulers = (await drawings(page)).filter((d) =>
+      d.piece.includes(".mb-frame")
+    );
+    expect(rulers.map((d) => [d.piece, d.onScroll, d.durationMs])).toEqual([
+      ["bl-draw div.mb-frame ::before", false, 1800],
+      ["bl-draw div.mb-frame ::after", false, 1800],
+    ]);
+  });
+
+  test.describe("without the page's script", () => {
+    test.use({ javaScriptEnabled: false });
+
+    test("the whole drawing stands at once", async ({ page }) => {
+      await page.setViewportSize({ height: 900, width: 1440 });
+      await page.goto("/ui/proposal/blueprint-live");
+      await expectDrawnAtOnce(page);
+    });
   });
 });
 

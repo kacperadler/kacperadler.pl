@@ -1,5 +1,5 @@
 {
-  "description": "Rysunek techniczny z Blueprintu powstaje na oczach, gdy przewijasz: linia sekcji wybiega od lewej, wyrastają z niej znaczniki wymiaru, dopisują się szerokość w px, paragraf § i klamra z odnośnikiem, a komórki obrysowują się zgodnie z ruchem wskazówek zegara, zanim dostaną numer pozycji. Przewijanie w górę wymazuje rysunek w odwrotnej kolejności, punkt 0,0 i tabliczka rysunkowa rysują się przy wejściu na stronę, a podziałka linijek na krawędziach ramy jedzie razem z arkuszem.",
+  "description": "Rysunek techniczny z Blueprintu powstaje na oczach: gdy fragment strony cały pojawi się na ekranie, pióro rysuje go w stałym, łagodnym tempie - linia sekcji wybiega od lewej, wyrastają z niej znaczniki wymiaru, dopisują się szerokość w px, paragraf § i klamra z odnośnikiem, a komórki obrysowują się zgodnie z ruchem wskazówek zegara, zanim dostaną numer pozycji. Narysowane zostaje przy przewijaniu w obie strony; punkt 0,0, tabliczka rysunkowa i linijki na krawędziach ramy rysują się przy wejściu na stronę, a linijki potem stoją w miejscu.",
   "name": "Blueprint na żywo",
   "references": [
     {
@@ -7,8 +7,8 @@
       "url": "https://en.wikipedia.org/wiki/Engineering_drawing#Showing_dimensions"
     },
     {
-      "label": "MDN - Scroll-driven animations",
-      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_scroll-driven_animations"
+      "label": "MDN - Intersection Observer API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API"
     },
     {
       "label": "Ploter",
