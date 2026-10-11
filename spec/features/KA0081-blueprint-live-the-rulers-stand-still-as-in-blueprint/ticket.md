@@ -42,5 +42,6 @@ Out:
 - 2026-10-11: The human: a line drawn on scroll should stay once its element was on screen, not vanish when scrolling back up; the side rulers draw in and then stand still (second photo `rulers-moving-2.jpg`). Added to this ticket, same file.
 - 2026-10-11: The human: content on screen should draw to the end once the whole element is on screen; the drawing plays to completion instead of following the scroll.
 - 2026-10-11: The human: the animation must not depend on scroll speed.
-- 2026-10-11: The human, testing the preview: the line drawing speed (0.8s linear) does not feel smooth; make it smoother. Taken as: a longer pen (about 1.5-2s per part), eased instead of linear, each stage (rule, ticks, labels) easing on its own; still fixed time, not scroll-driven.
 - 2026-10-11: The human: no budget limit for this job after it hit $5.
+- 2026-10-11: The human, testing the preview: the line drawing speed (0.8s linear) does not feel smooth; make it smoother. Taken as: a longer pen (about 1.5-2s per part), eased instead of linear, each stage (rule, ticks, labels) easing on its own; still fixed time, not scroll-driven.
+- 2026-10-11: The human approved the result: the hero stays on the 1.8s pen, and the rule that marks parts skipped by a fast scroll as drawn stays.
