@@ -647,8 +647,15 @@
   {
     "id": "KA0081",
     "title": "Blueprint-live: the rulers stand still as in blueprint",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0081-blueprint-live-the-rulers-stand-still-as-in-blueprint/ticket.md",
-    "updated": "2026-10-11T08:33:06.403Z"
+    "updated": "2026-10-11T12:29:09.216Z"
+  },
+  {
+    "id": "KA0082",
+    "title": "The e2e build once ran without the case-study fixture",
+    "status": "planning",
+    "path": "spec/features/KA0082-the-e2e-build-once-ran-without-the-case-study-fixture/ticket.md",
+    "updated": "2026-10-11T12:29:09.214Z"
   }
 ]

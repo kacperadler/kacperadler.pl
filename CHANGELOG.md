@@ -2,6 +2,12 @@
 
 Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at the next merge.
 
+## 2026-10-11
+
+### Fixed
+
+- KA0081 Blueprint-live: the rulers stand still as in blueprint (c73d020)
+
 ## 2026-10-10
 
 ### Added
