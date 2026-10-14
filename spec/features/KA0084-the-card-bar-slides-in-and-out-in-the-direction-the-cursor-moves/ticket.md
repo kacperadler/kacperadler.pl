@@ -26,7 +26,7 @@ In a grid of cards the bar follows the hand: it enters from the side the cursor 
 - `card.astro`: on pointer enter the bar slides in from the side edge (left or right) nearer the entry point; on pointer leave it slides out toward the side edge nearer the exit point. Entry or exit through the top or bottom picks the nearer side by horizontal position.
 - Keyboard focus, touch, and no JavaScript: today's left-to-right behaviour.
 - Reduced motion: no slide, as KA0083 has it.
-- Speed, easing and the slight delay stay as KA0083 set them: the human likes the lag as the bar follows the cursor across the grid (recording `hover-left-to-right.mp4` in this folder, left to right, 2026-10-14).
+- Speed, easing and the slight delay stay as KA0083 set them: the human likes the lag as the bar follows the cursor across the grid (recording `hover-left-to-right.mp4` in this folder, left to right, 2026-10-14). In it, on a 4-card row, the bar leaving one card is still sliding out to the right while the next card's bar slides in, so the two read as one sweep; right to left must look the same, mirrored.
 - A catalogue entry in `/ui` with a 3-card grid.
 - Playwright tests: entering from the right starts the bar on the right; leaving to the left ends it on the left; left-to-right unchanged; focus keeps left-to-right.
 - `bun run check` and `bun run test` pass.
@@ -44,3 +44,4 @@ Out:
 - 2026-10-14: The human asked for the bar to follow the cursor direction in a card grid (Telegram).
 - 2026-10-14: Waits for KA0083 (same file).
 - 2026-10-14: The human likes the slight delay of the bar moving left to right; keep it in both directions (`hover-left-to-right.mp4`).
+- 2026-10-14: The human approved the ticket.
