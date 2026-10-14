@@ -59,7 +59,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
       errorMessage="Podaj prawidłowy adres email."
       for={id("email")}
       invalid={invalid}
-      label="Twój email"
+      label="Email"
       name="email"
     >
       <Input
@@ -77,10 +77,10 @@ const id = (name: string) => `${idPrefix}-${name}`;
     <Field
       errorMessage="Wybierz typ projektu."
       invalid={invalid}
-      label="Typ projektu"
+      label="Czego potrzebujesz"
       name="type"
     >
-      <div aria-label="Typ projektu" class="mb-radios" role="radiogroup">
+      <div aria-label="Czego potrzebujesz" class="mb-radios" role="radiogroup">
         {projectTypes.map((option) => (
           <Radio
             disabled={submitting}
@@ -104,7 +104,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
         disabled={submitting}
         id={id("message")}
         name="message"
-        placeholder="Napisz w 2–3 zdaniach, co robicie ręcznie i ile czasu to zajmuje."
+        placeholder="Np. co tydzień ręcznie przepisujemy zamówienia z maili do Excela…"
         required
       />
     </Field>
@@ -127,7 +127,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
     </div>
 
     <Alert data-form-error variant="destructive">
-      Coś poszło nie tak. Spróbuj ponownie za chwilę albo napisz mailem na
+      Coś poszło nie tak. Spróbuj ponownie za chwilę albo napisz na
       <a href="mailto:kontakt@kacperadler.pl">kontakt@kacperadler.pl</a>.
     </Alert>
 
@@ -154,7 +154,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
     <div aria-hidden="true" class="mb-success-mark">
       <Icon name="lucide:check" />
     </div>
-    <h3>Wiadomość wysłana</h3>
+    <h3>Wiadomość wysłana.</h3>
     <p>Dzięki! Odezwę się tego samego dnia, najpóźniej w ciągu 24h.</p>
     <Button data-form-reset size="sm" variant="outline">
       Wyślij kolejną wiadomość
