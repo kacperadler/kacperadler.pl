@@ -58,7 +58,7 @@ export async function GET(): Promise<Response> {
 
 **Rozwiązanie**: ${h.solution}
 
-**Skala**: ${h.scale}`
+**Efekt**: ${h.effect}`
     )
     .join("\n\n");
 
@@ -138,7 +138,7 @@ Dla firm w Polsce i Unii Europejskiej, które chcą mniej ręcznej roboty bez za
 
 ## Oferta
 
-Od audytu do stałej opieki. Zacznij od kroku, który pasuje do Ciebie dziś.
+Trzy kroki. Zaczynasz od pierwszego.
 
 ${offerBlock}
 

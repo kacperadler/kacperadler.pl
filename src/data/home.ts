@@ -12,32 +12,33 @@ export interface Automation {
 export const automations: readonly Automation[] = [
   {
     description:
-      "Agent AI odpowiada na maile i czat, a trudne sprawy przekazuje człowiekowi.",
+      "Agent AI odpowiada na maile i wiadomości z czatu. Proste sprawy załatwia sam, trudne przekazuje człowiekowi z gotowym podsumowaniem.",
     tags: ["LLM", "MCP"],
     title: "Obsługa zapytań",
   },
   {
     description:
-      "Faktury, umowy, CV i zamówienia trafiają do Twojego systemu jako dane, bez przepisywania.",
+      "Faktury, umowy, CV, zamówienia. Dane trafiają do systemu same, bez ręcznego przepisywania.",
     tags: ["LLM", "API"],
     title: "Przetwarzanie dokumentów",
   },
   {
     description:
-      "CRM, Gmail, arkusze i ERP wymieniają dane same, bez kopiuj-wklej.",
+      "CRM, poczta, arkusze i systemy, których używacie, wymieniają się danymi automatycznie. Koniec z kopiuj-wklej.",
     tags: ["API", "MCP"],
-    title: "Integracje",
+    title: "Integracje narzędzi",
   },
   {
-    description: "Dane z wielu źródeł w jednym miejscu, aktualne na bieżąco.",
+    description:
+      "Dane z wielu źródeł w jednym miejscu, aktualne na bieżąco. Raport, który składał się godzinę, jest gotowy, zanim o niego poprosisz.",
     tags: ["API", "React"],
     title: "Raporty i dashboardy",
   },
   {
     description:
-      "Panele, CRM-y i aplikacje szyte pod Twój proces, w przeglądarce i na telefonie.",
+      "Gotowe programy nie pasują do Twojego procesu? Buduję aplikacje webowe i mobilne, CRM-y i panele dokładnie pod to, jak pracuje Twoja firma. Z AI tam, gdzie pomaga, bez AI tam, gdzie nie jest potrzebne.",
     tags: ["React", "React Native", "TypeScript"],
-    title: "Narzędzia wewnętrzne",
+    title: "Aplikacje szyte na miarę",
   },
 ];
 
@@ -47,42 +48,42 @@ export const offerNotes: readonly string[] = [
   "Koszt audytu odliczam od wdrożenia.",
 ];
 
-/* A project told as problem, solution and scale. `experience` is the id of
+/* A project told as problem, solution and effect. `experience` is the id of
  * its entry in src/content/experience (company, logo, case study link); an
  * id with no entry fails the build (sections/cases.astro). */
 export interface CaseHighlight {
+  effect: string;
   experience: string;
   kind: string;
   problem: string;
-  scale: string;
   solution: string;
 }
 
 export const caseHighlights: readonly CaseHighlight[] = [
   {
+    effect: "Codzienne narzędzie pracy całej firmy.",
     experience: "helpfind",
-    kind: "CRM wewnętrzny",
+    kind: "Narzędzie wewnętrzne · B2B",
     problem:
-      "Ponad 200 pracowników i partnerów potrzebowało jednego narzędzia do codziennej pracy, połączonego z pocztą i systemem Weylo/Focus.",
-    scale: "200+ osób pracuje w nim codziennie.",
+      "Firma potrzebowała jednego narzędzia do codziennej pracy dla ponad 200 pracowników i partnerów.",
     solution:
-      "Wewnętrzny CRM zintegrowany z Gmailem i Weylo/Focus, z szybkimi długimi listami i własną biblioteką komponentów.",
+      "Wewnętrzny CRM z integracjami z Gmailem i Weylo/Focus, obsługą bardzo długich list i własną biblioteką komponentów.",
   },
   {
+    effect: "Ok. 200 użytkowników dziennie.",
     experience: "energiadirect",
     kind: "Aplikacja mobilna",
     problem:
-      "Działający marketplace z leadami dla branży OZE i budowlanej potrzebował aplikacji na telefon dla handlowców i wykonawców.",
-    scale: "Średnio 200 użytkowników dziennie.",
+      "Działający marketplace leadów dla branży OZE i budowlanej potrzebował aplikacji dla handlowców i wykonawców.",
     solution:
-      "Aplikacja mobilna na iOS i Android, połączona z działającym marketplace'em.",
+      "Aplikacja na iOS i Android, która daje dostęp do leadów w terenie.",
   },
 ];
 
 export const about: readonly string[] = [
   "Od 2021 roku buduję oprogramowanie: od PwC, przez software house Apptension, po wewnętrzne systemy używane codziennie przez setki osób.",
-  "Dziś łączę to doświadczenie z AI: sam dowożę to, na co kiedyś trzeba było całego zespołu.",
-  "Pracuję z firmami jako ich partner technologiczny: rozumiem biznes, tłumaczę technologię na ludzki język i biorę odpowiedzialność za efekt.",
+  "Dziś łączę to doświadczenie z AI. Sam dowożę to, na co kiedyś trzeba było całego zespołu: analizę procesu, backend, frontend, integracje i wdrożenie.",
+  "Pracuję z firmami jako ich partner technologiczny. Rozumiem biznes, tłumaczę technologię na ludzki język i biorę odpowiedzialność za efekt.",
 ];
 
 export interface FaqItem {
@@ -93,31 +94,41 @@ export interface FaqItem {
 export const faq: readonly FaqItem[] = [
   {
     answer:
-      "Od tego jest audyt. Sprawdzam Twoje procesy i liczę, co się opłaca. Jeśli AI nie ma sensu, powiem Ci to wprost.",
+      "Od tego jest audyt. Sprawdzam Wasze procesy i mówię wprost, co się opłaca, a co nie. Jeśli nic, też to usłyszysz.",
     question: "Czy AI w ogóle ma sens w mojej firmie?",
   },
   {
     answer:
-      "Zależy od zakresu. Wycenę dostajesz w 2–3 dni po bezpłatnej rozmowie, bez ukrytych kosztów.",
+      "To zależy od zakresu. Wycenę dostajesz w 2–3 dni po bezpłatnej rozmowie, bez ukrytych kosztów.",
     question: "Ile to kosztuje?",
   },
   {
     answer:
-      "Korzystam z AI przez API albo plany firmowe (np. Claude, ChatGPT), które nie trenują modeli na Twoich danych. Pliki i bazy zostają u Ciebie, a do AI trafia tylko to, czego wymaga zadanie.",
+      "Projektuję rozwiązania zgodnie z RODO. Ustalamy razem, gdzie trzymane są dane i które modele AI mogą je przetwarzać. Tam, gdzie to konieczne, korzystam z dostawców z umową powierzenia danych.",
     question: "Co z bezpieczeństwem danych?",
   },
   {
     answer:
-      "Kod i dokumentacja należą do Ciebie. Możesz je przekazać innej osobie lub firmie i rozwijać dalej.",
-    question: "Co, jeśli przestaniesz ze mną współpracować?",
+      "Nie. AI to narzędzie, nie cel. Buduję też aplikacje webowe i mobilne, systemy wewnętrzne i integracje dopasowane do potrzeb firmy. Dobieram rozwiązanie do problemu, a nie problem do modnej technologii.",
+    question: "Czy zajmujesz się tylko AI?",
   },
   {
     answer:
-      "Nie. To moja robota. Rozmawiamy o Twoich procesach, a technologię biorę na siebie.",
+      "Nie. To moja robota. Ty znasz swój biznes, ja zamieniam to na działający system.",
     question: "Nie znam się na technologii. Czy to problem?",
   },
   {
-    answer: "Pierwsze działające elementy zwykle w 1–2 tygodnie.",
+    answer: "Pierwsze działające elementy zwykle po 1–2 tygodniach.",
     question: "Jak szybko zobaczę efekt?",
+  },
+  {
+    answer:
+      "Kod, dostępy i dokumentacja należą do Ciebie. Nie jesteś ode mnie uzależniony.",
+    question: "Co, jeśli zakończymy współpracę?",
+  },
+  {
+    answer:
+      "Przyjmuję 1–2 projekty jednocześnie, żeby każdy dostał pełną uwagę.",
+    question: "Ile masz dostępności?",
   },
 ];

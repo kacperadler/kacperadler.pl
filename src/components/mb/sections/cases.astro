@@ -10,7 +10,7 @@ import CellGrid from "../cell-grid.astro";
 import Link from "../link.astro";
 import SectionHead from "../section-head.astro";
 
-/* Case highlights (#cases): projects told as problem, solution and scale,
+/* Case highlights (#cases): projects told as problem, solution and effect,
  * a two-column cell table. Each card takes its company and logo from its
  * experience entry (an unknown id fails the build) and links the entry's
  * case study when there is one. "Wszystkie realizacje" leads to the
@@ -41,10 +41,10 @@ const cases = caseHighlights.map((highlight) => {
 <section class="mb-cases" id="cases">
   <div class="container">
     <SectionHead label="Realizacje">
-      Systemy, z których firmy <em>korzystają</em> codziennie.
+      Co już <em>działa</em>.
       <Fragment slot="lede">
-        Projekty, przy których pracowałem. Nie dema, tylko narzędzia, na których
-        ludzie pracują każdego dnia.
+        Każdy projekt oceniam po jednym kryterium: czy ktoś realnie oszczędza
+        dzięki niemu czas.
       </Fragment>
     </SectionHead>
 
@@ -73,8 +73,8 @@ const cases = caseHighlights.map((highlight) => {
               <dd>{item.solution}</dd>
             </div>
             <div class="mb-cases-row">
-              <dt>Skala</dt>
-              <dd>{item.scale}</dd>
+              <dt>Efekt</dt>
+              <dd>{item.effect}</dd>
             </div>
           </dl>
           {item.caseStudy && (

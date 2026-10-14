@@ -33,11 +33,7 @@ const caseStudies = await caseStudiesByExperience();
 <section class="mb-about" id="about">
   <div class="container">
     <SectionHead label="O mnie">
-      Kim <em>jestem</em>.
-      <Fragment slot="lede">
-        AI Engineer i partner technologiczny. Dowożę całość sam: od analizy
-        procesu po wdrożenie i opiekę.
-      </Fragment>
+      Jedna osoba. <em>Cały</em> system.
     </SectionHead>
 
     <div class="mb-about-grid">
@@ -73,7 +69,7 @@ const caseStudies = await caseStudiesByExperience();
 
     <div class="mb-about-experience">
       <Accordion bordered type="multiple">
-        <AccordionItem title="Pełna lista doświadczeń">
+        <AccordionItem title="Pełne doświadczenie">
           <CellGrid min="300px" tag="ul">
             {experience.map((item) => {
               const logo = logoBySlug[item.id] as ImageMetadata;

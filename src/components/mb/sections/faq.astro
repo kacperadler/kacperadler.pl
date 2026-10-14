@@ -2,7 +2,6 @@
 import { faq } from "@/data/home";
 import Accordion from "../accordion.astro";
 import AccordionItem from "../accordion-item.astro";
-import Link from "../link.astro";
 import SectionHead from "../section-head.astro";
 
 /* FAQ (#faq): one bordered accordion, every question its own item that
@@ -12,14 +11,7 @@ import SectionHead from "../section-head.astro";
 
 <section class="mb-faq" id="faq">
   <div class="container">
-    <SectionHead label="FAQ">
-      Częste <em>pytania</em>.
-      <Fragment slot="lede">
-        Nie ma tu Twojego? Zapytaj w&nbsp;<Link href="#contact" variant="inline"
-          >formularzu</Link
-        >, odpowiem w 24h.
-      </Fragment>
-    </SectionHead>
+    <SectionHead label="FAQ"> Najczęstsze <em>pytania</em>. </SectionHead>
 
     <div class="mb-faq-list">
       <Accordion bordered type="multiple">
