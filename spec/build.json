@@ -787,9 +787,9 @@
   {
     "id": "KA0098",
     "title": "The live site wears the chosen signature, blueprint-live",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0098-the-live-site-wears-the-chosen-signature-blueprint-live/ticket.md",
-    "updated": "2026-10-14T19:01:20.869Z",
+    "updated": "2026-10-14T19:02:29.058Z",
     "after": [
       "KA0075"
     ]

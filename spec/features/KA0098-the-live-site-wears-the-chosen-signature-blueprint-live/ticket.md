@@ -39,3 +39,4 @@ Out:
 ## Decisions
 
 - 2026-10-14: The human asked whether the chosen UI is part of the redesign; it was not in KA0075. This ticket carries it, after KA0075.
+- 2026-10-14: The human approved the ticket and confirmed blueprint-live.
