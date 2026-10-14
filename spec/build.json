@@ -598,9 +598,9 @@
   {
     "id": "KA0075",
     "title": "The home page layout and sections present Kacper better",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0075-the-home-page-layout-and-sections-present-kacper-better/ticket.md",
-    "updated": "2026-10-10T20:33:50.100Z",
+    "updated": "2026-10-14T18:59:55.947Z",
     "after": [
       "KA0072",
       "KA0071"
