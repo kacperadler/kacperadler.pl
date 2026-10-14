@@ -202,9 +202,9 @@
   {
     "id": "KA0027",
     "title": "Leads stored in SQLite through one on-demand API route",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0027-leads-stored-in-sqlite-through-one-on-demand-api-route/ticket.md",
-    "updated": "2026-10-10T14:31:31.738Z"
+    "updated": "2026-10-14T13:50:38.194Z"
   },
   {
     "id": "KA0028",
@@ -586,14 +586,14 @@
     "title": "The OG image still draws the old design",
     "status": "in-progress",
     "path": "spec/features/KA0073-the-og-image-still-draws-the-old-design/ticket.md",
-    "updated": "2026-10-14T13:26:17.879Z"
+    "updated": "2026-10-14T13:43:42.330Z"
   },
   {
     "id": "KA0074",
     "title": "`bun run check` reads the Playwright HTML report when `CI` is set",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0074-bun-run-check-reads-the-playwright-html-report-when-ci-is-set/ticket.md",
-    "updated": "2026-10-14T13:41:08.201Z"
+    "updated": "2026-10-14T13:50:01.580Z"
   },
   {
     "id": "KA0075",

@@ -46,3 +46,5 @@ Out:
 - 2026-10-14: The human approved it, plan first; he wants help with Dokploy (the volume): the plan and README carry the exact Dokploy steps.
 - 2026-10-14: The human: stay on SQLite (not Postgres); with the coordinator's proposal of a small password-protected panel (list, details, CSV export) so leads can be read and downloaded.
 - 2026-10-14: The human: the panel is a separate ticket (KA0087), not part of KA0027.
+- 2026-10-14: The human chose node:sqlite (the plan's Option 1) and the e-mail without visitor data (lead number and project type only; privacy policy unchanged).
+- 2026-10-14: Plan approved by the human: plan.md at 3c350cf
