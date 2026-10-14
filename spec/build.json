@@ -625,7 +625,7 @@
     "title": "Pagination jump needs a page that reads its query",
     "status": "done",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-14T14:45:24.371Z"
+    "updated": "2026-10-14T17:44:38.348Z"
   },
   {
     "id": "KA0079",
@@ -702,15 +702,22 @@
   {
     "id": "KA0088",
     "title": "The \"move under no-preference\" motion test races the transitions it looks for",
-    "status": "planning",
+    "status": "in-progress",
     "path": "spec/features/KA0088-the-move-under-no-preference-motion-test-races-the-transitions-it-looks-for/ticket.md",
-    "updated": "2026-10-14T14:38:54.384Z"
+    "updated": "2026-10-14T17:33:36.825Z"
   },
   {
     "id": "KA0089",
     "title": "/api/lead has no rate limit: a script can fill the database and the inbox",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0089-api-lead-has-no-rate-limit-a-script-can-fill-the-database-and-the-inbox/ticket.md",
-    "updated": "2026-10-14T17:29:34.138Z"
+    "updated": "2026-10-14T17:46:28.211Z"
+  },
+  {
+    "id": "KA0090",
+    "title": "A blueprint-live proposal spec fails under the full parallel run",
+    "status": "planning",
+    "path": "spec/features/KA0090-a-blueprint-live-proposal-spec-fails-under-the-full-parallel-run/ticket.md",
+    "updated": "2026-10-14T17:46:28.208Z"
   }
 ]

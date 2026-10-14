@@ -69,6 +69,7 @@ Formularz kontaktowy (`src/scripts/contact-form.ts`) wysyła JSON `{ email, type
 
 - Wypełniony honeypot (`website`) → 200, nic nie zapisane.
 - Złe pola → 400; lead nie da się zapisać → 500 (formularz pokazuje błąd).
+- Więcej niż 5 postów na minutę z jednego IP (wszystkie 5 mogą przyjść naraz, szósty od razu dostaje 429) → 429 od nginx (`limit_req` w `nginx.conf`), zanim żądanie dotrze do Node; formularz pokazuje błąd wysyłki. IP klienta nginx bierze z ostatniego adresu w `X-Forwarded-For`, który dopisuje Traefik, ale tylko gdy żądanie przyszło z `10.0.0.0/8` (sieć `dokploy-network`); z innego adresu nagłówek jest ignorowany, więc skrypt nie podszyje się pod nowy adres przy każdym poście.
 - Mail nie poszedł albo nie jest skonfigurowany → tylko wpis w logach; lead zostaje zapisany, odwiedzający widzi sukces.
 - Mail zawiera tylko numer leada, typ projektu i godzinę - bez emaila i treści odwiedzającego (polityka prywatności mówi, że nie ma zewnętrznych procesorów danych). Lead czytasz z bazy.
 - Logi niosą tylko numer leada: `[lead] saved #<id>`.
@@ -138,5 +139,6 @@ Nazwy menu za dokumentacją Dokploy (Applications → Advanced); jeśli w Twojej
      ```bash
      node -e "const {DatabaseSync}=require('node:sqlite');console.table(new DatabaseSync('/data/leads.sqlite',{readOnly:true}).prepare('select * from leads order by id desc limit 5').all())"
      ```
+   - limit zapytań (terminal serwera Dokploy): `docker network inspect dokploy-network --format '{{range .IPAM.Config}}{{.Subnet}}{{end}}'` musi dać podsieć w `10.0.0.0/8` (domyślna pula Docker Swarm, np. `10.0.1.0/24`). Inna podsieć znaczy, że nginx nie ufa `X-Forwarded-For` od Traefika i liczy limit dla adresu Traefika, czyli wspólnie dla wszystkich odwiedzających - wtedy zmień `set_real_ip_from` w `nginx.conf` na tę podsieć.
 
 Wolumen przeżywa redeploy i restart kontenera; usuwa go dopiero skasowanie wolumenu w Dokploy albo na serwerze.

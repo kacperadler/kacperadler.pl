@@ -17,6 +17,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0074 `bun run check` reads the Playwright HTML report when `CI` is set (4e894b9)
 - KA0085 /ui scrolls 8px sideways at 360px on the first load, now and then (66b0825)
 - KA0086 Under reduced motion every restyle lags one frame on every page (128929f)
+- KA0089 /api/lead has no rate limit: a script can fill the database and the inbox (1878aa9)
 
 ## 2026-10-11
 
