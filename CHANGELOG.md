@@ -12,6 +12,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 ### Fixed
 
 - KA0085 /ui scrolls 8px sideways at 360px on the first load, now and then (66b0825)
+- KA0086 Under reduced motion every restyle lags one frame on every page (128929f)
 
 ## 2026-10-11
 

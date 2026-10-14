@@ -202,9 +202,9 @@
   {
     "id": "KA0027",
     "title": "Leads stored in SQLite through one on-demand API route",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0027-leads-stored-in-sqlite-through-one-on-demand-api-route/ticket.md",
-    "updated": "2026-10-14T13:54:29.940Z"
+    "updated": "2026-10-14T14:00:53.800Z"
   },
   {
     "id": "KA0028",
@@ -591,9 +591,9 @@
   {
     "id": "KA0074",
     "title": "`bun run check` reads the Playwright HTML report when `CI` is set",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0074-bun-run-check-reads-the-playwright-html-report-when-ci-is-set/ticket.md",
-    "updated": "2026-10-14T13:50:01.580Z"
+    "updated": "2026-10-14T13:59:37.190Z"
   },
   {
     "id": "KA0075",
@@ -685,9 +685,9 @@
   {
     "id": "KA0086",
     "title": "Under reduced motion every restyle lags one frame on every page",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0086-under-reduced-motion-every-restyle-lags-one-frame-on-every-page/ticket.md",
-    "updated": "2026-10-14T13:40:04.762Z"
+    "updated": "2026-10-14T14:03:35.105Z"
   },
   {
     "id": "KA0087",
