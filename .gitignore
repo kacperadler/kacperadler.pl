@@ -24,6 +24,10 @@ pnpm-debug.log*
 .env
 .env.production
 
+# local lead store (LEADS_DB_PATH=./leads.sqlite bun dev) - personal data
+*.sqlite
+*.sqlite-journal
+
 # macOS-specific files
 .DS_Store
 

@@ -14,9 +14,10 @@ const CASE_STUDY_PATH = /^\/realizacje\/[a-z0-9-]+\/$/;
 const LIST_PATH = "/realizacje/";
 const NAV_LABELS = ["Usługi", "Realizacje", "Proces", "Współprace"];
 const NAV_LABELS_WITHOUT_LIST = ["Usługi", "Proces", "Współprace"];
-// Built by the webServer command with E2E_FIXTURES=none (playwright.config.ts).
+// Built by the webServer command with E2E_FIXTURES=none (playwright.config.ts);
+// the pages are in client/, next to the Node adapter's server/.
 const NO_CASE_STUDIES = fileURLToPath(
-  new URL("../../dist-no-case-studies/", import.meta.url)
+  new URL("../../dist-no-case-studies/client/", import.meta.url)
 );
 
 interface LinkedEntry {

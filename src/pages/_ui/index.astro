@@ -7,8 +7,8 @@
  * Its own document, not BaseLayout: BaseHead with noindex, the site's
  * tokens and global styles, the page frame. The only script is
  * mobile-sheet.ts - never contact-form.ts (which BaseLayout loads), which
- * would POST the forms here to the production NocoDB; the form states are
- * forced instead.
+ * would POST the forms here to /api/lead, saving leads and sending the
+ * notification; the form states are forced instead.
  *
  * Rendered on request (prerender = false), so Astro.url keeps its query:
  * the pagination jump sample in the catalogue reads ?strona=. */
