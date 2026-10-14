@@ -623,9 +623,9 @@
   {
     "id": "KA0078",
     "title": "Pagination jump needs a page that reads its query",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-14T17:35:58.618Z"
+    "updated": "2026-10-14T17:44:38.348Z"
   },
   {
     "id": "KA0079",
@@ -709,8 +709,15 @@
   {
     "id": "KA0089",
     "title": "/api/lead has no rate limit: a script can fill the database and the inbox",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0089-api-lead-has-no-rate-limit-a-script-can-fill-the-database-and-the-inbox/ticket.md",
-    "updated": "2026-10-14T17:42:16.309Z"
+    "updated": "2026-10-14T17:46:28.211Z"
+  },
+  {
+    "id": "KA0090",
+    "title": "A blueprint-live proposal spec fails under the full parallel run",
+    "status": "planning",
+    "path": "spec/features/KA0090-a-blueprint-live-proposal-spec-fails-under-the-full-parallel-run/ticket.md",
+    "updated": "2026-10-14T17:46:28.208Z"
   }
 ]

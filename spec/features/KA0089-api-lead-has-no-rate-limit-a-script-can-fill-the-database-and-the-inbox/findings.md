@@ -13,4 +13,12 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `tests/e2e/ui-proposals.spec.ts:775` ("a cell under the cursor is selected whole while it is still drawing")
 - What: in one local `CI= bun run test` (161 tests, default worker count) it failed after 1.3s while the other 160 passed; run alone with `--repeat-each 3` it passed 3 of 3. The test runs against `astro dev` and touches none of this ticket's files (`nginx.conf`, the new Docker spec), so it looks timing-dependent under load [INFERENCE: the failure output was not inspected beyond its title].
 - Suggestion: read the failing assertion from a loaded run (`--repeat-each` with all workers) and wait on the drawing state instead of a fixed timing; the proposal's own behaviour stays as it is.
-- Status: open
+- Status: ticket KA0090
+
+## F2. Review notes on the burst count and the KA0078 overlap
+
+- Kind: note
+- Found by: 2026-10-14-review-ka0089-api-rate-l-a8578631 and -8a6237ba (review notes), 2026-10-14
+- Where: `nginx.conf`, `spec/features/*/review-N.md`
+- What: review 1 noted `burst=5` let the 7th post through, against Done means; review 2 noted em-dashes in harness-written review files and the nginx.conf overlap with KA0078.
+- Status: dropped (burst set to 4 at the human's word in b43803e; review files are harness records; the KA0078 overlap is resolved at its merge)
