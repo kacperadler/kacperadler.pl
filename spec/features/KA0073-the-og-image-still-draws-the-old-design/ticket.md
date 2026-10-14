@@ -40,3 +40,4 @@ In:
 - 2026-10-10: Source: F1 of KA0069
 - 2026-10-14: The human approved the ticket.
 - 2026-10-14: The human: use real Geist in the OG image (add the font to the repo), and redraw the favicon in this same ticket (F1 of the branch).
+- 2026-10-14: The human accepted the OG image and favicon as sent; mono labels stay DejaVu Mono (no Geist Mono).
