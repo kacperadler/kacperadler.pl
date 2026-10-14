@@ -46,3 +46,4 @@ Out:
 ## Decisions
 
 - 2026-10-14: The human's 16-point feedback on the /ui catalogue, as Done means lists; points 5, 7, 8, 9, 12 are fine as they are.
+- 2026-10-14: The human approved the ticket; plan first, the worker after his ok on the plan.
