@@ -584,9 +584,9 @@
   {
     "id": "KA0073",
     "title": "The OG image still draws the old design",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0073-the-og-image-still-draws-the-old-design/ticket.md",
-    "updated": "2026-10-10T20:20:42.312Z"
+    "updated": "2026-10-14T13:26:07.966Z"
   },
   {
     "id": "KA0074",
@@ -685,8 +685,8 @@
   {
     "id": "KA0086",
     "title": "Under reduced motion every restyle lags one frame on every page",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0086-under-reduced-motion-every-restyle-lags-one-frame-on-every-page/ticket.md",
-    "updated": "2026-10-14T13:23:41.675Z"
+    "updated": "2026-10-14T13:23:51.617Z"
   }
 ]

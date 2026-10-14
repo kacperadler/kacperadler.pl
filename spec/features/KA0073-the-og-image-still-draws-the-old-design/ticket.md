@@ -14,7 +14,7 @@ the share image is built in the old vocabulary: a dot grid (`GRID`, the `<circle
 
 ## Goal
 
-What we are after, what it moves in `spec/vision.md`, and the evidence (file:line, a command and its output). A mechanical, fully specified change (a rename, a moved section, a list of exact edits) adds `- Model: haiku` under Kind; anything with behaviour to judge has no Model line.
+A shared link (LinkedIn, Messenger, Slack) shows a preview image in the same minimal brutalism style as the site, not the old rounded, dot-grid design. The image is a screenshot in the ticket folder for the human to accept.
 
 - Kind: improvement
 
@@ -25,7 +25,8 @@ Evidence:
 ## Done means
 
 - The fix, with a test that proves it: redraw it in the new vocabulary - solid `base`, the photo in a square 1px ink frame, the square brand mark, heavy Geist-like headline - keeping 1200×630 and the path; check with `docker build -t kacperadler-pl-test .` as AGENTS.md requires for this file.
-- `npm test` and `npm run check` pass. The structure test holds.
+- A screenshot of the new image (1200×630) in the ticket folder, sent to the human.
+- `bun run check` and `bun run test` pass.
 
 ## Scope
 
@@ -35,3 +36,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F1 of KA0069
+- 2026-10-14: The human approved the ticket.
