@@ -14,7 +14,7 @@ these one-off patterns are outside KA0037's list, so `/ui` does not show them; e
 
 ## Goal
 
-What we are after, what it moves in `spec/vision.md`, and the evidence (file:line, a command and its output). A mechanical, fully specified change (a rename, a moved section, a list of exact edits) adds `- Model: haiku` under Kind; anything with behaviour to judge has no Model line.
+Every pattern the site renders can be seen and judged on `/ui`: the contact link and the step marker become components in `src/components/mb/` and get catalogue entries, so a design change on `/ui` reaches them too.
 
 - Kind: improvement
 

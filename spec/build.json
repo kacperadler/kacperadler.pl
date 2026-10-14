@@ -436,9 +436,9 @@
   {
     "id": "KA0054",
     "title": "Patterns not yet in the catalogue",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
-    "updated": "2026-10-10T16:32:42.753Z"
+    "updated": "2026-10-14T13:33:33.307Z"
   },
   {
     "id": "KA0055",
@@ -591,9 +591,9 @@
   {
     "id": "KA0074",
     "title": "`bun run check` reads the Playwright HTML report when `CI` is set",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0074-bun-run-check-reads-the-playwright-html-report-when-ci-is-set/ticket.md",
-    "updated": "2026-10-10T20:20:42.314Z"
+    "updated": "2026-10-14T13:33:33.521Z"
   },
   {
     "id": "KA0075",
@@ -623,9 +623,9 @@
   {
     "id": "KA0078",
     "title": "Pagination jump needs a page that reads its query",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-10T21:02:47.675Z"
+    "updated": "2026-10-14T13:33:33.821Z"
   },
   {
     "id": "KA0079",
