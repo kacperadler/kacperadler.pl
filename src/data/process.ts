@@ -31,7 +31,7 @@ export const processSteps: readonly ProcessStep[] = [
     badge: "co tydzień",
     description:
       "Co tydzień widzisz coś, co działa, a nie prezentację. Problemy łapiemy wcześnie.",
-    icon: "lucide:code",
+    icon: "lucide:layers",
     num: "03",
     title: "Wdrożenie etapami",
   },
@@ -47,7 +47,7 @@ export const processSteps: readonly ProcessStep[] = [
     badge: "po wdrożeniu",
     description:
       "Monitoruję system, poprawiam błędy, zanim staną się problemem, i rozwijam go razem z firmą.",
-    icon: "lucide:rocket",
+    icon: "lucide:shield-check",
     num: "05",
     title: "Opieka",
   },
