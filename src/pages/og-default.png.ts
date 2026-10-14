@@ -2,32 +2,48 @@ import path from "node:path";
 import sharp from "sharp";
 import { siteConfig } from "@/data/site-config";
 
-/* Build-time OG image (1200×630). Layout: dark v2 substrate with a
- * faint dot grid, photo on the left in a rounded panel (matches v2
- * radius-md), brand typography on the right (eyebrow + name + line +
- * tagline + url). System fonts in the SVG - Geist isn't directly
- * embeddable in sharp's SVG renderer (librsvg) without extra tooling,
- * and at OG thumbnail size the difference vs the site is barely
- * visible.
+/* Build-time OG image (1200×630) in the site's minimal brutalism: a
+ * ruled sheet of two cells on the solid `base` substrate, drawn with 1px
+ * `ink` rules that share their edges. The left cell is the photo, square,
+ * filling its frame; the right one reads as a ruled table: the square
+ * brand mark and the role label, the heavy headline (the name), the
+ * tagline, the url.
+ *
+ * librsvg (sharp's SVG renderer) reads fonts through fontconfig, which
+ * cannot load the site's woff2 Geist, so the headline falls back to the
+ * heaviest installed sans (DejaVu Sans Bold in the Docker build stage)
+ * with Geist's tight tracking.
  *
  * Astro builds this once at `bun run build` and writes to
  * dist/og-default.png. siteConfig.ogImage points at /og-default.png. */
 
 export const prerender = true;
 
-/* Dark palette lifted from tokens.css; the site is dark-only, so OG
- * follows the same colors. */
-const BG = "#0a0c10";
+/* Palette from tokens.css (DESIGN.md); the site is dark-only. */
+const BASE = "#0a0c10";
 const INK = "#ece7dc";
 const INK_2 = "#c8c3b8";
 const BLUE = "#8eaed8";
-const LINE = "rgba(236, 231, 220, 0.1)";
-const GRID = "rgba(236, 231, 220, 0.06)";
-const ON_BLUE = "#0f1116";
 
-const PHOTO_SIZE = 540;
-const PHOTO_INSET = 45;
-const PHOTO_RADIUS = 16;
+const WIDTH = 1200;
+const HEIGHT = 630;
+
+/* The sheet: inset on the substrate, the photo cell a square of the
+ * sheet's height, the text cell the rest. Rules are 1px on whole pixels
+ * (`crispEdges`), so the corners stay square at any scale. */
+const INSET = 45;
+const PHOTO_SIZE = HEIGHT - 2 * INSET;
+const SHEET_RIGHT = WIDTH - INSET;
+const SHEET_BOTTOM = HEIGHT - INSET;
+const SPLIT = INSET + PHOTO_SIZE;
+const PAD = 40;
+const TEXT_X = SPLIT + PAD;
+
+/* Rows of the text cell: identity (mark, label, headline), tagline, url. */
+const MARK_SIZE = 36;
+const MARK_Y = INSET + PAD;
+const TAGLINE_RULE_Y = 385;
+const URL_RULE_Y = 525;
 
 const PROTOCOL_RX = /^https?:\/\//;
 
@@ -40,26 +56,19 @@ function escapeXml(value: string): string {
     .replaceAll("'", "&apos;");
 }
 
-/* Wrap a tagline onto at most two lines so it fits the 560px text
- * column at 26px font. Splits at the first comma when the string
- * exceeds the per-line budget - handles our typical "X dla Y, z
- * których Z" rhythm; falls back to a word-wrap loop otherwise. */
-const MAX_LINE_CHARS = 32;
+/* Wrap a tagline to the text cell at 24px: break after its first comma
+ * (our "X dla Y, z których Z" rhythm), then word-wrap each clause to the
+ * per-line budget (about 12px a character, 490px of cell). */
+const MAX_LINE_CHARS = 40;
+const TAGLINE_LEADING = 32;
+const TAGLINE_CAP = 17;
 
-function wrapTagline(text: string): string[] {
-  if (text.length <= MAX_LINE_CHARS) {
-    return [text];
-  }
-  const commaIdx = text.indexOf(",");
-  if (commaIdx > 0 && commaIdx <= MAX_LINE_CHARS) {
-    return [text.slice(0, commaIdx + 1), text.slice(commaIdx + 1).trim()];
-  }
-  const words = text.split(" ");
+function wrapWords(text: string): string[] {
   const lines: string[] = [""];
-  for (const word of words) {
+  for (const word of text.split(" ")) {
     const tail = lines.at(-1) ?? "";
     const candidate = tail ? `${tail} ${word}` : word;
-    if (candidate.length <= MAX_LINE_CHARS) {
+    if (!tail || candidate.length <= MAX_LINE_CHARS) {
       lines[lines.length - 1] = candidate;
     } else {
       lines.push(word);
@@ -68,101 +77,95 @@ function wrapTagline(text: string): string[] {
   return lines;
 }
 
+function wrapTagline(text: string): string[] {
+  const commaIdx = text.indexOf(",");
+  if (commaIdx <= 0) {
+    return wrapWords(text);
+  }
+  return [
+    ...wrapWords(text.slice(0, commaIdx + 1)),
+    ...wrapWords(text.slice(commaIdx + 1).trim()),
+  ];
+}
+
+/* A 1px rule on whole pixels: a 1px-wide rect, not a stroked line. */
+function rule(x: number, y: number, width: number, height: number): string {
+  return `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${INK}" />`;
+}
+
 export async function GET(): Promise<Response> {
   const photoPath = path.resolve("./src/assets/me.jpg");
 
-  /* Round the photo corners via SVG mask + dest-in composite. Mask
-   * is a single rounded rect; sharp keeps photo pixels only where
-   * the mask has alpha. */
-  const photoMask = Buffer.from(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${PHOTO_SIZE}" height="${PHOTO_SIZE}">
-      <rect width="${PHOTO_SIZE}" height="${PHOTO_SIZE}" rx="${PHOTO_RADIUS}" ry="${PHOTO_RADIUS}" fill="#fff" />
-    </svg>`
-  );
-
   const photoBuffer = await sharp(photoPath)
     .resize(PHOTO_SIZE, PHOTO_SIZE, { fit: "cover", position: "attention" })
-    .composite([{ blend: "dest-in", input: photoMask }])
     .png()
     .toBuffer();
 
-  const name = escapeXml(siteConfig.name);
+  const [first, ...rest] = siteConfig.name.split(" ");
+  const nameLines = [first ?? "", rest.join(" ")].map(escapeXml);
   const role = escapeXml(siteConfig.role.toUpperCase());
-  const taglineLines = wrapTagline(siteConfig.tagline).map((line) =>
-    escapeXml(line)
+  const taglineLines = wrapTagline(siteConfig.tagline);
+  const taglineSvg = taglineLines
+    .map(
+      (line, idx) =>
+        `<tspan x="${TEXT_X}" dy="${idx === 0 ? 0 : TAGLINE_LEADING}">${escapeXml(line)}</tspan>`
+    )
+    .join("");
+  /* First baseline that centres the lines, cap height to last baseline,
+   * in the row between the two rules. */
+  const taglineBlock =
+    TAGLINE_CAP + (taglineLines.length - 1) * TAGLINE_LEADING;
+  const taglineY = Math.round(
+    TAGLINE_RULE_Y +
+      (URL_RULE_Y - TAGLINE_RULE_Y - taglineBlock) / 2 +
+      TAGLINE_CAP
   );
   const url = escapeXml(siteConfig.url.replace(PROTOCOL_RX, ""));
 
-  const taglineSvg = taglineLines
-    .map(
-      (line, idx) => `<tspan x="640" dy="${idx === 0 ? 0 : 34}">${line}</tspan>`
-    )
-    .join("");
-
-  /* Background layer: dark substrate + tiled 24px dot grid via SVG
-   * pattern. The dot color is rgba on cream so it reads as a faint
-   * texture on the dark bg - mirrors v2's signature dot grid. */
-  const backgroundLayer = `
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
-  <defs>
-    <pattern id="dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-      <circle cx="1" cy="1" r="1" fill="${GRID}" />
-    </pattern>
-  </defs>
-  <rect width="1200" height="630" fill="${BG}" />
-  <rect width="1200" height="630" fill="url(#dots)" />
-</svg>
-`.trim();
-
-  /* Photo border overlay - thin rounded stroke in LINE color matching
-   * the photo's rounded rect. Inset by 0.5px so the stroke sits on
-   * the photo edge cleanly. */
-  const photoBorder = `
-<svg xmlns="http://www.w3.org/2000/svg" width="${PHOTO_SIZE}" height="${PHOTO_SIZE}">
-  <rect x="0.5" y="0.5" width="${PHOTO_SIZE - 1}" height="${PHOTO_SIZE - 1}" rx="${PHOTO_RADIUS}" ry="${PHOTO_RADIUS}" fill="none" stroke="${LINE}" stroke-width="1" />
-</svg>
-`.trim();
-
-  /* Foreground overlay: text column + brand mark. Position matches
-   * v2 typography hierarchy: big display name → eyebrow mono blue →
-   * accent line → tagline → url. */
+  /* Over the photo: the sheet's outer rule, the rule the two cells share
+   * and the row rules of the text cell. */
   const overlay = `
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" shape-rendering="crispEdges">
   <style>
-    .display { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-weight: 500; fill: ${INK}; letter-spacing: -0.035em; }
-    .mono { font-family: ui-monospace, SFMono-Regular, monospace; }
-    .role { fill: ${BLUE}; letter-spacing: 0.16em; }
-    .tag { fill: ${INK_2}; }
-    .url { fill: ${BLUE}; font-weight: 500; }
-    .mark-bg { fill: ${BLUE}; }
-    .mark-ch { fill: ${ON_BLUE}; font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 600; }
+    .display { font-family: Geist, "DejaVu Sans", sans-serif; font-weight: 800; fill: ${INK}; letter-spacing: -0.045em; }
+    .mono { font-family: "Geist Mono", "DejaVu Sans Mono", monospace; font-weight: 500; }
+    .label { fill: ${INK_2}; letter-spacing: 0.14em; }
+    .tag { font-family: Geist, "DejaVu Sans", sans-serif; fill: ${INK_2}; }
+    .url { fill: ${BLUE}; }
+    .mark-ch { font-family: Geist, "DejaVu Sans", sans-serif; font-weight: 800; fill: ${BASE}; }
   </style>
 
-  <rect class="mark-bg" x="1132" y="40" width="36" height="36" rx="6" ry="6" />
-  <text class="mark-ch" x="1144" y="65" font-size="18">k</text>
+  ${rule(INSET, INSET, SHEET_RIGHT - INSET, 1)}
+  ${rule(INSET, SHEET_BOTTOM - 1, SHEET_RIGHT - INSET, 1)}
+  ${rule(INSET, INSET, 1, SHEET_BOTTOM - INSET)}
+  ${rule(SHEET_RIGHT - 1, INSET, 1, SHEET_BOTTOM - INSET)}
+  ${rule(SPLIT, INSET, 1, SHEET_BOTTOM - INSET)}
+  ${rule(SPLIT, TAGLINE_RULE_Y, SHEET_RIGHT - SPLIT, 1)}
+  ${rule(SPLIT, URL_RULE_Y, SHEET_RIGHT - SPLIT, 1)}
 
-  <text class="display" x="640" y="270" font-size="84">${name}</text>
-  <text class="mono role" x="640" y="320" font-size="18">${role}</text>
+  <rect x="${TEXT_X}" y="${MARK_Y}" width="${MARK_SIZE}" height="${MARK_SIZE}" fill="${INK}" />
+  <rect x="${TEXT_X + 1}" y="${MARK_Y + 1}" width="${MARK_SIZE - 2}" height="${MARK_SIZE - 2}" fill="${BLUE}" />
+  <text class="mark-ch" x="${TEXT_X + MARK_SIZE / 2}" y="${MARK_Y + 26}" font-size="22" text-anchor="middle">k</text>
+  <text class="mono label" x="${TEXT_X + MARK_SIZE + 16}" y="${MARK_Y + 24}" font-size="16">${role}</text>
 
-  <line x1="640" y1="368" x2="700" y2="368" stroke="${BLUE}" stroke-width="2" />
+  <text class="display" x="${TEXT_X}" y="240" font-size="96">${nameLines[0]}</text>
+  <text class="display" x="${TEXT_X}" y="336" font-size="96">${nameLines[1]}</text>
 
-  <text class="display tag" x="640" y="430" font-size="26" font-weight="400">${taglineSvg}</text>
-  <text class="mono url" x="640" y="560" font-size="22">${url}</text>
+  <text class="tag" x="${TEXT_X}" y="${taglineY}" font-size="24">${taglineSvg}</text>
+  <text class="mono url" x="${TEXT_X}" y="${URL_RULE_Y + 38}" font-size="20">${url}</text>
 </svg>
 `.trim();
 
   const png = await sharp({
     create: {
-      background: BG,
+      background: BASE,
       channels: 4,
-      height: 630,
-      width: 1200,
+      height: HEIGHT,
+      width: WIDTH,
     },
   })
     .composite([
-      { input: Buffer.from(backgroundLayer), left: 0, top: 0 },
-      { input: photoBuffer, left: PHOTO_INSET, top: PHOTO_INSET },
-      { input: Buffer.from(photoBorder), left: PHOTO_INSET, top: PHOTO_INSET },
+      { input: photoBuffer, left: INSET, top: INSET },
       { input: Buffer.from(overlay), left: 0, top: 0 },
     ])
     .png({ compressionLevel: 9 })

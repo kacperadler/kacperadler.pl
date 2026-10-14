@@ -182,6 +182,7 @@ Idle: a `muted` frame. Hover: an `ink-2` frame. Focus: an `ink` frame and the ha
 - **Case study** (`/realizacje/<slug>/`): a section head with the company as h1 and the summary as lede, the facts table (role, period, stack as tags), the MDX body in prose, then a default `Napisz do mnie` and an outline `Wszystkie współprace` under an `ink` rule.
 - **Case study list** (`/realizacje/`, built only when a case study exists, the `Realizacje` menu entry too): a section head with the h1, then a cell grid of cards as on the experience wall - period badge (outline), company, role (mono `blue`), summary, the `case` link. In the menu, `Realizacje` is `.active` on the list and the case study pages, with `aria-current="page"` on the list itself.
 - **404**: an `ink` rule, the mono `404` in `blue`, the heavy h1, a default and an outline button.
+- **OG image** (`/og-default.png`, 1200×630, drawn at build time by `src/pages/og-default.png.ts`): a ruled sheet of two cells on the solid `base` - the photo, square, in its 1px `ink` frame, and a table of rows: the square `blue` mark with the role label, the heavy name on two lines, the tagline in `ink-2`, the url in mono `blue`. librsvg cannot load the woff2 Geist, so the heavy face there is DejaVu Sans Bold.
 
 ## Design proposals
 
