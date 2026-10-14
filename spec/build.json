@@ -415,9 +415,9 @@
   {
     "id": "KA0051",
     "title": "The h1, tagline, OG tagline and status card stack still describe only frontend work",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0051-the-h1-tagline-og-tagline-and-status-card-stack-still-describe-only-frontend-work/ticket.md",
-    "updated": "2026-10-10T15:18:23.528Z"
+    "updated": "2026-10-14T18:43:27.399Z"
   },
   {
     "id": "KA0052",
@@ -723,9 +723,9 @@
   {
     "id": "KA0091",
     "title": "A commit (`astro check`) in the worktree during e2e coincided with a dev-server page navigation",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0091-a-commit-astro-check-in-the-worktree-during-e2e-coincided-with-a-dev-server-page-navigation/ticket.md",
-    "updated": "2026-10-14T18:17:24.693Z"
+    "updated": "2026-10-14T18:42:12.103Z"
   },
   {
     "id": "KA0092",
@@ -733,5 +733,35 @@
     "status": "in-progress",
     "path": "spec/features/KA0092-parallel-e2e-runs-from-two-worktrees-can-take-the-same-preview-port/ticket.md",
     "updated": "2026-10-14T18:31:50.037Z"
+  },
+  {
+    "id": "KA0093",
+    "title": "A button on the home page books a 30-minute call in a calendar",
+    "status": "planning",
+    "path": "spec/features/KA0093-a-button-on-the-home-page-books-a-30-minute-call-in-a-calendar/ticket.md",
+    "updated": "2026-10-14T18:43:27.655Z",
+    "after": [
+      "KA0075"
+    ]
+  },
+  {
+    "id": "KA0094",
+    "title": "One or two client testimonials on the home page",
+    "status": "planning",
+    "path": "spec/features/KA0094-one-or-two-client-testimonials-on-the-home-page/ticket.md",
+    "updated": "2026-10-14T18:43:27.935Z",
+    "after": [
+      "KA0075"
+    ]
+  },
+  {
+    "id": "KA0095",
+    "title": "Kacper's own AI automation as the first case study, with a demo",
+    "status": "planning",
+    "path": "spec/features/KA0095-kacper-s-own-ai-automation-as-the-first-case-study-with-a-demo/ticket.md",
+    "updated": "2026-10-14T18:43:28.222Z",
+    "after": [
+      "KA0075"
+    ]
   }
 ]
