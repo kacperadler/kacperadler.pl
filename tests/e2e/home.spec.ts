@@ -350,11 +350,127 @@ test.describe("home page", () => {
     expect(m.y).toBeGreaterThan(e.y + e.height);
     expect(Math.abs(m.width - (t.x + t.width - e.x))).toBeLessThan(TOLERANCE);
 
+    // The form comes first; the direct links are the sheet's last row,
+    // sharing its bottom rule, and the submit button sits right under the
+    // message, not at the foot of an empty sheet.
+    const links = await box(page.locator("#contact .mb-contact-links"));
+    expect(Math.abs(links.y - (sheet.y + sheet.height - 1))).toBeLessThan(
+      TOLERANCE
+    );
+    const submit = await box(page.locator("#contact [data-submit]"));
+    expect(submit.y - (m.y + m.height)).toBeLessThan(40);
+    expect(sheet.y + sheet.height - (submit.y + submit.height)).toBeLessThan(
+      40
+    );
+
     await page.setViewportSize({ height: 844, width: 390 });
     [e, t, m] = [await box(email), await box(type), await box(message)];
     expect(Math.abs(e.x - t.x)).toBeLessThanOrEqual(TOLERANCE);
     expect(t.y).toBeGreaterThan(e.y + e.height);
     expect(m.y).toBeGreaterThan(t.y + t.height);
+  });
+
+  test("the hero status card is as tall as the text beside it", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    const text = await box(page.locator("#top .mb-hero-text"));
+    const card = await box(page.locator("#top .mb-hero-status"));
+    expect(Math.abs(card.y - text.y)).toBeLessThan(TOLERANCE);
+    expect(Math.abs(card.height - text.height)).toBeLessThan(TOLERANCE);
+  });
+
+  test("the offer's labels run in straight lines, and only the first step's button is the primary one", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    const offer = page.locator("#services");
+    const cells = offer.locator(".mb-card");
+    await expect(cells).toHaveCount(3);
+    // The first cell's "Dla kogo" wraps onto two lines at this width; the
+    // rows under it stay level with the other cells' rows anyway.
+    const rows = await offer
+      .locator(".mb-service-facts")
+      .evaluateAll((lists) =>
+        lists.map((list) =>
+          [...list.querySelectorAll("dt")].map(
+            (dt) => dt.getBoundingClientRect().y
+          )
+        )
+      );
+    expect(rows).toHaveLength(3);
+    for (const [row, label] of ["Dla kogo", "Co dostajesz", "Czas"].entries()) {
+      const ys = rows.map((cell) => cell[row] ?? Number.NaN);
+      expect(Math.max(...ys) - Math.min(...ys), label).toBeLessThan(TOLERANCE);
+    }
+    const buttons = await cells
+      .locator(".mb-card-footer > *")
+      .evaluateAll((els) => els.map((el) => el.className));
+    expect(buttons[0]).toContain("mb-btn-default");
+    expect(buttons[1]).toContain("mb-btn-outline");
+    expect(buttons[2]).toContain("mb-btn-outline");
+
+    // The pricing answer is the head's lede; the audit credit is a fact of
+    // the audit step.
+    await expect(offer.locator(".mb-section-lede")).toContainText(
+      "Każdy projekt wyceniam indywidualnie."
+    );
+    await expect(cells.first()).toContainText(
+      "Koszt audytu odliczam od wdrożenia."
+    );
+  });
+
+  test("between the offer and the contact form, the process ends at a button to the form", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(
+      page.locator("#how").getByRole("link", { name: "Umów bezpłatną rozmowę" })
+    ).toHaveAttribute("href", "#contact");
+  });
+
+  test("a case names its company once, with no logo", async ({ page }) => {
+    await page.goto("/");
+    const cards = page.locator("#cases .mb-card");
+    await expect(cards).toHaveCount(2);
+    await expect(cards.locator("img")).toHaveCount(0);
+    const head = cards.first().locator(".mb-cases-head");
+    const [title, badge] = [
+      await box(head.locator("h3")),
+      await box(head.locator(".mb-badge")),
+    ];
+    expect(badge.x).toBeGreaterThan(title.x + title.width);
+  });
+
+  test("the trust bar names a bare mark, sizes logos by weight, and stays a short band on a phone", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    const trust = page.locator("#trust");
+    await expect(trust.getByText("Apptension", { exact: true })).toBeVisible();
+    const pwc = await box(trust.getByRole("img", { name: "PwC Polska" }));
+    const rex = await box(
+      trust.getByRole("img", { name: "ReX Recruitment Exchange" })
+    );
+    expect(pwc.height).toBeGreaterThan(rex.height);
+
+    await page.setViewportSize({ height: 844, width: 390 });
+    const strip = await box(trust.locator(".mb-trust-logos"));
+    expect(strip.height).toBeLessThan(260);
+  });
+
+  test("the wide last example keeps the prose measure", async ({ page }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    const last = page.locator("#examples .mb-card").last();
+    const [cell, text] = [
+      await box(last),
+      await box(last.locator(".mb-example-desc")),
+    ];
+    expect(text.width).toBeLessThan(cell.width * 0.7);
   });
 
   test("the meta follow the brief", async ({ page, request }) => {

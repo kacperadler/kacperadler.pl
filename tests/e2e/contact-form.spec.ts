@@ -166,19 +166,20 @@ test.describe("contact form", () => {
     await pickType(page, "audit");
     await page.fill('[data-contact-form] textarea[name="message"]', message);
 
+    const sheet = page.locator("[data-contact-wrap]");
+    const heightBefore = (await sheet.boundingBox())?.height;
     const sent = page.waitForRequest(LEAD_API);
     await page.click("[data-contact-form] [data-submit]");
     const request = await sent;
 
     // Wrapper flips to success → form node is hidden, success card
-    // (with its reset button) takes over.
-    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
-      "data-state",
-      "success"
-    );
+    // (with its reset button) takes over in the same space: the sheet keeps
+    // its height, so the page does not jump.
+    await expect(sheet).toHaveAttribute("data-state", "success");
     await expect(page.locator("[data-contact-form]")).toBeHidden();
     await expect(page.locator("[data-form-success]")).toBeVisible();
     await expect(page.locator("[data-form-reset]")).toBeVisible();
+    expect((await sheet.boundingBox())?.height).toBe(heightBefore);
 
     // Umami event fires on success with the project type so the
     // dashboard can break submissions down by category.
