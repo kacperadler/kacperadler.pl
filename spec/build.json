@@ -436,9 +436,9 @@
   {
     "id": "KA0054",
     "title": "Patterns not yet in the catalogue",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
-    "updated": "2026-10-14T13:55:43.417Z"
+    "updated": "2026-10-14T14:05:16.191Z"
   },
   {
     "id": "KA0055",
@@ -584,9 +584,9 @@
   {
     "id": "KA0073",
     "title": "The OG image still draws the old design",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0073-the-og-image-still-draws-the-old-design/ticket.md",
-    "updated": "2026-10-14T13:58:07.770Z"
+    "updated": "2026-10-14T14:05:19.359Z"
   },
   {
     "id": "KA0074",
