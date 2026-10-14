@@ -1,5 +1,5 @@
 /* Home page copy that /llms-full.txt serves too, so both read one source:
- * the automation examples (#examples), the notes under the offer
+ * the automation examples (#examples), the offer's pricing lede
  * (#services), the case highlights (#cases), the about text (#about) and
  * the FAQ (#faq). Copy used only on the page stays in its section. */
 
@@ -42,11 +42,10 @@ export const automations: readonly Automation[] = [
   },
 ];
 
-// Under the offer's table: how pricing works, then the audit credit.
-export const offerNotes: readonly string[] = [
-  "Każdy projekt wyceniam indywidualnie. Wycenę dostajesz w 2–3 dni po rozmowie. Rozmowa i wycena są bezpłatne i do niczego nie zobowiązują.",
-  "Koszt audytu odliczam od wdrożenia.",
-];
+// The offer's lede: how pricing works. The audit credit is the audit
+// step's own `note` (src/content/services/audit.json).
+export const offerPricing =
+  "Każdy projekt wyceniam indywidualnie. Wycenę dostajesz w 2–3 dni po rozmowie. Rozmowa i wycena są bezpłatne i do niczego nie zobowiązują.";
 
 /* A project told as problem, solution and effect. `experience` is the id of
  * its entry in src/content/experience (company, logo, case study link); an

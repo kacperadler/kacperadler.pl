@@ -17,6 +17,8 @@ const services = defineCollection({
     cta: z.string(),
     description: z.string(),
     duration: z.string(),
+    // A line under the duration, a fact about this step alone.
+    note: z.string().optional(),
     order: z.number().int().nonnegative(),
     title: z.string(),
   }),

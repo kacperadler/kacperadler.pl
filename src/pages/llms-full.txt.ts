@@ -11,7 +11,7 @@ import {
   automations,
   caseHighlights,
   faq,
-  offerNotes,
+  offerPricing,
 } from "@/data/home";
 import { processSteps } from "@/data/process";
 import { siteConfig } from "@/data/site-config";
@@ -42,7 +42,7 @@ export async function GET(): Promise<Response> {
 
 **Co dostajesz**: ${s.data.description}
 
-**Czas**: ${s.data.duration}`
+**Czas**: ${s.data.duration}${s.data.note ? ` ${s.data.note}` : ""}`
     )
     .join("\n\n");
 
@@ -142,7 +142,7 @@ Trzy kroki. Zaczynasz od pierwszego.
 
 ${offerBlock}
 
-${offerNotes.join(" ")}
+${offerPricing}
 
 ---
 

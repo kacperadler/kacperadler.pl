@@ -1,16 +1,19 @@
 ---
 import { getCollection } from "astro:content";
-import { offerNotes } from "@/data/home";
+import { offerPricing } from "@/data/home";
 import Button from "../button.astro";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
 import SectionHead from "../section-head.astro";
 
 /* Offer (#services): the services collection's three steps as a
- * three-column cell table (one column at 880px and below). Each step: its
- * mono index (blue with its cell), title, a ruled list of who it is for,
- * what the client gets and how long it takes, and a button to the contact
- * form. The pricing note sits under the table. */
+ * three-column cell table (one column at 880px and below), the pricing
+ * answer as the head's lede. Each step: its mono index (blue with its
+ * cell), title, a ruled list of who it is for, what the client gets and
+ * how long it takes (with the step's own note under the time), and a
+ * button to the contact form - default on the first step, the one to
+ * start from, outline on the others. The cells share their rows (CSS
+ * subgrid), so each label runs in one straight line through the table. */
 const steps = (await getCollection("services")).sort(
   (a, b) => a.data.order - b.data.order
 );
@@ -20,9 +23,10 @@ const steps = (await getCollection("services")).sort(
   <div class="container">
     <SectionHead label="Oferta">
       Trzy kroki. Zaczynasz od <em>pierwszego</em>.
+      <Fragment slot="lede">{offerPricing}</Fragment>
     </SectionHead>
 
-    <CellGrid columns={3}>
+    <CellGrid class="mb-services-grid" columns={3}>
       {steps.map((step, idx) => (
         <Card>
           <span slot="title">{step.data.title}</span>
@@ -41,18 +45,22 @@ const steps = (await getCollection("services")).sort(
             <div class="mb-service-fact">
               <dt>Czas</dt>
               <dd>{step.data.duration}</dd>
+              {step.data.note && (
+                <dd class="mb-service-note">{step.data.note}</dd>
+              )}
             </div>
           </dl>
-          <Button href="#contact" iconEnd="lucide:arrow-right" slot="footer">
+          <Button
+            href="#contact"
+            iconEnd="lucide:arrow-right"
+            slot="footer"
+            variant={idx === 0 ? "default" : "outline"}
+          >
             {step.data.cta}
           </Button>
         </Card>
       ))}
     </CellGrid>
-
-    <div class="mb-services-note">
-      {offerNotes.map((note) => <p>{note}</p>)}
-    </div>
   </div>
 </section>
 
@@ -75,10 +83,27 @@ const steps = (await getCollection("services")).sort(
     color: var(--blue);
   }
 
+  /* The cell's five rows (head, three facts, button) are the grid row's
+   * tracks, shared by the three cells: card, content and list are nested
+   * subgrids, so a long fact in one cell moves the same row in the others. */
+  .mb-services :global(.mb-services-grid > .mb-card) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 5;
+  }
+
+  .mb-services :global(.mb-services-grid .mb-card-content) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    row-gap: 0;
+  }
+
   .mb-service-facts {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    row-gap: 0;
     margin: 0;
   }
 
@@ -110,22 +135,10 @@ const steps = (await getCollection("services")).sort(
     color: var(--ink);
   }
 
-  .mb-services-note {
-    max-width: 72ch;
-    margin-top: var(--v2-space-lg);
-  }
-
-  .mb-services-note p {
-    margin: 0;
-    font-size: 15px;
-    line-height: 1.6;
+  .mb-service-fact .mb-service-note {
+    margin-top: 4px;
+    font-size: 14px;
     color: var(--ink-2);
-  }
-
-  .mb-services-note p + p {
-    margin-top: 8px;
-    font-weight: 500;
-    color: var(--ink);
   }
 
   @media (max-width: 880px) {
