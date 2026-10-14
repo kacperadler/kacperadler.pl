@@ -318,6 +318,37 @@ test.describe("component catalogue (astro dev)", () => {
     ).toHaveCSS("color", danger);
   });
 
+  test("the required asterisk sits right after the label text", async ({
+    page,
+  }) => {
+    const marker = sample(page, "mb-form", "required")
+      .first()
+      .locator(".mb-field-required");
+    // From the right edge of the label's last glyph to the left edge of
+    // the "*" glyph, both measured on their text, not their boxes.
+    const gap = await marker.evaluate((star) => {
+      const glyphs = (node: Node, side: "first" | "last") => {
+        const text = node.textContent ?? "";
+        const at =
+          side === "last"
+            ? text.trimEnd().length - 1
+            : text.length - text.trimStart().length;
+        const range = document.createRange();
+        range.setStart(node, at);
+        range.setEnd(node, at + 1);
+        return range.getBoundingClientRect();
+      };
+      const label = star.previousSibling;
+      const starText = star.firstChild;
+      if (!(label && starText)) {
+        throw new Error("the label text or the marker text is missing");
+      }
+      return glyphs(starText, "first").left - glyphs(label, "last").right;
+    });
+    expect(gap).toBeGreaterThanOrEqual(0);
+    expect(gap).toBeLessThanOrEqual(4);
+  });
+
   test("a pressed nav link turns blue like its forced press", async ({
     page,
   }) => {

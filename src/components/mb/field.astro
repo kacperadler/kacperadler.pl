@@ -48,9 +48,7 @@ const {
   <div class="mb-field-grid">
     <Label disabled={disabled} for={forId}
       >{label}{required && (
-        <span aria-hidden="true" class="mb-field-required">
-          *
-        </span>
+        <span aria-hidden="true" class="mb-field-required" set:text="*" />
       )}</Label
     >
     <div class="mb-field-control">
@@ -102,7 +100,7 @@ const {
   }
 
   .mb-field-required {
-    margin-left: 4px;
+    margin-left: 2px;
     color: var(--error);
   }
 
