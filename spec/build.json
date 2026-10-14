@@ -591,9 +591,9 @@
   {
     "id": "KA0074",
     "title": "`bun run check` reads the Playwright HTML report when `CI` is set",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0074-bun-run-check-reads-the-playwright-html-report-when-ci-is-set/ticket.md",
-    "updated": "2026-10-14T13:59:37.190Z"
+    "updated": "2026-10-14T14:07:55.437Z"
   },
   {
     "id": "KA0075",
