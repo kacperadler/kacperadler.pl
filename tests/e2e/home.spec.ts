@@ -442,6 +442,19 @@ test.describe("home page", () => {
       await box(head.locator(".mb-badge")),
     ];
     expect(badge.x).toBeGreaterThan(title.x + title.width);
+
+    // On a phone every badge sits under its name, a long one and a short
+    // one alike.
+    await page.setViewportSize({ height: 844, width: 390 });
+    for (const card of await cards.all()) {
+      const [name, kind] = [
+        // biome-ignore lint/performance/noAwaitInLoops: one card at a time
+        await box(card.locator("h3")),
+        await box(card.locator(".mb-cases-head .mb-badge")),
+      ];
+      expect(kind.y).toBeGreaterThan(name.y + name.height - 1);
+      expect(Math.abs(kind.x - name.x)).toBeLessThan(TOLERANCE);
+    }
   });
 
   test("the trust bar names a bare mark, sizes logos by weight, and stays a short band on a phone", async ({

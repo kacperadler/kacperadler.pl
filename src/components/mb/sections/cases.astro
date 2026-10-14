@@ -165,6 +165,16 @@ const cases = caseHighlights.map((highlight) => {
     }
   }
 
+  /* Narrow, a long badge would wrap under its h3 while a short one stays
+   * beside it; every badge goes under the name, so the cards read alike. */
+  @media (max-width: 480px) {
+    .mb-cases-head {
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+  }
+
   @media (max-width: 400px) {
     .mb-cases-row {
       grid-template-columns: minmax(0, 1fr);
