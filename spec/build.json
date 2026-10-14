@@ -202,9 +202,9 @@
   {
     "id": "KA0027",
     "title": "Leads stored in SQLite through one on-demand API route",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0027-leads-stored-in-sqlite-through-one-on-demand-api-route/ticket.md",
-    "updated": "2026-10-14T14:24:04.939Z"
+    "updated": "2026-10-14T14:33:40.363Z"
   },
   {
     "id": "KA0028",
@@ -436,9 +436,9 @@
   {
     "id": "KA0054",
     "title": "Patterns not yet in the catalogue",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
-    "updated": "2026-10-14T14:28:34.729Z"
+    "updated": "2026-10-14T14:34:58.195Z"
   },
   {
     "id": "KA0055",
@@ -625,7 +625,7 @@
     "title": "Pagination jump needs a page that reads its query",
     "status": "in-progress",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-14T14:12:18.787Z"
+    "updated": "2026-10-14T14:30:35.013Z"
   },
   {
     "id": "KA0079",
