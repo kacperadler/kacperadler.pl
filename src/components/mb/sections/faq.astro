@@ -3,6 +3,7 @@ import { faq } from "@/data/home";
 import Accordion from "../accordion.astro";
 import AccordionItem from "../accordion-item.astro";
 import CellGrid from "../cell-grid.astro";
+import Link from "../link.astro";
 import SectionHead from "../section-head.astro";
 
 /* FAQ (#faq): the questions in two bordered accordions side by side, one
@@ -17,7 +18,14 @@ const columns = [faq.slice(0, half), faq.slice(half)];
 
 <section class="mb-faq" id="faq">
   <div class="container">
-    <SectionHead label="FAQ"> Najczęstsze <em>pytania</em>. </SectionHead>
+    <SectionHead label="FAQ">
+      Najczęstsze <em>pytania</em>.
+      <Fragment slot="lede">
+        Nie ma tu Twojego? Zapytaj w
+        <Link href="#contact" variant="inline">formularzu</Link>, odpowiem w
+        24h.
+      </Fragment>
+    </SectionHead>
 
     <CellGrid columns={2}>
       {columns.map((items) => (
