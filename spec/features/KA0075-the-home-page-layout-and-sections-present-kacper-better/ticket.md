@@ -46,3 +46,4 @@ Out:
 - 2026-10-10: The human: "the home page layout and sections must be updated so it presents better and presents me better". Waits for the human's input and KA0072's signature choice; relates to KA0051.
 - 2026-10-14: The human sent the brief (`brief.md`); the redesign follows it. KA0051 folds in here. Facts still missing get their own tickets and do not appear on the page as placeholders.
 - 2026-10-14: The human approved the ticket. Audit cost credited against the implementation: not decided yet, leave that line out of the copy.
+- 2026-10-14: The human: the audit cost is credited against the implementation; the offer says so ("Koszt audytu odliczam od wdrożenia.").
