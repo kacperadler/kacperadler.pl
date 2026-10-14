@@ -151,6 +151,49 @@ const runningTransitions = (locator: Locator) =>
       .map((a) => (a as CSSTransition).transitionProperty)
   );
 
+// The CSS transitions an action starts on the element or inside it
+// (`transitionrun` bubbles, and a pseudo-element's fires on its element).
+// It waits for the ones already running to end and for their events to go
+// out, so none of theirs is counted, listens, acts, then waits for the
+// first event. Sampling the running ones after the action instead races
+// them: a --mb-snap transition is over in 0.12s.
+const transitionsStartedBy = async (
+  locator: Locator,
+  action: () => Promise<void>,
+  what: string
+) => {
+  await expect.poll(() => runningTransitions(locator)).toEqual([]);
+  await locator.evaluate(async (el) => {
+    // Events of transitions that ended go out at the next frame.
+    const { promise, resolve } = Promise.withResolvers<number>();
+    requestAnimationFrame(resolve);
+    await promise;
+    const store = window as unknown as {
+      transitionsRun: string[];
+      transitionsStop: () => void;
+    };
+    const run: string[] = [];
+    const listener = (event: Event) => {
+      run.push((event as TransitionEvent).propertyName);
+    };
+    el.addEventListener("transitionrun", listener);
+    store.transitionsRun = run;
+    store.transitionsStop = () =>
+      el.removeEventListener("transitionrun", listener);
+  });
+  await action();
+  const read = () =>
+    locator.page().evaluate(() => {
+      const store = window as unknown as { transitionsRun: string[] };
+      return [...store.transitionsRun];
+    });
+  await expect.poll(read, { message: what }).not.toEqual([]);
+  await locator.page().evaluate(() => {
+    const store = window as unknown as { transitionsStop: () => void };
+    store.transitionsStop();
+  });
+};
+
 // A rendered box, and the layer's and the face's boxes in one frame.
 interface Box {
   height: number;
@@ -800,56 +843,72 @@ test.describe("motion (astro dev)", () => {
       await page.goto("/ui", { waitUntil: "networkidle" });
       const idle = (section: string, selector: string) =>
         sample(page, section, "idle").locator(selector).first();
-      const expectMotion = async (locator: Locator, what: string) => {
-        const running = await runningTransitions(locator);
+      // Under reduced motion nothing may be running after the action; else
+      // the action has to start a transition.
+      const expectMotion = async (
+        locator: Locator,
+        what: string,
+        action: () => Promise<void>
+      ) => {
         if (reducedMotion === "reduce") {
-          expect(running, what).toEqual([]);
+          await action();
+          expect(await runningTransitions(locator), what).toEqual([]);
         } else {
-          expect(running.length, what).toBeGreaterThan(0);
+          await transitionsStartedBy(locator, action, what);
         }
       };
 
       const button = idle("mb-button", ".mb-btn");
-      await button.hover();
-      await expectMotion(button, "button hover: the face lifts off its layer");
-      await page.mouse.down();
-      await expectMotion(button, "button press: the face goes onto its layer");
+      await expectMotion(
+        button,
+        "button hover: the face lifts off its layer",
+        () => button.hover()
+      );
+      await expectMotion(
+        button,
+        "button press: the face goes onto its layer",
+        () => page.mouse.down()
+      );
       await page.mouse.up();
 
       const nav = idle("mb-link", ".mb-link-nav");
-      await nav.hover();
-      await expectMotion(nav, "nav hover: the bar draws in");
+      await expectMotion(nav, "nav hover: the bar draws in", () => nav.hover());
 
       const caseLink = idle("mb-link", ".mb-link-case");
       await caseLink.hover();
-      await page.mouse.down();
-      await expectMotion(caseLink, "case press: the arrow nudges further");
+      await expectMotion(caseLink, "case press: the arrow nudges further", () =>
+        page.mouse.down()
+      );
       await page.mouse.up();
 
       const card = idle("mb-card", ".mb-card");
-      await card.hover();
-      await expectMotion(card, "card hover: the top rule draws in");
+      await expectMotion(card, "card hover: the top rule draws in", () =>
+        card.hover()
+      );
 
       const badge = sample(page, "mb-badge", "href, idle").locator(".mb-badge");
       await badge.hover();
-      await page.mouse.down();
-      await expectMotion(badge, "badge link press: the ink block");
+      await expectMotion(badge, "badge link press: the ink block", () =>
+        page.mouse.down()
+      );
       await page.mouse.up();
 
       const input = sample(page, "mb-form", "default").first().locator("input");
-      await input.focus();
-      await expectMotion(input, "input focus: the shadow shifts out");
+      await expectMotion(input, "input focus: the shadow shifts out", () =>
+        input.focus()
+      );
 
       // The focus ring grows out of the edge: reach the button by keyboard.
       await page.mouse.click(1, 1);
       await button.focus();
       await page.keyboard.press("Shift+Tab");
-      await page.keyboard.press("Tab");
+      await expectMotion(button, "button focus: the ring grows out", () =>
+        page.keyboard.press("Tab")
+      );
       await expect(button).toBeFocused();
       expect(await button.evaluate((el) => el.matches(":focus-visible"))).toBe(
         true
       );
-      await expectMotion(button, "button focus: the ring grows out");
     });
   }
 });
