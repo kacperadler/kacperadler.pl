@@ -61,7 +61,7 @@ Package manager: **bun** (Node 22.13+ - `node:sqlite`; `bun` musi być w `PATH`,
 bun install            # install deps
 bun dev                # dev server (Umami script NIE jest renderowany); katalog komponentów pod /ui, propozycje designu pod /ui/proposal (tylko dev)
 bun run build          # production build → dist/client/ (strony) + dist/server/ (Node dla /api/lead)
-bun run preview        # preview prod build (port domyślny 4321; testy używają 4329)
+bun run preview        # preview prod build (port domyślny 4321; testy biorą 4329 albo następny wolny i rezerwują go plikiem w `$TMPDIR/kacperadler-e2e-ports`, więc runy z dwóch worktree naraz się nie zderzą)
 bun run check          # astro check (type-check .astro)
 bun run lint           # ultracite check (Biome): lint + format check, też .astro (jak w CI)
 bun run format         # ultracite fix (Biome): lint fix + format
@@ -112,7 +112,7 @@ src/
 ├── lib/                   # seo, case-studies, proposals, lead (reguły formularza), leads-db (SQLite), send-email (Resend)
 └── assets/                # me.jpg (OG), fonts/ (Geist TTF + OFL dla OG), experience/ logotypy, logotyp_fundusze_eu.png
 
-tests/e2e/       # Playwright specs (a11y, case-studies, check-input, contact-form, design, favicon, lead-api, lead-rate-limit (nginx w Dockerze), leads-db, mobile-sheet, nav-active, og-image, pagination-jump, send-email, services-grid, services-order, skip-link; ui-catalogue i ui-proposals na dev serverze; check-input pilnuje, że `astro check` nie czyta folderów z runu e2e; pagination-jump serwuje build e2e (`dist/client`) przez `nginx.conf` w obrazie nginx z `Dockerfile`, więc wymaga Dockera)
+tests/e2e/       # Playwright specs (a11y, case-studies, check-input, contact-form, design, e2e-ports, favicon, lead-api, lead-rate-limit (nginx w Dockerze), leads-db, mobile-sheet, nav-active, og-image, pagination-jump, send-email, services-grid, services-order, skip-link; ui-catalogue i ui-proposals na dev serverze; check-input pilnuje, że `astro check` nie czyta folderów z runu e2e; e2e-ports - że dwa runy naraz dostają różne porty; pagination-jump serwuje build e2e (`dist/client`) przez `nginx.conf` w obrazie nginx z `Dockerfile`, więc wymaga Dockera)
 tests/fixtures/  # dla buildów e2e: case studies (przykładowy i pusty) i `pagination/list.astro` - 12 stron pod `/lista/` (tylko `E2E_FIXTURES=1`)
 spec/            # vision.md + tickets (spec/features/<id>/)
 .agents/harness/ # kryteria review / audit / retro + styleguide
