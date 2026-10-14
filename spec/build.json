@@ -623,9 +623,9 @@
   {
     "id": "KA0078",
     "title": "Pagination jump needs a page that reads its query",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-14T17:29:53.863Z"
+    "updated": "2026-10-14T17:35:58.618Z"
   },
   {
     "id": "KA0079",
@@ -702,15 +702,15 @@
   {
     "id": "KA0088",
     "title": "The \"move under no-preference\" motion test races the transitions it looks for",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0088-the-move-under-no-preference-motion-test-races-the-transitions-it-looks-for/ticket.md",
-    "updated": "2026-10-14T17:33:20.952Z"
+    "updated": "2026-10-14T17:33:36.825Z"
   },
   {
     "id": "KA0089",
     "title": "/api/lead has no rate limit: a script can fill the database and the inbox",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0089-api-lead-has-no-rate-limit-a-script-can-fill-the-database-and-the-inbox/ticket.md",
-    "updated": "2026-10-14T17:33:12.476Z"
+    "updated": "2026-10-14T17:42:16.309Z"
   }
 ]
