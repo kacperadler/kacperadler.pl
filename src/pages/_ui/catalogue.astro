@@ -200,10 +200,20 @@ const linkStates: readonly Forced[] = [
   "focus-visible",
 ];
 
+// Copy of unequal length, so the rail shows marks centred on cards of
+// different heights.
 const steps = [
-  { num: "01", title: "Rozmowa" },
-  { num: "02", title: "Plan i wycena" },
-  { num: "03", title: "Realizacja" },
+  {
+    num: "01",
+    text: "Najedź na kartę - jej znacznik się wypełni.",
+    title: "Rozmowa",
+  },
+  {
+    num: "02",
+    text: "Po rozmowie dostajesz krótki dokument: co robimy, w jakiej kolejności, ile to zajmie i ile kosztuje. Bez ukrytych kosztów, bez niespodzianek w trakcie.",
+    title: "Plan i wycena",
+  },
+  { num: "03", text: "Małe etapy.", title: "Realizacja" },
 ] as const;
 ---
 
@@ -1297,10 +1307,12 @@ const steps = [
       <p class="mb-ui-note">
         <code>step-marker.astro</code>
         - kwadratowy numer mono na szynie 1px przy karcie etapu (proces). Stoi
-        pierwszy w wierszu, karta zaraz za nim; wiersze ułożone w listę łączą
-        szyny w jedną linię od pierwszego znacznika do ostatniego. Znacznik
-        wypełnia się na niebiesko, gdy jego karta jest pod kursorem (tu
-        wymuszone <code>data-state="hover"</code> na karcie).
+        pierwszy w wierszu, karta zaraz za nim, i siedzi na środku wysokości
+        karty, jakkolwiek jest wysoka; wiersze ułożone w listę łączą szyny w
+        jedną linię od pierwszego znacznika do ostatniego. Znacznik wypełnia się
+        na niebiesko, gdy jego karta jest pod kursorem (tu wymuszone
+        <code>data-state="hover"</code>
+        na karcie).
       </p>
       <div class="mb-ui-row">
         <p class="mb-ui-row-label">Stany</p>
@@ -1330,7 +1342,7 @@ const steps = [
                 <StepMarker num={step.num} />
                 <Card tag="div">
                   <span slot="title">{step.title}</span>
-                  Najedź na kartę - jej znacznik się wypełni.
+                  {step.text}
                 </Card>
               </li>
             ))}

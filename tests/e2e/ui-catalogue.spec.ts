@@ -89,6 +89,27 @@ const expectRailFromFirstMarkToLast = async (markers: Locator) => {
   expect(rail.bottom).toBeLessThan(rail.last.bottom);
 };
 
+// Each mark sits on its card's vertical centre, within 1px; `cards` are
+// the step cards and `.mb-step-dot` the mark in the marker before each.
+const expectMarksOnCardCentres = async (cards: Locator) => {
+  const offsets = await cards.evaluateAll((els) =>
+    els.map((card) => {
+      const dot = card.previousElementSibling?.querySelector(
+        ".mb-step-dot"
+      ) as Element;
+      const middle = (box: DOMRect) => box.top + box.height / 2;
+      return Math.abs(
+        middle(dot.getBoundingClientRect()) -
+          middle(card.getBoundingClientRect())
+      );
+    })
+  );
+  expect(offsets.length).toBeGreaterThan(0);
+  for (const offset of offsets) {
+    expect(offset).toBeLessThanOrEqual(1);
+  }
+};
+
 // The rendered height of `target` just before a click on its `act` child,
 // then on each of the next `frames` animation frames - a transition shows
 // up as heights between the first and the last.
@@ -316,13 +337,27 @@ test.describe("component catalogue (astro dev)", () => {
     expect(await paint(idleDot, props)).toEqual(forcedPaint);
   });
 
-  for (const width of [1440, 360]) {
+  for (const width of [1440, 390, 360]) {
     test(`the step rail runs from the first mark to the last at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ height: 900, width });
       await expectRailFromFirstMarkToLast(
         sample(page, "mb-step-marker", "3 etapy").locator(".mb-step-marker")
+      );
+    });
+  }
+
+  // The "Szyna" steps differ in height; every mark still sits mid-card.
+  for (const width of [1440, 390]) {
+    test(`each step mark sits on its card's centre at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ height: 900, width });
+      await expectMarksOnCardCentres(
+        page.locator(
+          'section[aria-labelledby="mb-step-marker"] .mb-step-marker + .mb-card'
+        )
       );
     });
   }
@@ -1397,14 +1432,13 @@ test.describe("production build", () => {
     await expect(page.locator(".mb-tag, .mb-status-pill")).toHaveCount(0);
   });
 
-  // The process steps and the contact links are the catalogue's step
-  // marker and contact link: one rail through the marks, a mark that fills
-  // with its step, and LinkedIn in a new tab while email stays put.
-  test("process steps and contact links behave as on /ui", async ({ page }) => {
+  // The process steps are the catalogue's step marker: a mark that fills
+  // with its step and no other.
+  test("a process step mark fills with its step", async ({ page }) => {
     await page.goto("/");
-    const markers = page.locator("#how .mb-step > .mb-step-marker");
-    await expect(markers).toHaveCount(5);
-    await expectRailFromFirstMarkToLast(markers);
+    await expect(page.locator("#how .mb-step > .mb-step-marker")).toHaveCount(
+      5
+    );
 
     const step = page.locator("#how .mb-step").nth(2);
     await step.locator(".mb-card").hover();
@@ -1415,7 +1449,27 @@ test.describe("production build", () => {
     await expect(
       page.locator("#how .mb-step").nth(1).locator(".mb-step-dot")
     ).toHaveCSS("background-color", "rgb(10, 12, 16)");
+  });
 
+  for (const width of [1440, 390]) {
+    test(`each process step mark sits on its card's centre, one rail through them, at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ height: 900, width });
+      await page.goto("/");
+      await expectMarksOnCardCentres(
+        page.locator("#how .mb-step > .mb-step-marker + .mb-card")
+      );
+      await expectRailFromFirstMarkToLast(
+        page.locator("#how .mb-step > .mb-step-marker")
+      );
+    });
+  }
+
+  // The contact links are the catalogue's contact link: LinkedIn in a new
+  // tab while email stays put.
+  test("the email and LinkedIn contact links", async ({ page }) => {
+    await page.goto("/");
     const email = page.locator("#contact a.mb-card", { hasText: "Email" });
     const linkedin = page.locator("#contact a.mb-card", {
       hasText: "LinkedIn",

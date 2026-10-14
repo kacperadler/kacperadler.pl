@@ -1,11 +1,13 @@
 ---
 /* Step marker: a square mono number on a 1px ink rail, beside a process
  * step's <Card> (how-i-work). It goes first in its row, the card right
- * after it; the rows stack in a list, so the rails join into one line that
- * runs from the first mark to the last (the first row's rail starts at its
- * mark, the last one's ends there). The mark fills blue while the card
- * next to it is hovered - or forced with [data-state="hover"] on the card
- * (/ui). Decorative: the step's title carries the meaning. */
+ * after it, and stretches to the row's height, so the mark sits on the
+ * card's vertical centre however tall the card is. The rows stack in a
+ * list, so the rails join into one line that runs from the first mark to
+ * the last (the first row's rail starts at its centre, the last one's ends
+ * there). The mark fills blue while the card next to it is hovered - or
+ * forced with [data-state="hover"] on the card (/ui). Decorative: the
+ * step's title carries the meaning. */
 interface Props {
   num: string;
 }
@@ -21,6 +23,7 @@ const { num } = Astro.props;
   .mb-step-marker {
     position: relative;
     display: flex;
+    align-items: center;
     justify-content: center;
   }
 
@@ -36,12 +39,11 @@ const { num } = Astro.props;
 
   /* The rail runs from the first mark to the last. */
   :global(:first-child) > .mb-step-marker::before {
-    top: var(--v2-space-lg);
+    top: 50%;
   }
 
   :global(:last-child) > .mb-step-marker::before {
-    bottom: auto;
-    height: var(--v2-space-lg);
+    bottom: 50%;
   }
 
   .mb-step-dot {
@@ -51,7 +53,6 @@ const { num } = Astro.props;
     justify-content: center;
     width: 48px;
     height: 48px;
-    margin-top: var(--v2-space-lg);
     font-family: var(--mono);
     font-size: 14px;
     font-weight: 500;
@@ -75,16 +76,7 @@ const { num } = Astro.props;
     .mb-step-dot {
       width: 36px;
       height: 36px;
-      margin-top: var(--v2-space-md);
       font-size: 13px;
-    }
-
-    :global(:first-child) > .mb-step-marker::before {
-      top: var(--v2-space-md);
-    }
-
-    :global(:last-child) > .mb-step-marker::before {
-      height: var(--v2-space-md);
     }
   }
 
