@@ -19,8 +19,8 @@ import Textarea from "./textarea.astro";
  * shadow, like the default button's layer. Focusing a field lights only
  * that field. While it is sending, contact-form.ts disables every field
  * and the submit button; `state` "submitting" renders them disabled too.
- * min-height keeps the page from jumping when the success card replaces
- * the form. Once the sheet is at least 720px wide (a container query),
+ * The form and the success card stack in one cell, so the page does not
+ * jump when one replaces the other. Once the sheet is at least 720px wide (a container query),
  * the email and the project type sit side by side above the message.
  *
  * For the catalogue (/ui), which shows every state at once:
@@ -170,11 +170,12 @@ const id = (name: string) => `${idPrefix}-${name}`;
 </div>
 
 <style>
+  /* The form and the success card share one grid cell, the one not shown
+   * kept in layout but invisible, so the sheet is always as tall as the
+   * taller of the two and nothing jumps when one replaces the other. */
   .mb-contact-form {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     width: 100%;
-    min-height: 490px;
     container-type: inline-size;
     background: var(--v2-bg);
     border: 1px solid var(--mb-rule);
@@ -192,16 +193,21 @@ const id = (name: string) => `${idPrefix}-${name}`;
     box-shadow: var(--mb-shift) var(--mb-shift) 0 var(--blue);
   }
 
+  .mb-form,
+  .mb-form-success {
+    grid-area: 1 / 1;
+    min-width: 0;
+  }
+
   .mb-form {
     display: flex;
-    flex: 1;
     flex-direction: column;
     gap: 18px;
     padding: 28px;
   }
 
   .mb-contact-form[data-state="success"] .mb-form {
-    display: none;
+    visibility: hidden;
   }
 
   .mb-hp {
@@ -217,16 +223,10 @@ const id = (name: string) => `${idPrefix}-${name}`;
     gap: 18px;
   }
 
-  /* Wide, the fields take fewer rows: the message grows into the room the
-   * min-height keeps, so the submit button does not hang far below it. */
   @container (min-width: 720px) {
     .mb-form-row {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       column-gap: 28px;
-    }
-
-    .mb-form :global(.mb-textarea) {
-      min-height: 220px;
     }
   }
 
@@ -254,8 +254,8 @@ const id = (name: string) => `${idPrefix}-${name}`;
   }
 
   .mb-form-success {
-    display: none;
-    flex: 1;
+    display: flex;
+    visibility: hidden;
     flex-direction: column;
     gap: 12px;
     align-items: center;
@@ -265,7 +265,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
   }
 
   .mb-contact-form[data-state="success"] .mb-form-success {
-    display: flex;
+    visibility: visible;
   }
 
   .mb-success-mark {

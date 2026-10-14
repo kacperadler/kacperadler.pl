@@ -5,9 +5,10 @@ import ContactForm from "../contact-form.astro";
 import ContactLink from "../contact-link.astro";
 import SectionHead from "../section-head.astro";
 
-/* Contact (#contact): the two links and the form close into one sheet
- * across the container under the section head - the links a ruled row of
- * cells, the form right under them sharing the rule. */
+/* Contact (#contact): the form and the two direct links close into one
+ * sheet across the container under the section head - the form first,
+ * the main action, then the links as its last ruled row, sharing the
+ * form's bottom rule. */
 ---
 
 <section class="mb-contact" id="contact">
@@ -20,7 +21,11 @@ import SectionHead from "../section-head.astro";
       </Fragment>
     </SectionHead>
 
-    <CellGrid columns={2}>
+    <div class="mb-contact-form-host">
+      <ContactForm />
+    </div>
+
+    <CellGrid class="mb-contact-links" columns={2}>
       <ContactLink
         href={`mailto:${siteConfig.email}`}
         icon="lucide:mail"
@@ -37,10 +42,6 @@ import SectionHead from "../section-head.astro";
         /in/kacperadler
       </ContactLink>
     </CellGrid>
-
-    <div class="mb-contact-form-host">
-      <ContactForm />
-    </div>
   </div>
 </section>
 
@@ -51,6 +52,9 @@ import SectionHead from "../section-head.astro";
 
   .mb-contact-form-host {
     display: flex;
+  }
+
+  .mb-contact :global(.mb-contact-links) {
     margin-top: -1px;
   }
 
