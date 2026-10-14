@@ -1,4 +1,10 @@
-import { mkdtempSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -7,33 +13,82 @@ import { defineConfig, devices } from "@playwright/test";
 // Non-default port so the preview can run alongside `bun dev` (which holds 4321).
 const DEFAULT_PORT = 4329;
 
-// Resolves to `port` when nothing listens on it (on any address), otherwise to
-// a free port picked by the OS.
-const freePort = (port: number): Promise<number> => {
-  const { promise, resolve, reject } = Promise.withResolvers<number>();
+// Resolves to whether nothing listens on `port`, on any address.
+const isFree = (port: number): Promise<boolean> => {
+  const { promise, resolve, reject } = Promise.withResolvers<boolean>();
   const server = createServer();
   server.once("error", (error: NodeJS.ErrnoException) => {
-    if (error.code === "EADDRINUSE" && port !== 0) {
-      resolve(freePort(0));
+    if (error.code === "EADDRINUSE") {
+      resolve(false);
     } else {
       reject(error);
     }
   });
-  server.listen(port, () => {
-    const { port: bound } = server.address() as { port: number };
-    server.close(() => resolve(bound));
-  });
+  server.listen(port, () => server.close(() => resolve(true)));
   return promise;
 };
 
-// E2E_PORT is used as given. Without it the run takes 4329, or a free port when
-// another server (a preview from another worktree, `bun dev`) holds 4329, so a
-// stray server can neither fail the run nor stand in for this tree's build.
-// Writing the result back makes the workers, which load this file again, use
-// the same port as the runner instead of probing the one our preview now holds.
+// The probe frees the port again, and the server binds it only after the
+// build, so a run in another worktree could probe the same port in between
+// and lose its preview to EADDRINUSE. Each run therefore claims its ports in
+// a folder the runs of every worktree share, as a file <port>.<runner pid>:
+// it writes its file first, then gives the port up when it finds the file of
+// another live run. Of two runs claiming one port at once, the one that reads
+// later sees the other's file, so at most one keeps it. The file goes when the
+// runner exits; one left by a killed runner names a dead pid and is ignored.
+const CLAIMS = join(tmpdir(), "kacperadler-e2e-ports");
+
+const isRunning = (pid: number): boolean => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code === "EPERM";
+  }
+};
+
+const claim = (port: number): boolean => {
+  mkdirSync(CLAIMS, { recursive: true });
+  const own = join(CLAIMS, `${port}.${process.pid}`);
+  writeFileSync(own, "");
+  const taken = readdirSync(CLAIMS).some((name) => {
+    const [claimed, pid] = name.split(".");
+    return (
+      claimed === String(port) &&
+      Number(pid) !== process.pid &&
+      isRunning(Number(pid))
+    );
+  });
+  if (taken) {
+    rmSync(own, { force: true });
+    return false;
+  }
+  process.once("exit", () => rmSync(own, { force: true }));
+  return true;
+};
+
+// The first port from `port` up that is free and claimed by no other run,
+// tried one at a time. Counting up keeps the ports out of the OS ephemeral
+// range, where any outgoing connection could take one before the server
+// binds it.
+const reservePort = async (port: number, last = port + 99): Promise<number> => {
+  if (port > last) {
+    throw new Error(`No free port up to ${last} for the e2e servers`);
+  }
+  if ((await isFree(port)) && claim(port)) {
+    return port;
+  }
+  return reservePort(port + 1, last);
+};
+
+// E2E_PORT is used as given. Without it the run takes 4329, or the next port
+// up when another server (`bun dev`, a run in another worktree) holds or has
+// claimed it, so a stray server can neither fail the run nor stand in for this
+// tree's build. Writing the result back makes the workers, which load this file
+// again, use the same port as the runner instead of claiming another.
 const PORT = process.env.E2E_PORT
   ? Number(process.env.E2E_PORT)
-  : await freePort(DEFAULT_PORT);
+  : await reservePort(DEFAULT_PORT);
 process.env.E2E_PORT = String(PORT);
 const BASE_URL = `http://localhost:${PORT}`;
 
@@ -42,7 +97,7 @@ const BASE_URL = `http://localhost:${PORT}`;
 // workers the same way: specs read E2E_DEV_PORT.
 const DEV_PORT = process.env.E2E_DEV_PORT
   ? Number(process.env.E2E_DEV_PORT)
-  : await freePort(0);
+  : await reservePort(PORT + 1);
 process.env.E2E_DEV_PORT = String(DEV_PORT);
 
 // The preview's lead store (/api/lead): a fresh SQLite file per run unless
