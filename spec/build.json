@@ -202,9 +202,9 @@
   {
     "id": "KA0027",
     "title": "Leads stored in SQLite through one on-demand API route",
-    "status": "planning",
+    "status": "in-progress",
     "path": "spec/features/KA0027-leads-stored-in-sqlite-through-one-on-demand-api-route/ticket.md",
-    "updated": "2026-10-10T14:31:31.738Z"
+    "updated": "2026-10-14T14:00:53.800Z"
   },
   {
     "id": "KA0028",
@@ -436,9 +436,9 @@
   {
     "id": "KA0054",
     "title": "Patterns not yet in the catalogue",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
-    "updated": "2026-10-14T13:33:33.307Z"
+    "updated": "2026-10-14T14:12:12.501Z"
   },
   {
     "id": "KA0055",
@@ -584,16 +584,16 @@
   {
     "id": "KA0073",
     "title": "The OG image still draws the old design",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0073-the-og-image-still-draws-the-old-design/ticket.md",
-    "updated": "2026-10-14T13:26:17.879Z"
+    "updated": "2026-10-14T14:22:48.363Z"
   },
   {
     "id": "KA0074",
     "title": "`bun run check` reads the Playwright HTML report when `CI` is set",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0074-bun-run-check-reads-the-playwright-html-report-when-ci-is-set/ticket.md",
-    "updated": "2026-10-14T13:33:33.521Z"
+    "updated": "2026-10-14T14:07:55.437Z"
   },
   {
     "id": "KA0075",
@@ -623,9 +623,9 @@
   {
     "id": "KA0078",
     "title": "Pagination jump needs a page that reads its query",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-14T13:33:33.821Z"
+    "updated": "2026-10-14T14:12:18.787Z"
   },
   {
     "id": "KA0079",
@@ -685,9 +685,9 @@
   {
     "id": "KA0086",
     "title": "Under reduced motion every restyle lags one frame on every page",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0086-under-reduced-motion-every-restyle-lags-one-frame-on-every-page/ticket.md",
-    "updated": "2026-10-14T13:32:57.991Z"
+    "updated": "2026-10-14T14:03:35.105Z"
   },
   {
     "id": "KA0087",

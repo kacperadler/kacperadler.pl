@@ -182,6 +182,8 @@ Idle: a `muted` frame. Hover: an `ink-2` frame. Focus: an `ink` frame and the ha
 - **Case study** (`/realizacje/<slug>/`): a section head with the company as h1 and the summary as lede, the facts table (role, period, stack as tags), the MDX body in prose, then a default `Napisz do mnie` and an outline `Wszystkie współprace` under an `ink` rule.
 - **Case study list** (`/realizacje/`, built only when a case study exists, the `Realizacje` menu entry too): a section head with the h1, then a cell grid of cards as on the experience wall - period badge (outline), company, role (mono `blue`), summary, the `case` link. In the menu, `Realizacje` is `.active` on the list and the case study pages, with `aria-current="page"` on the list itself.
 - **404**: an `ink` rule, the mono `404` in `blue`, the heavy h1, a default and an outline button.
+- **OG image** (`/og-default.png`, 1200×630, drawn at build time by `src/pages/og-default.png.ts`): a ruled sheet of two cells on the solid `base` - the photo, square, in its 1px `ink` frame, and a table of rows: the square `blue` mark with the role label, the heavy name on two lines, the tagline in `ink-2`, the url in mono `blue`. The sans text is Geist (ExtraBold for the name and the mark, regular for the tagline) from a TTF of variable Geist (npm `geist` 1.7.2) in `src/assets/fonts`, since librsvg cannot load the woff2; the mono labels are DejaVu Sans Mono.
+- **Favicon** (`public/favicon.svg`, and `public/favicon.ico` at 16, 32 and 48px rendered from it): the brand mark of `brand.astro` on a 28-unit box - a `blue` block in a 1px `ink` rule, square, with the Geist ExtraBold `k` in `base` as a path, so it needs no font.
 
 ## Design proposals
 
@@ -194,7 +196,7 @@ Idle: a `muted` frame. Hover: an `ink-2` frame. Focus: an `ink` frame and the ha
 - Press (`:active`) puts a button's face down onto its layer in 0.08s, so no white shows and a quick double click reads as two clean presses; the `case` and sheet arrows nudge further. Everything else answers a press in fill or colour - a step darker, or an ink block on a link badge.
 - Focus: the ring (`global.css`, 2px `blue`) grows out of the element's edge to its offset instead of popping in; fields shift their hard `blue` shadow out.
 - No always-on motion: no ambient background, no pulsing dots. The spinner turns only while a form is being sent.
-- `prefers-reduced-motion: reduce` collapses every transition and animation (`global.css`) and stops the spinner; each animated component has its own reduced-motion block, so hover, press, focus and opening all snap. A button's face then never moves: hover only fills, press hides the layer and takes the darker press fill. The mobile sheet sets `transition-property: none` on its children there, so focus reaches the close button the moment it opens.
+- `prefers-reduced-motion: reduce` turns every transition off and collapses every animation (`global.css`) and stops the spinner; each animated component has its own reduced-motion block too, so hover, press, focus and opening all snap. Transitions go off rather than get shorter: a short duration would turn on the default `all` on every element, and a resize or a media query would show the old style for a frame. A button's face then never moves: hover only fills, press hides the layer and takes the darker press fill.
 
 ## Do's and Don'ts
 

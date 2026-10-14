@@ -6,12 +6,15 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 
 ### Added
 
+- KA0073 The OG image still draws the old design (4f06881)
 - KA0083 The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form (d2b3973)
 - KA0084 The card bar slides in and out in the direction the cursor moves (ca27cd4)
 
 ### Fixed
 
+- KA0074 `bun run check` reads the Playwright HTML report when `CI` is set (4e894b9)
 - KA0085 /ui scrolls 8px sideways at 360px on the first load, now and then (66b0825)
+- KA0086 Under reduced motion every restyle lags one frame on every page (128929f)
 
 ## 2026-10-11
 
