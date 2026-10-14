@@ -293,12 +293,11 @@ const expectDrawnAtOnce = async (page: Page) => {
   });
   expect(head.border).not.toBe(NO_COLOR);
   await Promise.all(
-    [".mb-hero-status", "#experience .mb-card", ".mb-ui-section"].map(
-      (selector) =>
-        expect(page.locator(selector).first()).not.toHaveCSS(
-          "border-top-color",
-          NO_COLOR
-        )
+    [".mb-hero-status", "#cases .mb-card", ".mb-ui-section"].map((selector) =>
+      expect(page.locator(selector).first()).not.toHaveCSS(
+        "border-top-color",
+        NO_COLOR
+      )
     )
   );
 };
@@ -750,7 +749,7 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
     await page.goto("/ui/proposal/blueprint-live", {
       waitUntil: "networkidle",
     });
-    const card = page.locator("#experience .mb-card").first();
+    const card = page.locator("#cases .mb-card").first();
     const height = (await card.boundingBox())?.height ?? 0;
     const frame = () =>
       card.evaluate((el) =>
@@ -779,7 +778,7 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
     await page.goto("/ui/proposal/blueprint-live", {
       waitUntil: "networkidle",
     });
-    const card = page.locator("#experience .mb-card").first();
+    const card = page.locator("#cases .mb-card").first();
     const height = (await card.boundingBox())?.height ?? 0;
     await raise(card, height + 10);
     await expect(card).toHaveAttribute("data-bl-drawn", "");
