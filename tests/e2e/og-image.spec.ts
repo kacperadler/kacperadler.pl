@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { type APIRequestContext, expect, test } from "@playwright/test";
 import sharp from "sharp";
 
 // The share image is drawn in the site's minimal brutalism (KA0073): a solid
@@ -13,9 +13,8 @@ const INSET = 45;
 const SHEET = { bottom: 584, left: INSET, right: 1154, top: INSET };
 const MARK = { bottom: 120, left: 625, right: 660, top: 85 };
 
-test("the OG image is a ruled sheet on a solid substrate", async ({
-  request,
-}) => {
+// The decoded image and a reader of one pixel's RGB.
+const loadImage = async (request: APIRequestContext) => {
   const response = await request.get("/og-default.png");
   expect(response.ok()).toBe(true);
   expect(response.headers()["content-type"]).toBe("image/png");
@@ -30,6 +29,13 @@ test("the OG image is a ruled sheet on a solid substrate", async ({
     const i = (y * info.width + x) * info.channels;
     return [data[i], data[i + 1], data[i + 2]];
   };
+  return { info, pixel };
+};
+
+test("the OG image is a ruled sheet on a solid substrate", async ({
+  request,
+}) => {
+  const { info, pixel } = await loadImage(request);
 
   // Solid substrate: no dot grid, no gradient in the margin around the sheet.
   const stray: string[] = [];
@@ -61,4 +67,22 @@ test("the OG image is a ruled sheet on a solid substrate", async ({
   }
   expect(pixel(MARK.left + 1, MARK.top + 1)).toEqual(BLUE);
   expect(pixel(MARK.right - 1, MARK.bottom - 1)).toEqual(BLUE);
+});
+
+// The headline is the site's Geist (ExtraBold, from src/assets/fonts), not a
+// fallback: set in Geist, "Kacper" (baseline 240, cap top 172) ends at x 941;
+// the DejaVu Sans Bold that fontconfig falls back to runs on to 979.
+test("the OG headline is set in Geist", async ({ request }) => {
+  const { pixel } = await loadImage(request);
+
+  let right = 0;
+  for (let y = 172; y <= 240; y += 1) {
+    for (let x = 600; x < 1150; x += 1) {
+      if ((pixel(x, y)[0] ?? 0) > 128) {
+        right = Math.max(right, x);
+      }
+    }
+  }
+  expect(right).toBeGreaterThanOrEqual(937);
+  expect(right).toBeLessThanOrEqual(945);
 });

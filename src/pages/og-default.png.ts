@@ -9,15 +9,19 @@ import { siteConfig } from "@/data/site-config";
  * brand mark and the role label, the heavy headline (the name), the
  * tagline, the url.
  *
- * librsvg (sharp's SVG renderer) reads fonts through fontconfig, which
- * cannot load the site's woff2 Geist, so the headline falls back to the
- * heaviest installed sans (DejaVu Sans Bold in the Docker build stage)
- * with Geist's tight tracking.
+ * The sans text (mark, headline, tagline) is the site's Geist. librsvg
+ * (sharp's SVG renderer) reads fonts only through fontconfig, which
+ * cannot load the site's woff2, so a TTF of variable Geist (npm `geist`
+ * 1.7.2) sits in src/assets/fonts (OFL, licence beside it) and is
+ * registered with fontconfig before the SVG renders. The mono labels stay
+ * on the installed monospace (DejaVu Sans Mono in the Docker build stage).
  *
  * Astro builds this once at `bun run build` and writes to
  * dist/og-default.png. siteConfig.ogImage points at /og-default.png. */
 
 export const prerender = true;
+
+const GEIST_TTF = path.resolve("./src/assets/fonts/Geist-Variable.ttf");
 
 /* Palette from tokens.css (DESIGN.md); the site is dark-only. */
 const BASE = "#0a0c10";
@@ -96,6 +100,11 @@ function rule(x: number, y: number, width: number, height: number): string {
 export async function GET(): Promise<Response> {
   const photoPath = path.resolve("./src/assets/me.jpg");
 
+  /* sharp's text input loads `fontfile` into this process's fontconfig
+   * set; rendering one glyph with it is what makes "Geist" resolvable for
+   * librsvg in the overlay below. */
+  await sharp({ text: { fontfile: GEIST_TTF, text: "k" } }).toBuffer();
+
   const photoBuffer = await sharp(photoPath)
     .resize(PHOTO_SIZE, PHOTO_SIZE, { fit: "cover", position: "attention" })
     .png()
@@ -127,12 +136,12 @@ export async function GET(): Promise<Response> {
   const overlay = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" shape-rendering="crispEdges">
   <style>
-    .display { font-family: Geist, "DejaVu Sans", sans-serif; font-weight: 800; fill: ${INK}; letter-spacing: -0.045em; }
-    .mono { font-family: "Geist Mono", "DejaVu Sans Mono", monospace; font-weight: 500; }
+    .display { font-family: Geist, sans-serif; font-weight: 800; fill: ${INK}; letter-spacing: -0.045em; }
+    .mono { font-family: monospace; font-weight: 500; }
     .label { fill: ${INK_2}; letter-spacing: 0.14em; }
-    .tag { font-family: Geist, "DejaVu Sans", sans-serif; fill: ${INK_2}; }
+    .tag { font-family: Geist, sans-serif; fill: ${INK_2}; }
     .url { fill: ${BLUE}; }
-    .mark-ch { font-family: Geist, "DejaVu Sans", sans-serif; font-weight: 800; fill: ${BASE}; }
+    .mark-ch { font-family: Geist, sans-serif; font-weight: 800; fill: ${BASE}; }
   </style>
 
   ${rule(INSET, INSET, SHEET_RIGHT - INSET, 1)}
