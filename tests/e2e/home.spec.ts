@@ -16,8 +16,8 @@ const SECTIONS = [
   "contact",
 ];
 const SECTION_LABELS = [
-  "Problemy",
-  "Przykłady",
+  "Problem",
+  "Możliwości",
   "Oferta",
   "Realizacje",
   "Proces",
@@ -28,7 +28,7 @@ const SECTION_LABELS = [
 const NAV_LABELS = ["Oferta", "Realizacje", "Proces", "O mnie", "FAQ"];
 const TITLE = "Wdrożenia AI i automatyzacje dla firm | Kacper Adler";
 const DESCRIPTION =
-  "Automatyzuję ręczną pracę w firmach z pomocą AI: agenci, integracje, narzędzia wewnętrzne. Audyt, wdrożenie i stała opieka, bez zatrudniania działu IT.";
+  "Automatyzuję ręczną pracę w firmach: agenci AI, integracje i aplikacje szyte na miarę. Audyt, wdrożenie i stała opieka, bez zatrudniania działu IT.";
 const REMOVED = [
   "Wizytówki",
   "Buduję interfejsy",
@@ -133,7 +133,7 @@ test.describe("home page", () => {
     }
   });
 
-  test("the offer is the three steps, Wdrożenie names apps and landing pages, and llms lists them in the same order", async ({
+  test("the offer is the three steps with buttons to the form, and llms lists them in the same order", async ({
     page,
     request,
   }) => {
@@ -144,12 +144,6 @@ test.describe("home page", () => {
     );
     expect(titles).toEqual(["Audyt AI", "Wdrożenie", "Partner technologiczny"]);
 
-    const implementation = offer
-      .locator(".mb-card")
-      .filter({ has: page.locator("h3", { hasText: "Wdrożenie" }) });
-    await expect(implementation).toContainText("webową");
-    await expect(implementation).toContainText("mobilną");
-    await expect(implementation).toContainText("landing page");
     await expect(offer).toContainText("Koszt audytu odliczam od wdrożenia.");
     for (const cta of ["Zamów audyt", "Wyceń projekt", "Porozmawiajmy"]) {
       // biome-ignore lint/performance/noAwaitInLoops: one button at a time
@@ -174,13 +168,13 @@ test.describe("home page", () => {
   }) => {
     await page.goto("/");
     const faq = page.locator("#faq details");
-    await expect(faq).toHaveCount(6);
+    await expect(faq).toHaveCount(8);
     for (const item of await faq.all()) {
       // biome-ignore lint/performance/noAwaitInLoops: one item at a time
       await expect(item).not.toHaveAttribute("open");
     }
     await expect(page.locator("#faq")).toContainText(
-      "Kod i dokumentacja należą do Ciebie."
+      "Kod, dostępy i dokumentacja należą do Ciebie."
     );
 
     const experience = page.locator("#about details");
@@ -200,6 +194,10 @@ test.describe("home page", () => {
     await expect(
       page.locator('meta[property="og:description"]')
     ).toHaveAttribute("content", DESCRIPTION);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+      "content",
+      "Kacper Adler: AI Engineer · Partner technologiczny"
+    );
 
     const person = (
       await page.locator('script[type="application/ld+json"]').allTextContents()

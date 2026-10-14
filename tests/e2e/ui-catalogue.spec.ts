@@ -1464,7 +1464,7 @@ test.describe("production build", () => {
     await expect(tags.first()).toHaveCSS("border-color", "rgb(157, 156, 149)");
 
     const status = page.locator(".mb-hero-status .mb-badge-status");
-    await expect(status).toHaveText("Otwarty na nowe współprace");
+    await expect(status).toHaveText("Przyjmuję nowe projekty");
     await expect(status).toHaveCSS("border-color", "rgb(142, 174, 216)");
     expect(
       await status.evaluate((el) => {

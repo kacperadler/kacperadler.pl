@@ -28,7 +28,7 @@ interface LinkedEntry {
 // The experience list sits in "O mnie", in a closed accordion.
 async function openExperience(page: Page): Promise<void> {
   await page
-    .locator("#about summary", { hasText: "Pełna lista doświadczeń" })
+    .locator("#about summary", { hasText: "Pełne doświadczenie" })
     .click();
 }
 
