@@ -9,6 +9,10 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0083 The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form (d2b3973)
 - KA0084 The card bar slides in and out in the direction the cursor moves (ca27cd4)
 
+### Fixed
+
+- KA0085 /ui scrolls 8px sideways at 360px on the first load, now and then (66b0825)
+
 ## 2026-10-11
 
 ### Fixed
