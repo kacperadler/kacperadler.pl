@@ -30,7 +30,7 @@ export const processSteps: readonly ProcessStep[] = [
   {
     badge: "co tydzień",
     description:
-      "Co tydzień widzisz coś, co działa, a nie prezentację. Problemy łapiemy wcześnie.",
+      "Widzisz działające kawałki systemu, a nie prezentacje. Problemy łapiemy wcześnie.",
     icon: "lucide:layers",
     num: "03",
     title: "Wdrożenie etapami",
