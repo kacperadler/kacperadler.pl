@@ -661,8 +661,8 @@
   {
     "id": "KA0083",
     "title": "The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0083-the-ui-components-get-the-feedback-of-2026-10-14-buttons-loading-avatars-radio-choice-card-contact-form/ticket.md",
-    "updated": "2026-10-14T09:55:13.692Z"
+    "updated": "2026-10-14T10:07:20.178Z"
   }
 ]

@@ -47,3 +47,4 @@ Out:
 
 - 2026-10-14: The human's 16-point feedback on the /ui catalogue, as Done means lists; points 5, 7, 8, 9, 12 are fine as they are.
 - 2026-10-14: The human approved the ticket; plan first, the worker after his ok on the plan.
+- 2026-10-14: Plan approved by the human: plan.md at e625165. Open questions taken as the plan has them: ghost and link get no layer, only a clearer press; the form sheet keeps its hover fill.
