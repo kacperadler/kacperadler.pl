@@ -25,6 +25,7 @@ import Card from "@/components/mb/card.astro";
 import CellGrid from "@/components/mb/cell-grid.astro";
 import Checkbox from "@/components/mb/checkbox.astro";
 import ContactForm from "@/components/mb/contact-form.astro";
+import ContactLink from "@/components/mb/contact-link.astro";
 import Field from "@/components/mb/field.astro";
 import FieldSet from "@/components/mb/field-set.astro";
 import Input from "@/components/mb/input.astro";
@@ -37,7 +38,9 @@ import Radio from "@/components/mb/radio.astro";
 import SectionHead from "@/components/mb/section-head.astro";
 import Separator from "@/components/mb/separator.astro";
 import Spinner from "@/components/mb/spinner.astro";
+import StepMarker from "@/components/mb/step-marker.astro";
 import Textarea from "@/components/mb/textarea.astro";
+import { siteConfig } from "@/data/site-config";
 
 type Forced = "idle" | "hover" | "pressed" | "focus-visible";
 const forced = (state: string) =>
@@ -196,6 +199,22 @@ const linkStates: readonly Forced[] = [
   "pressed",
   "focus-visible",
 ];
+
+// Copy of unequal length, so the rail shows marks centred on cards of
+// different heights.
+const steps = [
+  {
+    num: "01",
+    text: "Najedź na kartę - jej znacznik się wypełni.",
+    title: "Rozmowa",
+  },
+  {
+    num: "02",
+    text: "Po rozmowie dostajesz krótki dokument: co robimy, w jakiej kolejności, ile to zajmie i ile kosztuje. Bez ukrytych kosztów, bez niespodzianek w trakcie.",
+    title: "Plan i wycena",
+  },
+  { num: "03", text: "Małe etapy.", title: "Realizacja" },
+] as const;
 ---
 
 <div class="mb-ui">
@@ -1283,6 +1302,56 @@ const linkStates: readonly Forced[] = [
       </div>
     </section>
 
+    <section aria-labelledby="mb-step-marker" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-step-marker">Znacznik etapu</h2>
+      <p class="mb-ui-note">
+        <code>step-marker.astro</code>
+        - kwadratowy numer mono na szynie 1px przy karcie etapu (proces). Stoi
+        pierwszy w wierszu, karta zaraz za nim, i siedzi na środku wysokości
+        karty, jakkolwiek jest wysoka; wiersze ułożone w listę łączą szyny w
+        jedną linię od pierwszego znacznika do ostatniego. Znacznik wypełnia się
+        na niebiesko, gdy jego karta jest pod kursorem (tu wymuszone
+        <code>data-state="hover"</code>
+        na karcie).
+      </p>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Stany</p>
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          {(["idle", "hover"] as const).map((state) => (
+            <div class="mb-ui-sample">
+              <ol class="mb-ui-steps">
+                <li class="mb-ui-step">
+                  <StepMarker num="01" />
+                  <Card data-state={forced(state)} tag="div">
+                    <span slot="title">Rozmowa</span>
+                    Krótka rozmowa o celu projektu.
+                  </Card>
+                </li>
+              </ol>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Szyna</p>
+        <div class="mb-ui-sample mb-ui-narrow">
+          <ol class="mb-ui-steps">
+            {steps.map((step) => (
+              <li class="mb-ui-step">
+                <StepMarker num={step.num} />
+                <Card tag="div">
+                  <span slot="title">{step.title}</span>
+                  {step.text}
+                </Card>
+              </li>
+            ))}
+          </ol>
+          <p class="mb-ui-caption">3 etapy</p>
+        </div>
+      </div>
+    </section>
+
     <section aria-labelledby="mb-section-head" class="mb-ui-section">
       <h2 class="mb-ui-h2" id="mb-section-head">Nagłówek sekcji</h2>
       <p class="mb-ui-note">
@@ -1408,6 +1477,71 @@ console.log(greeting);</code></pre>
             </tbody>
           </table>
         </Prose>
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-contact-link" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-contact-link">Link kontaktowy</h2>
+      <p class="mb-ui-note">
+        <code>contact-link.astro</code>
+        - cała komórka <code>sm</code> jako link (email i LinkedIn w sekcji
+        kontaktu): niebieska ikona, etykieta mono wersalikami i wartość (slot)
+        dosunięta w prawo; w wąskiej komórce wartość schodzi pod nie i łamie się
+        w dowolnym miejscu. Hover, wciśnięcie i focus to stany karty.
+        <code>newTab</code>
+        otwiera nową kartę bez dostępu do tej strony (<code>noopener</code>).
+      </p>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Stany</p>
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          {linkStates.map((state) => (
+            <div class="mb-ui-sample">
+              <ContactLink
+                data-state={forced(state)}
+                href="#mb-contact-link"
+                icon="lucide:mail"
+                label="Email"
+              >
+                {siteConfig.email}
+              </ContactLink>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">W siatce i wąsko</p>
+        <div class="mb-ui-stack-lg">
+          <div class="mb-ui-sample mb-ui-narrow">
+            <CellGrid min="280px">
+              <ContactLink
+                href="#mb-contact-link"
+                icon="lucide:mail"
+                label="Email"
+              >
+                {siteConfig.email}
+              </ContactLink>
+              <ContactLink
+                href="#mb-contact-link"
+                icon="lucide:linkedin"
+                label="LinkedIn"
+              >
+                /in/kacperadler
+              </ContactLink>
+            </CellGrid>
+            <p class="mb-ui-caption">min=280px, jak w sekcji kontaktu</p>
+          </div>
+          <div class="mb-ui-sample mb-ui-contact-narrow">
+            <ContactLink
+              href="#mb-contact-link"
+              icon="lucide:mail"
+              label="Email"
+            >
+              {siteConfig.email}
+            </ContactLink>
+            <p class="mb-ui-caption">wąska komórka</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1648,6 +1782,30 @@ console.log(greeting);</code></pre>
     max-width: 400px;
   }
 
+  .mb-ui-contact-narrow {
+    max-width: 200px;
+  }
+
+  /* A process step row, as in how-i-work: the marker's column, then the
+   * card; stacked rows share the card rule. */
+  .mb-ui-steps {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mb-ui-step {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: var(--v2-space-md);
+  }
+
+  .mb-ui-step + .mb-ui-step {
+    margin-top: -1px;
+  }
+
   :global(.mb-ui-card-image) {
     aspect-ratio: 2 / 1;
     object-fit: cover;
@@ -1656,6 +1814,11 @@ console.log(greeting);</code></pre>
   @media (max-width: 880px) {
     .mb-ui-panel {
       padding: var(--v2-space-md);
+    }
+
+    .mb-ui-step {
+      grid-template-columns: 40px minmax(0, 1fr);
+      gap: 12px;
     }
   }
 </style>

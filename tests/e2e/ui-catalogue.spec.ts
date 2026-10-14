@@ -30,9 +30,11 @@ const SECTIONS = [
   "Paginacja",
   "Link",
   "Karta i siatka",
+  "Znacznik etapu",
   "Nagłówek sekcji",
   "Rama strony",
   "Typografia",
+  "Link kontaktowy",
   "Formularz kontaktowy",
 ];
 
@@ -52,6 +54,61 @@ const sample = (page: Page, sectionId: string, caption: string) =>
       hasText: new RegExp(`^${caption}$`),
     }),
   });
+
+// The rail of a column of step markers (each marker's ::before, joined)
+// starts inside the first mark, runs unbroken and stops where the last
+// mark begins.
+const expectRailFromFirstMarkToLast = async (markers: Locator) => {
+  const rail = await markers.evaluateAll((els) => {
+    const rails = els.map((el) => {
+      const before = getComputedStyle(el, "::before");
+      const top =
+        el.getBoundingClientRect().top + Number.parseFloat(before.top);
+      return { bottom: top + Number.parseFloat(before.height), top };
+    });
+    const mark = (el: Element) => {
+      const box = (
+        el.querySelector(".mb-step-dot") as Element
+      ).getBoundingClientRect();
+      return { bottom: box.bottom, top: box.top };
+    };
+    return {
+      bottom: rails.at(-1)?.bottom ?? 0,
+      first: mark(els[0] as Element),
+      gaps: rails
+        .slice(1)
+        .filter((r, i) => r.top > (rails[i]?.bottom ?? 0) + 0.5).length,
+      last: mark(els.at(-1) as Element),
+      top: rails[0]?.top ?? 0,
+    };
+  });
+  expect(rail.gaps).toBe(0);
+  expect(rail.top).toBeGreaterThanOrEqual(rail.first.top);
+  expect(rail.top).toBeLessThan(rail.first.bottom);
+  expect(rail.bottom).toBeGreaterThanOrEqual(rail.last.top);
+  expect(rail.bottom).toBeLessThan(rail.last.bottom);
+};
+
+// Each mark sits on its card's vertical centre, within 1px; `cards` are
+// the step cards and `.mb-step-dot` the mark in the marker before each.
+const expectMarksOnCardCentres = async (cards: Locator) => {
+  const offsets = await cards.evaluateAll((els) =>
+    els.map((card) => {
+      const dot = card.previousElementSibling?.querySelector(
+        ".mb-step-dot"
+      ) as Element;
+      const middle = (box: DOMRect) => box.top + box.height / 2;
+      return Math.abs(
+        middle(dot.getBoundingClientRect()) -
+          middle(card.getBoundingClientRect())
+      );
+    })
+  );
+  expect(offsets.length).toBeGreaterThan(0);
+  for (const offset of offsets) {
+    expect(offset).toBeLessThanOrEqual(1);
+  }
+};
 
 // The rendered height of `target` just before a click on its `act` child,
 // then on each of the next `frames` animation frames - a transition shows
@@ -245,6 +302,83 @@ test.describe("component catalogue (astro dev)", () => {
       "transform",
       "none"
     );
+  });
+
+  test("a forced step hover fills the marker like a real one", async ({
+    page,
+  }) => {
+    const props = ["background-color", "border-color", "color"];
+    const forced = sample(page, "mb-step-marker", "hover").locator(
+      ".mb-step-dot"
+    );
+    const idle = sample(page, "mb-step-marker", "idle");
+    const idleDot = idle.locator(".mb-step-dot");
+
+    const forcedPaint = await paint(forced, props);
+    expect(forcedPaint["background-color"]).toBe("rgb(142, 174, 216)");
+    expect(forcedPaint).not.toEqual(await paint(idleDot, props));
+    await idle.locator(".mb-card").hover();
+    expect(await paint(idleDot, props)).toEqual(forcedPaint);
+  });
+
+  for (const width of [1440, 390, 360]) {
+    test(`the step rail runs from the first mark to the last at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ height: 900, width });
+      await expectRailFromFirstMarkToLast(
+        sample(page, "mb-step-marker", "3 etapy").locator(".mb-step-marker")
+      );
+    });
+  }
+
+  // The "Szyna" steps differ in height; every mark still sits mid-card.
+  for (const width of [1440, 390]) {
+    test(`each step mark sits on its card's centre at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ height: 900, width });
+      await expectMarksOnCardCentres(
+        page.locator(
+          'section[aria-labelledby="mb-step-marker"] .mb-step-marker + .mb-card'
+        )
+      );
+    });
+  }
+
+  // Wide, the value sits on the label's line; in a narrow cell it goes
+  // under it and breaks rather than leave the cell.
+  test("a narrow contact link wraps its value inside the cell", async ({
+    page,
+  }) => {
+    const layout = (caption: string) =>
+      sample(page, "mb-contact-link", caption)
+        .locator(".mb-card")
+        .first()
+        .evaluate((card) => {
+          const label = (
+            card.querySelector(".mb-contact-label") as Element
+          ).getBoundingClientRect();
+          const value = (
+            card.querySelector(".mb-contact-value") as Element
+          ).getBoundingClientRect();
+          return {
+            inside: value.right <= card.getBoundingClientRect().right,
+            overflows: card.scrollWidth > card.clientWidth,
+            under: value.top >= label.bottom,
+          };
+        });
+
+    expect(await layout("idle")).toEqual({
+      inside: true,
+      overflows: false,
+      under: false,
+    });
+    expect(await layout("wąska komórka")).toEqual({
+      inside: true,
+      overflows: false,
+      under: true,
+    });
   });
 
   test("the default radio is round, the choice chip square", async ({
@@ -1280,5 +1414,62 @@ test.describe("production build", () => {
       })
     ).toBe("7px 7px rgb(142, 174, 216)");
     await expect(page.locator(".mb-tag, .mb-status-pill")).toHaveCount(0);
+  });
+
+  // The process steps are the catalogue's step marker: a mark that fills
+  // with its step and no other.
+  test("a process step mark fills with its step", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("#how .mb-step > .mb-step-marker")).toHaveCount(
+      5
+    );
+
+    const step = page.locator("#how .mb-step").nth(2);
+    await step.locator(".mb-card").hover();
+    await expect(step.locator(".mb-step-dot")).toHaveCSS(
+      "background-color",
+      "rgb(142, 174, 216)"
+    );
+    await expect(
+      page.locator("#how .mb-step").nth(1).locator(".mb-step-dot")
+    ).toHaveCSS("background-color", "rgb(10, 12, 16)");
+  });
+
+  for (const width of [1440, 390]) {
+    test(`each process step mark sits on its card's centre, one rail through them, at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ height: 900, width });
+      await page.goto("/");
+      await expectMarksOnCardCentres(
+        page.locator("#how .mb-step > .mb-step-marker + .mb-card")
+      );
+      await expectRailFromFirstMarkToLast(
+        page.locator("#how .mb-step > .mb-step-marker")
+      );
+    });
+  }
+
+  // The contact links are the catalogue's contact link: LinkedIn in a new
+  // tab while email stays put.
+  test("the email and LinkedIn contact links", async ({ page }) => {
+    await page.goto("/");
+    const email = page.locator("#contact a.mb-card", { hasText: "Email" });
+    const linkedin = page.locator("#contact a.mb-card", {
+      hasText: "LinkedIn",
+    });
+    await expect(email).toHaveAttribute(
+      "href",
+      "mailto:kontakt@kacperadler.pl"
+    );
+    await expect(email).not.toHaveAttribute("target");
+    await expect(email.locator(".mb-contact-value")).toHaveText(
+      "kontakt@kacperadler.pl"
+    );
+    await expect(linkedin).toHaveAttribute("target", "_blank");
+    await expect(linkedin).toHaveAttribute("rel", "noopener");
+    await expect(linkedin.locator(".mb-contact-value")).toHaveText(
+      "/in/kacperadler"
+    );
   });
 });
