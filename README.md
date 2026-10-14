@@ -61,6 +61,8 @@ bun dev
 
 `bun run test:e2e` buduje stronę dwa razy (`webServer` w `playwright.config.ts`): `E2E_FIXTURES=none` do `dist-no-case-studies/` (stan bez case studies, z pustego `tests/fixtures/no-case-studies`) i `E2E_FIXTURES=1` do `dist/` z przykładowym `tests/fixtures/case-studies/przyklad.mdx`, dopóki `src/content/case-studies` nie ma żadnego `.mdx`. Build produkcyjny nie czyta fixture'ów. Preview zapisuje leady do świeżego pliku SQLite w katalogu tymczasowym (`E2E_LEADS_DB`, `LEADS_DB_PATH` preview) i ma puste `RESEND_API_KEY`, więc test nigdy nie wysyła prawdziwego maila.
 
+Specy katalogu `/ui` (`ui-catalogue`, `ui-proposals`, `dev-no-reload`) idą na `astro dev` tego drzewa, uruchomionym z `E2E_DEV_NO_WATCH=1` (`astro.config.mjs`): ten serwer nie obserwuje żadnego pliku, więc commit (lint-staged poprawia pliki, `astro check`) albo edycja w trakcie runu nie przeładowuje strony pod działającym testem.
+
 Dependabot (`.github/dependabot.yml`) co tydzień otwiera PR-y dla bun i GitHub Actions; minor i patch zgrupowane w jednym PR.
 
 ## Leady i powiadomienia
