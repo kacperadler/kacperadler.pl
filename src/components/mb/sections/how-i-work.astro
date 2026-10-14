@@ -2,13 +2,15 @@
 import { Icon } from "astro-icon/components";
 import { processSteps } from "@/data/process";
 import Badge from "../badge.astro";
+import Button from "../button.astro";
 import Card from "../card.astro";
 import SectionHead from "../section-head.astro";
 import StepMarker from "../step-marker.astro";
 
 /* Process (#how): the steps stack into one ruled column beside a 1px ink
  * rail with square numbered marks; a mark fills blue with its step, the
- * duration badge too (fillOnCellHover). */
+ * duration badge too (fillOnCellHover). Under them, the button to the
+ * contact form. */
 ---
 
 <section class="mb-how" id="how">
@@ -34,6 +36,12 @@ import StepMarker from "../step-marker.astro";
         </li>
       ))}
     </ol>
+
+    <div class="mb-how-cta">
+      <Button href="#contact" iconEnd="lucide:arrow-right"
+        >Umów bezpłatną rozmowę</Button
+      >
+    </div>
   </div>
 </section>
 
@@ -91,6 +99,13 @@ import StepMarker from "../step-marker.astro";
     margin: 0;
   }
 
+  /* Starts where the step cells do, past the rail. */
+  .mb-how-cta {
+    display: flex;
+    padding-left: calc(56px + var(--v2-space-md));
+    margin-top: var(--v2-space-lg);
+  }
+
   @media (max-width: 880px) {
     .mb-how {
       margin-top: var(--v2-space-xl);
@@ -99,6 +114,10 @@ import StepMarker from "../step-marker.astro";
     .mb-step {
       grid-template-columns: 40px minmax(0, 1fr);
       gap: 12px;
+    }
+
+    .mb-how-cta {
+      padding-left: calc(40px + 12px);
     }
   }
 </style>
