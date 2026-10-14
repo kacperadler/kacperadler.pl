@@ -25,7 +25,6 @@ Every contact form, the site's measure of success, lands in a store the site own
 - The form posts to it; its states (`idle | submitting | error-validation | error-submit | success`) and Umami events stay; NocoDB code and `nocodbFormUrl` are gone.
 - Dockerfile and `nginx.conf` run the Node server for `/api/*` and serve the static pages; `docker build` and a run that posts a lead and reads it back from the volume are in the final message; e2e covers success, validation error and server error.
 - Each new lead sends an e-mail to the human through Resend's HTTP API with `fetch` (no mail library); the key and the addresses come from env vars named in `README.md`, never committed; a failed or unconfigured send is logged and the lead stays saved and the visitor sees success; e2e or a unit test covers a send failure.
-- A small panel route on the same Node server, behind a password from an env var: list of leads (newest first), one lead's details, CSV export; e2e covers the login refusal, the list and the export.
 - A step-by-step Dokploy guide for the human in `README.md`: the volume (mount path, where the SQLite file lives), the env vars to set, the redeploy, and how to check a lead landed; the coordinator walks the human through it.
 - `bun run lint`, `bun run check`, `bun run build` and `bun run test:e2e` pass (and the Biome format check that replaces `prettier --check`, once KA0024 is in).
 
@@ -36,6 +35,7 @@ In:
 
 Out:
 - Postgres or any other database service.
+- A panel to read leads: KA0087.
 
 ## Decisions
 
@@ -45,3 +45,4 @@ Out:
 - 2026-10-10: The human: the notification goes by e-mail. The coordinator: Resend's HTTP API, pending the human's word on the provider.
 - 2026-10-14: The human approved it, plan first; he wants help with Dokploy (the volume): the plan and README carry the exact Dokploy steps.
 - 2026-10-14: The human: stay on SQLite (not Postgres); with the coordinator's proposal of a small password-protected panel (list, details, CSV export) so leads can be read and downloaded.
+- 2026-10-14: The human: the panel is a separate ticket (KA0087), not part of KA0027.

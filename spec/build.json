@@ -688,5 +688,15 @@
     "status": "review",
     "path": "spec/features/KA0086-under-reduced-motion-every-restyle-lags-one-frame-on-every-page/ticket.md",
     "updated": "2026-10-14T13:32:57.991Z"
+  },
+  {
+    "id": "KA0087",
+    "title": "A small password-protected panel to read and export the leads",
+    "status": "planning",
+    "path": "spec/features/KA0087-a-small-password-protected-panel-to-read-and-export-the-leads/ticket.md",
+    "updated": "2026-10-14T13:36:40.331Z",
+    "after": [
+      "KA0027"
+    ]
   }
 ]
