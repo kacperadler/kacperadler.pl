@@ -50,7 +50,7 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 - Nie wysyłaj do NocoDB form view innego payloadu niż `FormData` z polem `data` zawierającym JSON-string.
 - Nie zmieniaj tokenów, brand-marka favicon ani palety bez aktualizacji `DESIGN.md`.
 - Nie zaokrąglaj rogów (jedyny wyjątek: okrągłe radio `default`), nie dodawaj szkła (`backdrop-filter`), gradientów, dot-gridu ani tła w ruchu - minimal brutalism: kwadratowe komórki w 1px liniach na pełnym podłożu.
-- Nie używaj `translateY` (ani innego przesunięcia) na hover - stan pokazujemy wypełnieniem, linią i twardym cieniem. Wyjątek: lico przycisku z białą warstwą unosi się o 2px w stronę kursora (warstwa stoi w miejscu), a na press kładzie się na warstwę.
+- Nie używaj `translateY` (ani innego przesunięcia) na hover - stan pokazujemy wypełnieniem, linią i twardym cieniem. Wyjątek: lico przycisku z białą warstwą unosi się o 1px w stronę kursora (warstwa 2px pod spodem stoi w miejscu), a na press kładzie się na warstwę.
 - Nie dodawaj always-on animacji; każda zmiana stanu to `--mb-snap` (0.12s linear), poza dwoma przejazdami w `--mb-slide` (0.3s ease-out): etykieta i spinner przycisku przy loading oraz górna linia karty.
 - Nie dodawaj cookies, zewnętrznych skryptów ani trackerów.
 

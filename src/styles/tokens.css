@@ -55,9 +55,9 @@
   /* Minimal brutalism:
    *   --mb-rule     the 1px ink rule that draws a cell
    *   --mb-hair     the hairline for dividers inside a cell and the page edges
-   *   --mb-shift    the offset of the one hard shadow: the white layer under
-   *                 the buttons with a rule (the face lifts off it on hover and
-   *                 goes down onto it on press)
+   *   --mb-shift    the offset of the one hard shadow (fields in focus, the sent
+   *                 contact form); a button's white layer sits a tighter 2px
+   *                 away, set in button.astro
    *   --mb-snap     every state change: short and linear, a switch, not a drift
    *   --mb-slide    the two slides that travel: a button's label and spinner
    *                 swapping while it loads, a card's top rule drawing in and out

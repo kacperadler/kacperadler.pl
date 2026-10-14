@@ -15,14 +15,21 @@ import Spinner from "./spinner.astro";
  *                lighter still
  *   link         ink text over a blue underline; hover: blue text; press:
  *                blue-2 text over a 3px underline
- * Those four with a rule (`mb-btn-raised`) sit on the white layer: the hard
- * ink shadow, `--mb-btn-shift` out. The layer stays still on screen: on
- * hover the face lifts 2px up and left towards the cursor (the shadow grows
- * by as much, so more white shows); on press it goes down onto the layer
- * (moves by the shift, the shadow goes). An ::after keeps covering the
- * resting box in each state, so the pointer at an edge neither flickers the
- * hover nor loses the click. Under prefers-reduced-motion nothing moves:
- * hover only fills, press hides the layer.
+ *
+ * The element itself never moves: it is the hit area, the focus ring and
+ * the box the face rests in. Inside it, `.mb-btn-face` carries the fill,
+ * the rule, the label and the spinner. Those four with a rule
+ * (`mb-btn-raised`) also get `.mb-btn-layer`, the white block
+ * `--mb-btn-shift` (2px, at every size; tighter than the page's
+ * `--mb-shift`) down and right of the resting box, a box of its own that
+ * nothing moves, stacked under the face, whose fill is always solid. On
+ * hover the face lifts 1px up and left towards the cursor, so more white
+ * shows; on press it goes down onto the layer and covers it whole, in a
+ * short 0.08s so a quick double click reads as two clean presses. The
+ * pointer always sits on the still element (or on the face, its child),
+ * so an edge neither flickers the hover nor loses the click. Under
+ * prefers-reduced-motion the face never moves: hover only fills, press
+ * hides the layer.
  *
  * Sizes xs 28 / sm 36 / default 44 / lg 52 px high; icon-xs, icon-sm, icon
  * and icon-lg are the same heights, square, and need `aria-label` and the
@@ -31,12 +38,13 @@ import Spinner from "./spinner.astro";
  *
  * Disabled and loading: a flat panel in a hairline, muted text, no layer,
  * nothing moves. The label (icons and text) and the spinner share one cell
- * clipped at the padding, so the button keeps its width: `loading` (or
- * [data-state="submitting"] + disabled, from scripts/contact-form.ts)
- * slides the label out to the left and the spinner in from the right, and
- * back the other way when it ends, at `--mb-slide`. The label is only moved,
- * never hidden, so it stays the accessible name; aria-busy marks the wait.
- * `href` renders an <a> (a disabled one loses its href).
+ * of the face, clipped at its padding, so the button keeps its width:
+ * `loading` (or [data-state="submitting"] + disabled, from
+ * scripts/contact-form.ts) slides the label out to the left and the spinner
+ * in from the right, and back the other way when it ends, at `--mb-slide`.
+ * The label is only moved, never hidden, so it stays the accessible name;
+ * aria-busy marks the wait. `href` renders an <a> (a disabled one loses its
+ * href).
  *
  * The catalogue (/ui) forces states with [data-state="hover"],
  * [data-state="pressed"] and [data-state="focus-visible"]; `.active` is a
@@ -107,7 +115,8 @@ const busy = loading ? "true" : undefined;
     href={inactive ? undefined : href}
     {...rest}
   >
-    <span class="mb-btn-content">
+    {raised && <span aria-hidden="true" class="mb-btn-layer" />}
+    <span class="mb-btn-face">
       <span class="mb-btn-label">
         {iconStart && (
           <Icon aria-hidden="true" class="mb-btn-icon" name={iconStart} />
@@ -132,7 +141,8 @@ const busy = loading ? "true" : undefined;
     type={type}
     {...rest}
   >
-    <span class="mb-btn-content">
+    {raised && <span aria-hidden="true" class="mb-btn-layer" />}
+    <span class="mb-btn-face">
       <span class="mb-btn-label">
         {iconStart && (
           <Icon aria-hidden="true" class="mb-btn-icon" name={iconStart} />
@@ -152,16 +162,19 @@ const busy = loading ? "true" : undefined;
 )}
 
 <style>
+  /* The still element: hit area, focus ring, the resting box. The variants
+   * set the face's fill and rule through --mb-btn-fill / --mb-btn-rule. */
   .mb-btn {
-    --mb-btn-shift: var(--mb-shift);
-    --mb-btn-lift: 2px;
+    --mb-btn-shift: 2px;
+    --mb-btn-lift: 1px;
     --mb-btn-pad: 18px;
     --mb-btn-gap: 8px;
+    --mb-btn-fill: transparent;
+    --mb-btn-rule: transparent;
     position: relative;
     display: inline-flex;
     flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
+    align-items: stretch;
     height: 44px;
     padding: 0;
     font-family: var(--mb-display);
@@ -173,14 +186,11 @@ const busy = loading ? "true" : undefined;
     white-space: nowrap;
     cursor: pointer;
     background: transparent;
-    border: 1px solid transparent;
+    border: 0;
     border-radius: 0;
+    isolation: isolate;
     transition:
-      background-color var(--mb-snap),
       color var(--mb-snap),
-      border-color var(--mb-snap),
-      box-shadow var(--mb-snap),
-      transform var(--mb-snap),
       outline-offset var(--mb-snap);
   }
 
@@ -190,22 +200,39 @@ const busy = loading ? "true" : undefined;
     outline-offset: 0;
   }
 
-  /* The hit area: the border box at rest; while the face is lifted or
-   * pressed it also reaches over the resting box (below). */
-  .mb-btn::after {
+  /* The white layer: the resting box moved down and right by the shift.
+   * Nothing transforms it or its element, so it stays where it is; it sits
+   * under the face in every state. */
+  .mb-btn-layer {
     position: absolute;
-    inset: -1px;
-    content: "";
+    top: var(--mb-btn-shift);
+    right: calc(-1 * var(--mb-btn-shift));
+    bottom: calc(-1 * var(--mb-btn-shift));
+    left: var(--mb-btn-shift);
+    z-index: 0;
+    pointer-events: none;
+    background: var(--mb-rule);
   }
 
-  /* One cell for the label and the spinner, clipped at the padding: the
-   * button is as wide as its label, and whichever one is out of the cell
-   * is out of sight. */
-  .mb-btn-content {
+  /* The face: fill, rule, and one cell for the label and the spinner,
+   * clipped at the padding - the button is as wide as its label, and
+   * whichever one is out of the cell is out of sight. Above the layer. The
+   * move is shorter than --mb-snap: 1-2px, over and done before a second
+   * click. */
+  .mb-btn-face {
+    position: relative;
+    z-index: 1;
     display: grid;
+    flex: 1;
     align-items: center;
     padding: 0 var(--mb-btn-pad);
     overflow-x: clip;
+    background: var(--mb-btn-fill);
+    border: 1px solid var(--mb-btn-rule);
+    transition:
+      background-color var(--mb-snap),
+      border-color var(--mb-snap),
+      transform 0.08s linear;
   }
 
   .mb-btn-label {
@@ -243,7 +270,6 @@ const busy = loading ? "true" : undefined;
 
   /* Sizes. */
   .mb-btn-size-xs {
-    --mb-btn-shift: 2px;
     --mb-btn-pad: 8px;
     --mb-btn-gap: 4px;
     height: 28px;
@@ -251,7 +277,6 @@ const busy = loading ? "true" : undefined;
   }
 
   .mb-btn-size-sm {
-    --mb-btn-shift: 3px;
     --mb-btn-pad: 12px;
     --mb-btn-gap: 6px;
     height: 36px;
@@ -269,13 +294,11 @@ const busy = loading ? "true" : undefined;
   }
 
   .mb-btn-size-icon-xs {
-    --mb-btn-shift: 2px;
     width: 28px;
     height: 28px;
   }
 
   .mb-btn-size-icon-sm {
-    --mb-btn-shift: 3px;
     width: 36px;
     height: 36px;
   }
@@ -301,45 +324,47 @@ const busy = loading ? "true" : undefined;
 
   /* Variants. */
   .mb-btn-default {
+    --mb-btn-fill: var(--blue);
+    --mb-btn-rule: var(--mb-rule);
     color: var(--v2-bg);
-    background: var(--blue);
-    border-color: var(--mb-rule);
   }
 
   .mb-btn-default:is(:hover, [data-state="hover"]) {
-    background: var(--blue-2);
+    --mb-btn-fill: var(--blue-2);
   }
 
   .mb-btn-secondary {
-    background: var(--v2-panel-elevated);
-    border-color: var(--mb-hair);
+    --mb-btn-fill: var(--v2-panel-elevated);
+    --mb-btn-rule: var(--mb-hair);
   }
 
   .mb-btn-secondary:is(:hover, [data-state="hover"]) {
-    border-color: var(--mb-rule);
+    --mb-btn-rule: var(--mb-rule);
   }
 
+  /* A solid face on the substrate, so the layer never shows through it. */
   .mb-btn-outline {
-    border-color: var(--mb-rule);
+    --mb-btn-fill: var(--v2-bg);
+    --mb-btn-rule: var(--mb-rule);
   }
 
   /* The lit cell: an ink face would melt into the ink layer. */
   .mb-btn-outline:is(:hover, [data-state="hover"]) {
-    background: var(--v2-panel-elevated);
+    --mb-btn-fill: var(--v2-panel-elevated);
   }
 
   .mb-btn-ghost:is(:hover, [data-state="hover"]) {
-    background: var(--v2-panel-elevated);
+    --mb-btn-fill: var(--v2-panel-elevated);
   }
 
   .mb-btn-destructive {
+    --mb-btn-fill: var(--error);
+    --mb-btn-rule: var(--mb-rule);
     color: var(--v2-bg);
-    background: var(--error);
-    border-color: var(--mb-rule);
   }
 
   .mb-btn-destructive:is(:hover, [data-state="hover"]) {
-    background: color-mix(in srgb, var(--error) 80%, var(--ink));
+    --mb-btn-fill: color-mix(in srgb, var(--error) 80%, var(--ink));
   }
 
   .mb-btn-link {
@@ -355,26 +380,25 @@ const busy = loading ? "true" : undefined;
     color: var(--blue);
   }
 
-  /* The layer, and the face lifting off it on hover. The face's move plus
-   * the shadow's offset always add up to the shift, so the layer stays put,
-   * through the transition too (one duration, one timing). */
-  .mb-btn-raised {
-    box-shadow: var(--mb-btn-shift) var(--mb-btn-shift) 0 var(--mb-rule);
-  }
-
+  /* The face lifts off the still layer on hover and goes down onto it on
+   * press, covering it whole. */
   @media (prefers-reduced-motion: no-preference) {
-    .mb-btn-raised:is(:hover, [data-state="hover"]) {
-      box-shadow: calc(var(--mb-btn-shift) + var(--mb-btn-lift))
-        calc(var(--mb-btn-shift) + var(--mb-btn-lift)) 0 var(--mb-rule);
+    .mb-btn-raised:is(:hover, [data-state="hover"]) .mb-btn-face {
       transform: translate(
         calc(-1 * var(--mb-btn-lift)),
         calc(-1 * var(--mb-btn-lift))
       );
     }
 
-    .mb-btn-raised:is(:hover, [data-state="hover"])::after {
-      inset: -1px calc(-1px - var(--mb-btn-lift))
-        calc(-1px - var(--mb-btn-lift)) -1px;
+    .mb-btn-raised:is(:active, [data-state="pressed"]) .mb-btn-face {
+      transform: translate(var(--mb-btn-shift), var(--mb-btn-shift));
+    }
+  }
+
+  /* With no movement the press hides the layer instead. */
+  @media (prefers-reduced-motion: reduce) {
+    .mb-btn-raised:is(:active, [data-state="pressed"]) .mb-btn-layer {
+      visibility: hidden;
     }
   }
 
@@ -383,25 +407,25 @@ const busy = loading ? "true" : undefined;
     outline-offset: calc(var(--mb-btn-shift) + 4px);
   }
 
-  /* Pressed: the face goes down onto the layer and covers it. */
+  /* Pressed fills. */
   .mb-btn-default:is(:active, [data-state="pressed"]) {
-    background: var(--blue-2);
+    --mb-btn-fill: var(--blue-2);
   }
 
   .mb-btn-secondary:is(:active, [data-state="pressed"]) {
-    background: var(--v2-panel);
+    --mb-btn-fill: var(--v2-panel);
   }
 
   .mb-btn:is(.mb-btn-outline, .mb-btn-ghost):is(
     :active,
     [data-state="pressed"]
   ) {
+    --mb-btn-fill: var(--ink-2);
     color: var(--v2-bg);
-    background: var(--ink-2);
   }
 
   .mb-btn-destructive:is(:active, [data-state="pressed"]) {
-    background: color-mix(in srgb, var(--error) 65%, var(--ink));
+    --mb-btn-fill: color-mix(in srgb, var(--error) 65%, var(--ink));
   }
 
   .mb-btn-link:is(:active, [data-state="pressed"]) {
@@ -409,26 +433,11 @@ const busy = loading ? "true" : undefined;
     text-decoration-thickness: 3px;
   }
 
-  .mb-btn-raised:is(:active, [data-state="pressed"]) {
-    box-shadow: 0 0 0 var(--mb-rule);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .mb-btn-raised:is(:active, [data-state="pressed"]) {
-      transform: translate(var(--mb-btn-shift), var(--mb-btn-shift));
-    }
-
-    .mb-btn-raised:is(:active, [data-state="pressed"])::after {
-      inset: calc(-1px - var(--mb-btn-shift)) -1px -1px
-        calc(-1px - var(--mb-btn-shift));
-    }
-  }
-
   /* After hover and press: the `.active` CTA stays an ink block. */
   .mb-btn-default.active {
+    --mb-btn-fill: var(--ink);
+    --mb-btn-rule: var(--ink);
     color: var(--v2-bg);
-    background: var(--ink);
-    border-color: var(--ink);
   }
 
   /* `.active`, disabled and loading: flat, no layer, nothing moves. */
@@ -438,19 +447,19 @@ const busy = loading ? "true" : undefined;
     [aria-disabled="true"],
     .mb-btn-loading,
     [data-state="submitting"]
-  ) {
-    box-shadow: none;
-    transform: none;
+  ) .mb-btn-layer {
+    visibility: hidden;
   }
 
   .mb-btn-raised:is(
-    .active,
-    [disabled],
-    [aria-disabled="true"],
-    .mb-btn-loading,
-    [data-state="submitting"]
-  )::after {
-    inset: -1px;
+      .active,
+      [disabled],
+      [aria-disabled="true"],
+      .mb-btn-loading,
+      [data-state="submitting"]
+    )
+    .mb-btn-face {
+    transform: none;
   }
 
   .mb-btn:is(
@@ -459,10 +468,10 @@ const busy = loading ? "true" : undefined;
     .mb-btn-loading,
     [data-state="submitting"]
   ) {
+    --mb-btn-fill: var(--v2-panel);
+    --mb-btn-rule: var(--mb-hair);
     color: var(--muted);
     cursor: not-allowed;
-    background: var(--v2-panel);
-    border-color: var(--mb-hair);
   }
 
   .mb-btn-link:is(
@@ -471,10 +480,10 @@ const busy = loading ? "true" : undefined;
     .mb-btn-loading,
     [data-state="submitting"]
   ) {
+    --mb-btn-fill: transparent;
+    --mb-btn-rule: transparent;
     text-decoration-thickness: 2px;
     text-decoration-color: var(--mb-hair);
-    background: transparent;
-    border-color: transparent;
   }
 
   /* Loading: the label leaves to the left, the spinner comes in from the
@@ -496,6 +505,7 @@ const busy = loading ? "true" : undefined;
 
   @media (prefers-reduced-motion: reduce) {
     .mb-btn,
+    .mb-btn-face,
     .mb-btn-label,
     .mb-btn :global(.mb-btn-spinner) {
       transition: none;

@@ -6,9 +6,9 @@ import { sendALead } from "./send-a-lead";
 // one for this tree and passes its port in E2E_DEV_PORT.
 const DEV_URL = `http://localhost:${process.env.E2E_DEV_PORT}`;
 
-const FLAT_SHADOW = /0px 0px 0px/;
 const RAISED_VARIANTS = ["Default", "Secondary", "Outline", "Destructive"];
-const SHADOW_X = /\)\s+(-?[\d.]+)px/;
+// A computed colour with alpha below 1 (Chrome writes opaque ones as rgb()).
+const TRANSLUCENT = /rgba\(|\/ /;
 const FOLLOWED_CRUMB = /\/realizacje\/#2025$/;
 const UI_UNPAGED = /\/ui$/;
 const UI_PAGE_7 = /\/ui\?strona=7#mb-pagination$/;
@@ -100,11 +100,17 @@ const runningTransitions = (locator: Locator) =>
       .map((a) => (a as CSSTransition).transitionProperty)
   );
 
-// The x offset of the first box-shadow, 0 when there is none.
-const shadowX = (boxShadow: string) =>
-  boxShadow === "none"
-    ? 0
-    : Number(boxShadow.match(SHADOW_X)?.[1] ?? Number.NaN);
+// A rendered box, and the layer's and the face's boxes in one frame.
+interface Box {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+}
+interface BoxFrame {
+  face: Box;
+  layer: Box;
+}
 
 // A button of one variant row in the catalogue, by its state caption.
 const buttonIn = (page: Page, variant: string, caption: string) =>
@@ -172,11 +178,13 @@ test.describe("component catalogue (astro dev)", () => {
   });
 
   test("a forced button hover paints like a real one", async ({ page }) => {
-    const props = ["background-color", "box-shadow", "color", "transform"];
+    const props = ["background-color", "border-color", "color", "transform"];
     const forced = sample(page, "mb-button", "hover")
       .first()
-      .locator(".mb-btn");
-    const idle = sample(page, "mb-button", "idle").first().locator(".mb-btn");
+      .locator(".mb-btn-face");
+    const idle = sample(page, "mb-button", "idle")
+      .first()
+      .locator(".mb-btn-face");
 
     const forcedPaint = await paint(forced, props);
     expect(forcedPaint).not.toEqual(await paint(idle, props));
@@ -190,17 +198,35 @@ test.describe("component catalogue (astro dev)", () => {
     test(`${variant}: under reduced motion hover and press only repaint`, async ({
       page,
     }) => {
-      const props = ["background-color", "box-shadow", "transform"];
-      const idle = await paint(buttonIn(page, variant, "idle"), props);
-      const hover = await paint(buttonIn(page, variant, "hover"), props);
-      const pressed = await paint(buttonIn(page, variant, "pressed"), props);
+      const look = (caption: string) =>
+        buttonIn(page, variant, caption).evaluate((el) => {
+          const face = getComputedStyle(
+            el.querySelector(".mb-btn-face") as Element
+          );
+          const layer = getComputedStyle(
+            el.querySelector(".mb-btn-layer") as Element
+          );
+          return {
+            fill: face.backgroundColor,
+            layer: layer.visibility,
+            transform: face.transform,
+          };
+        });
+      const idle = await look("idle");
+      const hover = await look("hover");
+      const pressed = await look("pressed");
 
-      expect(idle.transform).toBe("none");
-      expect(hover.transform).toBe("none");
-      expect(pressed.transform).toBe("none");
-      expect(hover["box-shadow"]).toBe(idle["box-shadow"]);
-      expect(pressed["box-shadow"]).toMatch(FLAT_SHADOW);
-      expect(pressed["background-color"]).not.toBe(idle["background-color"]);
+      expect([idle, hover, pressed].map((s) => s.transform)).toEqual([
+        "none",
+        "none",
+        "none",
+      ]);
+      expect([idle, hover, pressed].map((s) => s.layer)).toEqual([
+        "visible",
+        "visible",
+        "hidden",
+      ]);
+      expect(pressed.fill).not.toBe(idle.fill);
     });
   }
 
@@ -711,26 +737,26 @@ test.describe("button layer and loading (astro dev)", () => {
   });
 
   for (const variant of RAISED_VARIANTS) {
-    test(`${variant}: the face lifts on hover and goes down on press over a layer that stays put`, async ({
+    test(`${variant}: the face lifts on hover and goes down on press over a layer box that never moves, always above it`, async ({
       page,
     }) => {
-      const props = ["background-color", "box-shadow", "transform"];
-      const hover = await paint(buttonIn(page, variant, "hover"), props);
-      const pressed = await paint(buttonIn(page, variant, "pressed"), props);
-      expect(hover.transform).toBe("matrix(1, 0, 0, 1, -2, -2)");
-      expect(pressed.transform).toBe("matrix(1, 0, 0, 1, 4, 4)");
-      expect(pressed["box-shadow"]).toMatch(FLAT_SHADOW);
+      const faceTransform = (caption: string) =>
+        buttonIn(page, variant, caption)
+          .locator(".mb-btn-face")
+          .evaluate((el) => getComputedStyle(el).transform);
+      expect(await faceTransform("hover")).toBe("matrix(1, 0, 0, 1, -1, -1)");
+      expect(await faceTransform("pressed")).toBe("matrix(1, 0, 0, 1, 2, 2)");
 
-      // The layer's left edge on screen: the face (transform included)
-      // plus the shadow's offset.
+      // The face is solid in every state, so the layer never shows through.
+      for (const caption of ["idle", "hover", "pressed", "focus-visible"]) {
+        // biome-ignore lint/performance/noAwaitInLoops: one state at a time
+        const fill = await buttonIn(page, variant, caption)
+          .locator(".mb-btn-face")
+          .evaluate((el) => getComputedStyle(el).backgroundColor);
+        expect(fill, caption).not.toMatch(TRANSLUCENT);
+      }
+
       const button = buttonIn(page, variant, "idle");
-      const layerX = async () => {
-        const { left, shadow } = await button.evaluate((el) => ({
-          left: el.getBoundingClientRect().left,
-          shadow: getComputedStyle(el).boxShadow,
-        }));
-        return left + shadowX(shadow);
-      };
       // Mid-viewport, clear of the sticky header, so the pointer reaches it;
       // instant, as html scrolls smoothly.
       await button.evaluate((el) =>
@@ -740,39 +766,96 @@ test.describe("button layer and loading (astro dev)", () => {
       if (!rest) {
         throw new Error(`${variant} idle button is not rendered`);
       }
-      const restLayer = await layerX();
-      expect(restLayer).toBeCloseTo(rest.x + 4, 1);
 
-      // The pointer 1px inside the resting box's bottom-right corner, which
-      // the lifted face leaves: hover holds instead of flickering.
-      await page.mouse.move(rest.x + rest.width - 1, rest.y + rest.height - 1);
-      const lifting = await button.evaluate(async (el) => {
-        const frames: { left: number; shadow: string }[] = [];
-        for (const _ of Array.from({ length: 8 })) {
-          frames.push({
-            left: el.getBoundingClientRect().left,
-            shadow: getComputedStyle(el).boxShadow,
-          });
-          const { promise, resolve } = Promise.withResolvers<number>();
-          requestAnimationFrame(resolve);
-          // biome-ignore lint/performance/noAwaitInLoops: one sample per frame
-          await promise;
-        }
-        return frames;
+      // Records the layer's and the face's boxes on every frame from now
+      // until `collect` reads them, so a transition is caught as it runs.
+      const record = () =>
+        button.evaluate((el) => {
+          const box = (selector: string): Box => {
+            const { x, y, width, height } = (
+              el.querySelector(selector) as Element
+            ).getBoundingClientRect();
+            return { height, width, x, y };
+          };
+          const frames: BoxFrame[] = [];
+          (el as unknown as { frames: BoxFrame[] }).frames = frames;
+          const tick = () => {
+            frames.push({
+              face: box(".mb-btn-face"),
+              layer: box(".mb-btn-layer"),
+            });
+            if (frames.length < 40) {
+              requestAnimationFrame(tick);
+            }
+          };
+          tick();
+        });
+      const collect = async () => {
+        await page.waitForTimeout(800);
+        return button.evaluate(
+          (el) => (el as unknown as { frames: BoxFrame[] }).frames
+        );
+      };
+      // What the pointer would hit where the face and the layer overlap,
+      // with the layer made hittable: the face, never the layer.
+      const faceOnTop = () =>
+        button.evaluate((el) => {
+          const layer = el.querySelector(".mb-btn-layer") as HTMLElement;
+          const face = el.querySelector(".mb-btn-face") as HTMLElement;
+          const { right, bottom } = face.getBoundingClientRect();
+          layer.style.pointerEvents = "auto";
+          const hit = document.elementFromPoint(right - 1, bottom - 1);
+          layer.style.pointerEvents = "";
+          return face.contains(hit);
+        });
+
+      // At rest: the layer is the resting box moved 2px down and right,
+      // under the face.
+      await record();
+      const resting = await collect();
+      const layer = resting[0]?.layer;
+      expect(layer).toEqual({
+        height: rest.height,
+        width: rest.width,
+        x: rest.x + 2,
+        y: rest.y + 2,
       });
-      for (const { left, shadow } of lifting) {
-        expect(left + shadowX(shadow)).toBeCloseTo(restLayer, 1);
-      }
-      await expect.poll(() => paint(button, props)).toEqual(hover);
-      await page.waitForTimeout(300);
-      expect(await paint(button, props)).toEqual(hover);
-      expect(await layerX()).toBeCloseTo(restLayer, 1);
+      expect(await faceOnTop()).toBe(true);
 
-      // Pressed, the face covers the layer; its hit area still covers the
-      // resting box's top-left corner, which the face has left.
+      // Hover, with the pointer 1px inside the resting box's bottom-right
+      // corner, which the lifted face leaves: hover holds instead of
+      // flickering, and the layer box stays the same on every frame.
+      await record();
+      await page.mouse.move(rest.x + rest.width - 1, rest.y + rest.height - 1);
+      const lifting = await collect();
+      const lifted = lifting.filter(
+        (f) => f.face.x < rest.x && f.face.x > rest.x - 1
+      );
+      expect(lifted.length).toBeGreaterThanOrEqual(2);
+      for (const frame of lifting) {
+        expect(frame.layer).toEqual(layer);
+      }
+      expect(lifting.at(-1)?.face).toMatchObject({
+        x: rest.x - 1,
+        y: rest.y - 1,
+      });
+      expect(await faceOnTop()).toBe(true);
+
+      // Press: the face goes down onto the layer and covers it exactly; the
+      // layer box again never moves, and the resting box's top-left corner,
+      // which the face has left, is still the button's.
+      await record();
       await page.mouse.down();
-      await expect.poll(() => paint(button, props)).toEqual(pressed);
-      expect(await layerX()).toBeCloseTo(restLayer, 1);
+      const pressing = await collect();
+      const sinking = pressing.filter(
+        (f) => f.face.x > rest.x - 1 && f.face.x < rest.x + 2
+      );
+      expect(sinking.length).toBeGreaterThanOrEqual(2);
+      for (const frame of pressing) {
+        expect(frame.layer).toEqual(layer);
+      }
+      expect(pressing.at(-1)?.face).toEqual(layer);
+      expect(await faceOnTop()).toBe(true);
       expect(
         await button.evaluate(
           (el, { x, y }) => el.contains(document.elementFromPoint(x, y)),
