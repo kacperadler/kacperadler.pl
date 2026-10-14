@@ -1,4 +1,5 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
+import sharp from "sharp";
 
 // The home page per the brief (KA0075): its sections in order, the menu, the
 // offer, the meta, and none of the copy the brief removed.
@@ -42,6 +43,54 @@ const LLMS_FULL_ITEM = /^### \d{2}\. (.+)$/gm;
 const BRACKETED = /\[[^\]]*\]/;
 const LLMS_HEAD =
   /^# Kacper Adler - AI Engineer · Partner technologiczny\n\n> Wdrożenia AI i automatyzacje dla firm\. /;
+// Sub-pixel rounding plus the 1px rule two neighbouring cells share.
+const TOLERANCE = 2;
+// Brighter than this is a rule (ink on the dark ground), not the ground.
+const INK_LUMA = 100;
+// A frame lights its whole edge; rules that only end at it light a few px.
+const FRAME_SHARE = 0.05;
+
+async function box(locator: Locator) {
+  const rect = await locator.boundingBox();
+  if (!rect) {
+    throw new Error("the element is not rendered");
+  }
+  return rect;
+}
+
+// The share of ink pixels along each edge of the element's box, one pixel
+// inside it, from a screenshot of the page.
+async function inkOnEdges(page: Page, locator: Locator) {
+  const rect = await box(locator);
+  const clip = {
+    height: Math.floor(rect.y + rect.height) - Math.ceil(rect.y),
+    width: Math.floor(rect.x + rect.width) - Math.ceil(rect.x),
+    x: Math.ceil(rect.x),
+    y: Math.ceil(rect.y),
+  };
+  const { data, info } = await sharp(await page.screenshot({ clip }))
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const ink = (x: number, y: number) => {
+    const i = (y * info.width + x) * info.channels;
+    const luma =
+      0.2126 * (data[i] ?? 0) +
+      0.7152 * (data[i + 1] ?? 0) +
+      0.0722 * (data[i + 2] ?? 0);
+    return luma > INK_LUMA;
+  };
+  const share = (points: [number, number][]) =>
+    points.filter(([x, y]) => ink(x, y)).length / points.length;
+  const xs = Array.from({ length: info.width }, (_, x) => x);
+  const ys = Array.from({ length: info.height }, (_, y) => y);
+  return {
+    bottom: share(xs.map((x) => [x, info.height - 1])),
+    left: share(ys.map((y) => [0, y])),
+    right: share(ys.map((y) => [info.width - 1, y])),
+    top: share(xs.map((x) => [x, 0])),
+  };
+}
 
 test.describe("home page", () => {
   test("the sections run in the brief's order between the header and the footer", async ({
@@ -182,6 +231,119 @@ test.describe("home page", () => {
     await expect(experience.locator(".mb-card")).toHaveCount(6);
     await experience.locator("summary").click();
     await expect(experience.locator(".mb-card").first()).toBeVisible();
+  });
+
+  test("the open experience table has rules only between its cells, and a hovered cell lights no panel", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 1000, width: 1440 });
+    await page.goto("/");
+    const experience = page.locator("#about details");
+    await experience.locator("summary").click();
+    const table = experience.locator(".mb-accordion-content");
+    const cards = table.locator(".mb-card");
+    await expect(cards.first()).toBeVisible();
+    await table.scrollIntoViewIfNeeded();
+    await page.mouse.move(0, 0);
+
+    // Three cells a row: the rules between them reach the table's edges.
+    const [first, second] = [await box(cards.nth(0)), await box(cards.nth(1))];
+    expect(Math.abs(first.y - second.y)).toBeLessThanOrEqual(TOLERANCE);
+    const edges = await inkOnEdges(page, table);
+    for (const [edge, share] of Object.entries(edges)) {
+      expect(share, `no rule along the table's ${edge} edge`).toBeLessThan(
+        FRAME_SHARE
+      );
+    }
+    // The rules between the cells are there: the column rule crosses the
+    // middle of the table, so it lights part of its top edge.
+    expect(edges.top).toBeGreaterThan(0);
+
+    const ground = await cards
+      .nth(1)
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
+    await cards.first().hover();
+    await expect
+      .poll(() =>
+        cards
+          .first()
+          .evaluate((el) => getComputedStyle(el, "::before").transform)
+      )
+      .toBe("matrix(1, 0, 0, 1, 0, 0)");
+    await expect(cards.first()).toHaveCSS("background-color", ground);
+  });
+
+  test("the FAQ fills the width in two columns on the desktop and runs in order in one on a phone", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    const head = await box(page.locator("#faq .mb-section-head"));
+    const rows = page.locator("#faq summary");
+    const wide = await Promise.all((await rows.all()).map((row) => box(row)));
+    expect(wide).toHaveLength(8);
+    const left = wide.slice(0, 4);
+    const right = wide.slice(4);
+    for (const [i, row] of left.entries()) {
+      expect(Math.abs(row.x - (left[0] as typeof row).x)).toBeLessThanOrEqual(
+        TOLERANCE
+      );
+      expect(Math.abs(row.y - (right[i] as typeof row).y)).toBeLessThanOrEqual(
+        TOLERANCE
+      );
+      expect((right[i] as typeof row).x).toBeGreaterThan(row.x + row.width);
+    }
+    const frames = page.locator("#faq .mb-accordion");
+    const last = await box(frames.last());
+    expect(Math.abs(last.x + last.width - (head.x + head.width))).toBeLessThan(
+      TOLERANCE
+    );
+
+    // Opening a question grows only its own column: the next row on the
+    // left moves down, the right column's rows keep their spacing.
+    const gap = async (from: number, to: number) =>
+      (await box(rows.nth(to))).y - (await box(rows.nth(from))).y;
+    const [leftGap, rightGap] = [await gap(0, 1), await gap(4, 5)];
+    await rows.nth(0).click();
+    await expect.poll(() => gap(0, 1)).toBeGreaterThan(leftGap + 20);
+    expect(await gap(4, 5)).toBe(rightGap);
+
+    await page.setViewportSize({ height: 844, width: 390 });
+    const narrow = await Promise.all((await rows.all()).map((row) => box(row)));
+    for (const [i, row] of narrow.entries()) {
+      expect(Math.abs(row.x - (narrow[0] as typeof row).x)).toBeLessThanOrEqual(
+        TOLERANCE
+      );
+      if (i > 0) {
+        expect(row.y).toBeGreaterThan((narrow[i - 1] as typeof row).y);
+      }
+    }
+  });
+
+  test("the contact sheet fills the width, the email and the project type side by side on the desktop", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    const head = await box(page.locator("#contact .mb-section-head"));
+    const sheet = await box(page.locator("#contact [data-contact-wrap]"));
+    expect(
+      Math.abs(sheet.x + sheet.width - (head.x + head.width))
+    ).toBeLessThan(TOLERANCE);
+    const email = page.locator('#contact [data-field="email"]');
+    const type = page.locator('#contact [data-field="type"]');
+    const message = page.locator('#contact [data-field="message"]');
+    let [e, t, m] = [await box(email), await box(type), await box(message)];
+    expect(Math.abs(e.y - t.y)).toBeLessThanOrEqual(TOLERANCE);
+    expect(t.x).toBeGreaterThan(e.x + e.width);
+    expect(m.y).toBeGreaterThan(e.y + e.height);
+    expect(Math.abs(m.width - (t.x + t.width - e.x))).toBeLessThan(TOLERANCE);
+
+    await page.setViewportSize({ height: 844, width: 390 });
+    [e, t, m] = [await box(email), await box(type), await box(message)];
+    expect(Math.abs(e.x - t.x)).toBeLessThanOrEqual(TOLERANCE);
+    expect(t.y).toBeGreaterThan(e.y + e.height);
+    expect(m.y).toBeGreaterThan(t.y + t.height);
   });
 
   test("the meta follow the brief", async ({ page, request }) => {

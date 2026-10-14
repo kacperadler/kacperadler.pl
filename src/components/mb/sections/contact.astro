@@ -5,9 +5,9 @@ import ContactForm from "../contact-form.astro";
 import ContactLink from "../contact-link.astro";
 import SectionHead from "../section-head.astro";
 
-/* Contact (#contact): the two links and the form close into one sheet,
- * left-aligned under the section head - the links a ruled row of cells,
- * the form right under them sharing the rule. */
+/* Contact (#contact): the two links and the form close into one sheet
+ * across the container under the section head - the links a ruled row of
+ * cells, the form right under them sharing the rule. */
 ---
 
 <section class="mb-contact" id="contact">
@@ -20,28 +20,26 @@ import SectionHead from "../section-head.astro";
       </Fragment>
     </SectionHead>
 
-    <div class="mb-contact-sheet">
-      <CellGrid min="280px">
-        <ContactLink
-          href={`mailto:${siteConfig.email}`}
-          icon="lucide:mail"
-          label="Email"
-        >
-          {siteConfig.email}
-        </ContactLink>
-        <ContactLink
-          href={siteConfig.social.linkedin}
-          icon="lucide:linkedin"
-          label="LinkedIn"
-          newTab
-        >
-          /in/kacperadler
-        </ContactLink>
-      </CellGrid>
+    <CellGrid columns={2}>
+      <ContactLink
+        href={`mailto:${siteConfig.email}`}
+        icon="lucide:mail"
+        label="Email"
+      >
+        {siteConfig.email}
+      </ContactLink>
+      <ContactLink
+        href={siteConfig.social.linkedin}
+        icon="lucide:linkedin"
+        label="LinkedIn"
+        newTab
+      >
+        /in/kacperadler
+      </ContactLink>
+    </CellGrid>
 
-      <div class="mb-contact-form-host">
-        <ContactForm />
-      </div>
+    <div class="mb-contact-form-host">
+      <ContactForm />
     </div>
   </div>
 </section>
@@ -49,10 +47,6 @@ import SectionHead from "../section-head.astro";
 <style>
   .mb-contact {
     margin-top: var(--v2-space-2xl);
-  }
-
-  .mb-contact-sheet {
-    max-width: 720px;
   }
 
   .mb-contact-form-host {

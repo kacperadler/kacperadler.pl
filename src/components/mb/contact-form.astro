@@ -20,7 +20,8 @@ import Textarea from "./textarea.astro";
  * that field. While it is sending, contact-form.ts disables every field
  * and the submit button; `state` "submitting" renders them disabled too.
  * min-height keeps the page from jumping when the success card replaces
- * the form.
+ * the form. Once the sheet is at least 720px wide (a container query),
+ * the email and the project type sit side by side above the message.
  *
  * For the catalogue (/ui), which shows every state at once:
  *   state       the wrapper's starting data-state, with the fields, the
@@ -55,43 +56,49 @@ const id = (name: string) => `${idPrefix}-${name}`;
 
 <div class="mb-contact-form" data-contact-wrap data-state={state}>
   <form class="mb-form" data-contact-form novalidate>
-    <Field
-      errorMessage="Podaj prawidłowy adres email."
-      for={id("email")}
-      invalid={invalid}
-      label="Email"
-      name="email"
-    >
-      <Input
-        autocomplete="email"
-        data-state={forceFocus ? "focus" : undefined}
-        disabled={submitting}
-        id={id("email")}
+    <div class="mb-form-row">
+      <Field
+        errorMessage="Podaj prawidłowy adres email."
+        for={id("email")}
+        invalid={invalid}
+        label="Email"
         name="email"
-        placeholder="twoj@email.pl"
-        required
-        type="email"
-      />
-    </Field>
+      >
+        <Input
+          autocomplete="email"
+          data-state={forceFocus ? "focus" : undefined}
+          disabled={submitting}
+          id={id("email")}
+          name="email"
+          placeholder="twoj@email.pl"
+          required
+          type="email"
+        />
+      </Field>
 
-    <Field
-      errorMessage="Wybierz typ projektu."
-      invalid={invalid}
-      label="Czego potrzebujesz"
-      name="type"
-    >
-      <div aria-label="Czego potrzebujesz" class="mb-radios" role="radiogroup">
-        {projectTypes.map((option) => (
-          <Radio
-            disabled={submitting}
-            label={option.label}
-            name="type"
-            value={option.value}
-            variant="choice"
-          />
-        ))}
-      </div>
-    </Field>
+      <Field
+        errorMessage="Wybierz typ projektu."
+        invalid={invalid}
+        label="Czego potrzebujesz"
+        name="type"
+      >
+        <div
+          aria-label="Czego potrzebujesz"
+          class="mb-radios"
+          role="radiogroup"
+        >
+          {projectTypes.map((option) => (
+            <Radio
+              disabled={submitting}
+              label={option.label}
+              name="type"
+              value={option.value}
+              variant="choice"
+            />
+          ))}
+        </div>
+      </Field>
+    </div>
 
     <Field
       errorMessage="Dodaj krótki opis projektu."
@@ -168,6 +175,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
     flex-direction: column;
     width: 100%;
     min-height: 490px;
+    container-type: inline-size;
     background: var(--v2-bg);
     border: 1px solid var(--mb-rule);
     transition:
@@ -202,6 +210,24 @@ const id = (name: string) => `${idPrefix}-${name}`;
     width: 1px;
     height: 1px;
     overflow: hidden;
+  }
+
+  .mb-form-row {
+    display: grid;
+    gap: 18px;
+  }
+
+  /* Wide, the fields take fewer rows: the message grows into the room the
+   * min-height keeps, so the submit button does not hang far below it. */
+  @container (min-width: 720px) {
+    .mb-form-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 28px;
+    }
+
+    .mb-form :global(.mb-textarea) {
+      min-height: 220px;
+    }
   }
 
   .mb-radios {
