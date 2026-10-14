@@ -13,4 +13,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `public/favicon.svg:2-8`
 - What: the favicon is the old mark: a `blue` rect with `rx="46"` on a 128 viewBox (a near circle), a mono `k` at weight 600 in `#0f1116`, the old `on-blue`. The site's mark (`src/components/mb/brand.astro`) and the new OG image are a square `blue` block in a 1px `ink` rule with a heavy `k` in `base` (`#0a0c10`). `public/favicon.ico` was not inspected.
 - Suggestion: redraw `favicon.svg` (and regenerate `favicon.ico` from it) as the square mark; AGENTS.md says the brand mark favicon changes only with a `DESIGN.md` update, so the same branch records it there.
-- Status: open
+- Status: fixed in bdfa1c4
