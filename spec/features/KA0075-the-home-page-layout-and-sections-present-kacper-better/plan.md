@@ -142,7 +142,7 @@ Until KA0093, the "Umów..." buttons lead to the contact form.
 - Questions and answers:
   - `Czy AI w ogóle ma sens w mojej firmie?` - `Od tego jest audyt. Sprawdzam Twoje procesy i liczę, co się opłaca. Jeśli AI nie ma sensu, powiem Ci to wprost.`
   - `Ile to kosztuje?` - `Zależy od zakresu. Wycenę dostajesz w 2–3 dni po bezpłatnej rozmowie, bez ukrytych kosztów.`
-  - `Co z bezpieczeństwem danych?` - `Dane przetwarzam zgodnie z RODO i zanim zaczniemy, ustalamy, gdzie będą przechowywane. Korzystam z modeli AI dostawców, z którymi można podpisać umowę powierzenia danych (DPA). Gdy dane nie mogą opuścić firmy, wdrażam rozwiązanie na Twoich serwerach.` (needs confirmation, see Open questions)
+  - `Co z bezpieczeństwem danych?` - `Korzystam z AI przez API albo plany firmowe (np. Claude, ChatGPT), które nie trenują modeli na Twoich danych. Pliki i bazy zostają u Ciebie, a do AI trafia tylko to, czego wymaga zadanie.` (the human, 2026-10-14)
   - `Co, jeśli przestaniesz ze mną współpracować?` - `Kod i dokumentacja należą do Ciebie. Możesz je przekazać innej osobie lub firmie i rozwijać dalej.`
   - `Nie znam się na technologii. Czy to problem?` - `Nie. To moja robota. Rozmawiamy o Twoich procesach, a technologię biorę na siebie.`
   - `Jak szybko zobaczę efekt?` - `Pierwsze działające elementy zwykle w 1–2 tygodnie.`

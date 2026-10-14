@@ -763,5 +763,25 @@
     "after": [
       "KA0075"
     ]
+  },
+  {
+    "id": "KA0096",
+    "title": "The contact form asks for the company name, optionally",
+    "status": "planning",
+    "path": "spec/features/KA0096-the-contact-form-asks-for-the-company-name-optionally/ticket.md",
+    "updated": "2026-10-14T18:59:32.033Z",
+    "after": [
+      "KA0075"
+    ]
+  },
+  {
+    "id": "KA0097",
+    "title": "The hero status card shows the next free month",
+    "status": "planning",
+    "path": "spec/features/KA0097-the-hero-status-card-shows-the-next-free-month/ticket.md",
+    "updated": "2026-10-14T18:59:32.232Z",
+    "after": [
+      "KA0075"
+    ]
   }
 ]
