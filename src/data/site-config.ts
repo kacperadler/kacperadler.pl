@@ -19,6 +19,8 @@ export const siteConfig = {
     linkedin: "https://www.linkedin.com/in/kacperadler/",
   },
   tagline: "Wdrożenia AI i automatyzacje dla firm.",
+  // The home page's <title>; other pages are "<page> - <name>".
+  title: "Wdrożenia AI i automatyzacje dla firm | Kacper Adler",
   url: "https://kacperadler.pl",
 } as const;
 

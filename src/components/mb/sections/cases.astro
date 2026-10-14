@@ -1,0 +1,206 @@
+---
+import { getCollection } from "astro:content";
+import { logoBySlug } from "@/data/experience-logos";
+import { caseHighlights } from "@/data/home";
+import { caseStudiesByExperience, caseStudyPath } from "@/lib/case-studies";
+import Badge from "../badge.astro";
+import Button from "../button.astro";
+import Card from "../card.astro";
+import CellGrid from "../cell-grid.astro";
+import Link from "../link.astro";
+import SectionHead from "../section-head.astro";
+
+/* Case highlights (#cases): projects told as problem, solution and scale,
+ * a two-column cell table. Each card takes its company and logo from its
+ * experience entry (an unknown id fails the build) and links the entry's
+ * case study when there is one. "Wszystkie realizacje" leads to the
+ * /realizacje/ list, which is built only when a case study exists. */
+const experience = new Map(
+  (await getCollection("experience")).map((entry) => [entry.id, entry.data])
+);
+const caseStudies = await caseStudiesByExperience();
+const hasCaseStudies = (await getCollection("caseStudies")).length > 0;
+
+const cases = caseHighlights.map((highlight) => {
+  const entry = experience.get(highlight.experience);
+  const logo = logoBySlug[highlight.experience];
+  if (!(entry && logo)) {
+    throw new Error(
+      `Case highlight links to experience "${highlight.experience}", which does not exist or has no logo.`
+    );
+  }
+  return {
+    ...highlight,
+    caseStudy: caseStudies.get(highlight.experience),
+    company: entry.company,
+    logo,
+  };
+});
+---
+
+<section class="mb-cases" id="cases">
+  <div class="container">
+    <SectionHead label="Realizacje">
+      Systemy, z których firmy <em>korzystają</em> codziennie.
+      <Fragment slot="lede">
+        Projekty, przy których pracowałem. Nie dema, tylko narzędzia, na których
+        ludzie pracują każdego dnia.
+      </Fragment>
+    </SectionHead>
+
+    <CellGrid columns={2}>
+      {cases.map((item) => (
+        <Card>
+          <div class="mb-cases-head">
+            <img
+              alt={item.company}
+              class="mb-cases-logo"
+              height={item.logo.height}
+              loading="lazy"
+              src={item.logo.src}
+              width={item.logo.width}
+            >
+            <Badge variant="outline">{item.kind}</Badge>
+          </div>
+          <h3>{item.company}</h3>
+          <dl class="mb-cases-rows">
+            <div class="mb-cases-row">
+              <dt>Problem</dt>
+              <dd>{item.problem}</dd>
+            </div>
+            <div class="mb-cases-row">
+              <dt>Rozwiązanie</dt>
+              <dd>{item.solution}</dd>
+            </div>
+            <div class="mb-cases-row">
+              <dt>Skala</dt>
+              <dd>{item.scale}</dd>
+            </div>
+          </dl>
+          {item.caseStudy && (
+            <p class="mb-cases-link">
+              <Link href={caseStudyPath(item.caseStudy)} variant="case">
+                Zobacz realizację
+                <span class="sr-only"> - {item.company}</span>
+              </Link>
+            </p>
+          )}
+        </Card>
+      ))}
+    </CellGrid>
+
+    {hasCaseStudies && (
+      <div class="mb-cases-all">
+        <Button
+          href="/realizacje/"
+          iconEnd="lucide:arrow-right"
+          variant="outline"
+        >
+          Wszystkie realizacje
+        </Button>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .mb-cases {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  .mb-cases-head {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    margin-bottom: 16px;
+  }
+
+  .mb-cases-logo {
+    width: auto;
+    max-width: 140px;
+    max-height: 32px;
+    opacity: 0.6;
+    filter: grayscale(100%);
+    transition:
+      filter var(--mb-snap),
+      opacity var(--mb-snap);
+  }
+
+  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-cases-logo {
+    opacity: 1;
+    filter: grayscale(0%);
+  }
+
+  h3 {
+    margin: 0 0 12px;
+    font-family: var(--mb-display);
+    font-size: 24px;
+    font-weight: 750;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.035em;
+  }
+
+  .mb-cases-rows {
+    flex: 1;
+    margin: 0;
+  }
+
+  .mb-cases-row {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 12px;
+    align-items: baseline;
+    padding: 12px 0;
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-cases-row:last-child {
+    padding-bottom: 0;
+  }
+
+  .mb-cases-row dt {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .mb-cases-row dd {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  .mb-cases-link {
+    margin: 16px 0 0;
+  }
+
+  .mb-cases-all {
+    display: flex;
+    margin-top: var(--v2-space-lg);
+  }
+
+  @media (max-width: 880px) {
+    .mb-cases {
+      margin-top: var(--v2-space-xl);
+    }
+  }
+
+  @media (max-width: 400px) {
+    .mb-cases-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-cases-logo {
+      transition: none;
+    }
+  }
+</style>

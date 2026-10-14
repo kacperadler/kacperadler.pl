@@ -5,14 +5,11 @@ import Button from "./button.astro";
 import Link from "./link.astro";
 
 /* Header: sticky on the solid substrate under an ink rule, no glass. The
- * brand, the nav links ([data-nav-link], `.active` from
- * scripts/nav-active.ts), the sm contact CTA ([data-nav-cta]) and, at 880px
- * and below instead of the links, the menu button that opens the mobile
- * sheet ([data-menu-open], aria-controls="mobile-sheet"). A page link
- * ("/realizacje/") is active on its page and the pages below it,
- * aria-current="page" only on the page itself. */
-const links = await primaryNav();
-const path = Astro.url.pathname;
+ * brand, the nav links to the home page sections ([data-nav-link],
+ * `.active` from scripts/nav-active.ts), the sm contact CTA
+ * ([data-nav-cta]) and, at 880px and below instead of the links, the menu
+ * button that opens the mobile sheet ([data-menu-open],
+ * aria-controls="mobile-sheet"). */
 ---
 
 <div class="mb-header" data-nav-wrap>
@@ -20,20 +17,11 @@ const path = Astro.url.pathname;
     <Brand />
 
     <div class="mb-nav-links">
-      {links.map((link) => {
-        const inPage = !link.href.includes("#") && path.startsWith(link.href);
-        return (
-          <Link
-            aria-current={inPage && path === link.href ? "page" : undefined}
-            class={inPage ? "active" : undefined}
-            data-nav-link
-            href={link.href}
-            variant="nav"
-          >
-            {link.label}
-          </Link>
-        );
-      })}
+      {primaryNav.map((link) => (
+        <Link data-nav-link href={link.href} variant="nav">
+          {link.label}
+        </Link>
+      ))}
     </div>
 
     <div class="mb-nav-tail">

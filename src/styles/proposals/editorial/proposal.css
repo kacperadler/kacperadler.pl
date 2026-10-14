@@ -12,9 +12,8 @@
  *   - The section number becomes an oversized numeral drawn with the same
  *     ink rule as the cells (an outline on the substrate). Sections
  *     alternate: the numeral on the left, then on the right.
- *   - Cells of uneven spans: two-column tables zigzag 7 | 5, 5 | 7; the
- *     experience wall cascades 1, 2, 3 cells a row; process steps step in
- *     and out. Service numbers are display numerals.
+ *   - Cells of uneven spans: two-column tables zigzag 7 | 5, 5 | 7;
+ *     process steps step in and out. Service numbers are display numerals.
  *   - The hero headline runs the full width; the lede and the status card
  *     sit off-centre under it.
  *
@@ -221,54 +220,9 @@ html[data-proposal="editorial"] {
   letter-spacing: -0.06em;
 }
 
-/* The experience wall cascades: the current role across the row, then
- * two cells, then three. */
-[data-proposal="editorial"] .mb-experience .mb-cell-grid {
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-}
-
-[data-proposal="editorial"] .mb-experience .mb-cell-grid > * {
-  grid-column: span 4;
-}
-
-[data-proposal="editorial"] .mb-experience .mb-cell-grid > :nth-child(1) {
-  grid-column: 1 / -1;
-}
-
-[data-proposal="editorial"] .mb-experience .mb-cell-grid > :nth-child(2) {
-  grid-column: span 7;
-}
-
-[data-proposal="editorial"] .mb-experience .mb-cell-grid > :nth-child(3) {
-  grid-column: span 5;
-}
-
-[data-proposal="editorial"]
-  .mb-experience
-  .mb-cell-grid
-  > :nth-child(1)
-  .mb-exp-desc {
-  max-width: 64ch;
-}
-
 /* Process steps step in and out from the rail. */
 [data-proposal="editorial"] .mb-step:nth-child(even) .mb-card {
   margin-left: calc(100% / 6);
-}
-
-/* Too narrow for three: the lead row, then pairs; a cell left over after
- * the pairs (an even count, since the lead stands alone) takes the row. */
-@media (max-width: 1080px) {
-  [data-proposal="editorial"] .mb-experience .mb-cell-grid > :nth-child(n + 2) {
-    grid-column: span 6;
-  }
-
-  [data-proposal="editorial"]
-    .mb-experience
-    .mb-cell-grid
-    > :last-child:nth-child(even) {
-    grid-column: 1 / -1;
-  }
 }
 
 /* --- Mobile: one column beside the spine ------------------------------- */
@@ -347,14 +301,11 @@ html[data-proposal="editorial"] {
     margin-top: var(--v2-space-lg);
   }
 
-  [data-proposal="editorial"]
-    :is(.mb-cell-grid-pair, .mb-experience .mb-cell-grid) {
+  [data-proposal="editorial"] .mb-cell-grid-pair {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  [data-proposal="editorial"]
-    :is(.mb-cell-grid-pair, .mb-experience .mb-cell-grid)
-    > :nth-child(n) {
+  [data-proposal="editorial"] .mb-cell-grid-pair > :nth-child(n) {
     grid-column: 1;
   }
 

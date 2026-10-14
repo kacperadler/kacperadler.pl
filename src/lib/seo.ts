@@ -41,7 +41,6 @@ export interface ProfessionalServiceSchema {
         "@type": "Service";
         description: string;
         name: string;
-        serviceType?: string;
       };
     }>;
     name: string;
@@ -65,15 +64,16 @@ export const personSchema: PersonSchema = {
   image: ogImageUrl,
   jobTitle: siteConfig.role,
   knowsAbout: [
-    "React",
+    "Wdrożenia AI w firmach",
+    "Automatyzacja procesów biznesowych",
+    "Agenci AI",
+    "Automatyzacja biznesu",
+    "Integracje systemów",
+    "Narzędzia wewnętrzne",
+    "Aplikacje webowe i mobilne",
     "TypeScript",
+    "React",
     "React Native",
-    "Next.js",
-    "Astro",
-    "Frontend Development",
-    "Mobile Development",
-    "Web Performance",
-    "B2B Applications",
   ],
   name: siteConfig.name,
   sameAs: [siteConfig.social.github, siteConfig.social.linkedin],
@@ -88,9 +88,10 @@ export const websiteSchema: WebSiteSchema = {
   url: siteConfig.url,
 };
 
-/* Build a ProfessionalService schema with an OfferCatalog populated from the
- * services content collection. Lets crawlers / AI agents enumerate the
- * actual offerings instead of inferring them from page copy. */
+/* Build a ProfessionalService schema with an OfferCatalog of the offer's
+ * steps (the services collection): each step's name and what the client
+ * gets. Lets crawlers / AI agents enumerate the offer instead of inferring
+ * it from page copy. */
 export function professionalServiceSchema(
   services: CollectionEntry<"services">[]
 ): ProfessionalServiceSchema {
@@ -112,10 +113,9 @@ export function professionalServiceSchema(
           "@type": "Service",
           description: s.data.description,
           name: s.data.title,
-          serviceType: s.data.tags.join(", "),
         },
       })),
-      name: "Usługi",
+      name: "Oferta",
     },
     name: `${siteConfig.name} - ${siteConfig.role}`,
     url: siteConfig.url,

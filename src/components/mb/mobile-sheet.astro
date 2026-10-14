@@ -18,7 +18,6 @@ interface Props {
 }
 
 const { preview = false } = Astro.props;
-const links = await primaryNav();
 const dialog = preview
   ? { "aria-label": "Menu mobilne (podgląd)", role: "group" as const }
   : {
@@ -51,7 +50,7 @@ const closeHook = preview ? {} : { "data-menu-close": true };
       aria-label={preview ? "Menu główne (podgląd)" : "Menu główne"}
       class="mb-sheet-nav"
     >
-      {links.map((link) => (
+      {primaryNav.map((link) => (
         <a class="mb-sheet-link" href={link.href} {...linkHook}>
           <span>{link.label}</span>
           <Icon

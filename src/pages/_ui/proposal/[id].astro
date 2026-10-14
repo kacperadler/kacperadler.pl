@@ -12,11 +12,16 @@
  * component selector. */
 import BaseHead from "@/components/layout/base-head.astro";
 import PageFrame from "@/components/mb/page-frame.astro";
+import About from "@/components/mb/sections/about.astro";
+import Cases from "@/components/mb/sections/cases.astro";
 import Contact from "@/components/mb/sections/contact.astro";
-import Experience from "@/components/mb/sections/experience.astro";
+import Examples from "@/components/mb/sections/examples.astro";
+import Faq from "@/components/mb/sections/faq.astro";
 import Hero from "@/components/mb/sections/hero.astro";
 import HowIWork from "@/components/mb/sections/how-i-work.astro";
+import Problems from "@/components/mb/sections/problems.astro";
 import Services from "@/components/mb/sections/services.astro";
+import Trust from "@/components/mb/sections/trust.astro";
 import { siteConfig } from "@/data/site-config";
 import { loadProposals, type Proposal } from "@/lib/proposals";
 import "@/styles/tokens.css";
@@ -95,9 +100,14 @@ const { proposal } = Astro.props;
       <main>
         {/* The home page's sections, in the order of src/pages/index.astro. */}
         <Hero />
+        <Trust />
+        <Problems />
+        <Examples />
         <Services />
+        <Cases />
         <HowIWork />
-        <Experience />
+        <About />
+        <Faq />
         <Contact />
         <Catalogue />
       </main>

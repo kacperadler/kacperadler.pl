@@ -1,0 +1,104 @@
+---
+import { getCollection } from "astro:content";
+import { logoBySlug } from "@/data/experience-logos";
+import Card from "../card.astro";
+import CellGrid from "../cell-grid.astro";
+
+/* Trust bar (#trust): no section head, so it takes no number. A mono
+ * caption over one ruled row of logo cells (five a row on the desktop, two
+ * at 880px and below, the lone last one spanning the row). The logos stay
+ * grey until their cell is hovered, alt text is the entry's company. */
+const ORDER = ["pwc", "apptension", "helpfind", "energiadirect", "rex"];
+
+const experience = new Map(
+  (await getCollection("experience")).map((entry) => [entry.id, entry.data])
+);
+const logos = ORDER.map((id) => {
+  const entry = experience.get(id);
+  const logo = logoBySlug[id];
+  if (!(entry && logo)) {
+    throw new Error(`Trust bar: experience "${id}" or its logo is missing.`);
+  }
+  return { company: entry.company, logo };
+});
+---
+
+<section class="mb-trust" id="trust">
+  <div class="container">
+    <p class="mb-trust-caption">
+      Pracowałem z&nbsp;firmami od korporacji po startupy.
+    </p>
+    <CellGrid class="mb-trust-logos" tag="ul">
+      {logos.map(({ company, logo }) => (
+        <Card size="sm" tag="li">
+          <img
+            alt={company}
+            class="mb-trust-logo"
+            height={logo.height}
+            loading="lazy"
+            src={logo.src}
+            width={logo.width}
+          >
+        </Card>
+      ))}
+    </CellGrid>
+  </div>
+</section>
+
+<style>
+  .mb-trust {
+    margin-top: var(--v2-space-lg);
+  }
+
+  .mb-trust-caption {
+    margin: 0 0 var(--v2-space-md);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .mb-trust :global(.mb-trust-logos) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .mb-trust :global(.mb-trust-logos .mb-card-content) {
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+  }
+
+  .mb-trust-logo {
+    width: auto;
+    max-width: min(140px, 100%);
+    max-height: 32px;
+    opacity: 0.6;
+    filter: grayscale(100%);
+    transition:
+      filter var(--mb-snap),
+      opacity var(--mb-snap);
+  }
+
+  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-trust-logo {
+    opacity: 1;
+    filter: grayscale(0%);
+  }
+
+  @media (max-width: 880px) {
+    .mb-trust :global(.mb-trust-logos) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mb-trust :global(.mb-trust-logos > :last-child:nth-child(odd)) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-trust-logo {
+      transition: none;
+    }
+  }
+</style>

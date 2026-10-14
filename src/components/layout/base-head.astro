@@ -26,9 +26,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-const fullTitle = title
-  ? `${title} - ${siteConfig.name}`
-  : `${siteConfig.name} - ${siteConfig.role}`;
+const fullTitle = title ? `${title} - ${siteConfig.name}` : siteConfig.title;
 
 const canonical = new URL(
   Astro.url.pathname,

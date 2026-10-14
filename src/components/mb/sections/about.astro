@@ -1,0 +1,248 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import type { ImageMetadata } from "astro";
+import meImage from "@/assets/me.jpg";
+import { logoBySlug } from "@/data/experience-logos";
+import { about } from "@/data/home";
+import { siteConfig } from "@/data/site-config";
+import { caseStudiesByExperience, caseStudyPath } from "@/lib/case-studies";
+import Accordion from "../accordion.astro";
+import AccordionItem from "../accordion-item.astro";
+import Badge from "../badge.astro";
+import Card from "../card.astro";
+import CellGrid from "../cell-grid.astro";
+import ContactLink from "../contact-link.astro";
+import Link from "../link.astro";
+import SectionHead from "../section-head.astro";
+
+/* About (#about): the photo in a 1px ink frame beside the text and the
+ * LinkedIn / GitHub link cells; under them a closed accordion with the
+ * full experience list, a cell table three a row on the desktop. Logos stay
+ * grey until their cell is hovered. The badge is "teraz" for the current
+ * role, the entry's own `badge` field (e.g. "Zlecenie"), or the year range;
+ * an entry with a case study links to it. The list is in the HTML while
+ * closed (native <details>), so it reads without JavaScript. */
+const experience = (await getCollection("experience"))
+  .filter((item) => Boolean(logoBySlug[item.id]))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const caseStudies = await caseStudiesByExperience();
+---
+
+<section class="mb-about" id="about">
+  <div class="container">
+    <SectionHead label="O mnie">
+      Kim <em>jestem</em>.
+      <Fragment slot="lede">
+        AI Engineer i partner technologiczny. Dowożę całość sam: od analizy
+        procesu po wdrożenie i opiekę.
+      </Fragment>
+    </SectionHead>
+
+    <div class="mb-about-grid">
+      <Image
+        alt={`${siteConfig.name} - ${siteConfig.role}`}
+        class="mb-about-photo"
+        loading="lazy"
+        src={meImage}
+        width={320}
+      />
+      <div class="mb-about-text">
+        {about.map((paragraph) => <p>{paragraph}</p>)}
+        <CellGrid min="280px">
+          <ContactLink
+            href={siteConfig.social.linkedin}
+            icon="lucide:linkedin"
+            label="LinkedIn"
+            newTab
+          >
+            /in/kacperadler
+          </ContactLink>
+          <ContactLink
+            href={siteConfig.social.github}
+            icon="lucide:github"
+            label="GitHub"
+            newTab
+          >
+            /kacperadler
+          </ContactLink>
+        </CellGrid>
+      </div>
+    </div>
+
+    <div class="mb-about-experience">
+      <Accordion bordered type="multiple">
+        <AccordionItem title="Pełna lista doświadczeń">
+          <CellGrid min="300px" tag="ul">
+            {experience.map((item) => {
+              const logo = logoBySlug[item.id] as ImageMetadata;
+              const startYear = item.data.startDate.slice(0, 4);
+              const endYear = item.data.endDate?.slice(0, 4);
+              let metaLabel: string;
+              let metaFilled: boolean;
+              if (item.data.current) {
+                metaLabel = "teraz";
+                metaFilled = true;
+              } else if (item.data.badge) {
+                metaLabel = item.data.badge;
+                metaFilled = true;
+              } else {
+                metaLabel = `${startYear}–${endYear}`;
+                metaFilled = false;
+              }
+              const caseStudy = caseStudies.get(item.id);
+              return (
+                <Card size="sm" tag="li">
+                  <div class="mb-exp-head">
+                    <img
+                      alt={item.data.company}
+                      class="mb-exp-logo"
+                      height={logo.height}
+                      loading="lazy"
+                      src={logo.src}
+                      width={logo.width}
+                    >
+                    <Badge variant={metaFilled ? "default" : "outline"}>
+                      {metaLabel}
+                    </Badge>
+                  </div>
+                  <h3>{item.data.company}</h3>
+                  <p class="mb-exp-role">{item.data.role}</p>
+                  <p class="mb-exp-desc">{item.data.description}</p>
+                  {caseStudy && (
+                    <p class="mb-exp-case">
+                      <Link href={caseStudyPath(caseStudy)} variant="case">
+                        Zobacz realizację
+                        <span class="sr-only"> - {item.data.company}</span>
+                      </Link>
+                    </p>
+                  )}
+                </Card>
+              );
+            })}
+          </CellGrid>
+        </AccordionItem>
+      </Accordion>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mb-about {
+    margin-top: var(--v2-space-2xl);
+  }
+
+  .mb-about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    gap: var(--v2-space-xl);
+    align-items: start;
+  }
+
+  .mb-about-grid :global(.mb-about-photo) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-about-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+    min-width: 0;
+  }
+
+  .mb-about-text > p {
+    max-width: 62ch;
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  .mb-about-experience {
+    margin-top: var(--v2-space-lg);
+  }
+
+  .mb-about-experience :global(.mb-accordion-content) {
+    padding-top: 4px;
+  }
+
+  .mb-exp-head {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    margin-bottom: 12px;
+  }
+
+  .mb-exp-logo {
+    width: auto;
+    max-width: 140px;
+    max-height: 32px;
+    opacity: 0.6;
+    filter: grayscale(100%);
+    transition:
+      filter var(--mb-snap),
+      opacity var(--mb-snap);
+  }
+
+  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-exp-logo {
+    opacity: 1;
+    filter: grayscale(0%);
+  }
+
+  h3 {
+    margin: 0 0 4px;
+    font-family: var(--mb-display);
+    font-size: 18px;
+    font-weight: 750;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.035em;
+  }
+
+  .mb-exp-role {
+    margin: 0 0 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--blue);
+    letter-spacing: 0.02em;
+  }
+
+  .mb-exp-desc {
+    flex: 1;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .mb-exp-case {
+    margin: 16px 0 0;
+  }
+
+  @media (max-width: 880px) {
+    .mb-about {
+      margin-top: var(--v2-space-xl);
+    }
+
+    .mb-about-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--v2-space-lg);
+    }
+
+    .mb-about-grid :global(.mb-about-photo) {
+      max-width: 240px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-exp-logo {
+      transition: none;
+    }
+  }
+</style>

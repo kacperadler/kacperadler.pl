@@ -1,46 +1,61 @@
 ---
 import { getCollection } from "astro:content";
-import Badge from "../badge.astro";
+import { offerNotes } from "@/data/home";
+import Button from "../button.astro";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
 import SectionHead from "../section-head.astro";
 
-/* Services (#services): the services collection as a two-column cell
- * table (one column at 880px and below, an odd last cell spans the row).
- * The index is a mono figure that turns blue with its cell. */
-const services = (await getCollection("services")).sort(
+/* Offer (#services): the services collection's three steps as a
+ * three-column cell table (one column at 880px and below). Each step: its
+ * mono index (blue with its cell), title, a ruled list of who it is for,
+ * what the client gets and how long it takes, and a button to the contact
+ * form. The pricing note sits under the table. */
+const steps = (await getCollection("services")).sort(
   (a, b) => a.data.order - b.data.order
 );
 ---
 
 <section class="mb-services" id="services">
   <div class="container">
-    <SectionHead label="Usługi">
-      Obszary w&nbsp;których <em>działam</em>.
+    <SectionHead label="Oferta">
+      Od audytu do <em>stałej opieki</em>.
       <Fragment slot="lede">
-        Moje doświadczenie pozwala mi na pracę w wielu technologiach<br>i
-        projektach.
+        Zacznij od kroku, który pasuje do Ciebie dziś.
       </Fragment>
     </SectionHead>
 
-    <CellGrid columns={2}>
-      {services.map((service, idx) => (
+    <CellGrid columns={3}>
+      {steps.map((step, idx) => (
         <Card>
-          <span slot="title">{service.data.title}</span>
+          <span slot="title">{step.data.title}</span>
           <span aria-hidden="true" class="mb-service-num" slot="action">
             {String(idx + 1).padStart(2, "0")}
           </span>
-          <p class="mb-service-desc">{service.data.description}</p>
-          <ul class="mb-service-tags" slot="footer">
-            {service.data.tags.map((tag) => (
-              <li>
-                <Badge variant="tag">{tag}</Badge>
-              </li>
-            ))}
-          </ul>
+          <dl class="mb-service-facts">
+            <div class="mb-service-fact">
+              <dt>Dla kogo</dt>
+              <dd>{step.data.audience}</dd>
+            </div>
+            <div class="mb-service-fact">
+              <dt>Co dostajesz</dt>
+              <dd>{step.data.description}</dd>
+            </div>
+            <div class="mb-service-fact">
+              <dt>Czas</dt>
+              <dd>{step.data.duration}</dd>
+            </div>
+          </dl>
+          <Button href="#contact" iconEnd="lucide:arrow-right" slot="footer">
+            {step.data.cta}
+          </Button>
         </Card>
       ))}
     </CellGrid>
+
+    <div class="mb-services-note">
+      {offerNotes.map((note) => <p>{note}</p>)}
+    </div>
   </div>
 </section>
 
@@ -63,17 +78,57 @@ const services = (await getCollection("services")).sort(
     color: var(--blue);
   }
 
-  .mb-service-desc {
+  .mb-service-facts {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     margin: 0;
   }
 
-  .mb-service-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 0;
+  .mb-service-fact {
+    padding: 12px 0;
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-service-fact:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .mb-service-fact:last-child {
+    padding-bottom: 0;
+  }
+
+  .mb-service-fact dt {
+    margin: 0 0 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .mb-service-fact dd {
     margin: 0;
-    list-style: none;
+    color: var(--ink);
+  }
+
+  .mb-services-note {
+    max-width: 72ch;
+    margin-top: var(--v2-space-lg);
+  }
+
+  .mb-services-note p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .mb-services-note p + p {
+    margin-top: 8px;
+    font-weight: 500;
+    color: var(--ink);
   }
 
   @media (max-width: 880px) {
