@@ -202,9 +202,9 @@
   {
     "id": "KA0027",
     "title": "Leads stored in SQLite through one on-demand API route",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0027-leads-stored-in-sqlite-through-one-on-demand-api-route/ticket.md",
-    "updated": "2026-10-14T14:00:53.800Z"
+    "updated": "2026-10-14T14:55:13.436Z"
   },
   {
     "id": "KA0028",
@@ -436,9 +436,9 @@
   {
     "id": "KA0054",
     "title": "Patterns not yet in the catalogue",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
-    "updated": "2026-10-14T14:05:16.191Z"
+    "updated": "2026-10-14T14:38:54.387Z"
   },
   {
     "id": "KA0055",
@@ -584,9 +584,9 @@
   {
     "id": "KA0073",
     "title": "The OG image still draws the old design",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0073-the-og-image-still-draws-the-old-design/ticket.md",
-    "updated": "2026-10-14T14:05:19.359Z"
+    "updated": "2026-10-14T14:22:48.363Z"
   },
   {
     "id": "KA0074",
@@ -623,9 +623,9 @@
   {
     "id": "KA0078",
     "title": "Pagination jump needs a page that reads its query",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-14T13:33:33.821Z"
+    "updated": "2026-10-14T14:45:24.371Z"
   },
   {
     "id": "KA0079",
@@ -698,5 +698,19 @@
     "after": [
       "KA0027"
     ]
+  },
+  {
+    "id": "KA0088",
+    "title": "The \"move under no-preference\" motion test races the transitions it looks for",
+    "status": "planning",
+    "path": "spec/features/KA0088-the-move-under-no-preference-motion-test-races-the-transitions-it-looks-for/ticket.md",
+    "updated": "2026-10-14T14:38:54.384Z"
+  },
+  {
+    "id": "KA0089",
+    "title": "/api/lead has no rate limit: a script can fill the database and the inbox",
+    "status": "in-progress",
+    "path": "spec/features/KA0089-api-lead-has-no-rate-limit-a-script-can-fill-the-database-and-the-inbox/ticket.md",
+    "updated": "2026-10-14T17:29:34.138Z"
   }
 ]

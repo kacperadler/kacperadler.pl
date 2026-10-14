@@ -77,8 +77,8 @@ test.describe("axe-core a11y", () => {
         .withTags(WCAG)
         .analyze();
     };
-    await page.route("**/api/v1/db/public/shared-view/**/rows", (route) =>
-      route.fulfill({ body: "boom", status: 500 })
+    await page.route("**/api/lead", (route) =>
+      route.fulfill({ json: { error: "store" }, status: 500 })
     );
     await page.goto("/#contact");
     await page.waitForLoadState("networkidle");

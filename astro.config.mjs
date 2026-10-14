@@ -1,6 +1,7 @@
 // @ts-check
 import { fileURLToPath } from "node:url";
 import mdx from "@astrojs/mdx";
+import node from "@astrojs/node";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 import icon from "astro-icon";
@@ -56,6 +57,11 @@ const paginationFixture = {
 
 // https://astro.build/config
 export default defineConfig({
+  // The output stays static: every page is prerendered into dist/client/.
+  // The Node adapter (a standalone server in dist/server/) runs only the
+  // routes marked prerender = false - the lead store, src/pages/api/lead.ts.
+  adapter: node({ mode: "standalone" }),
+
   // Astro 7 defaults to 'jsx' whitespace rules, which drop the space between
   // inline elements written on separate lines (e.g. "Ostatnia aktualizacja:"
   // and its date). Keep the HTML-aware compression the templates are written for;
@@ -72,6 +78,9 @@ export default defineConfig({
     uiCatalogue,
     paginationFixture,
   ],
+
+  // The adapter would turn on file-backed sessions; nothing here uses them.
+  session: false,
   site: "https://kacperadler.pl",
 
   vite: {

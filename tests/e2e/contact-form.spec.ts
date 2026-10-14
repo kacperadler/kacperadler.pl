@@ -1,9 +1,39 @@
+import { existsSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
 import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
 const ANY_VALUE = /.*/;
-const NOCODB_FORM_URL = "**/api/v1/db/public/shared-view/**/rows";
-const MULTIPART_RX = /^multipart\/form-data/;
+const LEAD_API = "**/api/lead";
+
+interface SavedLead {
+  email: string;
+  message: string;
+  type: string;
+}
+
+// The preview's SQLite file (playwright.config.ts). Every test uses an e-mail
+// of its own, so the rows it finds are its own even when tests run at once.
+function savedLeads(email: string): SavedLead[] {
+  const path = process.env.E2E_LEADS_DB;
+  if (!path) {
+    throw new Error("E2E_LEADS_DB is not set (playwright.config.ts sets it)");
+  }
+  if (!existsSync(path)) {
+    return [];
+  }
+  const db = new DatabaseSync(path, { readOnly: true });
+  try {
+    return db
+      .prepare("SELECT email, type, message FROM leads WHERE email = ?")
+      .all(email) as unknown as SavedLead[];
+  } finally {
+    db.close();
+  }
+}
+
+const uniqueEmail = (name: string): string =>
+  `${name}-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`;
 
 interface TrackedEvent {
   data?: Record<string, unknown>;
@@ -121,41 +151,24 @@ test.describe("contact form", () => {
     ).not.toHaveAttribute("data-invalid", ANY_VALUE);
   });
 
-  test("valid submit hides the form and shows the success card", async ({
+  test("valid submit saves the lead and shows the success card", async ({
     page,
   }) => {
-    // Intercept the NocoDB POST so the test never hits the live
-    // shared-view endpoint, and capture the body to assert that the
-    // request goes out as multipart/form-data with a single "data"
-    // part whose value is a JSON string of the row fields - NocoDB
-    // rejects anything else.
-    let capturedBody = "";
-    let capturedContentType: string | null = null;
-    await page.route(NOCODB_FORM_URL, async (route) => {
-      capturedBody = route.request().postData() ?? "";
-      capturedContentType = route.request().headers()["content-type"] ?? null;
-      await route.fulfill({
-        body: '{"id":"test"}',
-        contentType: "application/json",
-        status: 200,
-      });
-    });
+    // No stub: the lead goes to the preview's /api/lead and its SQLite file.
+    const email = uniqueEmail("success");
+    const message = "Chciałbym wdrożyć agenta AI w firmie.";
 
     await stubUmami(page);
     await page.goto("/#contact");
     await page.waitForLoadState("networkidle");
 
-    await page.fill(
-      '[data-contact-form] input[name="email"]',
-      "kacper@example.com"
-    );
+    await page.fill('[data-contact-form] input[name="email"]', email);
     await pickType(page, "ai");
-    await page.fill(
-      '[data-contact-form] textarea[name="message"]',
-      "Chciałbym wdrożyć agenta AI w firmie."
-    );
+    await page.fill('[data-contact-form] textarea[name="message"]', message);
 
+    const sent = page.waitForRequest(LEAD_API);
     await page.click("[data-contact-form] [data-submit]");
+    const request = await sent;
 
     // Wrapper flips to success → form node is hidden, success card
     // (with its reset button) takes over.
@@ -173,13 +186,73 @@ test.describe("contact form", () => {
       { data: { type: "ai" }, name: "form-submit" },
     ]);
 
-    expect(capturedContentType).toMatch(MULTIPART_RX);
-    expect(capturedBody).toContain('name="data"');
-    expect(capturedBody).toContain('"Email":"kacper@example.com"');
-    expect(capturedBody).toContain('"Type":"ai"');
-    expect(capturedBody).toContain(
-      '"Message":"Chciałbym wdrożyć agenta AI w firmie."'
-    );
+    expect(request.method()).toBe("POST");
+    expect(request.headers()["content-type"]).toBe("application/json");
+    expect(request.postDataJSON()).toEqual({
+      email,
+      message,
+      type: "ai",
+      website: "",
+    });
+    expect(savedLeads(email)).toEqual([{ email, message, type: "ai" }]);
+  });
+
+  for (const { name, lead } of [
+    {
+      lead: { email: "not-an-email", message: "Treść", type: "ai" },
+      name: "a bad e-mail",
+    },
+    {
+      lead: { email: "", message: "Treść", type: "crm" },
+      name: "an unknown project type",
+    },
+    {
+      lead: { email: "", message: "x".repeat(5001), type: "ai" },
+      name: "a message over 5000 characters",
+    },
+    {
+      lead: { email: "", message: "   ", type: "ai" },
+      name: "a blank message",
+    },
+  ]) {
+    test(`the server turns away ${name} with 400 and saves nothing`, async ({
+      request,
+    }) => {
+      const email = lead.email || uniqueEmail("invalid");
+      const res = await request.post("/api/lead", {
+        data: { ...lead, email, website: "" },
+      });
+      expect(res.status()).toBe(400);
+      expect(savedLeads(email)).toEqual([]);
+    });
+  }
+
+  test("the server takes a message of exactly 5000 characters", async ({
+    request,
+  }) => {
+    const email = uniqueEmail("limit");
+    const message = "x".repeat(5000);
+    const res = await request.post("/api/lead", {
+      data: { email, message, type: "other", website: "" },
+    });
+    expect(res.status()).toBe(200);
+    expect(savedLeads(email)).toEqual([{ email, message, type: "other" }]);
+  });
+
+  test("the server answers a filled honeypot with 200 and saves nothing", async ({
+    request,
+  }) => {
+    const email = uniqueEmail("bot");
+    const res = await request.post("/api/lead", {
+      data: {
+        email,
+        message: "Buy our SEO services!",
+        type: "other",
+        website: "http://spam.example",
+      },
+    });
+    expect(res.status()).toBe(200);
+    expect(savedLeads(email)).toEqual([]);
   });
 
   test("AI i automatyzacje is the first project type, and the row wraps on mobile", async ({
@@ -222,8 +295,8 @@ test.describe("contact form", () => {
   test("reset button on success card brings the form back empty", async ({
     page,
   }) => {
-    await page.route(NOCODB_FORM_URL, (route) =>
-      route.fulfill({ body: "{}", status: 200 })
+    await page.route(LEAD_API, (route) =>
+      route.fulfill({ json: { ok: true }, status: 200 })
     );
 
     await page.goto("/#contact");
@@ -260,9 +333,9 @@ test.describe("contact form", () => {
     ).toHaveValue("");
   });
 
-  test("upstream failure shows the inline error banner", async ({ page }) => {
-    await page.route(NOCODB_FORM_URL, (route) =>
-      route.fulfill({ body: "boom", status: 500 })
+  test("server failure shows the inline error banner", async ({ page }) => {
+    await page.route(LEAD_API, (route) =>
+      route.fulfill({ json: { error: "store" }, status: 500 })
     );
 
     await stubUmami(page);
@@ -308,12 +381,12 @@ test.describe("contact form", () => {
   test("nothing in the form can be edited while it sends, and all of it comes back after", async ({
     page,
   }) => {
-    // Hold the NocoDB request until the disabled form has been checked.
+    // Hold the lead request until the disabled form has been checked.
     const { promise: held, resolve: release } = Promise.withResolvers<void>();
-    await page.route(NOCODB_FORM_URL, async (route) => {
+    await page.route(LEAD_API, async (route) => {
       await held;
       await route.fulfill({
-        body: JSON.stringify({ msg: "Something didn't work as expected." }),
+        body: JSON.stringify({ error: "store" }),
         contentType: "application/json",
         status: 500,
       });
@@ -382,10 +455,10 @@ test.describe("contact form", () => {
   test("honeypot fill silently drops the request and shows success", async ({
     page,
   }) => {
-    let nocodbHit = false;
-    await page.route(NOCODB_FORM_URL, async (route) => {
-      nocodbHit = true;
-      await route.fulfill({ body: "{}", status: 200 });
+    let leadSent = false;
+    await page.route(LEAD_API, async (route) => {
+      leadSent = true;
+      await route.fulfill({ json: { ok: true }, status: 200 });
     });
 
     await stubUmami(page);
@@ -416,7 +489,7 @@ test.describe("contact form", () => {
 
     // The submit handler must short-circuit before fetch - otherwise
     // bots learn that filling the honeypot still works.
-    expect(nocodbHit).toBe(false);
+    expect(leadSent).toBe(false);
 
     // form-honeypot event lets the Umami dashboard show how much bot
     // traffic is hitting the form without inflating form-submit.

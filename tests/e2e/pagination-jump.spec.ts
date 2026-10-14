@@ -5,13 +5,17 @@ import { expect, type Page, test } from "@playwright/test";
 
 // A prerendered page never sees its query, so on the static build the
 // pagination "go to page" form (<list>/?strona=<n>) only reaches page n
-// through the redirect in nginx.conf. These specs serve the e2e build
-// (dist/, with the /lista/ fixture of 12 pages, see astro.config.mjs) from
-// the production nginx image and config, in Docker.
+// through the redirect in nginx.conf. These specs serve the e2e build's
+// pages (dist/client/, with the /lista/ fixture of 12 pages, see
+// astro.config.mjs) from the production nginx image and config, in Docker.
+// Only nginx runs: the pages need no Node server.
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const SERVE_IMAGE = /^FROM\s+(nginx:\S+)\s+AS\s+serve$/m.exec(
   readFileSync(`${ROOT}Dockerfile`, "utf8")
+)?.[1];
+const WEB_ROOT = /^\s*root\s+(\S+);$/m.exec(
+  readFileSync(`${ROOT}nginx.conf`, "utf8")
 )?.[1];
 const CONTAINER = `kacperadler-pagination-jump-${process.pid}`;
 
@@ -28,6 +32,9 @@ test.beforeAll(async () => {
   if (!SERVE_IMAGE) {
     throw new Error("no `FROM nginx:<tag> AS serve` stage in the Dockerfile");
   }
+  if (!WEB_ROOT) {
+    throw new Error("no `root <path>;` in nginx.conf");
+  }
   docker(
     "run",
     "--detach",
@@ -39,7 +46,7 @@ test.beforeAll(async () => {
     "--volume",
     `${ROOT}nginx.conf:/etc/nginx/conf.d/default.conf:ro`,
     "--volume",
-    `${ROOT}dist:/usr/share/nginx/html:ro`,
+    `${ROOT}dist/client:${WEB_ROOT}:ro`,
     SERVE_IMAGE
   );
   // "127.0.0.1:49153"

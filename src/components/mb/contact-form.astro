@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import { projectTypes } from "@/lib/lead";
 import Alert from "./alert.astro";
 import Button from "./button.astro";
 import Field from "./field.astro";
@@ -44,15 +45,6 @@ const {
   idPrefix = "contact",
   state = "idle",
 } = Astro.props;
-
-const projectTypes = [
-  { label: "AI i automatyzacje", value: "ai" },
-  { label: "Aplikacja webowa", value: "webapp" },
-  { label: "Landing page", value: "landing" },
-  { label: "Aplikacja mobilna", value: "mobile" },
-  { label: "Narzędzie wewn.", value: "tool" },
-  { label: "Inne", value: "other" },
-] as const;
 
 const invalid = state === "error-validation";
 const submitting = state === "submitting";

@@ -51,3 +51,4 @@ Out:
 - 2026-10-14: Plan approved by the human: plan.md at 3c350cf
 - 2026-10-14: The human confirmed Resend as the e-mail provider (HTTP API with fetch).
 - 2026-10-14: The human: build it modular: a standalone e-mail function that takes its inputs as parameters, reusable beyond leads; the route only wires modules together.
+- 2026-10-14: The human said merge; from now on nothing in the KA project is pushed to the remote until he says so (the Dokploy volume and env vars come first).

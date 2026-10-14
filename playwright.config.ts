@@ -1,4 +1,7 @@
+import { mkdtempSync } from "node:fs";
 import { createServer } from "node:net";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { defineConfig, devices } from "@playwright/test";
 
 // Non-default port so the preview can run alongside `bun dev` (which holds 4321).
@@ -42,6 +45,15 @@ const DEV_PORT = process.env.E2E_DEV_PORT
   : await freePort(0);
 process.env.E2E_DEV_PORT = String(DEV_PORT);
 
+// The preview's lead store (/api/lead): a fresh SQLite file per run unless
+// E2E_LEADS_DB names one, passed to the workers the same way, so a spec can
+// read back the lead it sent. RESEND_API_KEY is emptied so a key in the shell
+// never sends a real e-mail from the run.
+const LEADS_DB =
+  process.env.E2E_LEADS_DB ??
+  join(mkdtempSync(join(tmpdir(), "kacperadler-e2e-")), "leads.sqlite");
+process.env.E2E_LEADS_DB = LEADS_DB;
+
 export default defineConfig({
   forbidOnly: !!process.env.CI,
   fullyParallel: true,
@@ -81,7 +93,7 @@ export default defineConfig({
   webServer: [
     {
       command: `E2E_FIXTURES=none bun run build -- --outDir dist-no-case-studies && bun run build && bun run preview -- --port ${PORT} --ignore-lock`,
-      env: { E2E_FIXTURES: "1" },
+      env: { E2E_FIXTURES: "1", LEADS_DB_PATH: LEADS_DB, RESEND_API_KEY: "" },
       reuseExistingServer: false,
       stderr: "pipe",
       stdout: "ignore",
