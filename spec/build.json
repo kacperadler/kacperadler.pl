@@ -202,9 +202,9 @@
   {
     "id": "KA0027",
     "title": "Leads stored in SQLite through one on-demand API route",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0027-leads-stored-in-sqlite-through-one-on-demand-api-route/ticket.md",
-    "updated": "2026-10-14T14:00:53.800Z"
+    "updated": "2026-10-14T14:24:04.939Z"
   },
   {
     "id": "KA0028",
@@ -436,9 +436,9 @@
   {
     "id": "KA0054",
     "title": "Patterns not yet in the catalogue",
-    "status": "done",
+    "status": "review",
     "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
-    "updated": "2026-10-14T14:12:12.501Z"
+    "updated": "2026-10-14T14:28:34.729Z"
   },
   {
     "id": "KA0055",
