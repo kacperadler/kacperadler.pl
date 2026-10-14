@@ -10,16 +10,16 @@
  * disabled, so nothing can be edited until the request settles; any
  * other state enables them again.
  *
- * Submit flow: validate client-side, drop silently if the honeypot
- * is filled, then POST the payload to NocoDB's public shared form
- * view as multipart/form-data with a single "data" part holding the
- * row JSON. NocoDB column names are PascalCase (Email/Type/Message).
+ * Submit flow: validate client-side with lib/lead.ts's checkLead (the
+ * same rules the server applies), drop silently if the honeypot is
+ * filled, then POST the payload as JSON to /api/lead, which saves it in
+ * SQLite. Any answer other than 2xx, or no answer, is "error-submit".
  *
  * Listeners are document-delegated so they survive ClientRouter
  * swaps. astro:page-load resets the wrapper to "idle" so navigating
  * back to the page never lands on a stale success/error view. */
 
-import { siteConfig } from "@/data/site-config";
+import { checkLead, type Lead } from "@/lib/lead";
 
 declare global {
   interface Window {
@@ -41,15 +41,6 @@ type WrapState =
 // by the tracker itself. All those cases are fine - just no-op.
 function trackEvent(name: string, data?: Record<string, unknown>): void {
   window.umami?.track(name, data);
-}
-
-const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MAX_MESSAGE_LENGTH = 5000;
-
-interface ContactPayload {
-  email: string;
-  message: string;
-  type: string;
 }
 
 function getWrap(form: HTMLFormElement): HTMLElement | null {
@@ -93,7 +84,7 @@ function setFieldInvalid(
   }
 }
 
-function readPayload(form: HTMLFormElement): ContactPayload {
+function readPayload(form: HTMLFormElement): Lead {
   const data = new FormData(form);
   return {
     email: String(data.get("email") ?? "").trim(),
@@ -102,17 +93,12 @@ function readPayload(form: HTMLFormElement): ContactPayload {
   };
 }
 
-function validate(form: HTMLFormElement, payload: ContactPayload): boolean {
-  const emailOk = EMAIL_RX.test(payload.email);
-  const typeOk = payload.type.length > 0;
-  const messageOk =
-    payload.message.length > 0 && payload.message.length <= MAX_MESSAGE_LENGTH;
-
-  setFieldInvalid(form, "email", !emailOk);
-  setFieldInvalid(form, "type", !typeOk);
-  setFieldInvalid(form, "message", !messageOk);
-
-  return emailOk && typeOk && messageOk;
+function validate(form: HTMLFormElement, payload: Lead): boolean {
+  const check = checkLead(payload);
+  setFieldInvalid(form, "email", !check.email);
+  setFieldInvalid(form, "type", !check.type);
+  setFieldInvalid(form, "message", !check.message);
+  return check.ok;
 }
 
 function isHoneypotTripped(form: HTMLFormElement): boolean {
@@ -120,26 +106,11 @@ function isHoneypotTripped(form: HTMLFormElement): boolean {
   return String(data.get("website") ?? "").trim().length > 0;
 }
 
-async function submitToNocodb(payload: ContactPayload): Promise<boolean> {
-  // NocoDB's public shared-view rows endpoint requires
-  // multipart/form-data with a single part named "data" whose value
-  // is a JSON string of the row fields - not separate parts per
-  // column, not raw JSON. Both alternatives return "Something didn't
-  // work as expected." (Inspected from a working UI submission in
-  // DevTools.)
-  const body = new FormData();
-  body.append(
-    "data",
-    JSON.stringify({
-      Email: payload.email,
-      Message: payload.message,
-      Type: payload.type,
-    })
-  );
-
+async function submitLead(payload: Lead): Promise<boolean> {
   try {
-    const res = await fetch(siteConfig.nocodbFormUrl, {
-      body,
+    const res = await fetch("/api/lead", {
+      body: JSON.stringify({ ...payload, website: "" }),
+      headers: { "content-type": "application/json" },
       method: "POST",
     });
     return res.ok;
@@ -194,10 +165,10 @@ document.addEventListener(
 
     setState(form, "submitting");
 
-    submitToNocodb(payload).then((ok) => {
+    submitLead(payload).then((ok) => {
       setState(form, ok ? "success" : "error-submit");
       // Type goes to Umami so the dashboard can break submissions down
-      // by project category. NocoDB still has the full record.
+      // by project category. The lead store has the full record.
       trackEvent(ok ? "form-submit" : "form-error", { type: payload.type });
     });
   },
