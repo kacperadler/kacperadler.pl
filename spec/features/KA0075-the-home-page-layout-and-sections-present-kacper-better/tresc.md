@@ -7,7 +7,7 @@ Teksty do wdrożenia 1:1. Miejsca oznaczone [DO UZUPEŁNIENIA] zostawić jako wi
 ## Meta / SEO
 
 - **Title:** Wdrożenia AI i automatyzacje dla firm | Kacper Adler
-- **Description:** Automatyzuję ręczną pracę w firmach z pomocą AI: agenci, integracje, narzędzia wewnętrzne. Audyt, wdrożenie i stała opieka, bez zatrudniania działu IT.
+- **Description:** Automatyzuję ręczną pracę w firmach: agenci AI, integracje i aplikacje szyte na miarę. Audyt, wdrożenie i stała opieka, bez zatrudniania działu IT.
 - **OG title:** Kacper Adler: AI Engineer · Partner technologiczny
 - **OG description:** jak Description
 
@@ -23,7 +23,7 @@ Oferta · Realizacje · Proces · O mnie · FAQ · **Umów rozmowę**
 
 **H1:** Mniej ręcznej roboty. Więcej czasu na biznes.
 
-**Podtytuł:** Wdrożenia AI i automatyzacji dla firm. Znajduję procesy, które zjadają czas Twojego zespołu, i zamieniam je w działające systemy. Bez zatrudniania działu IT.
+**Podtytuł:** Wdrożenia AI, automatyzacje i aplikacje szyte na miarę dla firm. Znajduję procesy, które zjadają czas Twojego zespołu, i zamieniam je w działające systemy. Bez zatrudniania działu IT.
 
 **CTA główne:** Umów bezpłatną rozmowę (30 min)
 **CTA drugie:** Zobacz, co mogę zautomatyzować
@@ -80,8 +80,8 @@ Oferta · Realizacje · Proces · O mnie · FAQ · **Umów rozmowę**
 4. **Raporty i dashboardy**
    Dane z wielu źródeł w jednym miejscu, aktualne na bieżąco. Raport, który składał się godzinę, jest gotowy, zanim o niego poprosisz.
 
-5. **Narzędzia wewnętrzne**
-   Panele, CRM-y i aplikacje (web i mobile) szyte pod Twój proces, a nie odwrotnie.
+5. **Aplikacje szyte na miarę**
+   Gotowe programy nie pasują do Twojego procesu? Buduję aplikacje webowe i mobilne, CRM-y i panele dokładnie pod to, jak pracuje Twoja firma. Z AI tam, gdzie pomaga, bez AI tam, gdzie nie jest potrzebne.
 
 ---
 
@@ -99,7 +99,7 @@ Oferta · Realizacje · Proces · O mnie · FAQ · **Umów rozmowę**
 
 ### 02 Wdrożenie
 **Dla kogo:** Wiesz, co chcesz zautomatyzować.
-**Co dostajesz:** Działający system: agenta AI, automatyzację, integrację albo narzędzie wewnętrzne. Wdrażam etapami, więc efekt widzisz od pierwszych tygodni.
+**Co dostajesz:** Działający system: agenta AI, automatyzację, integrację albo aplikację szytą na miarę (web lub mobile). Wdrażam etapami, więc efekt widzisz od pierwszych tygodni.
 **Czas:** od 2 tygodni
 **CTA:** Wyceń projekt
 
@@ -196,6 +196,9 @@ To zależy od zakresu. Wycenę dostajesz w 2–3 dni po bezpłatnej rozmowie, be
 **Co z bezpieczeństwem danych?**
 Projektuję rozwiązania zgodnie z RODO. Ustalamy razem, gdzie trzymane są dane i które modele AI mogą je przetwarzać. Tam, gdzie to konieczne, korzystam z dostawców z umową powierzenia danych.
 
+**Czy zajmujesz się tylko AI?**
+Nie. AI to narzędzie, nie cel. Buduję też aplikacje webowe i mobilne, systemy wewnętrzne i integracje dopasowane do potrzeb firmy. Dobieram rozwiązanie do problemu, a nie problem do modnej technologii.
+
 **Nie znam się na technologii. Czy to problem?**
 Nie. To moja robota. Ty znasz swój biznes, ja zamieniam to na działający system.
 
@@ -238,7 +241,7 @@ Przyjmuję 1–2 projekty jednocześnie, żeby każdy dostał pełną uwagę.
 
 ## Stopka
 
-**Opis:** Kacper Adler · AI Engineer · Partner technologiczny. Wdrożenia AI i automatyzacje dla firm.
+**Opis:** Kacper Adler · AI Engineer · Partner technologiczny. Wdrożenia AI, automatyzacje i aplikacje szyte na miarę.
 
 **Informacje:** Polityka prywatności · Regulamin
 **Kontakt:** Email · LinkedIn · GitHub
