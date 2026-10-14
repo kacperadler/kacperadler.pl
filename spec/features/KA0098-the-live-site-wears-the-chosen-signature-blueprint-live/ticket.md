@@ -20,6 +20,7 @@ The human chose and approved the blueprint-live signature (KA0081, 2026-10-11: t
 A client who opens kacperadler.pl sees the engineer's drawing being made as they scroll, the look the human chose so the site reads as his and not a template.
 
 - Kind: improvement
+- Model: opus
 
 ## Done means
 
@@ -40,3 +41,4 @@ Out:
 
 - 2026-10-14: The human asked whether the chosen UI is part of the redesign; it was not in KA0075. This ticket carries it, after KA0075.
 - 2026-10-14: The human approved the ticket and confirmed blueprint-live.
+- 2026-10-14: The human: this design update runs on Opus (anthropic/claude-opus-5-5); it matters.
