@@ -47,3 +47,5 @@ Out:
 - 2026-10-14: The human sent the brief (`brief.md`); the redesign follows it. KA0051 folds in here. Facts still missing get their own tickets and do not appear on the page as placeholders.
 - 2026-10-14: The human approved the ticket. Audit cost credited against the implementation: not decided yet, leave that line out of the copy.
 - 2026-10-14: The human: the audit cost is credited against the implementation; the offer says so ("Koszt audytu odliczam od wdrożenia.").
+- 2026-10-14: FAQ data security: AI through the API or business plans that do not train on client data; no DPA promise, no on-premise promise. The company field (KA0096) and the free-month row (KA0097) are their own tickets. Claude Code and Codex training stay in the vision; the page follows the brief.
+- 2026-10-14: Plan approved by the human: plan.md at c9517fa
