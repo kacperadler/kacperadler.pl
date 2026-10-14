@@ -48,3 +48,4 @@ Out:
 - 2026-10-14: The human: the panel is a separate ticket (KA0087), not part of KA0027.
 - 2026-10-14: The human chose node:sqlite (the plan's Option 1) and the e-mail without visitor data (lead number and project type only; privacy policy unchanged).
 - 2026-10-14: Plan approved by the human: plan.md at 3c350cf
+- 2026-10-14: The human confirmed Resend as the e-mail provider (HTTP API with fetch).

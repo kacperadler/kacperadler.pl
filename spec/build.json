@@ -436,9 +436,9 @@
   {
     "id": "KA0054",
     "title": "Patterns not yet in the catalogue",
-    "status": "review",
+    "status": "in-progress",
     "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
-    "updated": "2026-10-14T13:54:17.519Z"
+    "updated": "2026-10-14T13:55:43.417Z"
   },
   {
     "id": "KA0055",
