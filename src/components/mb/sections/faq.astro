@@ -42,5 +42,16 @@ const columns = [faq.slice(0, half), faq.slice(half)];
     .mb-faq {
       margin-top: var(--v2-space-xl);
     }
+
+    /* Stacked, the halves read as one list: the rule they share is the
+     * hairline between its items, not the frame's ink (drawn once, by the
+     * first half). */
+    .mb-faq :global(.mb-accordion:first-child) {
+      border-bottom-color: var(--mb-hair);
+    }
+
+    .mb-faq :global(.mb-accordion + .mb-accordion) {
+      border-top-color: transparent;
+    }
   }
 </style>

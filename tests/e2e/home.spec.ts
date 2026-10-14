@@ -318,6 +318,17 @@ test.describe("home page", () => {
         expect(row.y).toBeGreaterThan((narrow[i - 1] as typeof row).y);
       }
     }
+    // One list: between the halves runs the same hairline as between the
+    // questions, drawn once, not the frames' ink.
+    const hair = await page
+      .locator("#faq details")
+      .first()
+      .evaluate((el) => getComputedStyle(el).borderBottomColor);
+    await expect(frames.first()).toHaveCSS("border-bottom-color", hair);
+    await expect(frames.last()).toHaveCSS(
+      "border-top-color",
+      "rgba(0, 0, 0, 0)"
+    );
   });
 
   test("the contact sheet fills the width, the email and the project type side by side on the desktop", async ({
