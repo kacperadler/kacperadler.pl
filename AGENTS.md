@@ -110,7 +110,7 @@ src/
 ├── lib/                   # seo, case-studies, proposals
 └── assets/                # me.jpg (OG), fonts/ (Geist TTF + OFL dla OG), experience/ logotypy, logotyp_fundusze_eu.png
 
-tests/e2e/       # Playwright specs (a11y, case-studies, contact-form, design, favicon, mobile-sheet, nav-active, og-image, services-grid, services-order, skip-link; ui-catalogue i ui-proposals na dev serverze)
+tests/e2e/       # Playwright specs (a11y, case-studies, check-input, contact-form, design, favicon, mobile-sheet, nav-active, og-image, services-grid, services-order, skip-link; ui-catalogue i ui-proposals na dev serverze; check-input pilnuje, że `astro check` nie czyta folderów z runu e2e)
 tests/fixtures/  # case studies dla buildów e2e: przykładowy i pusty
 spec/            # vision.md + tickets (spec/features/<id>/)
 .agents/harness/ # kryteria review / audit / retro + styleguide

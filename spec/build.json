@@ -202,9 +202,9 @@
   {
     "id": "KA0027",
     "title": "Leads stored in SQLite through one on-demand API route",
-    "status": "planning",
+    "status": "in-progress",
     "path": "spec/features/KA0027-leads-stored-in-sqlite-through-one-on-demand-api-route/ticket.md",
-    "updated": "2026-10-10T14:31:31.738Z"
+    "updated": "2026-10-14T14:00:53.800Z"
   },
   {
     "id": "KA0028",
@@ -429,16 +429,16 @@
   {
     "id": "KA0053",
     "title": "The site's .prose and the ported .prose are two typography sources",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0053-the-site-s-prose-and-the-ported-prose-are-two-typography-sources/ticket.md",
-    "updated": "2026-10-10T16:32:42.751Z"
+    "updated": "2026-10-14T13:29:05.420Z"
   },
   {
     "id": "KA0054",
     "title": "Patterns not yet in the catalogue",
-    "status": "planning",
+    "status": "review",
     "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
-    "updated": "2026-10-10T16:32:42.753Z"
+    "updated": "2026-10-14T14:05:16.191Z"
   },
   {
     "id": "KA0055",
@@ -492,16 +492,16 @@
   {
     "id": "KA0062",
     "title": "The send-error banner splits its sentence into flex columns",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0062-the-send-error-banner-splits-its-sentence-into-flex-columns/ticket.md",
-    "updated": "2026-10-10T17:32:50.729Z"
+    "updated": "2026-10-14T13:29:05.627Z"
   },
   {
     "id": "KA0063",
     "title": "The header brand wraps to two lines on a 390px phone",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0063-the-header-brand-wraps-to-two-lines-on-a-390px-phone/ticket.md",
-    "updated": "2026-10-10T17:32:50.732Z"
+    "updated": "2026-10-14T13:29:05.835Z"
   },
   {
     "id": "KA0064",
@@ -584,16 +584,16 @@
   {
     "id": "KA0073",
     "title": "The OG image still draws the old design",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0073-the-og-image-still-draws-the-old-design/ticket.md",
-    "updated": "2026-10-14T13:26:07.966Z"
+    "updated": "2026-10-14T14:05:19.359Z"
   },
   {
     "id": "KA0074",
     "title": "`bun run check` reads the Playwright HTML report when `CI` is set",
-    "status": "planning",
+    "status": "merged",
     "path": "spec/features/KA0074-bun-run-check-reads-the-playwright-html-report-when-ci-is-set/ticket.md",
-    "updated": "2026-10-10T20:20:42.314Z"
+    "updated": "2026-10-14T14:07:55.437Z"
   },
   {
     "id": "KA0075",
@@ -623,9 +623,9 @@
   {
     "id": "KA0078",
     "title": "Pagination jump needs a page that reads its query",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-10T21:02:47.675Z"
+    "updated": "2026-10-14T13:33:33.821Z"
   },
   {
     "id": "KA0079",
@@ -685,8 +685,18 @@
   {
     "id": "KA0086",
     "title": "Under reduced motion every restyle lags one frame on every page",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0086-under-reduced-motion-every-restyle-lags-one-frame-on-every-page/ticket.md",
-    "updated": "2026-10-14T13:23:51.617Z"
+    "updated": "2026-10-14T14:03:35.105Z"
+  },
+  {
+    "id": "KA0087",
+    "title": "A small password-protected panel to read and export the leads",
+    "status": "planning",
+    "path": "spec/features/KA0087-a-small-password-protected-panel-to-read-and-export-the-leads/ticket.md",
+    "updated": "2026-10-14T13:36:40.331Z",
+    "after": [
+      "KA0027"
+    ]
   }
 ]

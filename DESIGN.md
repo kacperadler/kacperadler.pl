@@ -196,7 +196,7 @@ Idle: a `muted` frame. Hover: an `ink-2` frame. Focus: an `ink` frame and the ha
 - Press (`:active`) puts a button's face down onto its layer in 0.08s, so no white shows and a quick double click reads as two clean presses; the `case` and sheet arrows nudge further. Everything else answers a press in fill or colour - a step darker, or an ink block on a link badge.
 - Focus: the ring (`global.css`, 2px `blue`) grows out of the element's edge to its offset instead of popping in; fields shift their hard `blue` shadow out.
 - No always-on motion: no ambient background, no pulsing dots. The spinner turns only while a form is being sent.
-- `prefers-reduced-motion: reduce` collapses every transition and animation (`global.css`) and stops the spinner; each animated component has its own reduced-motion block, so hover, press, focus and opening all snap. A button's face then never moves: hover only fills, press hides the layer and takes the darker press fill. The mobile sheet sets `transition-property: none` on its children there, so focus reaches the close button the moment it opens.
+- `prefers-reduced-motion: reduce` turns every transition off and collapses every animation (`global.css`) and stops the spinner; each animated component has its own reduced-motion block too, so hover, press, focus and opening all snap. Transitions go off rather than get shorter: a short duration would turn on the default `all` on every element, and a resize or a media query would show the old style for a frame. A button's face then never moves: hover only fills, press hides the layer and takes the darker press fill.
 
 ## Do's and Don'ts
 

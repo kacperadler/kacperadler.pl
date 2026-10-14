@@ -14,7 +14,7 @@ the "go to page" field is a GET form that sends `<action>?<param>=<n>`. A preren
 
 ## Goal
 
-What we are after, what it moves in `spec/vision.md`, and the evidence (file:line, a command and its output). A mechanical, fully specified change (a rename, a moved section, a list of exact edits) adds `- Model: haiku` under Kind; anything with behaviour to judge has no Model line.
+The pagination "go to page" field lands on the page asked for on the static production build, not on page 1, so it works once paginated pages (blog) exist.
 
 - Kind: risk
 
@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F1 of KA0071
+- 2026-10-14: The human approved the ticket.

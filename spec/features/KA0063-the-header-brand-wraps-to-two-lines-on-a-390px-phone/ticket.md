@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F2 of KA0043
+- 2026-10-14: Read-only check: already fixed; brand.astro:33 nowrap, one line at 390 and 360px on / and every proposal. Dropped.

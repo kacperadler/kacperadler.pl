@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F1 of KA0043
+- 2026-10-14: Read-only check: already fixed; the error is an Alert (contact-form.astro:137-140), sentence on one line at 390 and 1440px. Dropped.

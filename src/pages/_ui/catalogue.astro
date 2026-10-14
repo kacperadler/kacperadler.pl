@@ -1486,10 +1486,6 @@ console.log(greeting);</code></pre>
     letter-spacing: 0.14em;
   }
 
-  /* The size follows the viewport, so a resize restyles it, and under
-   * reduced motion global.css makes that a 0.01ms transition: the first
-   * frame at 360px still has the wide size. A word too long for the line
-   * breaks instead of pushing the page sideways. */
   .mb-ui-title {
     margin: 0 0 16px;
     font-family: var(--mb-display);
@@ -1497,7 +1493,6 @@ console.log(greeting);</code></pre>
     font-weight: 800;
     line-height: 1.02;
     letter-spacing: -0.045em;
-    overflow-wrap: break-word;
   }
 
   .mb-ui-lede,

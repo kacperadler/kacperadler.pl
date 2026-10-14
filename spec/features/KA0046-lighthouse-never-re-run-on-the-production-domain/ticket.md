@@ -36,3 +36,4 @@ In:
 
 - 2026-10-10: Source: F1 of KA0025
 - 2026-10-10: Waits until after the redesign; it measures the live site, which the redesign changes.
+- 2026-10-14: The human: skip for now.
