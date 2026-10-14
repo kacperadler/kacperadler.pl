@@ -30,12 +30,13 @@ In a grid of cards the bar follows the hand: it enters from the side the cursor 
 - A catalogue entry in `/ui` with a 3-card grid.
 - Secondary button (`button.astro`): hover adds no border (light frame); the face looks as at idle, only lifted, as KA0083 has it. Today it does (`secondary-hover-border.jpg` in this folder: idle vs hover). Playwright test: border colour/width the same at idle and hover.
 - Playwright tests: entering from the right starts the bar on the right; leaving to the left ends it on the left; left-to-right unchanged; focus keeps left-to-right.
+- Required fields: the `*` after the label (`.mb-field-required` in `src/components/mb/field.astro`, today `var(--blue)`) uses the danger colour token, everywhere `Field` is `required` (`required-asterisk.jpg` in this folder). Playwright test: the asterisk's colour equals the danger token.
 - `bun run check` and `bun run test` pass.
 
 ## Scope
 
 In:
-- `src/components/mb/card.astro`, the secondary variant's hover in `src/components/mb/button.astro`, the `/ui` catalogue, tests.
+- `src/components/mb/card.astro`, the secondary variant's hover in `src/components/mb/button.astro`, the required marker colour in `src/components/mb/field.astro`, the `/ui` catalogue, tests.
 
 Out:
 - Anything else in KA0083.
@@ -47,3 +48,4 @@ Out:
 - 2026-10-14: The human likes the slight delay of the bar moving left to right; keep it in both directions (`hover-left-to-right.mp4`).
 - 2026-10-14: The human approved the ticket.
 - 2026-10-14: The human added: the Secondary button must not get a border on hover (`secondary-hover-border.jpg`).
+- 2026-10-14: The human added: the required `*` marker takes the danger colour (`required-asterisk.jpg`).
