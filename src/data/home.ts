@@ -128,6 +128,6 @@ export const faq: readonly FaqItem[] = [
   {
     answer:
       "Przyjmuję 1–2 projekty jednocześnie, żeby każdy dostał pełną uwagę.",
-    question: "Ile masz dostępności?",
+    question: "Ile projektów prowadzisz jednocześnie?",
   },
 ];
