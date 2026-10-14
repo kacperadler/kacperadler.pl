@@ -89,13 +89,16 @@ button {
   margin: 0 auto;
 }
 
+/* Reduced motion: no transitions at all. A short duration instead would
+ * turn on the default `all` on every element, so a resize or a media query
+ * would show the old style for a frame. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-property: none !important;
     scroll-behavior: auto !important;
   }
 }

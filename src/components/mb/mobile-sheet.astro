@@ -186,15 +186,12 @@ const closeHook = preview ? {} : { "data-menu-close": true };
     margin-top: auto;
   }
 
-  /* Under reduced motion global.css gives every element a 0.01ms
-   * transition of `all`, so the children would fade their inherited
-   * visibility in too and still be hidden when scripts/mobile-sheet.ts
-   * focuses the close button. Nothing in the sheet transitions here. */
   @media (prefers-reduced-motion: reduce) {
     .mb-sheet,
     .mb-sheet[data-mobile-sheet="open"],
-    .mb-sheet :global(*) {
-      transition-property: none;
+    .mb-sheet-link,
+    .mb-sheet-link :global(.mb-sheet-arrow) {
+      transition: none;
     }
   }
 </style>
