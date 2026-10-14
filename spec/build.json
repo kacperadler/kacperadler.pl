@@ -716,16 +716,16 @@
   {
     "id": "KA0090",
     "title": "A blueprint-live proposal spec fails under the full parallel run",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0090-a-blueprint-live-proposal-spec-fails-under-the-full-parallel-run/ticket.md",
-    "updated": "2026-10-14T18:04:24.455Z"
+    "updated": "2026-10-14T18:09:11.711Z"
   },
   {
     "id": "KA0091",
     "title": "A commit (`astro check`) in the worktree during e2e coincided with a dev-server page navigation",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0091-a-commit-astro-check-in-the-worktree-during-e2e-coincided-with-a-dev-server-page-navigation/ticket.md",
-    "updated": "2026-10-14T18:08:24.997Z"
+    "updated": "2026-10-14T18:17:11.083Z"
   },
   {
     "id": "KA0092",
