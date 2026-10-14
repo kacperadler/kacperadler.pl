@@ -14,13 +14,16 @@ import Button from "./button.astro";
  *
  * `jump` adds "go to page": a GET form (no JavaScript) with a number field
  * (1 to `total`, the browser refuses anything else) and an "Idź" button. It
- * sends `<jump.action>?<jump.param>=<n>`, so the page behind `action` has
- * to read that parameter: give `href` the same query, and pages that read
- * it on request (an on-demand route, the dev-only catalogue). */
+ * sends `<jump>?strona=<n>`. On the static build `jump` is the list's first
+ * page (`/blog/`) and `href` builds Astro's paginate() paths (`/blog/`,
+ * `/blog/<n>/`): nginx.conf redirects `<list>/?strona=<n>` to the path page,
+ * since a prerendered page never sees its query, for the lists it names
+ * (/blog/, /realizacje/) - a new paginated list goes into its map. A page
+ * rendered on request (the dev-only catalogue) reads `strona` itself. */
 interface Props {
   current: number;
   href: (page: number) => string;
-  jump?: { action: string; param: string };
+  jump?: string;
   total: number;
   variant?: "numbers" | "icons";
 }
@@ -132,7 +135,7 @@ const [previousEnd, nextEnd] = ends;
     </li>
   </ul>
   {jump && (
-    <form action={jump.action} class="mb-page-jump" method="get">
+    <form action={jump} class="mb-page-jump" method="get">
       <label class="mb-page-jump-label">
         Strona
         <input
@@ -140,7 +143,7 @@ const [previousEnd, nextEnd] = ends;
           inputmode="numeric"
           max={total}
           min="1"
-          name={jump.param}
+          name="strona"
           required
           type="number"
         >

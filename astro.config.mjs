@@ -37,6 +37,24 @@ const uiCatalogue = {
   name: "ui-catalogue",
 };
 
+/* The e2e build (E2E_FIXTURES=1, playwright.config.ts) gets a paginated
+ * list at /lista/ with the pagination "go to page" field, which
+ * pagination-jump.spec.ts serves through nginx.conf. No other build has it. */
+/** @type {import("astro").AstroIntegration} */
+const paginationFixture = {
+  hooks: {
+    "astro:config:setup": ({ injectRoute }) => {
+      if (process.env.E2E_FIXTURES === "1") {
+        injectRoute({
+          entrypoint: "./tests/fixtures/pagination/list.astro",
+          pattern: "/lista/[...page]",
+        });
+      }
+    },
+  },
+  name: "pagination-fixture",
+};
+
 // https://astro.build/config
 export default defineConfig({
   // The output stays static: every page is prerendered into dist/client/.
@@ -58,6 +76,7 @@ export default defineConfig({
     sitemap(),
     mdx(),
     uiCatalogue,
+    paginationFixture,
   ],
 
   // The adapter would turn on file-backed sessions; nothing here uses them.
