@@ -1,6 +1,6 @@
 # kacperadler.pl
 
-Strona Kacpra Adlera, AI Engineera i partnera technologicznego dla małych i średnich firm: wdrożenia AI i automatyzacje. Oferta to trzy kroki - audyt AI, wdrożenie (agenci, automatyzacje, integracje, aplikacje webowe i mobilne, landing page'e) i stała współpraca. Strona jest dla właścicieli i managerów firm, a spełnia swoje zadanie, gdy umówią rozmowę przez formularz kontaktowy.
+Strona Kacpra Adlera, AI Engineera i partnera technologicznego dla małych i średnich firm: wdrożenia AI, automatyzacje i aplikacje szyte na miarę. Oferta to trzy kroki - audyt AI, wdrożenie (agenci AI, automatyzacje, integracje, aplikacje szyte na miarę - web i mobile) i stała współpraca. Strona jest dla właścicieli i managerów firm, a spełnia swoje zadanie, gdy umówią rozmowę przez formularz kontaktowy.
 
 Produkcja: [kacperadler.pl](https://kacperadler.pl) - statyczny build Astro serwowany przez nginx na Dokploy, plus jedna trasa API na Node (`/api/lead`), która zapisuje formularz kontaktowy w SQLite.
 
@@ -12,7 +12,7 @@ Produkcja: [kacperadler.pl](https://kacperadler.pl) - statyczny build Astro serw
 ## Stack
 
 - **[Astro 7](https://docs.astro.build)** - TypeScript strict, output static, content collections, `<ClientRouter />`; adapter `@astrojs/node` tylko dla `src/pages/api/lead.ts` (`prerender = false`)
-- **Case studies w MDX** (`@astrojs/mdx`): `src/content/case-studies/<id>.mdx` → `/realizacje/<slug>/`, link z wpisu w "Pełnej liście doświadczeń" i z karty w sekcji `#cases`; lista `/realizacje/` buduje się tylko, gdy istnieje choć jeden case study (link `Wszystkie realizacje` w `#cases`), a pozycja "Realizacje" w menu zawsze prowadzi do `/#cases`
+- **Case studies w MDX** (`@astrojs/mdx`): `src/content/case-studies/<id>.mdx` → `/realizacje/<slug>/`, link z wpisu w akordeonie "Pełne doświadczenie" i z karty w sekcji `#cases`; lista `/realizacje/` buduje się tylko, gdy istnieje choć jeden case study (link `Wszystkie realizacje` w `#cases`), a pozycja "Realizacje" w menu zawsze prowadzi do `/#cases`
 - **Vanilla CSS** + scoped `<style>` w `.astro`, tokeny w `src/styles/tokens.css`; dark-only, jeden akcent (navy), bez Tailwinda
 - **[Ultracite](https://www.ultracite.ai/)** (Biome) - lint i format dla TS/JS/JSON/CSS i `.astro`
 - **[Husky](https://typicode.github.io/husky/)** + **lint-staged** - pre-commit

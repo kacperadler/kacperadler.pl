@@ -138,7 +138,7 @@ Two faces, both self-hosted variable woff2:
 ## Layout
 
 - **Container:** max-width `1160px` (`--container`), 16px side padding. `page-frame.astro` draws a fixed 1px `--mb-hair` line down each edge of the container width; below 1160px they are gone.
-- **Sections:** each opens with `section-head.astro` - an `ink` rule, the numbered mono label (`01 / Problemy`, a CSS counter the frame resets; the trust bar has no head, so it takes no number), then the headline left and the lede right, bottom-aligned; one column at 880px and below. Sections are `--v2-space-2xl` (96px) apart, 64px on mobile.
+- **Sections:** each opens with `section-head.astro` - an `ink` rule, the numbered mono label (`01 / Problem`, a CSS counter the frame resets; the trust bar has no head, so it takes no number), then the headline left and the lede right, bottom-aligned; one column at 880px and below. Sections are `--v2-space-2xl` (96px) apart, 64px on mobile.
 - **Cells:** `cell-grid.astro` collapses cells into one ruled table - no gap, every cell pulled 1px over its neighbour so two cells share one rule. Fixed columns (problems, examples, case highlights: 2; the offer: 3; one column at 880px; with 2 an odd last cell spans the row) or as many as fit a minimum width (the experience list: 300px, case studies: 320px). The trust bar sets its own: five logos a row, two at 880px with the lone last one spanning.
 - **No radius:** every corner is square. A new component sets `border-radius: 0` on native controls that carry a UA radius.
 
