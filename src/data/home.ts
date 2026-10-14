@@ -60,7 +60,7 @@ export interface CaseHighlight {
 
 export const caseHighlights: readonly CaseHighlight[] = [
   {
-    effect: "Codzienne narzędzie pracy całej firmy.",
+    effect: "Ponad 200 osób pracuje w nim codziennie.",
     experience: "helpfind",
     kind: "Narzędzie wewnętrzne · B2B",
     problem:
