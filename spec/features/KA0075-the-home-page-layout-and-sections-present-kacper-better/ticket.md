@@ -52,3 +52,4 @@ Out:
 - 2026-10-14: The human: when the worker ends, run a preview for him before the review; the review starts only after his ok on the preview.
 - 2026-10-14: The worker hit the $5 budget mid-work; the coordinator raised it to $12 for this large ticket.
 - 2026-10-14: The human: no budget limit for this worker if it stops on the budget again (h continue --budget 0).
+- 2026-10-14: The human sent the final copy, `tresc.md` in this folder: it replaces the plan's copy wherever they differ, word for word. Pending his answer: the visible [DO UZUPEŁNIENIA] placeholders, the company field (KA0096) and the calendar line (KA0093); until then those stay out.
