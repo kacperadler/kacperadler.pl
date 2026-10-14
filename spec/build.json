@@ -623,9 +623,9 @@
   {
     "id": "KA0078",
     "title": "Pagination jump needs a page that reads its query",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-14T17:59:28.207Z"
+    "updated": "2026-10-14T18:03:31.615Z"
   },
   {
     "id": "KA0079",
