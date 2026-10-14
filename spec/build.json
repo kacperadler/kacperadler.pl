@@ -685,8 +685,8 @@
   {
     "id": "KA0086",
     "title": "Under reduced motion every restyle lags one frame on every page",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0086-under-reduced-motion-every-restyle-lags-one-frame-on-every-page/ticket.md",
-    "updated": "2026-10-14T13:23:51.617Z"
+    "updated": "2026-10-14T13:32:57.991Z"
   }
 ]
