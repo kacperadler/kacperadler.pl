@@ -436,9 +436,9 @@
   {
     "id": "KA0054",
     "title": "Patterns not yet in the catalogue",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0054-patterns-not-yet-in-the-catalogue/ticket.md",
-    "updated": "2026-10-14T13:33:33.307Z"
+    "updated": "2026-10-14T13:40:10.045Z"
   },
   {
     "id": "KA0055",
@@ -591,9 +591,9 @@
   {
     "id": "KA0074",
     "title": "`bun run check` reads the Playwright HTML report when `CI` is set",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0074-bun-run-check-reads-the-playwright-html-report-when-ci-is-set/ticket.md",
-    "updated": "2026-10-14T13:33:33.521Z"
+    "updated": "2026-10-14T13:41:08.201Z"
   },
   {
     "id": "KA0075",
@@ -685,9 +685,9 @@
   {
     "id": "KA0086",
     "title": "Under reduced motion every restyle lags one frame on every page",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0086-under-reduced-motion-every-restyle-lags-one-frame-on-every-page/ticket.md",
-    "updated": "2026-10-14T13:32:57.991Z"
+    "updated": "2026-10-14T13:40:04.762Z"
   },
   {
     "id": "KA0087",
