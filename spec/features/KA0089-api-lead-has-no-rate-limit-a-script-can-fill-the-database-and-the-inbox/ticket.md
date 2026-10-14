@@ -37,3 +37,6 @@ In:
 
 - 2026-10-14: Source: F1 of KA0027
 - 2026-10-14: The human approved the ticket ("rusz z tiketem na limit zapytan"); no push to the remote in KA until he says so.
+- 2026-10-14: The human checked Dokploy: the app container is at 10.0.1.138 on dokploy-network, inside the trusted 10.0.0.0/8.
+- 2026-10-14: Production nginx log: Traefik connects from 10.0.1.11, X-Forwarded-For holds the one real client IP (e.g. 217.173.5.23), so real_ip picks the visitor.
+- 2026-10-14: The human: 5 posts from one address is enough, so the 6th rapid post gets 429 (burst=4). He said merge KA0089 and KA0078.
