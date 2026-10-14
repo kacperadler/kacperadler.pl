@@ -85,19 +85,12 @@ const between = (heights: number[]) => {
 };
 
 // CSS transitions running on the element or inside it. Under reduced
-// motion global.css shortens every transition to 0.01ms - a snap, which a
-// slow machine can still catch running - so only those of 1ms or more
-// count as motion.
+// motion global.css turns every transition off, so there are none.
 const runningTransitions = (locator: Locator) =>
   locator.evaluate((el) =>
     el
       .getAnimations({ subtree: true })
-      .filter(
-        (a) =>
-          a instanceof CSSTransition &&
-          a.playState === "running" &&
-          Number(a.effect?.getTiming().duration) >= 1
-      )
+      .filter((a) => a instanceof CSSTransition && a.playState === "running")
       .map((a) => (a as CSSTransition).transitionProperty)
   );
 
@@ -169,36 +162,27 @@ test.describe("component catalogue (astro dev)", () => {
     });
   }
 
-  // The page loads wide, so the resize to 360px restyles it, and under
-  // reduced motion global.css turns every restyle into a 0.01ms
-  // transition: the first frame after the resize lays out with the wide
-  // values. Paused animations hold that frame, so it is measured every run,
-  // not only when the measure lands before the next frame; then the
-  // settled page.
+  // The page loads wide, so the resize to 360px restyles it. Under reduced
+  // motion nothing transitions, so the first frame after the resize already
+  // lays out with the narrow values (KA0086). Paused animations hold that
+  // frame, so a transition the resize started is still listed when it is
+  // measured, every run.
   test("does not scroll sideways at 360px", async ({ page }) => {
-    const widths = () =>
-      page.evaluate(() => ({
-        client: document.documentElement.clientWidth,
-        scroll: document.documentElement.scrollWidth,
-      }));
     const cdp = await page.context().newCDPSession(page);
     await cdp.send("Animation.enable");
     await cdp.send("Animation.setPlaybackRate", { playbackRate: 0 });
     await page.setViewportSize({ height: 800, width: 360 });
-    const first = await widths();
-    expect(first.scroll).toBeLessThanOrEqual(first.client);
-
+    const first = await page.evaluate(() => ({
+      client: document.documentElement.clientWidth,
+      scroll: document.documentElement.scrollWidth,
+      transitions: document
+        .getAnimations()
+        .filter((a) => a instanceof CSSTransition)
+        .map((a) => a.transitionProperty),
+    }));
     await cdp.send("Animation.setPlaybackRate", { playbackRate: 1 });
-    await page.evaluate(() =>
-      Promise.all(
-        document
-          .getAnimations()
-          .filter((a) => a instanceof CSSTransition)
-          .map((a) => a.finished)
-      )
-    );
-    const settled = await widths();
-    expect(settled.scroll).toBeLessThanOrEqual(settled.client);
+    expect(first.transitions).toEqual([]);
+    expect(first.scroll).toBeLessThanOrEqual(first.client);
   });
 
   test("a forced button hover paints like a real one", async ({ page }) => {
