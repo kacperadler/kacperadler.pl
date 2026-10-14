@@ -68,7 +68,10 @@ import SectionHead from "../section-head.astro";
     color: var(--blue);
   }
 
+  /* The prose measure: the lone last cell spans the row, and its text
+   * should not run twice as long a line as the others'. */
   .mb-example-desc {
+    max-width: 65ch;
     margin: 0;
   }
 
