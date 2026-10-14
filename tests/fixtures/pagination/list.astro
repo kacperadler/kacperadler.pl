@@ -1,0 +1,41 @@
+---
+/* /lista/ - a paginated list for the e2e build only (E2E_FIXTURES=1, see
+ * astro.config.mjs): 12 pages from Astro's paginate(), page 1 at /lista/,
+ * page n at /lista/<n>/, with the pagination "go to page" field.
+ * pagination-jump.spec.ts serves the build through nginx.conf to prove the
+ * field lands on the page asked for. */
+import type { GetStaticPathsOptions, Page } from "astro";
+import Pagination from "@/components/mb/pagination.astro";
+
+export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const items = Array.from({ length: 12 }, (_, index) => index + 1);
+  return paginate(items, { pageSize: 1 });
+}
+
+interface Props {
+  page: Page<number>;
+}
+
+const { page } = Astro.props;
+const href = (n: number) => (n === 1 ? "/lista/" : `/lista/${n}/`);
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta content="noindex" name="robots">
+    <title>Lista {page.currentPage}</title>
+  </head>
+  <body>
+    <main>
+      <h1>Strona {page.currentPage}</h1>
+      <Pagination
+        current={page.currentPage}
+        href={href}
+        jump="/lista/"
+        total={page.lastPage}
+      />
+    </main>
+  </body>
+</html>

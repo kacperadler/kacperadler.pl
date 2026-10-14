@@ -77,7 +77,7 @@ Pre-commit hook: `lint-staged` (ultracite fix dla TS/JS/JSON/CSS/`.astro`) + `as
 **Dokploy** (self-hosted, własny serwer). Cloudflare Pages nie jest rozważany.
 
 - Build type: **Dockerfile** w repo (multi-stage `oven/bun:1.4.3-alpine` → `nginx:1.30-alpine`)
-- `nginx.conf` w repo: gzip, security headers (X-Frame-Options/X-Content-Type-Options/Referrer-Policy/Permissions-Policy), cache rules (immutable dla `/_astro/` + fontów, 30d dla obrazków, must-revalidate dla HTML). Headers przez `map`, NIE per-`location` - `add_header` nie dziedziczy. Bez SPA fallbacku: `try_files $uri $uri/ $uri.html`, a nieznany URI dostaje `error_page 404 /404.html`.
+- `nginx.conf` w repo: gzip, security headers (X-Frame-Options/X-Content-Type-Options/Referrer-Policy/Permissions-Policy), cache rules (immutable dla `/_astro/` + fontów, 30d dla obrazków, must-revalidate dla HTML). Headers przez `map`, NIE per-`location` - `add_header` nie dziedziczy. Bez SPA fallbacku: `try_files $uri $uri/ $uri.html`, a nieznany URI dostaje `error_page 404 /404.html`. Pole „Strona” paginacji (`jump` w `pagination.astro`) wysyła `<lista>/?strona=<n>`, a prerenderowana strona nie widzi query: `map $pagination_jump` przekierowuje (302) na `<lista>/<n>/`, stronę 1 na `<lista>/` - ścieżki `paginate()`, więc `jump` to pierwsza strona listy. `absolute_redirect off`: `Location` to sama ścieżka, bo absolutny adres za Traefikiem byłby `http://`.
 - Container port: **80**, Traefik-routed przez Dokploy z Let's Encrypt cert
 - W build stage `apk add fontconfig ttf-dejavu` - librsvg w `og-default.png.ts` potrzebuje fontu z polskimi diakrytykami, inaczej tofu boxes
 - Lokalny test (obowiązkowy przy zmianie `Dockerfile`, `nginx.conf` lub `og-default.png.ts`): `docker build -t kacperadler-pl-test . && docker run --rm -p 8089:80 kacperadler-pl-test`
@@ -110,8 +110,8 @@ src/
 ├── lib/                   # seo, case-studies, proposals
 └── assets/                # me.jpg (OG), experience/ logotypy, logotyp_fundusze_eu.png
 
-tests/e2e/       # Playwright specs (a11y, case-studies, check-input, contact-form, design, mobile-sheet, nav-active, services-grid, services-order, skip-link; ui-catalogue i ui-proposals na dev serverze; check-input pilnuje, że `astro check` nie czyta folderów z runu e2e)
-tests/fixtures/  # case studies dla buildów e2e: przykładowy i pusty
+tests/e2e/       # Playwright specs (a11y, case-studies, check-input, contact-form, design, mobile-sheet, nav-active, pagination-jump, services-grid, services-order, skip-link; ui-catalogue i ui-proposals na dev serverze; check-input pilnuje, że `astro check` nie czyta folderów z runu e2e; pagination-jump serwuje build e2e przez `nginx.conf` w obrazie nginx z `Dockerfile`, więc wymaga Dockera)
+tests/fixtures/  # dla buildów e2e: case studies (przykładowy i pusty) i `pagination/list.astro` - 12 stron pod `/lista/` (tylko `E2E_FIXTURES=1`)
 spec/            # vision.md + tickets (spec/features/<id>/)
 .agents/harness/ # kryteria review / audit / retro + styleguide
 Dockerfile, nginx.conf  # produkcja na Dokploy
