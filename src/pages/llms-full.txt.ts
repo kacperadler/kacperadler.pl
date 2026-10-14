@@ -138,7 +138,7 @@ Dla firm w Polsce i Unii Europejskiej, które chcą mniej ręcznej roboty bez za
 
 ## Oferta
 
-Trzy kroki. Zaczynasz od pierwszego.
+Trzy kroki. Zacznij od tego, który pasuje.
 
 ${offerBlock}
 
