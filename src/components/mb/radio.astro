@@ -2,23 +2,27 @@
 import type { HTMLAttributes } from "astro/types";
 
 /* Radio, in two looks:
- *   default  a native input (appearance: none) drawn as an 18px square in a
- *            muted frame, the label beside it; checked: a blue square inset
- *            in the frame
- *   choice   the input is visually hidden and `label` is a square chip (the
- *            contact form's project type); hover: the ink frame; checked: a
- *            solid blue block; keyboard focus: the ring around the chip.
- *            Every state keeps the 1px frame and the type weight, so
- *            checking a chip moves nothing.
- * Disabled: the flat panel, muted text. Invalid: a coral frame, from
- * [data-invalid] on the enclosing <Field> or aria-invalid on the input.
- * Native input attributes (name / value / checked / disabled) pass through.
+ *   default  a native input (appearance: none) drawn as an 18px circle in a
+ *            muted frame, the label beside it; checked: a blue dot inset in
+ *            the frame. The one round shape on the site: a radio reads as
+ *            one.
+ *   choice   the input is visually hidden and `label` is a square chip, 36px
+ *            high like the `sm` button (the contact form's project type);
+ *            hover: the lit cell in the ink frame; press: the flat panel;
+ *            checked: a solid blue block, blue-2 on hover; keyboard focus:
+ *            the ring around the chip. Every state keeps the 1px frame and
+ *            the type weight, so checking a chip moves nothing.
+ * Disabled: the flat panel, muted text; a checked choice stays a muted
+ * block, so the chosen type still shows while the form sends. Invalid: a
+ * coral frame, from [data-invalid] on the enclosing <Field> or aria-invalid
+ * on the input. Native input attributes (name / value / checked /
+ * disabled) pass through.
  *
- * `state` forces a look on the catalogue page (/ui): "hover" on the
- * label, "focus-visible" on the input. */
+ * `state` forces a look on the catalogue page (/ui): "hover" and "pressed"
+ * on the label, "focus-visible" on the input. */
 interface Props extends Omit<HTMLAttributes<"input">, "type"> {
   label: string;
-  state?: "hover" | "focus-visible";
+  state?: "hover" | "pressed" | "focus-visible";
   variant?: "default" | "choice";
 }
 
@@ -32,7 +36,7 @@ const {
 ---
 
 <label
-  data-state={state === "hover" ? state : undefined}
+  data-state={state === "focus-visible" ? undefined : state}
   class:list={["mb-radio", `mb-radio-${variant}`, extraClass]}
 >
   <input
@@ -68,8 +72,11 @@ const {
   }
 
   .mb-radio-choice .mb-radio-label {
-    display: inline-block;
-    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 14px;
     font-size: 14px;
     font-weight: 500;
     color: var(--ink-2);
@@ -81,7 +88,7 @@ const {
       color var(--mb-snap);
   }
 
-  /* Default: the square. */
+  /* Default: the circle. */
   .mb-radio-default .mb-radio-input {
     flex-shrink: 0;
     width: 18px;
@@ -91,7 +98,7 @@ const {
     cursor: inherit;
     background: var(--v2-bg);
     border: 1px solid var(--muted);
-    border-radius: 0;
+    border-radius: 50%;
     transition:
       background-color var(--mb-snap),
       border-color var(--mb-snap),
@@ -130,7 +137,12 @@ const {
   /* Choice: the chip states. */
   .mb-radio-choice:is(:hover, [data-state="hover"]) .mb-radio-label {
     color: var(--ink);
+    background: var(--v2-panel-elevated);
     border-color: var(--ink);
+  }
+
+  .mb-radio-choice:is(:active, [data-state="pressed"]) .mb-radio-label {
+    background: var(--v2-panel);
   }
 
   .mb-radio-choice .mb-radio-input:checked + .mb-radio-label {
@@ -155,6 +167,19 @@ const {
     color: var(--muted);
     background: var(--v2-panel);
     border-color: var(--mb-hair);
+  }
+
+  .mb-radio-choice:is(:hover, [data-state="hover"])
+    .mb-radio-input:checked
+    + .mb-radio-label {
+    background: var(--blue-2);
+    border-color: var(--blue-2);
+  }
+
+  .mb-radio-choice .mb-radio-input:checked:disabled + .mb-radio-label {
+    color: var(--v2-panel);
+    background: var(--muted);
+    border-color: var(--muted);
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -55,6 +55,7 @@ typography:
     letterSpacing: 0.14em
 rounded:
   none: 0px
+  full: 50%
 spacing:
   md: 16px
   lg: 32px
@@ -82,7 +83,7 @@ components:
 
 ## Overview
 
-`kacperadler.pl` is minimal brutalism: a ruled sheet. Content sits in cells drawn with 1px `ink` rules that share their edges, on a solid `base` substrate. Two hairlines run down the page at the container's edges. Headlines are heavy Geist with tight negative tracking, labels Geist Mono. There are no rounded corners, no glass, no gradients, no drifting background: a hovered cell lights up from inside and moves nothing, and every state change is a short linear switch.
+`kacperadler.pl` is minimal brutalism: a ruled sheet. Content sits in cells drawn with 1px `ink` rules that share their edges, on a solid `base` substrate. Two hairlines run down the page at the container's edges. Headlines are heavy Geist with tight negative tracking, labels Geist Mono. There are no rounded corners (the default radio is the one circle), no glass, no gradients, no drifting background: a hovered cell lights up from inside and moves nothing, a button's face lifts off its white layer towards the cursor, and every state change is a short linear switch, except two slides: a loading button's label and spinner, and a card's top rule.
 
 There is one design, served at `/`, and it is dark only. Its components live in `src/components/mb/`, are shown with every variant and state at `/ui` (`bun dev` only), and every production page is built from them.
 
@@ -111,8 +112,9 @@ The minimal brutalism vocabulary, in the same file:
 | -------------- | --------------------- | ------------------------------------------------------- |
 | `--mb-rule`    | `var(--ink)`          | the 1px rule that draws a cell                          |
 | `--mb-hair`    | `var(--v2-line)`      | dividers inside a cell, the page edges, disabled frames |
-| `--mb-shift`   | `4px`                 | the hard shadow offset (3px on `sm`, 2px on `xs`)       |
-| `--mb-snap`    | `0.12s linear`        | every transition                                        |
+| `--mb-shift`   | `4px`                 | the hard shadow offset (3px on `sm`, 2px on `xs`): the white layer under a button |
+| `--mb-snap`    | `0.12s linear`        | every transition but the two slides                     |
+| `--mb-slide`   | `0.3s ease-out`       | a loading button's label and spinner, a card's top rule |
 | `--mb-display` | `var(--sans)` (Geist) | headlines                                               |
 
 ## Colors
@@ -146,11 +148,11 @@ Every component is one `.astro` file in `src/components/mb/` with scoped CSS, sh
 
 | Component | Variants and sizes |
 | --------- | ------------------ |
-| `button` | `default` (blue block, ink rule, hard ink shadow; hover `blue-2` and the shadow 2px further; press: it sinks into its shadow; `.active` an ink block with no shadow), `secondary`, `outline`, `ghost`, `destructive`, `link` (press: a step darker); sizes `xs` 28 / `sm` 36 / `default` 44 / `lg` 52px and the square `icon-xs` / `icon-sm` / `icon` / `icon-lg` (need `aria-label`); `iconStart` / `iconEnd` (nudges 3px right on hover), `href`, `loading` |
+| `button` | `default` (blue block, ink rule; hover `blue-2`; `.active` an ink block with no layer), `secondary`, `outline` (hover: the lit cell), `ghost`, `destructive`, `link`; the four with a rule sit on the white layer (the hard `ink` shadow): hover lifts the face 2px towards the cursor, press puts it down onto the layer; ghost presses to an `ink-2` block, link to `blue-2` text over a 3px underline; sizes `xs` 28 / `sm` 36 / `default` 44 / `lg` 52px and the square `icon-xs` / `icon-sm` / `icon` / `icon-lg` (need `aria-label`); `iconStart` / `iconEnd`, `href`, `loading` (the label slides out left, the spinner in from the right, the width stays) |
 | `badge` | `default` (`teraz`, `Zlecenie`), `secondary`, `outline` (year range, step duration), `destructive`, `ghost`, `link`, `tag` (a technology: the `muted` frame, not caps), `status` (availability: `ink` text in a `blue` frame behind a square `blue` dot); icons, `href` (press: an ink block), `fillOnCellHover` |
 | `alert` | `default`, `destructive` (the send-error banner) |
-| `avatar`, `avatar-group` | `sm` / `default` / `lg` (32 / 48 / 96px); image or initials (decided at build time), `badge`, "+N" count |
-| `radio` | `default` (a square), `choice` (the contact form chip; the same 1px frame and type weight in every state, so checking one moves nothing) |
+| `avatar`, `avatar-group` | `sm` / `default` / `lg` (32 / 48 / 96px); image or initials (decided at build time), `badge`; in a group each overlaps the one before by a quarter of its side inside a 2px `base` ring, and the "+N" count matches the initials avatar |
+| `radio` | `default` (a circle, a `blue` dot when checked), `choice` (the contact form chip, 36px high: hover the lit cell, press `panel`, checked a `blue` block, `blue-2` on hover, checked and disabled a `muted` block; the same 1px frame and type weight in every state, so checking one moves nothing) |
 | `checkbox`, `input`, `textarea`, `label`, `field`, `field-set`, `separator`, `spinner` | shadcn's states; hover shows an unchecked checkbox's check faintly; `field` orientation `vertical` / `horizontal` / `responsive` |
 | `accordion`, `accordion-item` | `single` / `multiple`, plain / `bordered`; native `<details>`, height and chevron animate |
 | `breadcrumb`, `pagination` | chevron / slash, collapse (the ellipsis opens the hidden pages as a native popover menu); numbers / icons, `jump` (a GET form to a page number) |
@@ -161,16 +163,16 @@ Every component is one `.astro` file in `src/components/mb/` with scoped CSS, sh
 `page-frame.astro` goes straight inside `<body>`: the edge hairlines, the skip link, `header.astro` (sticky on the substrate under an `ink` rule: brand, nav links, the `sm` contact CTA; below 880px the menu button instead of the links; at 400px and below the CTA drops its arrow and the row wraps rather than scroll sideways), the page, `footer.astro` (under an `ink` rule: brand and tagline, two link columns, the copyright under a hairline), the EU funding band (`layout/eu-funding.astro`, white - its logos need a white ground) and, as a sibling, `mobile-sheet.astro` (the full-screen menu on the substrate, switched in with an opacity snap). `BaseLayout` wraps every production page in it; `/ui` and `/ui/proposal/<id>` are their own documents around it, without `contact-form.ts`.
 
 ### Cells
-`card.astro` is a cell: `base` fill in a 1px `ink` rule, 32px padding (16px on `sm`). Hover lights it from inside - `panel-elevated` under a 3px `blue` top rule that draws in from the left - and moves nothing; a service number turns `blue`, an experience logo goes from grey to colour, a `fillOnCellHover` badge fills. The hero status card and the case study facts are framed tables of `label | value` rows under hairlines.
+`card.astro` is a cell: `base` fill in a 1px `ink` rule, 32px padding (16px on `sm`). Hover lights it from inside - `panel-elevated` under a 3px `blue` top rule that draws in from the left and, when the pointer leaves, slides out to the right (`--mb-slide`) - and moves nothing; a service number turns `blue`, an experience logo goes from grey to colour, a `fillOnCellHover` badge fills. The hero status card and the case study facts are framed tables of `label | value` rows under hairlines.
 
 ### Hard shadow
-The one hard offset shadow (`--mb-shift`, no blur) marks what the visitor acts on: the default button (`ink`; pressed, the button sinks into it and it is gone), and the contact form sheet while the email or the message is being written in, or after it is sent (`blue`). The project-type chips are left out of that on purpose, so a click on one does not flicker it.
+The hard offset shadow (`--mb-shift`, no blur) marks what the visitor acts on. Under the `default`, `secondary`, `outline` and `destructive` buttons it is the white layer (`ink`): it stays still while the face lifts off it on hover (the shadow grows by as much as the face moves) and covers it on press. A focused field shifts a `blue` one out, and the contact form sheet carries a `blue` one after it is sent; focusing a field lights only that field, never the sheet.
 
 ### Links
 `inline` (ink text over a 2px `blue` underline; hover `blue` text and a 3px underline), `nav` (an ink bar draws in under it from the left on hover; `.active` is a `blue` bar under `blue` text; press: blue), `footer` (`ink-2`, an underline fades in on hover, an optional leading icon turns `blue`), `case` ("Zobacz realizację": heavy ink text over a `blue` underline, the arrow after it nudges 3px right on hover and 6px on press; the company name is in its accessible name).
 
 ### Form fields
-Idle: a `muted` frame. Hover: an `ink-2` frame. Focus: an `ink` frame and the hard `blue` shadow shifting out from under it. Invalid (`[data-invalid]` on the field or `aria-invalid`): a coral frame and a mono error line behind a coral rule. Disabled: a flat `panel`. The script hooks are `contact-form.ts`'s: `data-contact-wrap` (`data-state`: `idle | submitting | error-validation | error-submit | success`), `data-contact-form`, `data-field`, `data-invalid`, `data-submit`, `data-form-error`, `data-form-success`, `data-form-reset`, the `website` honeypot.
+Idle: a `muted` frame. Hover: an `ink-2` frame. Focus: an `ink` frame and the hard `blue` shadow shifting out from under it. Invalid (`[data-invalid]` on the field or `aria-invalid`): a coral frame and a mono error line behind a coral rule. Disabled: a flat `panel`; while the contact form sends, every field, chip and the submit button are disabled, and come back when it ends. The script hooks are `contact-form.ts`'s: `data-contact-wrap` (`data-state`: `idle | submitting | error-validation | error-submit | success`), `data-contact-form`, `data-field`, `data-invalid`, `data-submit`, `data-form-error`, `data-form-success`, `data-form-reset`, the `website` honeypot.
 
 ### Prose
 `prose.astro` (`mb-prose`) sets Markdown / MDX bodies - legal pages, case studies: the rhythm of @tailwindcss/typography at 65ch, heavy Geist headings with h2 under an `ink` rule, `blue` square bullets and mono counters, the quote behind a `blue` rule, code in a hairline box, the table fully ruled. A `<pre>` scrolls in its own box and table cells wrap, so neither widens the page.
@@ -187,21 +189,21 @@ Idle: a `muted` frame. Hover: an `ink-2` frame. Focus: an `ink` frame and the ha
 
 ## Motion
 
-- Every state change is `--mb-snap` (`0.12s linear`): a switch, not a drift. What opens animates in that time and no longer: an accordion item's height (`::details-content` with `interpolate-size`) and its chevron's half turn; the breadcrumb menu and the mobile sheet switch in with an opacity snap.
-- Hover never moves an element: buttons deepen their shadow, cells light from inside and draw their top rule in, link underlines draw in, thicken or fade in, input frames go `ink-2`, an unchecked checkbox shows its check faintly. Arrows (`iconEnd`, the `case` link, the sheet links) nudge right.
-- Press (`:active`) is the one state that moves an element itself: the default button sinks into its own shadow; the `case` and sheet arrows nudge further. Everything else answers a press in fill or colour - a step darker, or an ink block on a link badge.
+- Every state change is `--mb-snap` (`0.12s linear`): a switch, not a drift. What opens animates in that time and no longer: an accordion item's height (`::details-content` with `interpolate-size`) and its chevron's half turn; the breadcrumb menu and the mobile sheet switch in with an opacity snap. Two slides travel further and take `--mb-slide` (`0.3s ease-out`): a loading button's label and spinner trading places, and a card's top rule drawing in from the left and out to the right.
+- Hover moves one thing, a button's face: it lifts 2px up and left off its still white layer, towards the cursor; an ::after keeps the resting box under the pointer, so the edge does not flicker. Otherwise hover never moves an element: cells light from inside and draw their top rule in, link underlines draw in, thicken or fade in, input frames go `ink-2`, an unchecked checkbox shows its check faintly. The `case` and sheet arrows nudge right; a button's `iconEnd` stays put.
+- Press (`:active`) puts a button's face down onto its layer, so no white shows; the `case` and sheet arrows nudge further. Everything else answers a press in fill or colour - a step darker, or an ink block on a link badge.
 - Focus: the ring (`global.css`, 2px `blue`) grows out of the element's edge to its offset instead of popping in; fields shift their hard `blue` shadow out.
 - No always-on motion: no ambient background, no pulsing dots. The spinner turns only while a form is being sent.
-- `prefers-reduced-motion: reduce` collapses every transition and animation (`global.css`) and stops the spinner; each animated component has its own reduced-motion block, so hover, press, focus and opening all snap. The mobile sheet sets `transition-property: none` on its children there, so focus reaches the close button the moment it opens.
+- `prefers-reduced-motion: reduce` collapses every transition and animation (`global.css`) and stops the spinner; each animated component has its own reduced-motion block, so hover, press, focus and opening all snap. A button's face then never moves: hover only fills, press hides the layer and takes the darker press fill. The mobile sheet sets `transition-property: none` on its children there, so focus reaches the close button the moment it opens.
 
 ## Do's and Don'ts
 
 - ✅ **Do** draw a cell with `--mb-rule` and let neighbours share it through `cell-grid.astro`.
 - ✅ **Do** give a new color token a single value, the one the dark page renders - there is no second palette to pair it with.
-- ✅ **Do** use `--mb-snap` for every transition and add a reduced-motion block next to it.
-- ❌ **Don't** round a corner. Not on cells, buttons, chips, avatars or inputs.
+- ✅ **Do** use `--mb-snap` for every transition and add a reduced-motion block next to it; `--mb-slide` is only for the loading swap and the card rule.
+- ❌ **Don't** round a corner. Not on cells, buttons, chips, avatars or inputs. The default radio's circle is the one exception.
 - ❌ **Don't** add glass (`backdrop-filter`), gradients, a dot grid or ambient motion; the substrate stays solid and still.
 - ❌ **Don't** add a second accent color. Navy is the only chromatic element.
 - ❌ **Don't** use solid white (`#fff`) - text tops out at the warm `ink` (`#ece7dc`). The EU funding band is the one exception: its logos need a white ground.
 - ❌ **Don't** add soft or chromatic drop shadows. The only shadow is the hard `--mb-shift` offset on what the visitor acts on.
-- ❌ **Don't** move a hovered element (`translateY` and the like). State shows in fill, rule and shadow; only a pressed default button moves, into its own shadow.
+- ❌ **Don't** move a hovered element (`translateY` and the like). State shows in fill, rule and shadow; a button's face is the exception, lifting 2px off its still layer on hover and going down onto it on press.

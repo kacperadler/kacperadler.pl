@@ -7,6 +7,8 @@ import { sendALead } from "./send-a-lead";
 const DEV_URL = `http://localhost:${process.env.E2E_DEV_PORT}`;
 
 const FLAT_SHADOW = /0px 0px 0px/;
+const RAISED_VARIANTS = ["Default", "Secondary", "Outline", "Destructive"];
+const SHADOW_X = /\)\s+(-?[\d.]+)px/;
 const FOLLOWED_CRUMB = /\/realizacje\/#2025$/;
 const UI_UNPAGED = /\/ui$/;
 const UI_PAGE_7 = /\/ui\?strona=7#mb-pagination$/;
@@ -98,6 +100,29 @@ const runningTransitions = (locator: Locator) =>
       .map((a) => (a as CSSTransition).transitionProperty)
   );
 
+// The x offset of the first box-shadow, 0 when there is none.
+const shadowX = (boxShadow: string) =>
+  boxShadow === "none"
+    ? 0
+    : Number(boxShadow.match(SHADOW_X)?.[1] ?? Number.NaN);
+
+// A button of one variant row in the catalogue, by its state caption.
+const buttonIn = (page: Page, variant: string, caption: string) =>
+  page
+    .locator('section[aria-labelledby="mb-button"] .mb-ui-row')
+    .filter({
+      has: page.locator(".mb-ui-row-label", {
+        hasText: new RegExp(`^${variant}$`),
+      }),
+    })
+    .locator(".mb-ui-sample")
+    .filter({
+      has: page.locator(".mb-ui-caption", {
+        hasText: new RegExp(`^${caption}$`),
+      }),
+    })
+    .locator(".mb-btn");
+
 test.describe("component catalogue (astro dev)", () => {
   test.use({
     baseURL: DEV_URL,
@@ -147,7 +172,7 @@ test.describe("component catalogue (astro dev)", () => {
   });
 
   test("a forced button hover paints like a real one", async ({ page }) => {
-    const props = ["background-color", "box-shadow", "color"];
+    const props = ["background-color", "box-shadow", "color", "transform"];
     const forced = sample(page, "mb-button", "hover")
       .first()
       .locator(".mb-btn");
@@ -159,6 +184,46 @@ test.describe("component catalogue (astro dev)", () => {
     expect(await paint(idle, props)).toEqual(forcedPaint);
   });
 
+  // Under reduced motion the face never moves: hover keeps the layer and
+  // only fills, press hides the layer and takes the press fill.
+  for (const variant of RAISED_VARIANTS) {
+    test(`${variant}: under reduced motion hover and press only repaint`, async ({
+      page,
+    }) => {
+      const props = ["background-color", "box-shadow", "transform"];
+      const idle = await paint(buttonIn(page, variant, "idle"), props);
+      const hover = await paint(buttonIn(page, variant, "hover"), props);
+      const pressed = await paint(buttonIn(page, variant, "pressed"), props);
+
+      expect(idle.transform).toBe("none");
+      expect(hover.transform).toBe("none");
+      expect(pressed.transform).toBe("none");
+      expect(hover["box-shadow"]).toBe(idle["box-shadow"]);
+      expect(pressed["box-shadow"]).toMatch(FLAT_SHADOW);
+      expect(pressed["background-color"]).not.toBe(idle["background-color"]);
+    });
+  }
+
+  test("the end arrow stays put on hover", async ({ page }) => {
+    const button = sample(page, "mb-button", "iconEnd").locator(".mb-btn");
+    await button.hover();
+    await expect(button.locator(".mb-btn-icon-end")).toHaveCSS(
+      "transform",
+      "none"
+    );
+  });
+
+  test("the default radio is round, the choice chip square", async ({
+    page,
+  }) => {
+    await expect(
+      page.locator(".mb-radio-default .mb-radio-input").first()
+    ).toHaveCSS("border-radius", "50%");
+    await expect(
+      page.locator(".mb-radio-choice .mb-radio-label").first()
+    ).toHaveCSS("border-radius", "0px");
+  });
+
   test("a forced card hover lights the card and its fillOnCellHover badge", async ({
     page,
   }) => {
@@ -166,15 +231,27 @@ test.describe("component catalogue (astro dev)", () => {
     const idle = sample(page, "mb-card", "idle").locator(".mb-card");
     const card = ["background-color"];
     const badge = ["background-color", "border-color", "color"];
-    // The 3px blue top rule is the card's ::before, drawn by scaleX.
+    // The 3px blue top rule is the card's ::before, drawn by scaleX. It
+    // grows from the left (origin x 0) and, unhovered, gathers at the right
+    // edge (origin x the card's width), so it leaves to the right.
     const rule = (locator: Locator) =>
       locator.evaluate((el) => getComputedStyle(el, "::before").transform);
+    const originX = (locator: Locator) =>
+      locator.evaluate((el) =>
+        Number.parseFloat(getComputedStyle(el, "::before").transformOrigin)
+      );
+    // The rule spans the padding box: the card less its two 1px rules.
+    const restingOriginX = await idle.evaluate(
+      (el) => el.getBoundingClientRect().width - 2
+    );
 
     const forcedCard = await paint(forced, card);
     const forcedBadge = await paint(forced.locator(".mb-badge"), badge);
     expect(forcedCard).not.toEqual(await paint(idle, card));
     expect(await rule(forced)).toBe("matrix(1, 0, 0, 1, 0, 0)");
     expect(await rule(idle)).toBe("matrix(0, 0, 0, 1, 0, 0)");
+    expect(await originX(forced)).toBe(0);
+    expect(await originX(idle)).toBeCloseTo(restingOriginX, 1);
     expect(forcedBadge).not.toEqual(
       await paint(idle.locator(".mb-badge"), badge)
     );
@@ -182,27 +259,11 @@ test.describe("component catalogue (astro dev)", () => {
     await idle.hover();
     expect(await paint(idle, card)).toEqual(forcedCard);
     expect(await rule(idle)).toBe("matrix(1, 0, 0, 1, 0, 0)");
+    expect(await originX(idle)).toBe(0);
     expect(await paint(idle.locator(".mb-badge"), badge)).toEqual(forcedBadge);
-  });
 
-  test("a forced press paints like a real one: the default button sinks into its shadow", async ({
-    page,
-  }) => {
-    const props = ["background-color", "box-shadow", "transform"];
-    const forced = sample(page, "mb-button", "pressed")
-      .first()
-      .locator(".mb-btn");
-    const idle = sample(page, "mb-button", "idle").first().locator(".mb-btn");
-
-    const forcedPaint = await paint(forced, props);
-    expect(forcedPaint.transform).toBe("matrix(1, 0, 0, 1, 4, 4)");
-    expect(forcedPaint["box-shadow"]).toMatch(FLAT_SHADOW);
-    expect(forcedPaint).not.toEqual(await paint(idle, props));
-
-    await idle.hover();
-    await page.mouse.down();
-    expect(await paint(idle, props)).toEqual(forcedPaint);
-    await page.mouse.up();
+    await page.mouse.move(0, 0);
+    expect(await originX(idle)).toBeCloseTo(restingOriginX, 1);
   });
 
   test("a pressed nav link turns blue like its forced press", async ({
@@ -265,7 +326,7 @@ test.describe("component catalogue (astro dev)", () => {
     expect(await chip.boundingBox()).toEqual(before);
   });
 
-  test("a forced input focus paints like a real one, the form sheet's shadow with it", async ({
+  test("focusing a field lights only the field, never the form sheet", async ({
     page,
   }) => {
     const props = ["border-color", "box-shadow"];
@@ -279,17 +340,28 @@ test.describe("component catalogue (astro dev)", () => {
     await idle.focus();
     expect(await paint(idle, props)).toEqual(forcedPaint);
 
+    const sheet = ["background-color", "box-shadow"];
     const forcedForm = page.locator(
       '[data-form-sample="focus"] [data-contact-wrap]'
     );
     const idleForm = page.locator(
       '[data-form-sample="idle"] [data-contact-wrap]'
     );
-    const shadow = await paint(forcedForm, ["box-shadow"]);
-    expect(shadow["box-shadow"]).not.toBe("none");
-    expect(await paint(idleForm, ["box-shadow"])).not.toEqual(shadow);
-    await idleForm.locator('input[type="email"]').focus();
-    expect(await paint(idleForm, ["box-shadow"])).toEqual(shadow);
+    await page.mouse.move(0, 0);
+    const rest = await paint(idleForm, sheet);
+    expect(rest["box-shadow"]).toBe("none");
+    expect(await paint(forcedForm, sheet)).toEqual(rest);
+    await expect(forcedForm.locator('input[type="email"]')).not.toHaveCSS(
+      "box-shadow",
+      "none"
+    );
+
+    for (const field of ['input[type="email"]', "textarea"]) {
+      // biome-ignore lint/performance/noAwaitInLoops: one focus at a time
+      await idleForm.locator(field).focus();
+      await expect(idleForm.locator(field)).not.toHaveCSS("box-shadow", "none");
+      expect(await paint(idleForm, sheet), field).toEqual(rest);
+    }
   });
 
   test("the invalid field shows its message and the error border", async ({
@@ -515,9 +587,9 @@ test.describe("motion (astro dev)", () => {
 
       const button = idle("mb-button", ".mb-btn");
       await button.hover();
-      await expectMotion(button, "button hover: the shadow reaches further");
+      await expectMotion(button, "button hover: the face lifts off its layer");
       await page.mouse.down();
-      await expectMotion(button, "button press: it sinks into its shadow");
+      await expectMotion(button, "button press: the face goes onto its layer");
       await page.mouse.up();
 
       const nav = idle("mb-link", ".mb-link-nav");
@@ -556,6 +628,216 @@ test.describe("motion (astro dev)", () => {
       await expectMotion(button, "button focus: the ring grows out");
     });
   }
+});
+
+// Where the label and the spinner of `button` sit (their translateX), how
+// wide the button is, and which of the two are sliding, on each of the next
+// `frames` animation frames once `start` has run in the page; `startedAt`
+// and `at` are page clock times of the call and of `start` done.
+const slideFrames = (button: Locator, start: "click" | "settle", frames = 12) =>
+  button.evaluate(
+    async (el, { count, how }) => {
+      const label = el.querySelector(".mb-btn-label") as Element;
+      const spinner = el.querySelector(".mb-btn-spinner") as Element;
+      const startedAt = Date.now();
+      if (how === "click") {
+        (el as HTMLElement).click();
+      } else {
+        // Wait for the demo to clear aria-busy by itself.
+        const { promise, resolve } = Promise.withResolvers<void>();
+        const observer = new MutationObserver(() => {
+          if (!el.hasAttribute("aria-busy")) {
+            observer.disconnect();
+            resolve();
+          }
+        });
+        observer.observe(el, { attributes: true });
+        await promise;
+      }
+      const at = Date.now();
+      const samples: {
+        label: number;
+        sliding: string[];
+        spinner: number;
+        width: number;
+      }[] = [];
+      for (const _ of Array.from({ length: count })) {
+        const sliding = el
+          .getAnimations({ subtree: true })
+          .filter(
+            (a) =>
+              a instanceof CSSTransition &&
+              a.transitionProperty === "transform" &&
+              a.playState === "running"
+          )
+          .map((a) => (a.effect as KeyframeEffect).target);
+        samples.push({
+          label: new DOMMatrix(getComputedStyle(label).transform).m41,
+          sliding: [
+            ...(sliding.includes(label) ? ["label"] : []),
+            ...(sliding.includes(spinner) ? ["spinner"] : []),
+          ],
+          spinner: new DOMMatrix(getComputedStyle(spinner).transform).m41,
+          width: el.getBoundingClientRect().width,
+        });
+        const { promise, resolve } = Promise.withResolvers<number>();
+        requestAnimationFrame(resolve);
+        // biome-ignore lint/performance/noAwaitInLoops: one sample per frame
+        await promise;
+      }
+      return { at, samples, startedAt };
+    },
+    { count: frames, how: start }
+  );
+
+// The label's and the spinner's translateX in `button`, now.
+const slidePositions = (button: Locator) =>
+  button.evaluate((el) => {
+    const at = (part: string) =>
+      new DOMMatrix(
+        getComputedStyle(el.querySelector(part) as Element).transform
+      ).m41;
+    return [at(".mb-btn-label"), at(".mb-btn-spinner")] as [number, number];
+  });
+
+test.describe("button layer and loading (astro dev)", () => {
+  test.use({
+    baseURL: DEV_URL,
+    contextOptions: { reducedMotion: "no-preference" },
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/ui", { waitUntil: "networkidle" });
+  });
+
+  for (const variant of RAISED_VARIANTS) {
+    test(`${variant}: the face lifts on hover and goes down on press over a layer that stays put`, async ({
+      page,
+    }) => {
+      const props = ["background-color", "box-shadow", "transform"];
+      const hover = await paint(buttonIn(page, variant, "hover"), props);
+      const pressed = await paint(buttonIn(page, variant, "pressed"), props);
+      expect(hover.transform).toBe("matrix(1, 0, 0, 1, -2, -2)");
+      expect(pressed.transform).toBe("matrix(1, 0, 0, 1, 4, 4)");
+      expect(pressed["box-shadow"]).toMatch(FLAT_SHADOW);
+
+      // The layer's left edge on screen: the face (transform included)
+      // plus the shadow's offset.
+      const button = buttonIn(page, variant, "idle");
+      const layerX = async () => {
+        const { left, shadow } = await button.evaluate((el) => ({
+          left: el.getBoundingClientRect().left,
+          shadow: getComputedStyle(el).boxShadow,
+        }));
+        return left + shadowX(shadow);
+      };
+      const rest = await button.boundingBox();
+      if (!rest) {
+        throw new Error(`${variant} idle button is not rendered`);
+      }
+      const restLayer = await layerX();
+      expect(restLayer).toBeCloseTo(rest.x + 4, 1);
+
+      // The pointer 1px inside the resting box's bottom-right corner, which
+      // the lifted face leaves: hover holds instead of flickering.
+      await page.mouse.move(rest.x + rest.width - 1, rest.y + rest.height - 1);
+      const lifting = await button.evaluate(async (el) => {
+        const frames: { left: number; shadow: string }[] = [];
+        for (const _ of Array.from({ length: 8 })) {
+          frames.push({
+            left: el.getBoundingClientRect().left,
+            shadow: getComputedStyle(el).boxShadow,
+          });
+          const { promise, resolve } = Promise.withResolvers<number>();
+          requestAnimationFrame(resolve);
+          // biome-ignore lint/performance/noAwaitInLoops: one sample per frame
+          await promise;
+        }
+        return frames;
+      });
+      for (const { left, shadow } of lifting) {
+        expect(left + shadowX(shadow)).toBeCloseTo(restLayer, 1);
+      }
+      await expect.poll(() => paint(button, props)).toEqual(hover);
+      await page.waitForTimeout(300);
+      expect(await paint(button, props)).toEqual(hover);
+      expect(await layerX()).toBeCloseTo(restLayer, 1);
+
+      // Pressed, the face covers the layer; its hit area still covers the
+      // resting box's top-left corner, which the face has left.
+      await page.mouse.down();
+      await expect.poll(() => paint(button, props)).toEqual(pressed);
+      expect(await layerX()).toBeCloseTo(restLayer, 1);
+      expect(
+        await button.evaluate(
+          (el, { x, y }) => el.contains(document.elementFromPoint(x, y)),
+          { x: rest.x + 1, y: rest.y + 1 }
+        )
+      ).toBe(true);
+      await page.mouse.up();
+    });
+  }
+
+  test("the live loading sample slides its label out for the spinner and back by itself", async ({
+    page,
+  }) => {
+    const demo = page.locator("[data-loading-demo]");
+    await demo.scrollIntoViewIfNeeded();
+    const width = await demo.evaluate((el) => el.getBoundingClientRect().width);
+    const [idleLabel, idleSpinner] = await slidePositions(demo);
+    expect(idleLabel).toBe(0);
+    // Waiting past the right edge of the label.
+    expect(idleSpinner).toBeGreaterThan(width / 2);
+    const midSlide = (s: { label: number; spinner: number }) =>
+      s.label < 0 &&
+      s.label > -width &&
+      s.spinner > 0 &&
+      s.spinner < idleSpinner;
+
+    // Loading starts: the label leaves to the left while the spinner comes
+    // in from the right, both at once, and the button keeps its width.
+    const enter = await slideFrames(demo, "click");
+    expect(
+      enter.samples.some((s) => s.sliding.join() === "label,spinner")
+    ).toBe(true);
+    expect(enter.samples.some(midSlide)).toBe(true);
+    for (const [i, s] of enter.samples.entries()) {
+      expect(s.width).toBe(width);
+      expect(s.label).toBeLessThanOrEqual(enter.samples[i - 1]?.label ?? 0);
+      expect(s.spinner).toBeLessThanOrEqual(
+        enter.samples[i - 1]?.spinner ?? idleSpinner
+      );
+    }
+
+    await expect(demo).toHaveAttribute("aria-busy", "true");
+    await expect(demo).toBeDisabled();
+    await expect.poll(async () => (await slidePositions(demo))[1]).toBe(0);
+    const [loadingLabel] = await slidePositions(demo);
+    expect(loadingLabel).toBeLessThan(-width / 2);
+
+    // Loading ends by itself 3-5 s after the click: the spinner leaves to
+    // the right while the label comes back from the left.
+    const exit = await slideFrames(demo, "settle");
+    expect(exit.at - enter.startedAt).toBeGreaterThanOrEqual(3000);
+    expect(exit.at - enter.startedAt).toBeLessThanOrEqual(5000);
+    expect(exit.samples.some((s) => s.sliding.join() === "label,spinner")).toBe(
+      true
+    );
+    expect(exit.samples.some(midSlide)).toBe(true);
+    for (const [i, s] of exit.samples.entries()) {
+      expect(s.width).toBe(width);
+      expect(s.label).toBeGreaterThanOrEqual(
+        exit.samples[i - 1]?.label ?? loadingLabel
+      );
+      expect(s.spinner).toBeGreaterThanOrEqual(
+        exit.samples[i - 1]?.spinner ?? 0
+      );
+    }
+
+    await expect(demo).not.toHaveAttribute("aria-busy");
+    await expect(demo).toBeEnabled();
+    await expect.poll(() => slidePositions(demo)).toEqual([0, idleSpinner]);
+  });
 });
 
 test.describe("production build", () => {

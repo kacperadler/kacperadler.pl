@@ -1,10 +1,11 @@
 ---
 /* Card: a cell drawn by a 1px ink rule on the substrate. Hover lights it
  * from inside - a lighter panel, and a 3px blue top rule that draws in from
- * the left - and moves nothing; [data-state="hover"] forces it on the
- * catalogue page (/ui). A card that is a link (`tag` "a") presses to the
- * flat panel ([data-state="pressed"]) and its focus ring grows out of the
- * edge.
+ * the left and, on the way out, leaves to the right (left to right both
+ * times, at `--mb-slide`) - and moves nothing; [data-state="hover"] forces
+ * it on the catalogue page (/ui). A card that is a link (`tag` "a") presses
+ * to the flat panel ([data-state="pressed"]) and its focus ring grows out
+ * of the edge.
  *
  * shadcn's parts are named slots: "image" (full bleed on top), "title" (in
  * `titleAs`, h3 by default), "description", "action" (beside the title),
@@ -97,6 +98,8 @@ const hasHeader = has("title") || has("description") || has("action");
     outline-offset: 0;
   }
 
+  /* At rest the rule is gathered at the right edge, so it leaves that way;
+   * hovered it grows from the left. */
   .mb-card::before {
     position: absolute;
     top: 0;
@@ -107,8 +110,8 @@ const hasHeader = has("title") || has("description") || has("action");
     content: "";
     background: var(--blue);
     transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform var(--mb-snap);
+    transform-origin: right center;
+    transition: transform var(--mb-slide);
   }
 
   .mb-card:is(:hover, [data-state="hover"]) {
@@ -117,6 +120,7 @@ const hasHeader = has("title") || has("description") || has("action");
 
   .mb-card:is(:hover, [data-state="hover"])::before {
     transform: scaleX(1);
+    transform-origin: left center;
   }
 
   a.mb-card:is(:active, [data-state="pressed"]) {
