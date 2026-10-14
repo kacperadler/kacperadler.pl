@@ -3,12 +3,13 @@
  * can never disagree. Plain TS with no Node imports: the browser bundle
  * imports it too. */
 
+/* The values are what the leads table stores. Rows saved before KA0075 keep
+ * the old values (ai, webapp, landing, mobile, tool); the form and the API
+ * take only these. */
 export const projectTypes = [
-  { label: "AI i automatyzacje", value: "ai" },
-  { label: "Aplikacja webowa", value: "webapp" },
-  { label: "Landing page", value: "landing" },
-  { label: "Aplikacja mobilna", value: "mobile" },
-  { label: "Narzędzie wewn.", value: "tool" },
+  { label: "Audyt AI", value: "audit" },
+  { label: "Wdrożenie", value: "implementation" },
+  { label: "Stała współpraca", value: "partner" },
   { label: "Inne", value: "other" },
 ] as const;
 
