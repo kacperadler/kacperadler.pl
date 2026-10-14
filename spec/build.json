@@ -678,8 +678,8 @@
   {
     "id": "KA0085",
     "title": "/ui scrolls 8px sideways at 360px on the first load, now and then",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0085-ui-scrolls-8px-sideways-at-360px-on-the-first-load-now-and-then/ticket.md",
-    "updated": "2026-10-14T11:35:06.181Z"
+    "updated": "2026-10-14T12:33:57.512Z"
   }
 ]
