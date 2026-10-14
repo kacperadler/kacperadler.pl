@@ -716,9 +716,9 @@
   {
     "id": "KA0090",
     "title": "A blueprint-live proposal spec fails under the full parallel run",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0090-a-blueprint-live-proposal-spec-fails-under-the-full-parallel-run/ticket.md",
-    "updated": "2026-10-14T18:26:47.978Z"
+    "updated": "2026-10-14T18:31:28.334Z"
   },
   {
     "id": "KA0091",

@@ -20,6 +20,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0086 Under reduced motion every restyle lags one frame on every page (128929f)
 - KA0088 The "move under no-preference" motion test races the transitions it looks for (4d67b3d)
 - KA0089 /api/lead has no rate limit: a script can fill the database and the inbox (1878aa9)
+- KA0090 A blueprint-live proposal spec fails under the full parallel run (43a16d1)
 
 ## 2026-10-11
 
