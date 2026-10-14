@@ -96,5 +96,16 @@ export default defineConfig({
         "@/styles": r("./src/styles"),
       },
     },
+
+    // The e2e dev server (playwright.config.ts sets E2E_DEV_NO_WATCH=1)
+    // ignores every path, so no file written during the run - a commit's
+    // lint-staged fix of a source file, astro check, an edit - makes it
+    // reload the page a running spec holds or restart. Astro keeps its own
+    // watch.ignored unset in dev, and a null watch would not survive the
+    // merge with it, so the matcher is a function that ignores everything.
+    server:
+      process.env.E2E_DEV_NO_WATCH === "1"
+        ? { watch: { ignored: () => true } }
+        : {},
   },
 });

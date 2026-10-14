@@ -21,6 +21,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0088 The "move under no-preference" motion test races the transitions it looks for (4d67b3d)
 - KA0089 /api/lead has no rate limit: a script can fill the database and the inbox (1878aa9)
 - KA0090 A blueprint-live proposal spec fails under the full parallel run (43a16d1)
+- KA0091 A commit (`astro check`) in the worktree during e2e coincided with a dev-server page navigation (67f1fb5)
 
 ## 2026-10-11
 

@@ -36,3 +36,4 @@ In:
 
 - 2026-10-10: Source: F2 of KA0036
 - 2026-10-10: Waits for the redesign (KA0037-KA0044): the hero copy and layout are decided there, with the human.
+- 2026-10-14: Folded into KA0075 with the redesign brief.
