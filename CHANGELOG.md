@@ -2,6 +2,12 @@
 
 Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at the next merge.
 
+## 2026-10-14
+
+### Added
+
+- KA0083 The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form (d2b3973)
+
 ## 2026-10-11
 
 ### Fixed

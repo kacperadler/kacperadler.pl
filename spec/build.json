@@ -661,9 +661,9 @@
   {
     "id": "KA0083",
     "title": "The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0083-the-ui-components-get-the-feedback-of-2026-10-14-buttons-loading-avatars-radio-choice-card-contact-form/ticket.md",
-    "updated": "2026-10-14T11:12:08.107Z"
+    "updated": "2026-10-14T11:35:06.183Z"
   },
   {
     "id": "KA0084",
@@ -674,5 +674,12 @@
     "after": [
       "KA0083"
     ]
+  },
+  {
+    "id": "KA0085",
+    "title": "/ui scrolls 8px sideways at 360px on the first load, now and then",
+    "status": "planning",
+    "path": "spec/features/KA0085-ui-scrolls-8px-sideways-at-360px-on-the-first-load-now-and-then/ticket.md",
+    "updated": "2026-10-14T11:35:06.181Z"
   }
 ]
