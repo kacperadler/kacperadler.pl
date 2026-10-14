@@ -657,5 +657,12 @@
     "status": "planning",
     "path": "spec/features/KA0082-the-e2e-build-once-ran-without-the-case-study-fixture/ticket.md",
     "updated": "2026-10-11T12:29:09.214Z"
+  },
+  {
+    "id": "KA0083",
+    "title": "The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form",
+    "status": "planning",
+    "path": "spec/features/KA0083-the-ui-components-get-the-feedback-of-2026-10-14-buttons-loading-avatars-radio-choice-card-contact-form/ticket.md",
+    "updated": "2026-10-14T09:55:13.692Z"
   }
 ]
