@@ -1,6 +1,5 @@
 ---
 import { getCollection } from "astro:content";
-import { logoBySlug } from "@/data/experience-logos";
 import { caseHighlights } from "@/data/home";
 import { caseStudiesByExperience, caseStudyPath } from "@/lib/case-studies";
 import Badge from "../badge.astro";
@@ -11,9 +10,10 @@ import Link from "../link.astro";
 import SectionHead from "../section-head.astro";
 
 /* Case highlights (#cases): projects told as problem, solution and effect,
- * a two-column cell table. Each card takes its company and logo from its
- * experience entry (an unknown id fails the build) and links the entry's
- * case study when there is one. "Wszystkie realizacje" leads to the
+ * a two-column cell table. Each card names its company once, in the h3
+ * with the kind badge beside it (no logo: the trust bar shows them). The
+ * company comes from its experience entry (an unknown id fails the build),
+ * and the card links the entry's case study when there is one. "Wszystkie realizacje" leads to the
  * /realizacje/ list, which is built only when a case study exists. */
 const experience = new Map(
   (await getCollection("experience")).map((entry) => [entry.id, entry.data])
@@ -23,17 +23,15 @@ const hasCaseStudies = (await getCollection("caseStudies")).length > 0;
 
 const cases = caseHighlights.map((highlight) => {
   const entry = experience.get(highlight.experience);
-  const logo = logoBySlug[highlight.experience];
-  if (!(entry && logo)) {
+  if (!entry) {
     throw new Error(
-      `Case highlight links to experience "${highlight.experience}", which does not exist or has no logo.`
+      `Case highlight links to experience "${highlight.experience}", which does not exist.`
     );
   }
   return {
     ...highlight,
     caseStudy: caseStudies.get(highlight.experience),
     company: entry.company,
-    logo,
   };
 });
 ---
@@ -52,17 +50,9 @@ const cases = caseHighlights.map((highlight) => {
       {cases.map((item) => (
         <Card>
           <div class="mb-cases-head">
-            <img
-              alt={item.company}
-              class="mb-cases-logo"
-              height={item.logo.height}
-              loading="lazy"
-              src={item.logo.src}
-              width={item.logo.width}
-            >
+            <h3>{item.company}</h3>
             <Badge variant="outline">{item.kind}</Badge>
           </div>
-          <h3>{item.company}</h3>
           <dl class="mb-cases-rows">
             <div class="mb-cases-row">
               <dt>Problem</dt>
@@ -114,28 +104,11 @@ const cases = caseHighlights.map((highlight) => {
     gap: 12px;
     align-items: center;
     justify-content: space-between;
-    min-height: 40px;
     margin-bottom: 16px;
   }
 
-  .mb-cases-logo {
-    width: auto;
-    max-width: 140px;
-    max-height: 32px;
-    opacity: 0.6;
-    filter: grayscale(100%);
-    transition:
-      filter var(--mb-snap),
-      opacity var(--mb-snap);
-  }
-
-  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-cases-logo {
-    opacity: 1;
-    filter: grayscale(0%);
-  }
-
   h3 {
-    margin: 0 0 12px;
+    margin: 0;
     font-family: var(--mb-display);
     font-size: 24px;
     font-weight: 750;
@@ -196,12 +169,6 @@ const cases = caseHighlights.map((highlight) => {
     .mb-cases-row {
       grid-template-columns: minmax(0, 1fr);
       gap: 4px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .mb-cases-logo {
-      transition: none;
     }
   }
 </style>
