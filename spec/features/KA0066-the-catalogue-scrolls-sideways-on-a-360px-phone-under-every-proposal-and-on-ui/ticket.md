@@ -40,3 +40,4 @@ In:
 - 2026-10-10: Source: F1 of KA0065
 - 2026-10-10: After KA0067: the catalogue fix applies to what is left.
 - 2026-10-10: Also F3 of KA0069: the 360px test on the dev catalogue is flaky (368px once).
+- 2026-10-14: The human approved it; the coordinator found it already done in main: .mb-ui-grid-wide uses minmax(min(100%, 320px), 1fr) (src/pages/_ui/catalogue.astro:1557, since KA0069 3aefdd3); KA0085 covers the 360px test. Dropped as already fixed.

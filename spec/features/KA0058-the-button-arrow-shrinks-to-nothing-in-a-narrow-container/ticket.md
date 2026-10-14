@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F3 of KA0039
+- 2026-10-14: The human approved it; the coordinator found it already done in main: .mb-btn-icon has flex-shrink: 0 (src/components/mb/button.astro:247-248). Dropped as already fixed.

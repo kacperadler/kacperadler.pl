@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F2 of KA0037
+- 2026-10-14: The human approved checking it; done in main by KA0083: disabled styles in src/components/mb/input.astro:59, textarea.astro:55, radio.astro:63-133, tested in tests/e2e/contact-form.spec.ts. Dropped as already fixed.

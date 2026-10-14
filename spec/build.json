@@ -422,9 +422,9 @@
   {
     "id": "KA0052",
     "title": "Inputs, textarea and radio have no disabled style",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0052-inputs-textarea-and-radio-have-no-disabled-style/ticket.md",
-    "updated": "2026-10-10T16:32:42.745Z"
+    "updated": "2026-10-14T13:23:41.480Z"
   },
   {
     "id": "KA0053",
@@ -464,9 +464,9 @@
   {
     "id": "KA0058",
     "title": "The button arrow shrinks to nothing in a narrow container",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0058-the-button-arrow-shrinks-to-nothing-in-a-narrow-container/ticket.md",
-    "updated": "2026-10-10T17:14:07.118Z"
+    "updated": "2026-10-14T13:23:41.087Z"
   },
   {
     "id": "KA0059",
@@ -520,9 +520,9 @@
   {
     "id": "KA0066",
     "title": "The catalogue scrolls sideways on a 360px phone, under every proposal and on /ui",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0066-the-catalogue-scrolls-sideways-on-a-360px-phone-under-every-proposal-and-on-ui/ticket.md",
-    "updated": "2026-10-10T18:31:07.316Z",
+    "updated": "2026-10-14T13:23:41.283Z",
     "after": [
       "KA0067"
     ]
@@ -685,8 +685,8 @@
   {
     "id": "KA0086",
     "title": "Under reduced motion every restyle lags one frame on every page",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0086-under-reduced-motion-every-restyle-lags-one-frame-on-every-page/ticket.md",
-    "updated": "2026-10-14T12:57:11.823Z"
+    "updated": "2026-10-14T13:23:41.675Z"
   }
 ]
