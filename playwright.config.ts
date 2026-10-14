@@ -89,7 +89,9 @@ export default defineConfig({
   // The dev server starts after the build (Playwright starts the servers in
   // order), so the two never write .astro/ at the same time. --ignore-lock
   // keeps `astro dev` in the foreground too and lets it run next to the
-  // `bun dev` of the main checkout.
+  // `bun dev` of the main checkout. E2E_DEV_NO_WATCH=1 makes it watch no
+  // file (see astro.config.mjs): a commit or `astro check` in this tree
+  // during the run cannot reload a page under a running spec.
   webServer: [
     {
       command: `E2E_FIXTURES=none bun run build -- --outDir dist-no-case-studies && bun run build && bun run preview -- --port ${PORT} --ignore-lock`,
@@ -102,6 +104,7 @@ export default defineConfig({
     },
     {
       command: `bun run dev -- --port ${DEV_PORT} --ignore-lock`,
+      env: { E2E_DEV_NO_WATCH: "1" },
       reuseExistingServer: false,
       stderr: "pipe",
       stdout: "ignore",
