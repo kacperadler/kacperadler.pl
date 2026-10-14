@@ -13,4 +13,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `tests/e2e/ui-catalogue.spec.ts`, `motion (astro dev)` › `hover, press and focus move under no-preference` (and `runningTransitions`)
 - What: in one full `bun run test` (with `CI` set, so retries on) it failed once and passed on retry, reported `1 flaky`; alone with `--repeat-each=6 --retries=0` it passed 6 of 6. After each hover, press or focus the test asks `getAnimations()` for a transition that is still running. A `--mb-snap` one lasts only 0.12s, so on a loaded machine the transition can end before the test looks, and the test fails though the motion played. The run that flaked shared the machine with other worktrees' builds and dev servers.
 - Suggestion: record the transitions the action starts (a `transitionrun` / `transitionstart` listener set up before the action, read after it) instead of sampling the ones still running after it. The reduced-motion half, which expects none, stays as it is.
-- Status: open
+- Status: ticket KA0088
