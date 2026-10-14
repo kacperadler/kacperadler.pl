@@ -18,6 +18,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0078 Pagination jump needs a page that reads its query (f6f7342)
 - KA0085 /ui scrolls 8px sideways at 360px on the first load, now and then (66b0825)
 - KA0086 Under reduced motion every restyle lags one frame on every page (128929f)
+- KA0088 The "move under no-preference" motion test races the transitions it looks for (4d67b3d)
 - KA0089 /api/lead has no rate limit: a script can fill the database and the inbox (1878aa9)
 
 ## 2026-10-11

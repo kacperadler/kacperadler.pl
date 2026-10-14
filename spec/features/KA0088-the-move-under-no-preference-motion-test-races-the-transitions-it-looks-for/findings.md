@@ -13,4 +13,12 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `playwright.config.ts` (the `astro dev` web server), `.husky/pre-commit` (`astro check`)
 - What: during a full `CI=1 bun run test` I committed in the same worktree. The pre-commit hook's `astro check` printed `[vite] Re-optimizing dependencies because vite config has changed` at 19:40:31 and regenerated types and the content sync. Meanwhile the running `button layer and loading (astro dev)` › `the live loading sample slides its label out for the spinner and back by itself` failed with `locator.evaluate: Execution context was destroyed, most likely because of a navigation`, then passed on retry (`1 flaky`). The next full run, with nothing else running in the worktree, gave `158 passed`. [INFERENCE] The dev server saw the files `astro check` wrote (`.astro/` types, the vite deps cache) and reloaded the page; I did not see the dev server's own log for it. If so, a flaky retry from a dev-server test can come from a commit or `astro check` in the same tree, not from the code under test.
 - Suggestion: keep the e2e dev server from reacting to files `astro check` writes (for example run it with its own cache dir, or have the coordinator's procedure say not to commit or run `astro check` while e2e runs). Out: changing what `astro check` checks.
-- Status: open
+- Status: ticket KA0091
+
+## F2. Parallel e2e runs from two worktrees can take the same preview port
+
+- Kind: risk
+- Found by: 2026-10-14-review-ka0088-motion-tes-3e2ad48e (review note), 2026-10-14
+- Where: `playwright.config.ts` (free-port probe, then `astro preview` binds later)
+- What: a first `CI=1 bun run test:e2e` failed with `EADDRINUSE :4329`: a sibling worktree's run took the port between the probe and the bind. A clean rerun passed 158/158.
+- Status: ticket KA0092
