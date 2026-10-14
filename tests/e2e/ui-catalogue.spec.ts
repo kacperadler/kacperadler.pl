@@ -731,6 +731,11 @@ test.describe("button layer and loading (astro dev)", () => {
         }));
         return left + shadowX(shadow);
       };
+      // Mid-viewport, clear of the sticky header, so the pointer reaches it;
+      // instant, as html scrolls smoothly.
+      await button.evaluate((el) =>
+        el.scrollIntoView({ behavior: "instant", block: "center" })
+      );
       const rest = await button.boundingBox();
       if (!rest) {
         throw new Error(`${variant} idle button is not rendered`);
