@@ -1,8 +1,10 @@
 ---
-/* Avatar group: <Avatar>s in the slot overlap by 8px, their ink rules
- * doubling as separators; `count` closes the row with a "+N" square of the
- * same `size` ("i N więcej" for assistive tech). Each avatar keeps its own
- * alt text. */
+/* Avatar group: <Avatar>s of the same `size` in the slot, each overlapping
+ * the one before by a quarter of its side (8 / 12 / 24px). A 2px ring of the
+ * substrate around each one cuts it cleanly out of the one behind. `count`
+ * closes the row with a "+N" square that matches the initials avatar (its
+ * fill, rule, ring and mono size; "i N więcej" for assistive tech). Each
+ * avatar keeps its own alt text. */
 interface Props {
   count?: number;
   size?: "sm" | "default" | "lg";
@@ -23,15 +25,32 @@ const { count, size = "default" } = Astro.props;
 
 <style>
   .mb-avatar-group {
+    --mb-avatar-overlap: 12px;
     display: flex;
     align-items: center;
+    /* Room for the ring of the first one. */
+    padding: 2px;
+  }
+
+  .mb-avatar-group-sm {
+    --mb-avatar-overlap: 8px;
+  }
+
+  .mb-avatar-group-lg {
+    --mb-avatar-overlap: 24px;
+  }
+
+  .mb-avatar-group > :global(*) {
+    outline: 2px solid var(--v2-bg);
   }
 
   .mb-avatar-group > :global(* + *) {
-    margin-left: -8px;
+    margin-left: calc(-1 * var(--mb-avatar-overlap));
   }
 
+  /* Positioned like the avatars, so it paints over the last one. */
   .mb-avatar-count {
+    position: relative;
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
@@ -39,9 +58,10 @@ const { count, size = "default" } = Astro.props;
     width: 48px;
     height: 48px;
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--ink);
+    letter-spacing: 0.02em;
     background: var(--v2-panel-elevated);
     border: 1px solid var(--mb-rule);
   }
@@ -55,6 +75,6 @@ const { count, size = "default" } = Astro.props;
   .mb-avatar-group-lg .mb-avatar-count {
     width: 96px;
     height: 96px;
-    font-size: 22px;
+    font-size: 28px;
   }
 </style>

@@ -55,14 +55,18 @@
   /* Minimal brutalism:
    *   --mb-rule     the 1px ink rule that draws a cell
    *   --mb-hair     the hairline for dividers inside a cell and the page edges
-   *   --mb-shift    the offset of the one hard shadow (the default button, the
-   *                 contact form while it is being filled in)
+   *   --mb-shift    the offset of the one hard shadow (fields in focus, the sent
+   *                 contact form); a button's white layer sits a tighter 2px
+   *                 away, set in button.astro
    *   --mb-snap     every state change: short and linear, a switch, not a drift
+   *   --mb-slide    the two slides that travel: a button's label and spinner
+   *                 swapping while it loads, a card's top rule drawing in and out
    *   --mb-display  headlines in heavy Geist; Geist Mono stays for labels */
   --mb-rule: var(--ink);
   --mb-hair: var(--v2-line);
   --mb-shift: 4px;
   --mb-snap: 0.12s linear;
+  --mb-slide: 0.3s ease-out;
   --mb-display: var(--sans);
   color-scheme: dark;
 }

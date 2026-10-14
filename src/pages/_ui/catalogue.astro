@@ -127,9 +127,11 @@ const checkboxStates = [
 ] as const;
 
 const radioOptions = ["Aplikacja webowa", "Landing page", "Inne"] as const;
+// "pressed" only in the choice row: the default radio has no press look.
 const radioStates = [
   "checked",
   "hover",
+  "pressed",
   "focus-visible",
   "disabled",
   "invalid",
@@ -216,11 +218,16 @@ const linkStates: readonly Forced[] = [
         <code>button.astro</code>
         - warianty <code>default</code>, <code>secondary</code>,
         <code>outline</code>, <code>ghost</code>, <code>destructive</code>,
-        <code>link</code>. Pressed (<code>data-state="pressed"</code>, jak
-        <code>:active</code>): default wpada w swój cień, reszta ciemnieje o
-        krok. Active (klasa <code>.active</code>) to CTA w nagłówku przy sekcji
-        kontaktu, dlatego tylko default. Loading to <code>loading</code>
-        (albo <code>data-state="submitting"</code> z formularza).
+        <code>link</code>. Warianty z ramką stoją na białej warstwie pod spodem,
+        która się nie rusza: hover unosi przycisk o 1px w stronę kursora (widać
+        więcej bieli), pressed (<code>data-state="pressed"</code>, jak
+        <code>:active</code>) kładzie go na warstwę i biel znika. Ghost i link
+        nie mają warstwy - pressed to ciemniejszy blok i grubsze podkreślenie.
+        Active (klasa <code>.active</code>) to CTA w nagłówku przy sekcji
+        kontaktu, dlatego tylko default. Loading to
+        <code>loading</code>
+        (albo <code>data-state="submitting"</code> z formularza): etykieta
+        wyjeżdża w lewo, spinner wjeżdża z prawej, szerokość zostaje.
       </p>
       {buttonRows.map((row) => (
         <div class="mb-ui-row">
@@ -253,6 +260,20 @@ const linkStates: readonly Forced[] = [
           </div>
         </div>
       ))}
+
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Loading na żywo</p>
+        <div class="mb-ui-grid">
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <Button data-loading-demo iconEnd="lucide:arrow-right">
+                Wyślij wiadomość
+              </Button>
+            </div>
+            <p class="mb-ui-caption">kliknij - ładuje się 4 s</p>
+          </div>
+        </div>
+      </div>
 
       <div class="mb-ui-row">
         <p class="mb-ui-row-label">Rozmiary</p>
@@ -488,9 +509,10 @@ const linkStates: readonly Forced[] = [
         <code>src</code>
         inicjały (decyzja w buildzie).
         <code>avatar-group.astro</code>
-        - nachodzące avatary i licznik „+N”.
+        - avatary nachodzą na siebie o ćwierć boku, każdy w pierścieniu tła,
+        licznik „+N” jak avatar z inicjałami.
       </p>
-      <div class="mb-ui-grid">
+      <div class="mb-ui-grid mb-ui-row">
         {(["sm", "default", "lg"] as const).map((size) => (
           <div class="mb-ui-sample">
             <div class="mb-ui-stage">
@@ -524,15 +546,31 @@ const linkStates: readonly Forced[] = [
           </div>
           <p class="mb-ui-caption">badge: ikona</p>
         </div>
-        <div class="mb-ui-sample">
-          <div class="mb-ui-stage">
-            <AvatarGroup count={3}>
-              <Avatar alt="Kacper Adler" src={meImage} />
-              <Avatar alt="Anna Nowak" fallback="AN" />
-              <Avatar alt="Jan Kowalski" fallback="JK" />
-            </AvatarGroup>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Grupa</p>
+        <div class="mb-ui-grid mb-ui-grid-wide">
+          {(["sm", "default"] as const).map((size) => (
+            <div class="mb-ui-sample">
+              <div class="mb-ui-stage">
+                <AvatarGroup count={3} size={size}>
+                  <Avatar alt="Kacper Adler" size={size} src={meImage} />
+                  <Avatar alt="Anna Nowak" fallback="AN" size={size} />
+                  <Avatar alt="Jan Kowalski" fallback="JK" size={size} />
+                </AvatarGroup>
+              </div>
+              <p class="mb-ui-caption">{size}, +3</p>
+            </div>
+          ))}
+          <div class="mb-ui-sample">
+            <div class="mb-ui-stage">
+              <AvatarGroup count={12} size="lg">
+                <Avatar alt="Kacper Adler" size="lg" src={meImage} />
+                <Avatar alt="Anna Nowak" fallback="AN" size="lg" />
+              </AvatarGroup>
+            </div>
+            <p class="mb-ui-caption">lg, +12</p>
           </div>
-          <p class="mb-ui-caption">grupa, +3</p>
         </div>
       </div>
     </section>
@@ -668,9 +706,12 @@ const linkStates: readonly Forced[] = [
       <h2 class="mb-ui-h2" id="mb-radio">Radio</h2>
       <p class="mb-ui-note">
         <code>radio.astro</code>
-        - <code>default</code> (kwadrat) i <code>choice</code> (chip z
-        formularza kontaktowego; ramka i grubość tekstu te same w każdym stanie,
-        więc zaznaczenie nic nie przesuwa). Nieprawidłowy stan z
+        - <code>default</code> (okrągły) i
+        <code>choice</code>
+        (chip z formularza kontaktowego, 36px jak przycisk
+        <code>sm</code>; ramka i grubość tekstu te same w każdym stanie, więc
+        zaznaczenie nic nie przesuwa; zaznaczony i wyłączony zostaje wypełniony,
+        żeby w trakcie wysyłki było widać wybór). Nieprawidłowy stan z
         <code>[data-invalid]</code>
         na polu albo <code>aria-invalid</code>.
       </p>
@@ -678,41 +719,48 @@ const linkStates: readonly Forced[] = [
         <div class="mb-ui-row">
           <p class="mb-ui-row-label">{variant}</p>
           <div class="mb-ui-grid mb-ui-grid-wide">
-            {radioStates.map((state) => (
-              <div class="mb-ui-sample">
-                <div
-                  aria-label={`Typ projektu (${variant}, ${state})`}
-                  class:list={[
-                    "mb-ui-radios",
-                    { "mb-ui-radios-column": variant === "default" },
-                  ]}
-                  role="radiogroup"
-                >
-                  {/* Only the first option carries a forced state, as one
-                   * pointer or one keyboard focus would. */}
-                  {radioOptions.map((option, i) => (
-                    <Radio
-                      aria-invalid={state === "invalid" ? "true" : undefined}
-                      checked={
-                        i === 0 && state !== "hover" && state !== "invalid"
-                      }
-                      disabled={state === "disabled"}
-                      label={option}
-                      name={`mb-radio-${variant}-${state}`}
-                      state={
-                        i === 0 &&
-                        (state === "hover" || state === "focus-visible")
-                          ? state
-                          : undefined
-                      }
-                      value={option}
-                      variant={variant}
-                    />
-                  ))}
+            {radioStates
+              .filter((state) => variant === "choice" || state !== "pressed")
+              .map((state) => (
+                <div class="mb-ui-sample">
+                  <div
+                    aria-label={`Typ projektu (${variant}, ${state})`}
+                    class:list={[
+                      "mb-ui-radios",
+                      { "mb-ui-radios-column": variant === "default" },
+                    ]}
+                    role="radiogroup"
+                  >
+                    {/* Only the first option carries a forced state, as one
+                     * pointer or one keyboard focus would. */}
+                    {radioOptions.map((option, i) => (
+                      <Radio
+                        aria-invalid={state === "invalid" ? "true" : undefined}
+                        checked={
+                          i === 0 &&
+                          state !== "hover" &&
+                          state !== "pressed" &&
+                          state !== "invalid"
+                        }
+                        disabled={state === "disabled"}
+                        label={option}
+                        name={`mb-radio-${variant}-${state}`}
+                        state={
+                          i === 0 &&
+                          (state === "hover" ||
+                            state === "pressed" ||
+                            state === "focus-visible")
+                            ? state
+                            : undefined
+                        }
+                        value={option}
+                        variant={variant}
+                      />
+                    ))}
+                  </div>
+                  <p class="mb-ui-caption">{state}</p>
                 </div>
-                <p class="mb-ui-caption">{state}</p>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       ))}
@@ -1121,7 +1169,8 @@ const linkStates: readonly Forced[] = [
       <p class="mb-ui-note">
         <code>card.astro</code>
         - komórka w linii tuszu; hover rozjaśnia ją od środka (jaśniejszy panel,
-        niebieska linia u góry) i nic nie przesuwa. Części to sloty:
+        niebieska linia u góry, która wjeżdża z lewej i wyjeżdża w prawo) i nic
+        nie przesuwa. Części to sloty:
         <code>image</code>, <code>title</code>, <code>description</code>,
         <code>action</code>, treść, <code>footer</code>.
         <code>cell-grid.astro</code>
@@ -1354,7 +1403,8 @@ console.log(greeting);</code></pre>
         <code>contact-form.ts</code>
         (tu nie jest ładowany - stany są wymuszone, nic nie trafia do NocoDB).
         Focus to email w stanie
-        <code>data-state="focus"</code>: arkusz dostaje twardy cień.
+        <code>data-state="focus"</code>: świeci tylko pole, nie cały arkusz. W
+        stanie <code>submitting</code> pola, wybór typu i przycisk są wyłączone.
       </p>
       <div class="mb-ui-grid mb-ui-grid-form">
         {formStates.map((sample) => (
@@ -1371,6 +1421,33 @@ console.log(greeting);</code></pre>
     </section>
   </div>
 </div>
+
+<script>
+  // The live loading sample: the attributes contact-form.ts sets while a
+  // form sends, cleared again after 4 s. Document-delegated, so it also
+  // works on /ui/proposal/<id>, which renders this catalogue.
+  const LOADING_DEMO_MS = 4000;
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+    const button = event.target.closest<HTMLButtonElement>(
+      "button[data-loading-demo]"
+    );
+    if (!button || button.disabled) {
+      return;
+    }
+    button.dataset.state = "submitting";
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    setTimeout(() => {
+      delete button.dataset.state;
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+    }, LOADING_DEMO_MS);
+  });
+</script>
 
 <style>
   .mb-ui {

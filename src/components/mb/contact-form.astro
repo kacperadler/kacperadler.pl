@@ -14,11 +14,12 @@ import Textarea from "./textarea.astro";
  * [data-contact-form], [data-field], [data-submit], [data-form-error],
  * [data-form-success], [data-form-reset], the "website" honeypot.
  *
- * The sheet fills in on hover; while the email or the message is being
- * written in (and after it is sent) it carries the hard blue shadow, like
- * the default button. The radios are left out of that on purpose, so a
- * click on a project type does not flicker it. min-height keeps the page
- * from jumping when the success card replaces the form.
+ * The sheet fills in on hover; after it is sent it carries the hard blue
+ * shadow, like the default button's layer. Focusing a field lights only
+ * that field. While it is sending, contact-form.ts disables every field
+ * and the submit button; `state` "submitting" renders them disabled too.
+ * min-height keeps the page from jumping when the success card replaces
+ * the form.
  *
  * For the catalogue (/ui), which shows every state at once:
  *   state       the wrapper's starting data-state, with the fields, the
@@ -72,6 +73,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
       <Input
         autocomplete="email"
         data-state={forceFocus ? "focus" : undefined}
+        disabled={submitting}
         id={id("email")}
         name="email"
         placeholder="twoj@email.pl"
@@ -89,6 +91,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
       <div aria-label="Typ projektu" class="mb-radios" role="radiogroup">
         {projectTypes.map((option) => (
           <Radio
+            disabled={submitting}
             label={option.label}
             name="type"
             value={option.value}
@@ -106,6 +109,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
       name="message"
     >
       <Textarea
+        disabled={submitting}
         id={id("message")}
         name="message"
         placeholder="Opisz krótko, o co chodzi - zakres, deadline, jeśli znane. 2–3 zdania wystarczą, żeby zacząć rozmowę."
@@ -183,11 +187,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
     background: var(--v2-panel);
   }
 
-  .mb-contact-form:is(
-    :has(:global(input[type="email"]:is(:focus, [data-state="focus"]))),
-    :has(:global(textarea:is(:focus, [data-state="focus"]))),
-    [data-state="success"]
-  ) {
+  .mb-contact-form[data-state="success"] {
     background: var(--v2-panel);
     box-shadow: var(--mb-shift) var(--mb-shift) 0 var(--blue);
   }

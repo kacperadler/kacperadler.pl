@@ -6,6 +6,9 @@
  *       idle | submitting | error-validation | error-submit | success
  *   - [data-submit] button - drives button styling; mirrors the
  *     wrapper state but maps both error variants to "error".
+ * While "submitting", every input, textarea and button of the form is
+ * disabled, so nothing can be edited until the request settles; any
+ * other state enables them again.
  *
  * Submit flow: validate client-side, drop silently if the honeypot
  * is filled, then POST the payload to NocoDB's public shared form
@@ -58,6 +61,11 @@ function setState(form: HTMLFormElement, state: WrapState): void {
   if (wrap) {
     wrap.dataset.state = state;
   }
+  for (const control of form.querySelectorAll<
+    HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement
+  >("input, textarea, button")) {
+    control.disabled = state === "submitting";
+  }
   const submit = form.querySelector<HTMLButtonElement>("[data-submit]");
   if (submit) {
     const buttonState =
@@ -65,7 +73,6 @@ function setState(form: HTMLFormElement, state: WrapState): void {
         ? "error"
         : state;
     submit.dataset.state = buttonState;
-    submit.disabled = state === "submitting";
     submit.setAttribute("aria-busy", state === "submitting" ? "true" : "false");
   }
 }

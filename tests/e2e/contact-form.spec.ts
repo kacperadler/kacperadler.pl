@@ -305,6 +305,80 @@ test.describe("contact form", () => {
     ]);
   });
 
+  test("nothing in the form can be edited while it sends, and all of it comes back after", async ({
+    page,
+  }) => {
+    // Hold the NocoDB request until the disabled form has been checked.
+    const { promise: held, resolve: release } = Promise.withResolvers<void>();
+    await page.route(NOCODB_FORM_URL, async (route) => {
+      await held;
+      await route.fulfill({
+        body: JSON.stringify({ msg: "Something didn't work as expected." }),
+        contentType: "application/json",
+        status: 500,
+      });
+    });
+
+    await page.goto("/#contact");
+    await page.waitForLoadState("networkidle");
+
+    const email = page.locator('[data-contact-form] input[name="email"]');
+    const message = page.locator(
+      '[data-contact-form] textarea[name="message"]'
+    );
+    const types = page.locator('[data-contact-form] input[name="type"]');
+    const submit = page.locator("[data-contact-form] [data-submit]");
+    await email.fill("kacper@example.com");
+    await pickType(page, "webapp");
+    await message.fill("Wysyłam i czekam");
+
+    try {
+      await submit.click();
+      await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+        "data-state",
+        "submitting"
+      );
+      await expect(email).toBeDisabled();
+      await expect(message).toBeDisabled();
+      await expect(submit).toBeDisabled();
+      expect(await types.count()).toBe(6);
+      for (const type of await types.all()) {
+        // biome-ignore lint/performance/noAwaitInLoops: one radio at a time
+        await expect(type).toBeDisabled();
+      }
+      // The disabled look: fields on the flat panel, the chosen type a
+      // muted block.
+      await expect(email).toHaveCSS("background-color", "rgb(20, 23, 28)");
+      await expect(message).toHaveCSS("background-color", "rgb(20, 23, 28)");
+      await expect(
+        page
+          .locator("[data-contact-form] label", {
+            has: page.locator('input[value="webapp"]'),
+          })
+          .locator(".mb-radio-label")
+      ).toHaveCSS("background-color", "rgb(157, 156, 149)");
+    } finally {
+      release();
+    }
+
+    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+      "data-state",
+      "error-submit"
+    );
+    await expect(email).toBeEnabled();
+    await expect(message).toBeEnabled();
+    await expect(submit).toBeEnabled();
+    for (const type of await types.all()) {
+      // biome-ignore lint/performance/noAwaitInLoops: one radio at a time
+      await expect(type).toBeEnabled();
+    }
+    await expect(email).toHaveValue("kacper@example.com");
+    await expect(message).toHaveValue("Wysyłam i czekam");
+    await expect(
+      page.locator('[data-contact-form] input[value="webapp"]')
+    ).toBeChecked();
+  });
+
   test("honeypot fill silently drops the request and shows success", async ({
     page,
   }) => {
