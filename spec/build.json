@@ -661,8 +661,18 @@
   {
     "id": "KA0083",
     "title": "The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0083-the-ui-components-get-the-feedback-of-2026-10-14-buttons-loading-avatars-radio-choice-card-contact-form/ticket.md",
-    "updated": "2026-10-14T10:07:20.178Z"
+    "updated": "2026-10-14T10:52:23.655Z"
+  },
+  {
+    "id": "KA0084",
+    "title": "The card bar slides in and out in the direction the cursor moves",
+    "status": "planning",
+    "path": "spec/features/KA0084-the-card-bar-slides-in-and-out-in-the-direction-the-cursor-moves/ticket.md",
+    "updated": "2026-10-14T11:05:09.535Z",
+    "after": [
+      "KA0083"
+    ]
   }
 ]

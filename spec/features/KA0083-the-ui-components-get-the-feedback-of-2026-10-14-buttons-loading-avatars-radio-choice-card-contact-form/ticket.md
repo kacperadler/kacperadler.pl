@@ -50,3 +50,4 @@ Out:
 - 2026-10-14: Plan approved by the human: plan.md at e625165. Open questions taken as the plan has them: ghost and link get no layer, only a clearer press; the form sheet keeps its hover fill.
 - 2026-10-14: The human clicked through http://agent:4323: the white layer under the button must be static; today it reads as moving with the button (it is the face's box-shadow). Make it an element that does not move.
 - 2026-10-14: The human: the gap between the button and the white layer is too big (fast clicks make the button jump; make it smaller and the press quick); in the Outline variant the layer shows in front of the button and must stay behind it.
+- 2026-10-14: The human checked http://agent:4323 after the static layer fix: looks OK; review next.
