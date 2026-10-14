@@ -1,9 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <rect width="128" height="128" rx="46" ry="46" fill="#8eaed8"/>
-  <text x="64" y="86"
-    font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-    font-size="60"
-    font-weight="600"
-    fill="#0f1116"
-    text-anchor="middle">k</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" shape-rendering="crispEdges">
+  <rect width="28" height="28" fill="#ece7dc"/>
+  <rect x="1" y="1" width="26" height="26" fill="#8eaed8"/>
+  <path shape-rendering="geometricPrecision" fill="#0a0c10" d="M9.92 19.33L9.92 8.67L12.5 8.67L12.5 14.23L15.18 11.26L18.24 11.26L15.11 14.54L18.32 19.33L15.53 19.33L13.46 15.97L12.5 16.99L12.5 19.33Z"/>
 </svg>

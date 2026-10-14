@@ -1,0 +1,68 @@
+---
+import { Icon } from "astro-icon/components";
+import Card from "./card.astro";
+
+/* Contact link: a whole `sm` <Card> as the link (email, LinkedIn in the
+ * contact section) - a blue icon, the mono caps label, and the value (the
+ * slot) pushed to the right; when the cell is narrow the value wraps under
+ * them and breaks anywhere rather than widen the page. Hover, press and
+ * focus are the card's ([data-state] forces them on /ui). `newTab` opens
+ * it in a new tab, without an opener. */
+interface Props {
+  href: string;
+  icon: string;
+  label: string;
+  newTab?: boolean;
+  [attribute: `data-${string}`]: unknown;
+}
+
+const { href, icon, label, newTab = false, ...rest } = Astro.props;
+---
+
+<Card
+  href={href}
+  rel={newTab ? "noopener" : undefined}
+  size="sm"
+  tag="a"
+  target={newTab ? "_blank" : undefined}
+  {...rest}
+>
+  <span class="mb-contact-link">
+    <Icon aria-hidden="true" class="mb-contact-icon" name={icon} />
+    <span class="mb-contact-label">{label}</span>
+    <span class="mb-contact-value"><slot /></span>
+  </span>
+</Card>
+
+<style>
+  .mb-contact-link {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    align-items: center;
+  }
+
+  .mb-contact-link :global(.mb-contact-icon) {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--blue);
+  }
+
+  .mb-contact-label {
+    margin-right: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .mb-contact-value {
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+</style>

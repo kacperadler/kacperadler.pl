@@ -4,6 +4,7 @@ import { processSteps } from "@/data/process";
 import Badge from "../badge.astro";
 import Card from "../card.astro";
 import SectionHead from "../section-head.astro";
+import StepMarker from "../step-marker.astro";
 
 /* Process (#how): the steps stack into one ruled column beside a 1px ink
  * rail with square numbered marks; a mark fills blue with its step, the
@@ -23,9 +24,7 @@ import SectionHead from "../section-head.astro";
     <ol class="mb-how-steps">
       {processSteps.map((step) => (
         <li class="mb-step">
-          <div aria-hidden="true" class="mb-step-marker">
-            <span class="mb-step-dot">{step.num}</span>
-          </div>
+          <StepMarker num={step.num} />
           <Card tag="div">
             <div class="mb-step-head">
               <Icon aria-hidden="true" class="mb-step-icon" name={step.icon} />
@@ -63,59 +62,6 @@ import SectionHead from "../section-head.astro";
 
   .mb-step + .mb-step {
     margin-top: -1px;
-  }
-
-  .mb-step-marker {
-    position: relative;
-    display: flex;
-    justify-content: center;
-  }
-
-  .mb-step-marker::before {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 1px;
-    content: "";
-    background: var(--mb-rule);
-  }
-
-  /* The rail runs from the first mark to the last. */
-  .mb-step:first-child .mb-step-marker::before {
-    top: var(--v2-space-lg);
-  }
-
-  .mb-step:last-child .mb-step-marker::before {
-    bottom: auto;
-    height: var(--v2-space-lg);
-  }
-
-  .mb-step-dot {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    margin-top: var(--v2-space-lg);
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
-    background: var(--v2-bg);
-    border: 1px solid var(--mb-rule);
-    transition:
-      background-color var(--mb-snap),
-      border-color var(--mb-snap),
-      color var(--mb-snap);
-  }
-
-  .mb-step:has(:global(.mb-card:is(:hover, [data-state="hover"])))
-    .mb-step-dot {
-    color: var(--v2-bg);
-    background: var(--blue);
-    border-color: var(--blue);
   }
 
   .mb-step-head {
@@ -157,27 +103,6 @@ import SectionHead from "../section-head.astro";
     .mb-step {
       grid-template-columns: 40px minmax(0, 1fr);
       gap: 12px;
-    }
-
-    .mb-step-dot {
-      width: 36px;
-      height: 36px;
-      margin-top: var(--v2-space-md);
-      font-size: 13px;
-    }
-
-    .mb-step:first-child .mb-step-marker::before {
-      top: var(--v2-space-md);
-    }
-
-    .mb-step:last-child .mb-step-marker::before {
-      height: var(--v2-space-md);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .mb-step-dot {
-      transition: none;
     }
   }
 </style>

@@ -1,9 +1,8 @@
 ---
-import { Icon } from "astro-icon/components";
 import { siteConfig } from "@/data/site-config";
-import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
 import ContactForm from "../contact-form.astro";
+import ContactLink from "../contact-link.astro";
 import SectionHead from "../section-head.astro";
 
 /* Contact (#contact): the two links and the form close into one sheet,
@@ -23,34 +22,21 @@ import SectionHead from "../section-head.astro";
 
     <div class="mb-contact-sheet">
       <CellGrid min="280px">
-        <Card href={`mailto:${siteConfig.email}`} size="sm" tag="a">
-          <span class="mb-contact-link">
-            <Icon
-              aria-hidden="true"
-              class="mb-contact-icon"
-              name="lucide:mail"
-            />
-            <span class="mb-contact-label">Email</span>
-            <span class="mb-contact-value">{siteConfig.email}</span>
-          </span>
-        </Card>
-        <Card
-          href={siteConfig.social.linkedin}
-          rel="noopener"
-          size="sm"
-          tag="a"
-          target="_blank"
+        <ContactLink
+          href={`mailto:${siteConfig.email}`}
+          icon="lucide:mail"
+          label="Email"
         >
-          <span class="mb-contact-link">
-            <Icon
-              aria-hidden="true"
-              class="mb-contact-icon"
-              name="lucide:linkedin"
-            />
-            <span class="mb-contact-label">LinkedIn</span>
-            <span class="mb-contact-value">/in/kacperadler</span>
-          </span>
-        </Card>
+          {siteConfig.email}
+        </ContactLink>
+        <ContactLink
+          href={siteConfig.social.linkedin}
+          icon="lucide:linkedin"
+          label="LinkedIn"
+          newTab
+        >
+          /in/kacperadler
+        </ContactLink>
       </CellGrid>
 
       <div class="mb-contact-form-host">
@@ -67,37 +53,6 @@ import SectionHead from "../section-head.astro";
 
   .mb-contact-sheet {
     max-width: 720px;
-  }
-
-  .mb-contact-link {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 14px;
-    align-items: center;
-  }
-
-  .mb-contact-link :global(.mb-contact-icon) {
-    flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    color: var(--blue);
-  }
-
-  .mb-contact-label {
-    margin-right: auto;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-2);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .mb-contact-value {
-    min-width: 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
-    overflow-wrap: anywhere;
   }
 
   .mb-contact-form-host {

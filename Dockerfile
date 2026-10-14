@@ -9,10 +9,10 @@
 FROM oven/bun:1.4.3-alpine AS build
 WORKDIR /app
 
-# Sharp + librsvg need fontconfig and at least one sans font installed
-# in the build environment - otherwise the SVG <text> in
-# og-default.png.ts renders as tofu boxes. DejaVu Sans covers Polish
-# diacritics that the tagline needs (ąćęłńóśźż).
+# Sharp + librsvg need fontconfig in the build environment. The sans text
+# in og-default.png.ts is Geist from src/assets/fonts; the mono labels use
+# DejaVu Sans Mono, which covers the Polish diacritics (ąćęłńóśźż) -
+# without an installed font they render as tofu boxes.
 RUN apk add --no-cache fontconfig ttf-dejavu
 
 # Copy manifest + lockfile first so dependency install caches separately

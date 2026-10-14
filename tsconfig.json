@@ -16,5 +16,10 @@
     "noUncheckedIndexedAccess": true
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "dist-no-case-studies"]
+  "exclude": [
+    "dist",
+    "dist-no-case-studies",
+    "playwright-report",
+    "test-results"
+  ]
 }
