@@ -730,9 +730,9 @@
   {
     "id": "KA0092",
     "title": "Parallel e2e runs from two worktrees can take the same preview port",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0092-parallel-e2e-runs-from-two-worktrees-can-take-the-same-preview-port/ticket.md",
-    "updated": "2026-10-14T18:31:50.037Z"
+    "updated": "2026-10-14T18:54:15.149Z"
   },
   {
     "id": "KA0093",
