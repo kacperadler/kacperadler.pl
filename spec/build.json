@@ -202,9 +202,9 @@
   {
     "id": "KA0027",
     "title": "Leads stored in SQLite through one on-demand API route",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0027-leads-stored-in-sqlite-through-one-on-demand-api-route/ticket.md",
-    "updated": "2026-10-14T14:33:40.363Z"
+    "updated": "2026-10-14T14:55:13.436Z"
   },
   {
     "id": "KA0028",
@@ -623,9 +623,9 @@
   {
     "id": "KA0078",
     "title": "Pagination jump needs a page that reads its query",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0078-pagination-jump-needs-a-page-that-reads-its-query/ticket.md",
-    "updated": "2026-10-14T14:36:59.293Z"
+    "updated": "2026-10-14T14:45:24.371Z"
   },
   {
     "id": "KA0079",
@@ -705,5 +705,12 @@
     "status": "planning",
     "path": "spec/features/KA0088-the-move-under-no-preference-motion-test-races-the-transitions-it-looks-for/ticket.md",
     "updated": "2026-10-14T14:38:54.384Z"
+  },
+  {
+    "id": "KA0089",
+    "title": "/api/lead has no rate limit: a script can fill the database and the inbox",
+    "status": "planned",
+    "path": "spec/features/KA0089-api-lead-has-no-rate-limit-a-script-can-fill-the-database-and-the-inbox/ticket.md",
+    "updated": "2026-10-14T14:55:31.596Z"
   }
 ]

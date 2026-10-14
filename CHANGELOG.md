@@ -6,6 +6,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 
 ### Added
 
+- KA0027 Leads stored in SQLite through one on-demand API route (ca675a8)
 - KA0054 Patterns not yet in the catalogue (4759f70)
 - KA0073 The OG image still draws the old design (4f06881)
 - KA0083 The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form (d2b3973)
