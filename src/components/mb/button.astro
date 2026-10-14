@@ -6,8 +6,8 @@ import Spinner from "./spinner.astro";
  *   default      blue block in an ink rule; hover: lighter blue; `.active`
  *                (the header CTA at #contact): an ink block with no layer -
  *                pressed flat, you are there
- *   secondary    a raised panel in a hairline; hover: the ink rule; press:
- *                the flat panel
+ *   secondary    a raised panel in a hairline; hover: only the lift, the
+ *                hairline stays; press: the flat panel
  *   outline      an ink rule; hover: the lit cell (panel-elevated); press:
  *                an ink-2 block
  *   ghost        no rule; hover: the raised panel; press: an ink-2 block
@@ -336,10 +336,6 @@ const busy = loading ? "true" : undefined;
   .mb-btn-secondary {
     --mb-btn-fill: var(--v2-panel-elevated);
     --mb-btn-rule: var(--mb-hair);
-  }
-
-  .mb-btn-secondary:is(:hover, [data-state="hover"]) {
-    --mb-btn-rule: var(--mb-rule);
   }
 
   /* A solid face on the substrate, so the layer never shows through it. */

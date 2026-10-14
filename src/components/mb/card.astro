@@ -1,11 +1,15 @@
 ---
 /* Card: a cell drawn by a 1px ink rule on the substrate. Hover lights it
- * from inside - a lighter panel, and a 3px blue top rule that draws in from
- * the left and, on the way out, leaves to the right (left to right both
- * times, at `--mb-slide`) - and moves nothing; [data-state="hover"] forces
- * it on the catalogue page (/ui). A card that is a link (`tag` "a") presses
- * to the flat panel ([data-state="pressed"]) and its focus ring grows out
- * of the edge.
+ * from inside - a lighter panel, and a 3px blue top rule that slides in and
+ * out at `--mb-slide` - and moves nothing; [data-state="hover"] forces it on
+ * the catalogue page (/ui). The rule follows a mouse: it draws in from the
+ * side edge nearer where the pointer came in and leaves toward the side
+ * nearer where it went out (through the top or bottom, the nearer side by
+ * horizontal position), so a sweep across a grid reads as one movement
+ * either way. Without a mouse (touch, pen, keyboard, no JavaScript) it draws
+ * in from the left and leaves to the right. A card that is a link (`tag`
+ * "a") presses to the flat panel ([data-state="pressed"]) and its focus ring
+ * grows out of the edge.
  *
  * shadcn's parts are named slots: "image" (full bleed on top), "title" (in
  * `titleAs`, h3 by default), "description", "action" (beside the title),
@@ -78,6 +82,71 @@ const hasHeader = has("title") || has("description") || has("action");
   )}
 </Tag>
 
+<script>
+  // Turns the top rule's two ends for a mouse: data-bar-in="right" grows it
+  // from the right, data-bar-out="left" gathers it at the left. The entry
+  // side lives only while the pointer is in, the exit side until the rule
+  // has slid out, so touch, pen and keyboard always meet the CSS default
+  // (in from the left, out to the right). Under reduced motion the rule
+  // does not slide, so nothing is turned. Delegated from document in the
+  // capture phase (pointerenter and pointerleave do not bubble), so cards
+  // swapped in by ClientRouter work too.
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+  const cardOf = (event: Event) =>
+    event.target instanceof HTMLElement &&
+    event.target.classList.contains("mb-card")
+      ? event.target
+      : null;
+
+  const nearerSide = (card: HTMLElement, x: number) => {
+    const box = card.getBoundingClientRect();
+    return x < box.left + box.width / 2 ? "left" : "right";
+  };
+
+  document.addEventListener(
+    "pointerenter",
+    (event) => {
+      const card = cardOf(event);
+      if (!card) {
+        return;
+      }
+      delete card.dataset.barOut;
+      if (event.pointerType === "mouse" && !reducedMotion.matches) {
+        card.dataset.barIn = nearerSide(card, event.clientX);
+      }
+    },
+    true
+  );
+
+  document.addEventListener(
+    "pointerleave",
+    (event) => {
+      const card = cardOf(event);
+      if (!card) {
+        return;
+      }
+      delete card.dataset.barIn;
+      if (event.pointerType === "mouse" && !reducedMotion.matches) {
+        card.dataset.barOut = nearerSide(card, event.clientX);
+      }
+    },
+    true
+  );
+
+  document.addEventListener("transitionend", (event) => {
+    const card = cardOf(event);
+    if (
+      card &&
+      event.pseudoElement === "::before" &&
+      event.propertyName === "transform" &&
+      !card.matches(":hover")
+    ) {
+      delete card.dataset.barOut;
+    }
+  });
+</script>
+
 <style>
   .mb-card {
     --mb-card-pad: var(--v2-space-lg);
@@ -99,7 +168,8 @@ const hasHeader = has("title") || has("description") || has("action");
   }
 
   /* At rest the rule is gathered at the right edge, so it leaves that way;
-   * hovered it grows from the left. */
+   * hovered it grows from the left. The script above turns either end for
+   * a mouse. */
   .mb-card::before {
     position: absolute;
     top: 0;
@@ -114,6 +184,10 @@ const hasHeader = has("title") || has("description") || has("action");
     transition: transform var(--mb-slide);
   }
 
+  .mb-card[data-bar-out="left"]::before {
+    transform-origin: left center;
+  }
+
   .mb-card:is(:hover, [data-state="hover"]) {
     background: var(--v2-panel-elevated);
   }
@@ -121,6 +195,10 @@ const hasHeader = has("title") || has("description") || has("action");
   .mb-card:is(:hover, [data-state="hover"])::before {
     transform: scaleX(1);
     transform-origin: left center;
+  }
+
+  .mb-card[data-bar-in="right"]:is(:hover, [data-state="hover"])::before {
+    transform-origin: right center;
   }
 
   a.mb-card:is(:active, [data-state="pressed"]) {

@@ -12,7 +12,8 @@ import Label from "./label.astro";
  *   - `orientation`: vertical (label above), horizontal (label beside), or
  *     responsive (beside once the field is at least 480px wide, through a
  *     container query).
- *   - `required` marks the label; the control carries `required` itself. */
+ *   - `required` marks the label with a coral (`--error`) asterisk; the
+ *     control carries `required` itself. */
 interface Props {
   description?: string;
   disabled?: boolean;
@@ -102,7 +103,7 @@ const {
 
   .mb-field-required {
     margin-left: 4px;
-    color: var(--blue);
+    color: var(--error);
   }
 
   .mb-field-description {
