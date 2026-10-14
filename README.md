@@ -69,7 +69,7 @@ Formularz kontaktowy (`src/scripts/contact-form.ts`) wysyła JSON `{ email, type
 
 - Wypełniony honeypot (`website`) → 200, nic nie zapisane.
 - Złe pola → 400; lead nie da się zapisać → 500 (formularz pokazuje błąd).
-- Więcej niż 5 postów na minutę z jednego IP (z burstem 5 naraz) → 429 od nginx (`limit_req` w `nginx.conf`), zanim żądanie dotrze do Node; formularz pokazuje błąd wysyłki. IP klienta nginx bierze z ostatniego adresu w `X-Forwarded-For`, który dopisuje Traefik, ale tylko gdy żądanie przyszło z `10.0.0.0/8` (sieć `dokploy-network`); z innego adresu nagłówek jest ignorowany, więc skrypt nie podszyje się pod nowy adres przy każdym poście.
+- Więcej niż 5 postów na minutę z jednego IP (wszystkie 5 mogą przyjść naraz, szósty od razu dostaje 429) → 429 od nginx (`limit_req` w `nginx.conf`), zanim żądanie dotrze do Node; formularz pokazuje błąd wysyłki. IP klienta nginx bierze z ostatniego adresu w `X-Forwarded-For`, który dopisuje Traefik, ale tylko gdy żądanie przyszło z `10.0.0.0/8` (sieć `dokploy-network`); z innego adresu nagłówek jest ignorowany, więc skrypt nie podszyje się pod nowy adres przy każdym poście.
 - Mail nie poszedł albo nie jest skonfigurowany → tylko wpis w logach; lead zostaje zapisany, odwiedzający widzi sukces.
 - Mail zawiera tylko numer leada, typ projektu i godzinę - bez emaila i treści odwiedzającego (polityka prywatności mówi, że nie ma zewnętrznych procesorów danych). Lead czytasz z bazy.
 - Logi niosą tylko numer leada: `[lead] saved #<id>`.

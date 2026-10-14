@@ -204,10 +204,10 @@ test.afterAll(() => {
 });
 
 test.describe("/api/ rate limit behind nginx", () => {
-  test("a client's 7th post at once gets 429, another client is unaffected", () => {
-    const flooder = Array.from({ length: 8 }, () => "203.0.113.10");
+  test("a client's 6th post at once gets 429, another client is unaffected", () => {
+    const flooder = Array.from({ length: 7 }, () => "203.0.113.10");
     expect(statuses(trustedUrl, flooder)).toEqual([
-      200, 200, 200, 200, 200, 200, 429, 429,
+      200, 200, 200, 200, 200, 429, 429,
     ]);
 
     expect(statuses(trustedUrl, ["203.0.113.11"])).toEqual([200]);
