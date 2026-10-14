@@ -797,6 +797,16 @@ test.describe("blueprint-live: the drawing as you scroll (astro dev)", () => {
       (box?.y ?? 0) + (box?.height ?? 0) / 2
     );
     await expect(card).not.toHaveCSS("border-top-color", NO_COLOR);
+    // The tag turns blue on a --mb-snap transition: read it once that is
+    // done, not on the way (a loaded run caught it at 3.7:1 contrast).
+    await card.evaluate((el) =>
+      Promise.all(
+        el
+          .getAnimations({ subtree: true })
+          .filter((a) => a instanceof CSSTransition)
+          .map((a) => a.finished)
+      )
+    );
     const tag = await blueprintTag(card);
     expectReadable(tag);
     expect(tag.content).toContain("↔");
