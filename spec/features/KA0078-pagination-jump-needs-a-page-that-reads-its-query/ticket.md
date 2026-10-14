@@ -37,3 +37,4 @@ In:
 - 2026-10-10: Source: F1 of KA0071
 - 2026-10-14: The human approved the ticket.
 - 2026-10-14: The human: limit the ?strona= redirect to the paginated lists (/blog/, /realizacje/ and their pages), not every path; other paths keep serving as before.
+- 2026-10-14: The human said merge.

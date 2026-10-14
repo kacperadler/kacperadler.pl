@@ -709,8 +709,8 @@
   {
     "id": "KA0089",
     "title": "/api/lead has no rate limit: a script can fill the database and the inbox",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0089-api-lead-has-no-rate-limit-a-script-can-fill-the-database-and-the-inbox/ticket.md",
-    "updated": "2026-10-14T14:55:42.576Z"
+    "updated": "2026-10-14T17:27:12.293Z"
   }
 ]
