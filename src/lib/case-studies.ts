@@ -5,7 +5,7 @@ export type CaseStudy = CollectionEntry<"caseStudies">;
 export const caseStudyPath = (caseStudy: CaseStudy): string =>
   `/realizacje/${caseStudy.id}/`;
 
-/* Case studies keyed by the id of the "Z kim pracowałem" entry they belong
+/* Case studies keyed by the id of the experience entry they belong
  * to. Astro only logs a reference to a missing entry, and two case studies
  * on one entry would leave it with two links, so both fail the build. */
 export async function caseStudiesByExperience(): Promise<
@@ -36,7 +36,7 @@ export async function caseStudiesByExperience(): Promise<
   return byExperience;
 }
 
-/* All case studies in the order of their "Z kim pracowałem" entries; ones
+/* All case studies in the order of their experience entries; ones
  * without an entry follow, by company. */
 export async function sortedCaseStudies(): Promise<CaseStudy[]> {
   const order = new Map(

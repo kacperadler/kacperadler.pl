@@ -1,8 +1,7 @@
 /* Active nav link tracking via IntersectionObserver - no scroll
- * listener. A [data-nav-link] to a section of this page ("/#how" on the
- * home page) is tracked: the section that's most-visible gets `.active` on
- * its link. Page links ("/realizacje/") are left alone; nav.astro marks
- * the current one at build time.
+ * listener. Every [data-nav-link] points at a home page section ("/#how");
+ * on the home page the section that's most-visible gets `.active` on its
+ * link. On other pages the links lead back home and nothing is tracked.
  *
  * Special case from the prototype: when the user is in the contact
  * section, ALL primary links lose `.active` and the contact CTA

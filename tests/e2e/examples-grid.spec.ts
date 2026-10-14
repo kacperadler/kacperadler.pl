@@ -12,9 +12,9 @@ interface Box {
 const TOLERANCE = 2;
 
 async function gridAndCards(page: Page) {
-  const grid = await page.locator("#services .mb-cell-grid").boundingBox();
+  const grid = await page.locator("#examples .mb-cell-grid").boundingBox();
   const cards = await page
-    .locator("#services .mb-cell-grid > .mb-card")
+    .locator("#examples .mb-cell-grid > .mb-card")
     .evaluateAll((els) =>
       els.map((el) => {
         const r = el.getBoundingClientRect();
@@ -22,12 +22,12 @@ async function gridAndCards(page: Page) {
       })
     );
   if (!grid) {
-    throw new Error("services grid is not rendered");
+    throw new Error("examples grid is not rendered");
   }
   return { cards, grid };
 }
 
-test.describe("services grid", () => {
+test.describe("examples grid", () => {
   test("desktop: two cells a row, every row (a lone last cell too) spans the grid", async ({
     page,
   }) => {

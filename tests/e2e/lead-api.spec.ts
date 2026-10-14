@@ -19,7 +19,7 @@ const ENV_KEYS = [
 const LEAD = {
   email: "jan.kowalski@example.com",
   message: "Potrzebuję agenta AI do obsługi zgłoszeń.",
-  type: "ai",
+  type: "audit",
   website: "",
 };
 
@@ -121,7 +121,7 @@ test.describe("POST /api/lead", () => {
     };
     expect(sent.from).toBe("Strona <leady@kacperadler.pl>");
     expect(sent.to).toEqual(["kacper@example.com"]);
-    expect(sent.subject).toBe("Nowy lead #1 - AI i automatyzacje");
+    expect(sent.subject).toBe("Nowy lead #1 - Audyt AI");
     expect(sent.text).toContain("#1");
     for (const part of [sent.subject, sent.text]) {
       expect(part).not.toContain(LEAD.email);

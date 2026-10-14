@@ -26,9 +26,8 @@ const {
   noindex = false,
 } = Astro.props;
 
-const fullTitle = title
-  ? `${title} - ${siteConfig.name}`
-  : `${siteConfig.name} - ${siteConfig.role}`;
+const fullTitle = title ? `${title} - ${siteConfig.name}` : siteConfig.title;
+const ogTitle = title ? fullTitle : siteConfig.ogTitle;
 
 const canonical = new URL(
   Astro.url.pathname,
@@ -68,7 +67,7 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
 >
 
 <meta content="website" property="og:type">
-<meta content={fullTitle} property="og:title">
+<meta content={ogTitle} property="og:title">
 <meta content={description} property="og:description">
 <meta content={canonical} property="og:url">
 <meta content={ogImageUrl} property="og:image">
@@ -76,7 +75,7 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
 <meta content={siteConfig.name} property="og:site_name">
 
 <meta content="summary_large_image" name="twitter:card">
-<meta content={fullTitle} name="twitter:title">
+<meta content={ogTitle} name="twitter:title">
 <meta content={description} name="twitter:description">
 <meta content={ogImageUrl} name="twitter:image">
 

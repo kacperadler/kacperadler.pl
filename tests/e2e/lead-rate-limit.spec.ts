@@ -23,7 +23,7 @@ const CLIENT = `${NAME}-client`;
 const LEAD = JSON.stringify({
   email: "a@b.cd",
   message: "x",
-  type: "ai",
+  type: "audit",
   website: "",
 });
 
