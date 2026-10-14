@@ -598,9 +598,9 @@
   {
     "id": "KA0075",
     "title": "The home page layout and sections present Kacper better",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0075-the-home-page-layout-and-sections-present-kacper-better/ticket.md",
-    "updated": "2026-10-14T18:59:55.947Z",
+    "updated": "2026-10-14T19:00:07.685Z",
     "after": [
       "KA0072",
       "KA0071"
@@ -780,6 +780,16 @@
     "status": "planning",
     "path": "spec/features/KA0097-the-hero-status-card-shows-the-next-free-month/ticket.md",
     "updated": "2026-10-14T18:59:32.232Z",
+    "after": [
+      "KA0075"
+    ]
+  },
+  {
+    "id": "KA0098",
+    "title": "The live site wears the chosen signature, blueprint-live",
+    "status": "planning",
+    "path": "spec/features/KA0098-the-live-site-wears-the-chosen-signature-blueprint-live/ticket.md",
+    "updated": "2026-10-14T19:01:20.869Z",
     "after": [
       "KA0075"
     ]
