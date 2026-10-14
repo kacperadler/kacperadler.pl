@@ -40,18 +40,23 @@ import Button from "../button.astro";
         />
         <div class="mb-status-id-text">
           <p class="mb-status-name">{siteConfig.name}</p>
-          <p class="mb-status-meta">
-            <span>{siteConfig.role}</span>
-            <span>Polska</span>
-          </p>
+          <p class="mb-status-meta">{siteConfig.role}</p>
           <Badge variant="status">Przyjmuję nowe projekty</Badge>
         </div>
       </div>
 
       <dl class="mb-status-rows">
         <div class="mb-status-row">
+          <dt>Lokalizacja</dt>
+          <dd>Polska</dd>
+        </div>
+        <div class="mb-status-row">
           <dt>Odpowiadam</dt>
           <dd>zwykle w&nbsp;24h</dd>
+        </div>
+        <div class="mb-status-row">
+          <dt>Projekty</dt>
+          <dd>1–2 jednocześnie</dd>
         </div>
       </dl>
     </aside>
