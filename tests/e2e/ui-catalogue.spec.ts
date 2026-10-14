@@ -169,13 +169,36 @@ test.describe("component catalogue (astro dev)", () => {
     });
   }
 
+  // The page loads wide, so the resize to 360px restyles it, and under
+  // reduced motion global.css turns every restyle into a 0.01ms
+  // transition: the first frame after the resize lays out with the wide
+  // values. Paused animations hold that frame, so it is measured every run,
+  // not only when the measure lands before the next frame; then the
+  // settled page.
   test("does not scroll sideways at 360px", async ({ page }) => {
+    const widths = () =>
+      page.evaluate(() => ({
+        client: document.documentElement.clientWidth,
+        scroll: document.documentElement.scrollWidth,
+      }));
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("Animation.enable");
+    await cdp.send("Animation.setPlaybackRate", { playbackRate: 0 });
     await page.setViewportSize({ height: 800, width: 360 });
-    const { client, scroll } = await page.evaluate(() => ({
-      client: document.documentElement.clientWidth,
-      scroll: document.documentElement.scrollWidth,
-    }));
-    expect(scroll).toBeLessThanOrEqual(client);
+    const first = await widths();
+    expect(first.scroll).toBeLessThanOrEqual(first.client);
+
+    await cdp.send("Animation.setPlaybackRate", { playbackRate: 1 });
+    await page.evaluate(() =>
+      Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a instanceof CSSTransition)
+          .map((a) => a.finished)
+      )
+    );
+    const settled = await widths();
+    expect(settled.scroll).toBeLessThanOrEqual(settled.client);
   });
 
   test("a forced button hover paints like a real one", async ({ page }) => {
