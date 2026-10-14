@@ -600,7 +600,7 @@
     "title": "The home page layout and sections present Kacper better",
     "status": "in-progress",
     "path": "spec/features/KA0075-the-home-page-layout-and-sections-present-kacper-better/ticket.md",
-    "updated": "2026-10-14T19:00:07.685Z",
+    "updated": "2026-10-14T19:09:31.005Z",
     "after": [
       "KA0072",
       "KA0071"
