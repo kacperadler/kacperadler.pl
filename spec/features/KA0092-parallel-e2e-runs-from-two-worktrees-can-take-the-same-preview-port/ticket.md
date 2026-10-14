@@ -10,7 +10,7 @@
 
 ## Description
 
-Two or three sentences: what changes, and for whom.
+The e2e suite picks a free preview port and binds it later, so two worktrees running at once can collide (`EADDRINUSE :4329`). Workers and reviewers then see a red run that is no bug.
 
 ## Goal
 
