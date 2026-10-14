@@ -8,7 +8,9 @@ import SectionHead from "../section-head.astro";
 /* Contact (#contact): the form and the two direct links close into one
  * sheet across the container under the section head - the form first,
  * the main action, then the links as its last ruled row, sharing the
- * form's bottom rule. */
+ * form's bottom rule. The sheet is one element, so a layout that
+ * places the section's content as one block (a design proposal) keeps its
+ * rows together. */
 ---
 
 <section class="mb-contact" id="contact">
@@ -21,27 +23,29 @@ import SectionHead from "../section-head.astro";
       </Fragment>
     </SectionHead>
 
-    <div class="mb-contact-form-host">
-      <ContactForm />
-    </div>
+    <div class="mb-contact-sheet">
+      <div class="mb-contact-form-host">
+        <ContactForm />
+      </div>
 
-    <CellGrid class="mb-contact-links" columns={2}>
-      <ContactLink
-        href={`mailto:${siteConfig.email}`}
-        icon="lucide:mail"
-        label="Email"
-      >
-        {siteConfig.email}
-      </ContactLink>
-      <ContactLink
-        href={siteConfig.social.linkedin}
-        icon="lucide:linkedin"
-        label="LinkedIn"
-        newTab
-      >
-        /in/kacperadler
-      </ContactLink>
-    </CellGrid>
+      <CellGrid class="mb-contact-links" columns={2}>
+        <ContactLink
+          href={`mailto:${siteConfig.email}`}
+          icon="lucide:mail"
+          label="Email"
+        >
+          {siteConfig.email}
+        </ContactLink>
+        <ContactLink
+          href={siteConfig.social.linkedin}
+          icon="lucide:linkedin"
+          label="LinkedIn"
+          newTab
+        >
+          /in/kacperadler
+        </ContactLink>
+      </CellGrid>
+    </div>
   </div>
 </section>
 
