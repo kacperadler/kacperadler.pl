@@ -17,8 +17,9 @@ import Button from "./button.astro";
  * sends `<jump>?strona=<n>`. On the static build `jump` is the list's first
  * page (`/blog/`) and `href` builds Astro's paginate() paths (`/blog/`,
  * `/blog/<n>/`): nginx.conf redirects `<list>/?strona=<n>` to the path page,
- * since a prerendered page never sees its query. A page rendered on request
- * (the dev-only catalogue) reads `strona` itself. */
+ * since a prerendered page never sees its query, for the lists it names
+ * (/blog/, /realizacje/) - a new paginated list goes into its map. A page
+ * rendered on request (the dev-only catalogue) reads `strona` itself. */
 interface Props {
   current: number;
   href: (page: number) => string;

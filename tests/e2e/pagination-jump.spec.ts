@@ -98,4 +98,31 @@ test.describe("pagination jump on the static build behind nginx", () => {
     expect(response.status()).toBe(302);
     expect(response.headers().location).toBe("/lista/9/");
   });
+
+  test("a numbered page of the list sends ?strona=<n> to page n too", async ({
+    request,
+  }) => {
+    const response = await request.get(`${origin}/lista/5/?strona=9`, {
+      maxRedirects: 0,
+    });
+    expect(response.status()).toBe(302);
+    expect(response.headers().location).toBe("/lista/9/");
+  });
+
+  test("a page that is not a paginated list keeps ?strona=<n>: /?strona=3 stays on the home page", async ({
+    page,
+  }) => {
+    await page.goto(`${origin}/`);
+    const homeHeading = await page
+      .getByRole("heading", { level: 1 })
+      .textContent();
+
+    const response = await page.goto(`${origin}/?strona=3`);
+    expect(response?.status()).toBe(200);
+    expect(response?.request().redirectedFrom()).toBeNull();
+    await expect(page).toHaveURL(`${origin}/?strona=3`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      homeHeading ?? ""
+    );
+  });
 });
