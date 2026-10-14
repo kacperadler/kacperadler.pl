@@ -22,6 +22,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0089 /api/lead has no rate limit: a script can fill the database and the inbox (1878aa9)
 - KA0090 A blueprint-live proposal spec fails under the full parallel run (43a16d1)
 - KA0091 A commit (`astro check`) in the worktree during e2e coincided with a dev-server page navigation (67f1fb5)
+- KA0092 Parallel e2e runs from two worktrees can take the same preview port (bb6279f)
 
 ## 2026-10-11
 

@@ -730,9 +730,9 @@
   {
     "id": "KA0092",
     "title": "Parallel e2e runs from two worktrees can take the same preview port",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0092-parallel-e2e-runs-from-two-worktrees-can-take-the-same-preview-port/ticket.md",
-    "updated": "2026-10-14T19:30:52.781Z"
+    "updated": "2026-10-14T19:35:10.156Z"
   },
   {
     "id": "KA0093",
@@ -793,5 +793,12 @@
     "after": [
       "KA0075"
     ]
+  },
+  {
+    "id": "KA0099",
+    "title": "dev-no-reload fails once on a navigation right after its first page load",
+    "status": "planning",
+    "path": "spec/features/KA0099-dev-no-reload-fails-once-on-a-navigation-right-after-its-first-page-load/ticket.md",
+    "updated": "2026-10-14T19:35:10.153Z"
   }
 ]

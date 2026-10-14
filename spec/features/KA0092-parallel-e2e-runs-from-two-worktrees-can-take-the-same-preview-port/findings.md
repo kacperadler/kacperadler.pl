@@ -13,4 +13,12 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `tests/e2e/dev-no-reload.spec.ts:21`
 - What: in the first full `bun run test:e2e` after merging main (KA0091) into this branch, the spec failed its first try with `locator.evaluate: Execution context was destroyed, most likely because of a navigation` at line 21, right after `page.goto(${DEV_URL}/ui)` and before it touches any file, then passed on retry (`1 flaky`, `167 passed`). With 1 worker it is the first spec that loads a page of the dev server. Three runs of it with `ui-catalogue.spec.ts`, `--retries=0` and `node_modules/.vite` removed before each did not reproduce it (59 passed each). The cause is not known; [INFERENCE] a reload the dev server sends on its first request (for example Vite optimizing a dependency it just found), which the dev server's stdout (`stdout: "ignore"` in `playwright.config.ts`) does not show.
 - Suggestion: make the spec wait for a page that has settled (for example a first `page.goto` before the probe, or a second one when the first navigates away) and log the dev server's reload reason when it happens; the no-watch setting itself stays as KA0091 left it.
-- Status: open
+- Status: ticket KA0099
+
+## F2. Review notes: em-dashes in merged review files; F1 left out of scope
+
+- Kind: note
+- Found by: 2026-10-14-review-ka0092-e2e-port-r-ae2fbe8f and -a5cb3b83 (review notes), 2026-10-14
+- Where: `spec/features/*/review-N.md`, `outcome.md`
+- What: em-dashes in harness-written records came in with the main merge; F1 was correctly left to its own ticket.
+- Status: dropped (harness records, not product copy)
