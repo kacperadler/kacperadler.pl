@@ -668,9 +668,9 @@
   {
     "id": "KA0084",
     "title": "The card bar slides in and out in the direction the cursor moves",
-    "status": "review",
+    "status": "merged",
     "path": "spec/features/KA0084-the-card-bar-slides-in-and-out-in-the-direction-the-cursor-moves/ticket.md",
-    "updated": "2026-10-14T11:56:02.837Z",
+    "updated": "2026-10-14T12:19:44.838Z",
     "after": [
       "KA0083"
     ]
