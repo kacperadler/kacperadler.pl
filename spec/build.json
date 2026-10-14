@@ -723,9 +723,9 @@
   {
     "id": "KA0091",
     "title": "A commit (`astro check`) in the worktree during e2e coincided with a dev-server page navigation",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0091-a-commit-astro-check-in-the-worktree-during-e2e-coincided-with-a-dev-server-page-navigation/ticket.md",
-    "updated": "2026-10-14T18:53:48.235Z"
+    "updated": "2026-10-14T18:58:48.627Z"
   },
   {
     "id": "KA0092",
