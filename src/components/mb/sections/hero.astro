@@ -6,7 +6,8 @@ import Badge from "../badge.astro";
 import Button from "../button.astro";
 
 /* Hero (#top): a heavy headline on the bare substrate beside the status
- * card, a framed cell whose rows read as a ruled table (label | value). */
+ * card, a framed cell as tall as the text column whose rows read as a
+ * ruled table (label | value) at its foot. */
 ---
 
 <section class="mb-hero" id="top">
@@ -66,7 +67,7 @@ import Button from "../button.astro";
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     gap: var(--v2-space-xl);
-    align-items: center;
+    align-items: stretch;
   }
 
   .mb-hero-text {
@@ -156,7 +157,7 @@ import Button from "../button.astro";
   }
 
   .mb-status-rows {
-    margin: 0;
+    margin: auto 0 0;
   }
 
   .mb-status-row {
@@ -196,7 +197,6 @@ import Button from "../button.astro";
     .mb-hero-grid {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--v2-space-lg);
-      align-items: stretch;
     }
 
     .mb-hero-status {
