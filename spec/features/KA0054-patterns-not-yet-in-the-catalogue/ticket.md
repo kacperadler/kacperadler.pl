@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F4 of KA0037
+- 2026-10-14: Read-only check (job 2026-10-14-ka-stale-tickets-check-954199ec): brand, header CTA, mobile sheet, form error (Alert) and success card are in the catalogue now. Still missing only the contact link (`.mb-contact-link`, `src/components/mb/sections/contact.astro:27-35,72-101`) and the step marker (`.mb-step-marker`, `src/components/mb/sections/how-i-work.astro:26-28,68-119`). Fix now: move those two into `src/components/mb/` (e.g. `contact-link.astro`, `step-marker.astro`) and add both to `src/pages/_ui/catalogue.astro`; `src/components/ui/` no longer exists.

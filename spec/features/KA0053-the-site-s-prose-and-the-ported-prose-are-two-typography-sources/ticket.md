@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-10: Source: F3 of KA0037
+- 2026-10-14: Read-only check (job 2026-10-14-ka-stale-tickets-check-954199ec): already fixed; prose.css gone, every reader uses src/components/mb/prose.astro. Dropped. (Stale comment at prose.astro:4,9 left.)

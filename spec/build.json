@@ -429,9 +429,9 @@
   {
     "id": "KA0053",
     "title": "The site's .prose and the ported .prose are two typography sources",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0053-the-site-s-prose-and-the-ported-prose-are-two-typography-sources/ticket.md",
-    "updated": "2026-10-10T16:32:42.751Z"
+    "updated": "2026-10-14T13:29:05.420Z"
   },
   {
     "id": "KA0054",
@@ -492,16 +492,16 @@
   {
     "id": "KA0062",
     "title": "The send-error banner splits its sentence into flex columns",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0062-the-send-error-banner-splits-its-sentence-into-flex-columns/ticket.md",
-    "updated": "2026-10-10T17:32:50.729Z"
+    "updated": "2026-10-14T13:29:05.627Z"
   },
   {
     "id": "KA0063",
     "title": "The header brand wraps to two lines on a 390px phone",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0063-the-header-brand-wraps-to-two-lines-on-a-390px-phone/ticket.md",
-    "updated": "2026-10-10T17:32:50.732Z"
+    "updated": "2026-10-14T13:29:05.835Z"
   },
   {
     "id": "KA0064",
@@ -584,9 +584,9 @@
   {
     "id": "KA0073",
     "title": "The OG image still draws the old design",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0073-the-og-image-still-draws-the-old-design/ticket.md",
-    "updated": "2026-10-14T13:26:07.966Z"
+    "updated": "2026-10-14T13:26:17.879Z"
   },
   {
     "id": "KA0074",
