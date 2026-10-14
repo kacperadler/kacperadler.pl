@@ -1169,8 +1169,10 @@ const linkStates: readonly Forced[] = [
       <p class="mb-ui-note">
         <code>card.astro</code>
         - komórka w linii tuszu; hover rozjaśnia ją od środka (jaśniejszy panel,
-        niebieska linia u góry, która wjeżdża z lewej i wyjeżdża w prawo) i nic
-        nie przesuwa. Części to sloty:
+        niebieska linia u góry) i nic nie przesuwa. Linia idzie za myszą:
+        wjeżdża od boku, z którego kursor wszedł, i wyjeżdża w stronę, w którą
+        wyszedł; bez myszy (dotyk, klawiatura, bez JS) wjeżdża z lewej i
+        wyjeżdża w prawo. Części to sloty:
         <code>image</code>, <code>title</code>, <code>description</code>,
         <code>action</code>, treść, <code>footer</code>.
         <code>cell-grid.astro</code>
@@ -1191,6 +1193,20 @@ const linkStates: readonly Forced[] = [
               <p class="mb-ui-caption">{state}</p>
             </div>
           ))}
+        </div>
+      </div>
+      <div class="mb-ui-row">
+        <p class="mb-ui-row-label">Kierunek</p>
+        <div class="mb-ui-stack-lg">
+          <CellGrid columns={3}>
+            {["Rozmowa", "Wycena", "Realizacja"].map((title) => (
+              <Card size="sm" tag="div">
+                <span slot="title">{title}</span>
+                Przeciągnij kursor przez wiersz w jedną i w drugą stronę.
+              </Card>
+            ))}
+          </CellGrid>
+          <p class="mb-ui-caption">3 komórki</p>
         </div>
       </div>
       <div class="mb-ui-row">

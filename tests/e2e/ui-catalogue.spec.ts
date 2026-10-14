@@ -12,6 +12,7 @@ const TRANSLUCENT = /rgba\(|\/ /;
 const FOLLOWED_CRUMB = /\/realizacje\/#2025$/;
 const UI_UNPAGED = /\/ui$/;
 const UI_PAGE_7 = /\/ui\?strona=7#mb-pagination$/;
+const DIRECTION = /^Kierunek$/;
 
 const SECTIONS = [
   "Przycisk",
@@ -290,6 +291,62 @@ test.describe("component catalogue (astro dev)", () => {
 
     await page.mouse.move(0, 0);
     expect(await originX(idle)).toBeCloseTo(restingOriginX, 1);
+  });
+
+  test("a secondary button keeps its idle frame on hover", async ({ page }) => {
+    const frame = ["border-color", "border-width"];
+    const face = (caption: string) =>
+      buttonIn(page, "Secondary", caption).locator(".mb-btn-face");
+    const idle = await paint(face("idle"), frame);
+
+    expect(await paint(face("hover"), frame)).toEqual(idle);
+    await face("idle").hover();
+    expect(await paint(face("idle"), frame)).toEqual(idle);
+  });
+
+  test("the required asterisk takes the danger colour", async ({ page }) => {
+    const danger = await page.evaluate(() => {
+      const probe = document.createElement("span");
+      probe.style.color = "var(--error)";
+      document.body.append(probe);
+      const { color } = getComputedStyle(probe);
+      probe.remove();
+      return color;
+    });
+    await expect(
+      sample(page, "mb-form", "required").first().locator(".mb-field-required")
+    ).toHaveCSS("color", danger);
+  });
+
+  test("the required asterisk sits right after the label text", async ({
+    page,
+  }) => {
+    const marker = sample(page, "mb-form", "required")
+      .first()
+      .locator(".mb-field-required");
+    // From the right edge of the label's last glyph to the left edge of
+    // the "*" glyph, both measured on their text, not their boxes.
+    const gap = await marker.evaluate((star) => {
+      const glyphs = (node: Node, side: "first" | "last") => {
+        const text = node.textContent ?? "";
+        const at =
+          side === "last"
+            ? text.trimEnd().length - 1
+            : text.length - text.trimStart().length;
+        const range = document.createRange();
+        range.setStart(node, at);
+        range.setEnd(node, at + 1);
+        return range.getBoundingClientRect();
+      };
+      const label = star.previousSibling;
+      const starText = star.firstChild;
+      if (!(label && starText)) {
+        throw new Error("the label text or the marker text is missing");
+      }
+      return glyphs(starText, "first").left - glyphs(label, "last").right;
+    });
+    expect(gap).toBeGreaterThanOrEqual(0);
+    expect(gap).toBeLessThanOrEqual(4);
   });
 
   test("a pressed nav link turns blue like its forced press", async ({
@@ -654,6 +711,243 @@ test.describe("motion (astro dev)", () => {
       await expectMotion(button, "button focus: the ring grows out");
     });
   }
+});
+
+// One frame of a card's top rule (its ::before) while it is partly drawn:
+// the x it grows from or gathers to, as a fraction of its width (0 the left
+// edge, 1 the right), and whether the card is hovered - the rule grows
+// while it is, and shrinks while it is not.
+interface RuleFrame {
+  hovered: boolean;
+  origin: number;
+}
+
+// Records the top rule of each of `cards` on every frame until the
+// returned function is awaited; that lets the last slide finish and gives,
+// per card, the origins seen while its rule grew and while it shrank.
+const recordRules = async (cards: Locator) => {
+  await cards.evaluateAll((els) => {
+    const store = window as unknown as {
+      ruleFrames: RuleFrame[][];
+      ruleStop: boolean;
+    };
+    store.ruleFrames = els.map(() => []);
+    store.ruleStop = false;
+    const tick = () => {
+      for (const [i, el] of els.entries()) {
+        const rule = getComputedStyle(el, "::before");
+        const scale = new DOMMatrix(rule.transform).a;
+        if (scale > 0 && scale < 1) {
+          const origin =
+            Number.parseFloat(rule.transformOrigin) / el.clientWidth;
+          store.ruleFrames[i]?.push({
+            hovered: el.matches(":hover"),
+            origin: Math.round(origin * 100) / 100,
+          });
+        }
+      }
+      if (!store.ruleStop) {
+        requestAnimationFrame(tick);
+      }
+    };
+    tick();
+  });
+  return async () => {
+    await cards.page().waitForTimeout(600);
+    const frames = await cards.page().evaluate(() => {
+      const store = window as unknown as {
+        ruleFrames: RuleFrame[][];
+        ruleStop: boolean;
+      };
+      store.ruleStop = true;
+      return store.ruleFrames;
+    });
+    return frames.map((rule) => ({
+      grew: [...new Set(rule.filter((f) => f.hovered).map((f) => f.origin))],
+      shrank: [...new Set(rule.filter((f) => !f.hovered).map((f) => f.origin))],
+    }));
+  };
+};
+
+// The three cells of the card section's direction row, scrolled to the
+// middle of the viewport (clear of the sticky header; instant, as html
+// scrolls smoothly), with their boxes and the row's middle line.
+const directionRow = async (page: Page) => {
+  const cards = page
+    .locator('section[aria-labelledby="mb-card"] .mb-ui-row')
+    .filter({ has: page.locator(".mb-ui-row-label", { hasText: DIRECTION }) })
+    .locator(".mb-card");
+  await cards
+    .first()
+    .evaluate((el) =>
+      el.scrollIntoView({ behavior: "instant", block: "center" })
+    );
+  const boxes = await cards.evaluateAll((els) =>
+    els.map((el) => {
+      const { bottom, left, right, top } = el.getBoundingClientRect();
+      return { bottom, centre: (left + right) / 2, left, right, top };
+    })
+  );
+  const [first, middle, last] = boxes;
+  if (!(first && middle && last)) {
+    throw new Error("the direction row has fewer than three cards");
+  }
+  return {
+    boxes,
+    cards,
+    first,
+    last,
+    middle,
+    y: (first.top + first.bottom) / 2,
+  };
+};
+
+// Moves the mouse through `points` a few steps at a time, letting each
+// slide (`--mb-slide`, 0.3s) run before the next move.
+const sweep = async (page: Page, points: [number, number][]) => {
+  for (const [x, y] of points) {
+    // biome-ignore lint/performance/noAwaitInLoops: one move at a time
+    await page.mouse.move(x, y, { steps: 4 });
+    await page.waitForTimeout(400);
+  }
+};
+
+// What a card's rule looks like with no mouse on it: its direction
+// attributes and where the rule rests (origin) and how far it is drawn.
+const ruleAtRest = (cards: Locator) =>
+  cards.evaluateAll((els) =>
+    els.map((el) => {
+      const rule = getComputedStyle(el, "::before");
+      return {
+        barIn: el.getAttribute("data-bar-in"),
+        barOut: el.getAttribute("data-bar-out"),
+        origin:
+          Math.round(
+            (Number.parseFloat(rule.transformOrigin) / el.clientWidth) * 100
+          ) / 100,
+        scale: new DOMMatrix(rule.transform).a,
+      };
+    })
+  );
+
+const DEFAULT_REST = { barIn: null, barOut: null, origin: 1, scale: 0 };
+
+test.describe("card rule direction (astro dev)", () => {
+  test.use({
+    baseURL: DEV_URL,
+    contextOptions: { reducedMotion: "no-preference" },
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/ui", { waitUntil: "networkidle" });
+  });
+
+  test("a mouse sweeping right to left draws each rule in from the right and out to the left", async ({
+    page,
+  }) => {
+    const { boxes, cards, first, last, y } = await directionRow(page);
+    await page.mouse.move(last.right + 24, y);
+    const collect = await recordRules(cards);
+    await sweep(page, [
+      ...boxes.toReversed().map((b): [number, number] => [b.centre, y]),
+      [first.left - 24, y],
+    ]);
+
+    const slid = { grew: [1], shrank: [0] };
+    expect(await collect()).toEqual([slid, slid, slid]);
+    // Once the rule is out, the card is as no mouse left it.
+    expect(await ruleAtRest(cards)).toEqual([
+      DEFAULT_REST,
+      DEFAULT_REST,
+      DEFAULT_REST,
+    ]);
+  });
+
+  test("a mouse sweeping left to right draws each rule in from the left and out to the right", async ({
+    page,
+  }) => {
+    const { boxes, cards, first, last, y } = await directionRow(page);
+    await page.mouse.move(first.left - 24, y);
+    const collect = await recordRules(cards);
+    await sweep(page, [
+      ...boxes.map((b): [number, number] => [b.centre, y]),
+      [last.right + 24, y],
+    ]);
+
+    const slid = { grew: [0], shrank: [1] };
+    expect(await collect()).toEqual([slid, slid, slid]);
+  });
+
+  test("through the top or the bottom, the nearer side edge counts", async ({
+    page,
+  }) => {
+    const { cards, middle } = await directionRow(page);
+    const quarter = (middle.right - middle.left) / 4;
+    const centreY = (middle.top + middle.bottom) / 2;
+    // In through the top in the right half, out through the bottom in the
+    // left half: in from the right, out to the left.
+    await page.mouse.move(middle.right - quarter, middle.top - 24);
+    const collect = await recordRules(cards);
+    await sweep(page, [
+      [middle.right - quarter, centreY],
+      [middle.left + quarter, centreY],
+      [middle.left + quarter, middle.bottom + 24],
+    ]);
+
+    expect((await collect())[1]).toEqual({ grew: [1], shrank: [0] });
+  });
+
+  test("keyboard focus after a right-to-left pass meets the rule at rest on the right", async ({
+    page,
+  }) => {
+    const link = sample(page, "mb-card", "jako link").locator(".mb-card");
+    await link.evaluate((el) =>
+      el.scrollIntoView({ behavior: "instant", block: "center" })
+    );
+    const box = await link.boundingBox();
+    if (!box) {
+      throw new Error("the link card is not rendered");
+    }
+    const y = box.y + box.height / 2;
+    await page.mouse.move(box.x + box.width + 24, y);
+    await sweep(page, [
+      [box.x + box.width / 2, y],
+      [box.x - 24, y],
+    ]);
+    await page.waitForTimeout(400);
+
+    await sample(page, "mb-card", "default, wszystkie części")
+      .getByRole("link", { name: "Wszystkie" })
+      .focus();
+    await page.keyboard.press("Tab");
+    await expect(link).toBeFocused();
+    expect(await ruleAtRest(link)).toEqual([DEFAULT_REST]);
+  });
+
+  test.describe("on a touch screen", () => {
+    test.use({ hasTouch: true });
+
+    test("taps draw the rule in from the left and out to the right, wherever they land", async ({
+      page,
+    }) => {
+      const { cards, first, last, y } = await directionRow(page);
+      const collect = await recordRules(cards);
+      // On the left edge of the first card, then on the right edge of the
+      // last, which takes the hover from the first.
+      await page.touchscreen.tap(first.left + 8, y);
+      await page.waitForTimeout(400);
+      await page.touchscreen.tap(last.right - 8, y);
+
+      // Chrome's tap can drop :hover for a frame before it settles, so a
+      // rule may start out once - to the right, as the default has it.
+      const [left, , right] = await collect();
+      expect(left?.grew).toEqual([0]);
+      expect(left?.shrank).toContain(1);
+      expect(left?.shrank.filter((origin) => origin !== 1)).toEqual([]);
+      expect(right?.grew).toEqual([0]);
+      expect(right?.shrank.filter((origin) => origin !== 1)).toEqual([]);
+    });
+  });
 });
 
 // Where the label and the spinner of `button` sit (their translateX), how
