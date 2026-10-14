@@ -12,9 +12,9 @@ export interface ProcessStep {
 
 export const processSteps: readonly ProcessStep[] = [
   {
-    badge: "30 min",
+    badge: "~30 min",
     description:
-      "Opowiadasz o procesie, który zjada czas zespołu. Ja szukam, co da się zautomatyzować.",
+      "Opowiadasz, jak dziś pracujecie i co Was spowalnia. Ja zadaję pytania i szukam tego, co da się zautomatyzować.",
     icon: "lucide:messages-square",
     num: "01",
     title: "Rozmowa",
@@ -22,14 +22,15 @@ export const processSteps: readonly ProcessStep[] = [
   {
     badge: "2–3 dni",
     description:
-      "Dostajesz krótki dokument: co robimy, ile to trwa, ile kosztuje i ile zyskasz.",
+      "Dostajesz krótki dokument: co robimy, w jakiej kolejności, ile to potrwa, ile kosztuje i ile czasu zaoszczędzisz. Bez ukrytych kosztów.",
     icon: "lucide:clipboard-list",
     num: "02",
     title: "Plan i wycena",
   },
   {
     badge: "co tydzień",
-    description: "Pracuję małymi etapami. Co tydzień widzisz coś, co działa.",
+    description:
+      "Co tydzień widzisz coś, co działa, a nie prezentację. Problemy łapiemy wcześnie.",
     icon: "lucide:code",
     num: "03",
     title: "Wdrożenie etapami",
@@ -37,14 +38,15 @@ export const processSteps: readonly ProcessStep[] = [
   {
     badge: "na bieżąco",
     description:
-      "Nie musisz znać się na technologii. Mówisz, co ma działać inaczej, a ja zamieniam to na konkretne zmiany.",
+      "Nie musisz znać się na technologii. Mówisz, co nie gra, a ja zamieniam to na konkretne zmiany.",
     icon: "lucide:message-circle",
     num: "04",
     title: "Feedback",
   },
   {
     badge: "po wdrożeniu",
-    description: "Monitoring i rozwój. Twój system nie zostaje sam.",
+    description:
+      "Monitoruję system, poprawiam błędy, zanim staną się problemem, i rozwijam go razem z firmą.",
     icon: "lucide:rocket",
     num: "05",
     title: "Opieka",
