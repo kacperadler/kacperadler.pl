@@ -47,7 +47,7 @@ import StepMarker from "../step-marker.astro";
 
 <style>
   .mb-how {
-    margin-top: var(--v2-space-2xl);
+    margin-top: var(--mb-section-gap);
   }
 
   .mb-how-steps {
@@ -103,14 +103,10 @@ import StepMarker from "../step-marker.astro";
   .mb-how-cta {
     display: flex;
     padding-left: calc(56px + var(--v2-space-md));
-    margin-top: var(--v2-space-lg);
+    margin-top: var(--mb-block-gap);
   }
 
   @media (max-width: 880px) {
-    .mb-how {
-      margin-top: var(--v2-space-xl);
-    }
-
     .mb-step {
       grid-template-columns: 40px minmax(0, 1fr);
       gap: 12px;

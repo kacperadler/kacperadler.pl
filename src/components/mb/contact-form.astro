@@ -202,8 +202,8 @@ const id = (name: string) => `${idPrefix}-${name}`;
   .mb-form {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    padding: 28px;
+    gap: 24px;
+    padding: var(--v2-space-lg);
   }
 
   .mb-contact-form[data-state="success"] .mb-form {
@@ -220,13 +220,13 @@ const id = (name: string) => `${idPrefix}-${name}`;
 
   .mb-form-row {
     display: grid;
-    gap: 18px;
+    gap: 24px;
   }
 
   @container (min-width: 720px) {
     .mb-form-row {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: 28px;
+      column-gap: var(--v2-space-lg);
     }
   }
 
@@ -303,7 +303,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
 
   @media (max-width: 480px) {
     .mb-form {
-      padding: 20px 16px;
+      padding: 24px 16px;
     }
   }
 

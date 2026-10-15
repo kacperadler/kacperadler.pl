@@ -133,7 +133,7 @@ const caseStudies = await caseStudiesByExperience();
 
 <style>
   .mb-about {
-    margin-top: var(--v2-space-2xl);
+    margin-top: var(--mb-section-gap);
   }
 
   .mb-about-grid {
@@ -166,7 +166,7 @@ const caseStudies = await caseStudiesByExperience();
   }
 
   .mb-about-experience {
-    margin-top: var(--v2-space-lg);
+    margin-top: var(--mb-block-gap);
   }
 
   /* The table's outer rules are clipped off, so its cells are ruled only
@@ -247,10 +247,6 @@ const caseStudies = await caseStudiesByExperience();
   }
 
   @media (max-width: 880px) {
-    .mb-about {
-      margin-top: var(--v2-space-xl);
-    }
-
     .mb-about-grid {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--v2-space-lg);

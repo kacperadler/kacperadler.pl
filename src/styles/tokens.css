@@ -52,6 +52,12 @@
   --v2-space-xl: 64px;
   --v2-space-2xl: 96px;
 
+  /* Page rhythm: --mb-section-gap between two sections, --mb-block-gap
+   * between the blocks inside one (the head and the table, the table and
+   * its button). Both tighten at 880px and below. */
+  --mb-section-gap: 136px;
+  --mb-block-gap: 48px;
+
   /* Minimal brutalism:
    *   --mb-rule     the 1px ink rule that draws a cell
    *   --mb-hair     the hairline for dividers inside a cell and the page edges
@@ -69,4 +75,11 @@
   --mb-slide: 0.3s ease-out;
   --mb-display: var(--sans);
   color-scheme: dark;
+}
+
+@media (max-width: 880px) {
+  :root {
+    --mb-section-gap: 88px;
+    --mb-block-gap: 32px;
+  }
 }
