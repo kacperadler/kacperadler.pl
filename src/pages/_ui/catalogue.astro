@@ -24,6 +24,7 @@ import Button from "@/components/mb/button.astro";
 import Card from "@/components/mb/card.astro";
 import CellGrid from "@/components/mb/cell-grid.astro";
 import Checkbox from "@/components/mb/checkbox.astro";
+import Choice from "@/components/mb/choice.astro";
 import ContactForm from "@/components/mb/contact-form.astro";
 import ContactLink from "@/components/mb/contact-link.astro";
 import Field from "@/components/mb/field.astro";
@@ -130,7 +131,8 @@ const checkboxStates = [
 ] as const;
 
 const radioOptions = ["Aplikacja webowa", "Landing page", "Inne"] as const;
-// "pressed" only in the choice row: the default radio has no press look.
+// Radio and chip states; "pressed" only for the chip: a radio has no press
+// look.
 const radioStates = [
   "checked",
   "hover",
@@ -725,64 +727,93 @@ const steps = [
       <h2 class="mb-ui-h2" id="mb-radio">Radio</h2>
       <p class="mb-ui-note">
         <code>radio.astro</code>
-        - <code>default</code> (okrągły) i
-        <code>choice</code>
-        (chip z formularza kontaktowego, 36px jak przycisk
-        <code>sm</code>; ramka i grubość tekstu te same w każdym stanie, więc
-        zaznaczenie nic nie przesuwa; zaznaczony i wyłączony zostaje wypełniony,
-        żeby w trakcie wysyłki było widać wybór). Nieprawidłowy stan z
+        - okrągły, jedyny okrągły kształt na stronie. Nieprawidłowy stan z
         <code>[data-invalid]</code>
         na polu albo <code>aria-invalid</code>.
       </p>
-      {(["default", "choice"] as const).map((variant) => (
-        <div class="mb-ui-row">
-          <p class="mb-ui-row-label">{variant}</p>
-          <div class="mb-ui-grid mb-ui-grid-wide">
-            {radioStates
-              .filter((state) => variant === "choice" || state !== "pressed")
-              .map((state) => (
-                <div class="mb-ui-sample">
-                  <div
-                    aria-label={`Typ projektu (${variant}, ${state})`}
-                    class:list={[
-                      "mb-ui-radios",
-                      { "mb-ui-radios-column": variant === "default" },
-                    ]}
-                    role="radiogroup"
-                  >
-                    {/* Only the first option carries a forced state, as one
-                     * pointer or one keyboard focus would. */}
-                    {radioOptions.map((option, i) => (
-                      <Radio
-                        aria-invalid={state === "invalid" ? "true" : undefined}
-                        checked={
-                          i === 0 &&
-                          state !== "hover" &&
-                          state !== "pressed" &&
-                          state !== "invalid"
-                        }
-                        disabled={state === "disabled"}
-                        label={option}
-                        name={`mb-radio-${variant}-${state}`}
-                        state={
-                          i === 0 &&
-                          (state === "hover" ||
-                            state === "pressed" ||
-                            state === "focus-visible")
-                            ? state
-                            : undefined
-                        }
-                        value={option}
-                        variant={variant}
-                      />
-                    ))}
-                  </div>
-                  <p class="mb-ui-caption">{state}</p>
-                </div>
+      <div class="mb-ui-grid mb-ui-grid-wide">
+        {radioStates
+          .filter((state) => state !== "pressed")
+          .map((state) => (
+            <div class="mb-ui-sample">
+              <div
+                aria-label={`Typ projektu (radio, ${state})`}
+                class="mb-ui-radios mb-ui-radios-column"
+                role="radiogroup"
+              >
+                {/* Only the first option carries a forced state, as one
+                 * pointer or one keyboard focus would. */}
+                {radioOptions.map((option, i) => (
+                  <Radio
+                    aria-invalid={state === "invalid" ? "true" : undefined}
+                    checked={
+                      i === 0 && state !== "hover" && state !== "invalid"
+                    }
+                    disabled={state === "disabled"}
+                    label={option}
+                    name={`mb-radio-${state}`}
+                    state={
+                      i === 0 &&
+                      (state === "hover" || state === "focus-visible")
+                        ? state
+                        : undefined
+                    }
+                    value={option}
+                  />
+                ))}
+              </div>
+              <p class="mb-ui-caption">{state}</p>
+            </div>
+          ))}
+      </div>
+    </section>
+
+    <section aria-labelledby="mb-choice" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-choice">Wybór (chip)</h2>
+      <p class="mb-ui-note">
+        <code>choice.astro</code>
+        - checkbox jako kwadratowy chip z formularza kontaktowego (można
+        zaznaczyć kilka), 44px wysokości jak pole
+        <code>input</code>; ramka i grubość tekstu te same w każdym stanie, więc
+        zaznaczenie nic nie przesuwa; zaznaczony i wyłączony zostaje wypełniony,
+        żeby w trakcie wysyłki było widać wybór. Nieprawidłowy stan z
+        <code>[data-invalid]</code>
+        na polu albo <code>aria-invalid</code>.
+      </p>
+      <div class="mb-ui-grid mb-ui-grid-wide">
+        {radioStates.map((state) => (
+          <div class="mb-ui-sample">
+            <fieldset
+              aria-label={`Typ projektu (choice, ${state})`}
+              class="mb-ui-radios"
+            >
+              {/* "checked" and "disabled" tick two chips, as a visitor may;
+               * a forced state sits on the first one only. */}
+              {radioOptions.map((option, i) => (
+                <Choice
+                  aria-invalid={state === "invalid" ? "true" : undefined}
+                  checked={
+                    (state === "checked" || state === "disabled") && i < 2
+                  }
+                  disabled={state === "disabled"}
+                  label={option}
+                  name={`mb-choice-${state}`}
+                  state={
+                    i === 0 &&
+                    (state === "hover" ||
+                      state === "pressed" ||
+                      state === "focus-visible")
+                      ? state
+                      : undefined
+                  }
+                  value={option}
+                />
               ))}
+            </fieldset>
+            <p class="mb-ui-caption">{state}</p>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </section>
 
     <section aria-labelledby="mb-form" class="mb-ui-section">
@@ -1758,6 +1789,10 @@ console.log(greeting);</code></pre>
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
   }
 
   .mb-ui-radios-column {

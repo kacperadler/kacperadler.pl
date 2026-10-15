@@ -3,9 +3,9 @@ import { Icon } from "astro-icon/components";
 import { projectTypes } from "@/lib/lead";
 import Alert from "./alert.astro";
 import Button from "./button.astro";
+import Choice from "./choice.astro";
 import Field from "./field.astro";
 import Input from "./input.astro";
-import Radio from "./radio.astro";
 import Textarea from "./textarea.astro";
 
 /* Contact form: one ruled sheet holding the form or, once sent, the success
@@ -20,8 +20,11 @@ import Textarea from "./textarea.astro";
  * that field. While it is sending, contact-form.ts disables every field
  * and the submit button; `state` "submitting" renders them disabled too.
  * The form and the success card stack in one cell, so the page does not
- * jump when one replaces the other. Once the sheet is at least 720px wide (a container query),
- * the email and the project type sit side by side above the message.
+ * jump when one replaces the other. The project types are <Choice>
+ * checkboxes, so a visitor can tick several. Once the sheet is at least
+ * 720px wide (a container query), the email and the project types sit
+ * side by side above the message, the chips as high as the email field
+ * and level with it.
  *
  * For the catalogue (/ui), which shows every state at once:
  *   state       the wrapper's starting data-state, with the fields, the
@@ -77,26 +80,21 @@ const id = (name: string) => `${idPrefix}-${name}`;
       </Field>
 
       <Field
-        errorMessage="Wybierz typ projektu."
+        errorMessage="Wybierz co najmniej jedną opcję."
         invalid={invalid}
         label="Czego potrzebujesz"
         name="type"
       >
-        <div
-          aria-label="Czego potrzebujesz"
-          class="mb-radios"
-          role="radiogroup"
-        >
+        <fieldset aria-label="Czego potrzebujesz" class="mb-choices">
           {projectTypes.map((option) => (
-            <Radio
+            <Choice
               disabled={submitting}
               label={option.label}
               name="type"
               value={option.value}
-              variant="choice"
             />
           ))}
-        </div>
+        </fieldset>
       </Field>
     </div>
 
@@ -230,10 +228,14 @@ const id = (name: string) => `${idPrefix}-${name}`;
     }
   }
 
-  .mb-radios {
+  .mb-choices {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
   }
 
   .mb-form :global([data-form-error]) {

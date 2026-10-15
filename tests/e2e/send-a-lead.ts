@@ -15,7 +15,7 @@ export async function sendALead(page: Page, form: Locator): Promise<number> {
     return route.fulfill({ json: { ok: true }, status: 200 });
   });
   await form.locator('input[name="email"]').fill("lead@example.com");
-  await form.locator("label.mb-radio").first().click();
+  await form.locator("label.mb-choice").first().click();
   await form.locator('textarea[name="message"]').fill("Treść zapytania");
   await form.locator("[data-submit]").click();
   await page.waitForLoadState("networkidle");

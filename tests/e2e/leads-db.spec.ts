@@ -29,19 +29,24 @@ test.describe("saveLead", () => {
     const first = saveLead(path, {
       email: "a@example.com",
       message: "Pierwsza",
-      type: "ai",
+      types: ["audit", "implementation"],
     });
     const second = saveLead(path, {
       email: "b@example.com",
       message: "Druga\nz nową linią i 'cudzysłowem'",
-      type: "other",
+      types: ["other"],
     });
 
     expect(first).toBe(1);
     expect(second).toBe(2);
     const rows = readLeads(path);
     expect(rows.map(({ created_at, ...rest }) => rest)).toEqual([
-      { email: "a@example.com", id: 1, message: "Pierwsza", type: "ai" },
+      {
+        email: "a@example.com",
+        id: 1,
+        message: "Pierwsza",
+        type: "audit,implementation",
+      },
       {
         email: "b@example.com",
         id: 2,
@@ -73,7 +78,11 @@ test.describe("saveLead", () => {
     db.close();
 
     expect(
-      saveLead(path, { email: "new@example.com", message: "Nowy", type: "ai" })
+      saveLead(path, {
+        email: "new@example.com",
+        message: "Nowy",
+        types: ["audit"],
+      })
     ).toBe(2);
     expect(readLeads(path).map((row) => row.email)).toEqual([
       "old@example.com",
@@ -85,7 +94,7 @@ test.describe("saveLead", () => {
     const path = join(freshPath(), "..", "missing-dir", "leads.sqlite");
 
     expect(() =>
-      saveLead(path, { email: "a@example.com", message: "x", type: "ai" })
+      saveLead(path, { email: "a@example.com", message: "x", types: ["audit"] })
     ).toThrow();
   });
 });

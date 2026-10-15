@@ -19,7 +19,7 @@ const ENV_KEYS = [
 const LEAD = {
   email: "jan.kowalski@example.com",
   message: "Potrzebuję agenta AI do obsługi zgłoszeń.",
-  type: "audit",
+  types: ["audit"],
   website: "",
 };
 
@@ -97,7 +97,7 @@ const SAVED_ROW = {
   email: LEAD.email,
   id: 1,
   message: LEAD.message,
-  type: LEAD.type,
+  type: "audit",
 };
 
 test.describe("POST /api/lead", () => {
@@ -128,6 +128,25 @@ test.describe("POST /api/lead", () => {
       expect(part).not.toContain(LEAD.message);
     }
     expect(logged).toEqual([]);
+  });
+
+  test("names every chosen type in the e-mail and the row, in the form's order", async () => {
+    stubFetch(() =>
+      Promise.resolve(
+        Response.json({ id: "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794" })
+      )
+    );
+
+    const res = await post({ ...LEAD, types: ["partner", "audit"] });
+
+    expect(res.status).toBe(200);
+    expect(rows()).toEqual([{ ...SAVED_ROW, type: "audit,partner" }]);
+    const sent = JSON.parse(String(fetchCalls[0]?.init.body)) as {
+      subject: string;
+      text: string;
+    };
+    expect(sent.subject).toBe("Nowy lead #1 - Audyt AI, Stała współpraca");
+    expect(sent.text).toContain("Typ projektu: Audyt AI, Stała współpraca");
   });
 
   test("keeps the lead and answers 200 when Resend answers with an error", async () => {

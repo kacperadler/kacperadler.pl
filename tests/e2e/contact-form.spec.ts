@@ -74,19 +74,19 @@ async function readFormEvents(page: Page): Promise<TrackedEvent[]> {
 }
 
 // Picks a project type the way a visitor does: by clicking its visible
-// label. The radio input is opacity 0 with pointer-events none, and
+// label. The checkbox input is opacity 0 with pointer-events none, and
 // check({ force: true }) on it clicks raw coordinates without waiting for
 // the page to hold still. After goto("/#contact") the browser is still
 // smooth-scrolling to the fragment (html has scroll-behavior: smooth), so
 // that click landed on another field now and then. A label click waits
 // until the label is stable.
 async function pickType(page: Page, value: string): Promise<void> {
-  const radio = `input[name="type"][value="${value}"]`;
+  const box = `input[name="type"][value="${value}"]`;
   await page
     .locator("[data-contact-form] label")
-    .filter({ has: page.locator(radio) })
+    .filter({ has: page.locator(box) })
     .click();
-  await expect(page.locator(`[data-contact-form] ${radio}`)).toBeChecked();
+  await expect(page.locator(`[data-contact-form] ${box}`)).toBeChecked();
 }
 
 test.describe("contact form", () => {
@@ -163,6 +163,7 @@ test.describe("contact form", () => {
     await page.waitForLoadState("networkidle");
 
     await page.fill('[data-contact-form] input[name="email"]', email);
+    await pickType(page, "implementation");
     await pickType(page, "audit");
     await page.fill('[data-contact-form] textarea[name="message"]', message);
 
@@ -181,10 +182,11 @@ test.describe("contact form", () => {
     await expect(page.locator("[data-form-reset]")).toBeVisible();
     expect((await sheet.boundingBox())?.height).toBe(heightBefore);
 
-    // Umami event fires on success with the project type so the
-    // dashboard can break submissions down by category.
+    // Umami event fires on success with the project types (in the form's
+    // order, whatever order they were ticked in) so the dashboard can break
+    // submissions down by category.
     expect(await readFormEvents(page)).toEqual([
-      { data: { type: "audit" }, name: "form-submit" },
+      { data: { type: "audit,implementation" }, name: "form-submit" },
     ]);
 
     expect(request.method()).toBe("POST");
@@ -192,33 +194,55 @@ test.describe("contact form", () => {
     expect(request.postDataJSON()).toEqual({
       email,
       message,
-      type: "audit",
+      types: ["audit", "implementation"],
       website: "",
     });
-    expect(savedLeads(email)).toEqual([{ email, message, type: "audit" }]);
+    expect(savedLeads(email)).toEqual([
+      { email, message, type: "audit,implementation" },
+    ]);
   });
 
   for (const { name, lead } of [
     {
-      lead: { email: "not-an-email", message: "Treść", type: "audit" },
+      lead: { email: "not-an-email", message: "Treść", types: ["audit"] },
       name: "a bad e-mail",
     },
     {
-      lead: { email: "", message: "Treść", type: "crm" },
+      lead: { email: "", message: "Treść", types: ["crm"] },
       name: "an unknown project type",
+    },
+    {
+      lead: { email: "", message: "Treść", types: ["audit", "crm"] },
+      name: "a known type beside an unknown one",
+    },
+    {
+      lead: { email: "", message: "Treść", types: [] },
+      name: "no project type",
+    },
+    {
+      lead: { email: "", message: "Treść", types: ["audit", "audit"] },
+      name: "a project type twice",
+    },
+    {
+      lead: { email: "", message: "Treść", types: "audit" },
+      name: "types as a string, not a list",
+    },
+    {
+      lead: { email: "", message: "Treść", type: "audit" },
+      name: "the old single `type` field",
     },
     // The types before KA0075: rows saved with them stay in the table, but
     // a new lead cannot use them.
     ...["ai", "webapp", "landing", "mobile", "tool"].map((type) => ({
-      lead: { email: "", message: "Treść", type },
+      lead: { email: "", message: "Treść", types: [type] },
       name: `the retired project type "${type}"`,
     })),
     {
-      lead: { email: "", message: "x".repeat(5001), type: "audit" },
+      lead: { email: "", message: "x".repeat(5001), types: ["audit"] },
       name: "a message over 5000 characters",
     },
     {
-      lead: { email: "", message: "   ", type: "audit" },
+      lead: { email: "", message: "   ", types: ["audit"] },
       name: "a blank message",
     },
   ]) {
@@ -240,7 +264,7 @@ test.describe("contact form", () => {
     const email = uniqueEmail("limit");
     const message = "x".repeat(5000);
     const res = await request.post("/api/lead", {
-      data: { email, message, type: "other", website: "" },
+      data: { email, message, types: ["other"], website: "" },
     });
     expect(res.status()).toBe(200);
     expect(savedLeads(email)).toEqual([{ email, message, type: "other" }]);
@@ -254,7 +278,7 @@ test.describe("contact form", () => {
       data: {
         email,
         message: "Buy our SEO services!",
-        type: "other",
+        types: ["other"],
         website: "http://spam.example",
       },
     });
@@ -267,12 +291,102 @@ test.describe("contact form", () => {
       const email = uniqueEmail(`type-${type}`);
       const message = "Chcemy przestać przepisywać faktury.";
       const res = await request.post("/api/lead", {
-        data: { email, message, type, website: "" },
+        data: { email, message, types: [type], website: "" },
       });
       expect(res.status()).toBe(200);
       expect(savedLeads(email)).toEqual([{ email, message, type }]);
     });
   }
+
+  test("the server saves every chosen type, in the form's order", async ({
+    request,
+  }) => {
+    const email = uniqueEmail("types");
+    const message = "Audyt, potem wdrożenie i opieka.";
+    const res = await request.post("/api/lead", {
+      data: {
+        email,
+        message,
+        types: ["partner", "audit", "implementation", "other"],
+        website: "",
+      },
+    });
+    expect(res.status()).toBe(200);
+    expect(savedLeads(email)).toEqual([
+      { email, message, type: "audit,implementation,partner,other" },
+    ]);
+  });
+
+  test("the project types are checkboxes a keyboard can tick, several at once", async ({
+    page,
+  }) => {
+    await page.route(LEAD_API, (route) =>
+      route.fulfill({ json: { ok: true }, status: 200 })
+    );
+    await page.goto("/#contact");
+    await page.waitForLoadState("networkidle");
+
+    const types = page.locator('[data-contact-form] input[name="type"]');
+    await expect(types).toHaveCount(4);
+    for (const type of await types.all()) {
+      // biome-ignore lint/performance/noAwaitInLoops: one input at a time
+      await expect(type).toHaveAttribute("type", "checkbox");
+    }
+
+    // Tab walks from the e-mail through every chip; Space ticks the one in
+    // focus and leaves the others as they are.
+    await page.locator('[data-contact-form] input[name="email"]').focus();
+    await page.keyboard.type("klawiatura@example.com");
+    await page.keyboard.press("Tab");
+    await expect(types.nth(0)).toBeFocused();
+    await page.keyboard.press("Space");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    await expect(types.nth(2)).toBeFocused();
+    await page.keyboard.press("Space");
+    await expect(types.nth(0)).toBeChecked();
+    await expect(types.nth(1)).not.toBeChecked();
+    await expect(types.nth(2)).toBeChecked();
+    // The focused chip shows the ring.
+    await expect(
+      page.locator("[data-contact-form] .mb-choice-label").nth(2)
+    ).toHaveCSS("outline-style", "solid");
+
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    await expect(
+      page.locator('[data-contact-form] textarea[name="message"]')
+    ).toBeFocused();
+    await page.keyboard.type("Wpisane z klawiatury.");
+
+    const sent = page.waitForRequest(LEAD_API);
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Enter");
+    expect((await sent).postDataJSON().types).toEqual(["audit", "partner"]);
+  });
+
+  test("the project chips are as high as the e-mail field and level with it", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/#contact");
+    const field = await page
+      .locator('[data-contact-form] input[name="email"]')
+      .boundingBox();
+    const chips = await page
+      .locator("[data-contact-form] .mb-choice-label")
+      .evaluateAll((els) =>
+        els.map((el) => el.getBoundingClientRect().toJSON() as DOMRect)
+      );
+    if (!field) {
+      throw new Error("the e-mail field is not rendered");
+    }
+    expect(chips).toHaveLength(4);
+    for (const chip of chips) {
+      expect(chip.height).toBe(field.height);
+      expect(chip.y).toBe(field.y);
+    }
+  });
 
   test("the four project types are offered, Audyt AI first, and none overflows on mobile", async ({
     page,
@@ -280,7 +394,7 @@ test.describe("contact form", () => {
     await page.setViewportSize({ height: 844, width: 390 });
     await page.goto("/#contact");
 
-    const group = page.locator('[data-contact-form] [role="radiogroup"]');
+    const group = page.locator("[data-contact-form] fieldset.mb-choices");
     const labels = group.locator("label");
     await expect(labels).toHaveText([
       "Audyt AI",
@@ -441,7 +555,7 @@ test.describe("contact form", () => {
       await expect(submit).toBeDisabled();
       expect(await types.count()).toBe(4);
       for (const type of await types.all()) {
-        // biome-ignore lint/performance/noAwaitInLoops: one radio at a time
+        // biome-ignore lint/performance/noAwaitInLoops: one input at a time
         await expect(type).toBeDisabled();
       }
       // The disabled look: fields on the flat panel, the chosen type a
@@ -453,7 +567,7 @@ test.describe("contact form", () => {
           .locator("[data-contact-form] label", {
             has: page.locator('input[value="implementation"]'),
           })
-          .locator(".mb-radio-label")
+          .locator(".mb-choice-label")
       ).toHaveCSS("background-color", "rgb(157, 156, 149)");
     } finally {
       release();
@@ -467,7 +581,7 @@ test.describe("contact form", () => {
     await expect(message).toBeEnabled();
     await expect(submit).toBeEnabled();
     for (const type of await types.all()) {
-      // biome-ignore lint/performance/noAwaitInLoops: one radio at a time
+      // biome-ignore lint/performance/noAwaitInLoops: one input at a time
       await expect(type).toBeEnabled();
     }
     await expect(email).toHaveValue("kacper@example.com");

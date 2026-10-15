@@ -424,15 +424,15 @@ test.describe("component catalogue (astro dev)", () => {
     });
   });
 
-  test("the default radio is round, the choice chip square", async ({
-    page,
-  }) => {
-    await expect(
-      page.locator(".mb-radio-default .mb-radio-input").first()
-    ).toHaveCSS("border-radius", "50%");
-    await expect(
-      page.locator(".mb-radio-choice .mb-radio-label").first()
-    ).toHaveCSS("border-radius", "0px");
+  test("the radio is round, the choice chip square", async ({ page }) => {
+    await expect(page.locator(".mb-radio .mb-radio-input").first()).toHaveCSS(
+      "border-radius",
+      "50%"
+    );
+    await expect(page.locator(".mb-choice-label").first()).toHaveCSS(
+      "border-radius",
+      "0px"
+    );
   });
 
   test("a forced card hover lights the card and its fillOnCellHover badge", async ({
@@ -566,10 +566,12 @@ test.describe("component catalogue (astro dev)", () => {
     await expect(mark("checked")).toHaveCSS("opacity", "1");
   });
 
-  test("checking a choice chip moves nothing", async ({ page }) => {
+  test("checking a choice chip moves nothing, and a second one keeps the first", async ({
+    page,
+  }) => {
     // Across every sample state (checked, hover, focus, disabled, invalid)
     // the chips keep one frame width and one type weight.
-    const chips = page.locator(".mb-radio-choice .mb-radio-label");
+    const chips = page.locator(".mb-choice-label");
     const looks = await chips.evaluateAll((labels) => [
       ...new Set(
         labels.map((label) => {
@@ -580,16 +582,20 @@ test.describe("component catalogue (astro dev)", () => {
     ]);
     expect(looks).toEqual(["1px 1px 500"]);
 
-    const group = page.getByRole("radiogroup", {
-      name: "Typ projektu (choice, checked)",
+    const group = page.getByRole("group", {
+      name: "Typ projektu (choice, hover)",
     });
-    const chip = group.locator(".mb-radio-label", { hasText: "Landing page" });
+    const chip = group.locator(".mb-choice-label", { hasText: "Inne" });
     await chip.scrollIntoViewIfNeeded();
     const before = await chip.boundingBox();
+    await group
+      .locator(".mb-choice-label", { hasText: "Landing page" })
+      .click();
     await chip.click();
     await expect(
-      group.getByRole("radio", { name: "Landing page" })
+      group.getByRole("checkbox", { name: "Landing page" })
     ).toBeChecked();
+    await expect(group.getByRole("checkbox", { name: "Inne" })).toBeChecked();
     expect(await chip.boundingBox()).toEqual(before);
   });
 

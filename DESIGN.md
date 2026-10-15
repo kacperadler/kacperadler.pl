@@ -85,7 +85,7 @@ components:
 
 ## Overview
 
-`kacperadler.pl` is minimal brutalism: a ruled sheet. Content sits in cells drawn with 1px `ink` rules that share their edges, on a solid `base` substrate. Two hairlines run down the page at the container's edges. Headlines are heavy Geist with tight negative tracking, labels Geist Mono. There are no rounded corners (the default radio is the one circle), no glass, no gradients, no drifting background: a hovered cell lights up from inside and moves nothing, a button's face lifts off its white layer towards the cursor, and every state change is a short linear switch, except two slides: a loading button's label and spinner, and a card's top rule.
+`kacperadler.pl` is minimal brutalism: a ruled sheet. Content sits in cells drawn with 1px `ink` rules that share their edges, on a solid `base` substrate. Two hairlines run down the page at the container's edges. Headlines are heavy Geist with tight negative tracking, labels Geist Mono. There are no rounded corners (the radio is the one circle), no glass, no gradients, no drifting background: a hovered cell lights up from inside and moves nothing, a button's face lifts off its white layer towards the cursor, and every state change is a short linear switch, except two slides: a loading button's label and spinner, and a card's top rule.
 
 There is one design, served at `/`, and it is dark only. Its components live in `src/components/mb/`, are shown with every variant and state at `/ui` (`bun dev` only), and every production page is built from them.
 
@@ -154,7 +154,8 @@ Every component is one `.astro` file in `src/components/mb/` with scoped CSS, sh
 | `badge` | `default` (`teraz`, `Zlecenie`), `secondary`, `outline` (year range, step duration), `destructive`, `ghost`, `link`, `tag` (a technology: the `muted` frame, not caps), `status` (availability: `ink` text in a `blue` frame behind a square `blue` dot); icons, `href` (press: an ink block), `fillOnCellHover` |
 | `alert` | `default`, `destructive` (the send-error banner) |
 | `avatar`, `avatar-group` | `sm` / `default` / `lg` (32 / 48 / 96px); image or initials (decided at build time), `badge`; in a group each overlaps the one before by a quarter of its side inside a 2px `base` ring, and the "+N" count matches the initials avatar |
-| `radio` | `default` (a circle, a `blue` dot when checked), `choice` (the contact form chip, 36px high: hover the lit cell, press `panel`, checked a `blue` block, `blue-2` on hover, checked and disabled a `muted` block; the same 1px frame and type weight in every state, so checking one moves nothing) |
+| `radio` | a circle, a `blue` dot when checked |
+| `choice` | a checkbox drawn as the contact form's chip (several can be checked), 44px high like `input`, so a row of chips is level with a field beside it: hover the lit cell, press `panel`, checked a `blue` block, `blue-2` on hover, checked and disabled a `muted` block; the same 1px frame and type weight in every state, so checking one moves nothing; the native input stays in the tab order (Space checks it) |
 | `checkbox`, `input`, `textarea`, `label`, `field`, `field-set`, `separator`, `spinner` | shadcn's states; hover shows an unchecked checkbox's check faintly; `field` orientation `vertical` / `horizontal` / `responsive` |
 | `accordion`, `accordion-item` | `single` / `multiple`, plain / `bordered`; native `<details>`, height and chevron animate |
 | `breadcrumb`, `pagination` | chevron / slash, collapse (the ellipsis opens the hidden pages as a native popover menu); numbers / icons, `jump` (a GET form to a page number) |
@@ -206,7 +207,7 @@ Idle: a `muted` frame. Hover: an `ink-2` frame. Focus: an `ink` frame and the ha
 - ✅ **Do** draw a cell with `--mb-rule` and let neighbours share it through `cell-grid.astro`.
 - ✅ **Do** give a new color token a single value, the one the dark page renders - there is no second palette to pair it with.
 - ✅ **Do** use `--mb-snap` for every transition and add a reduced-motion block next to it; `--mb-slide` is only for the loading swap and the card rule.
-- ❌ **Don't** round a corner. Not on cells, buttons, chips, avatars or inputs. The default radio's circle is the one exception.
+- ❌ **Don't** round a corner. Not on cells, buttons, chips, avatars or inputs. The radio's circle is the one exception.
 - ❌ **Don't** add glass (`backdrop-filter`), gradients, a dot grid or ambient motion; the substrate stays solid and still.
 - ❌ **Don't** add a second accent color. Navy is the only chromatic element.
 - ❌ **Don't** use solid white (`#fff`) - text tops out at the warm `ink` (`#ece7dc`). The EU funding band is the one exception: its logos need a white ground.

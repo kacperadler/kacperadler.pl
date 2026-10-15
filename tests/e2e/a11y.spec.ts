@@ -130,7 +130,7 @@ test.describe("axe-core a11y", () => {
 
     // Valid submit the server refuses: the send-error banner.
     await page.fill('[data-contact-form] input[name="email"]', "a@example.com");
-    await page.locator("[data-contact-form] label.mb-radio").first().click();
+    await page.locator("[data-contact-form] label.mb-choice").first().click();
     await page.fill('[data-contact-form] textarea[name="message"]', "Treść");
     await page.click("[data-contact-form] [data-submit]");
     await expect(wrap).toHaveAttribute("data-state", "error-submit");

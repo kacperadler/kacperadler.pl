@@ -67,7 +67,7 @@ Dependabot (`.github/dependabot.yml`) co tydzień otwiera PR-y dla bun i GitHub 
 
 ## Leady i powiadomienia
 
-Formularz kontaktowy (`src/scripts/contact-form.ts`) wysyła JSON `{ email, type, message, website }` na `POST /api/lead` (`src/pages/api/lead.ts`, jedyna trasa renderowana na żądanie). Trasa sprawdza pola tymi samymi regułami co przeglądarka (`src/lib/lead.ts`), zapisuje lead w SQLite (`src/lib/leads-db.ts`, tabela `leads(id, created_at, email, type, message)`, tworzona przy pierwszym zapisie) i wysyła powiadomienie przez API Resend (`src/lib/send-email.ts`, sam `fetch`, limit 5 s).
+Formularz kontaktowy (`src/scripts/contact-form.ts`) wysyła JSON `{ email, types, message, website }` (`types`: jeden lub kilka typów projektu) na `POST /api/lead` (`src/pages/api/lead.ts`, jedyna trasa renderowana na żądanie). Trasa sprawdza pola tymi samymi regułami co przeglądarka (`src/lib/lead.ts`), zapisuje lead w SQLite (`src/lib/leads-db.ts`, tabela `leads(id, created_at, email, type, message)`, tworzona przy pierwszym zapisie; `type` to wybrane typy po przecinku, np. `audit,implementation`) i wysyła powiadomienie przez API Resend (`src/lib/send-email.ts`, sam `fetch`, limit 5 s).
 
 - `type` to `audit | implementation | partner | other` (`projectTypes`); wiersze zapisane wcześniej zostają z `ai | webapp | landing | mobile | tool`, ale nowy lead z takim typem dostaje 400.
 - Wypełniony honeypot (`website`) → 200, nic nie zapisane.
@@ -135,7 +135,7 @@ Nazwy menu za dokumentacją Dokploy (Applications → Advanced); jeśli w Twojej
 4. **Deploy**: przycisk **Deploy** (albo **Redeploy**) w zakładce **General**; poczekaj, aż deployment w **Deployments** będzie zielony.
 5. **Sprawdź, czy lead doszedł**:
    - wyślij formularz na [kacperadler.pl/#contact](https://kacperadler.pl/#contact) - po wysłaniu widać kartę sukcesu;
-   - na `LEAD_NOTIFY_TO` przychodzi mail "Nowy lead #<numer> - <typ projektu>";
+   - na `LEAD_NOTIFY_TO` przychodzi mail "Nowy lead #<numer> - <typy projektu>";
    - zakładka **Logs**: linia `[lead] saved #<numer>` (ostrzeżenie `no e-mail` znaczy, że brakuje zmiennej z kroku 3; `the e-mail was not sent` - Resend odrzucił wysyłkę, powód jest w tej samej linii);
    - terminal kontenera (w Dokploy **Docker Terminal** / **Terminal** aplikacji, albo na serwerze `docker exec -it <kontener> sh`) - pięć ostatnich leadów:
 
