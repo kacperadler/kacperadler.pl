@@ -422,10 +422,6 @@ html[data-proposal="blueprint-live"] {
   clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
 }
 
-[data-proposal="blueprint-live"] .mb-status-id {
-  margin-bottom: var(--v2-space-md);
-}
-
 /* A row's hairlines, drawn by its background over the border. */
 [data-proposal="blueprint-live"] .mb-status-row {
   --bl-s: clamp(0, (var(--bl-p) - 0.6) / 0.25, 1);
@@ -438,13 +434,14 @@ html[data-proposal="blueprint-live"] {
   background-size: var(--bl-row) 1px;
 }
 
-/* The title block's column rule, between label and value, run down. */
+/* The title block's column rule, between the figure and its text, run
+ * down. */
 [data-proposal="blueprint-live"] .mb-status-row::before {
   --bl-s: clamp(0, (var(--bl-p) - 0.75) * 4, 1);
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(104px + 6px);
+  left: calc(112px + 8px);
   width: 1px;
   content: "";
   background: var(--mb-hair);

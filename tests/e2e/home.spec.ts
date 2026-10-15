@@ -154,6 +154,23 @@ test.describe("home page", () => {
     await expect(
       hero.getByRole("link", { name: "Zobacz, co mogę zautomatyzować" })
     ).toHaveAttribute("href", "#examples");
+
+    // Beside the text: results, not a photo and a bio. The figures are
+    // the ones the page backs up below, and the card links to them.
+    const card = hero.getByRole("complementary", { name: "Efekty w liczbach" });
+    await expect(card.locator("img")).toHaveCount(0);
+    await expect(card.locator(".mb-status-figure")).toHaveText([
+      "200+",
+      "~200",
+      "24h",
+    ]);
+    await expect(
+      card.getByRole("link", { name: "Zobacz realizacje" })
+    ).toHaveAttribute("href", "#cases");
+    await expect(page.locator("#cases")).toContainText("Ponad 200 osób");
+    await expect(page.locator("#cases")).toContainText(
+      "Ok. 200 użytkowników dziennie"
+    );
   });
 
   test("nothing on the page is a placeholder or removed copy", async ({

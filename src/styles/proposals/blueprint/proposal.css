@@ -294,20 +294,16 @@ html[data-proposal="blueprint"] {
   border-bottom: 1px solid var(--mb-rule);
 }
 
-[data-proposal="blueprint"] .mb-status-id {
-  margin-bottom: var(--v2-space-md);
-}
-
 [data-proposal="blueprint"] .mb-status-row {
   position: relative;
 }
 
-/* The title block's column rule, between label and value. */
+/* The title block's column rule, between the figure and its text. */
 [data-proposal="blueprint"] .mb-status-row::before {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(104px + 6px);
+  left: calc(112px + 8px);
   width: 1px;
   content: "";
   background: var(--mb-hair);

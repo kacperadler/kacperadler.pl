@@ -254,12 +254,6 @@ html[data-proposal="live-grid"] {
   transform: translateY(-50%);
 }
 
-/* Location: the country reads its time zone. */
-[data-proposal="live-grid"] .mb-status-meta span:last-child::after {
-  color: var(--blue);
-  content: " · Europe/Warsaw" / "";
-}
-
 /* -- Process: the rail runs down as the steps come in ----------------- */
 
 [data-proposal="live-grid"] .mb-step {
