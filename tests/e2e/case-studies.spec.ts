@@ -237,7 +237,8 @@ test.describe("no case studies", () => {
       NAV_LABELS
     );
     await expect(page.locator("#cases .mb-card").first()).toBeAttached();
-    await expect(page.locator('a[href="/realizacje/"]')).toHaveCount(0);
-    await expect(page.locator("a.mb-link-case")).toHaveCount(0);
+    // Nothing leads to /realizacje/: not the list, not a case study (the
+    // hero's "Zobacz realizacje" goes to #cases on the page).
+    await expect(page.locator('a[href^="/realizacje/"]')).toHaveCount(0);
   });
 });

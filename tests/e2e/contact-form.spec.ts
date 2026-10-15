@@ -370,17 +370,18 @@ test.describe("contact form", () => {
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
     await page.goto("/#contact");
-    const field = await page
-      .locator('[data-contact-form] input[name="email"]')
-      .boundingBox();
-    const chips = await page
-      .locator("[data-contact-form] .mb-choice-label")
-      .evaluateAll((els) =>
-        els.map((el) => el.getBoundingClientRect().toJSON() as DOMRect)
-      );
-    if (!field) {
-      throw new Error("the e-mail field is not rendered");
-    }
+    // One read of every box, so the smooth scroll to #contact cannot move
+    // the page between the field and the chips.
+    const { chips, field } = await page
+      .locator("[data-contact-form]")
+      .evaluate((form) => ({
+        chips: [...form.querySelectorAll(".mb-choice-label")].map(
+          (el) => el.getBoundingClientRect().toJSON() as DOMRect
+        ),
+        field: (form.querySelector('input[name="email"]') as HTMLElement)
+          .getBoundingClientRect()
+          .toJSON() as DOMRect,
+      }));
     expect(chips).toHaveLength(4);
     for (const chip of chips) {
       expect(chip.height).toBe(field.height);
