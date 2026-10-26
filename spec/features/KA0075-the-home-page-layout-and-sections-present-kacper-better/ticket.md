@@ -63,3 +63,4 @@ Out:
 - 2026-10-26: The human, superseding the previous line: H1 "Wdrożenia AI i automatyzacje, które przejmują nudną pracę" (underline on "nudną pracę"); the subtitle's last sentence becomes "Bez zatrudniania nowych osób, a Ty skupiasz się na rozwoju firmy."
 - 2026-10-26: The human: subtitle "Tworzę automatyzacje, integracje i aplikacje szyte na miarę. Znajduję procesy, które zabierają czas, a potem zamieniam je w działające systemy. Bez zatrudniania nowych osób, a Ty skupiasz się na rozwoju firmy."
 - 2026-10-26: The human picked subtitle A: "Tworzę automatyzacje, integracje i aplikacje szyte na miarę. Znajduję procesy, które zabierają czas, i zamieniam je w działające systemy. Ty skupiasz się na biznesie i rozwoju firmy, a powtarzalne zadania zostawiasz mnie."
+- 2026-10-26: The human: remove the "Przyjmuję nowe projekty" status badge from the hero panel.
