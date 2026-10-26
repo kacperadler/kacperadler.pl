@@ -57,7 +57,9 @@ const { proposal } = Astro.props;
        * fills it when taller, and stops watching it; its proposal.css then
        * draws the part on a clock. A part scrolled past the top of the
        * screen before the observer saw it whole (a fast scroll) is marked
-       * too. A catalogue section is watched by its heading. The observer
+       * too. A catalogue section is watched by its heading, a process step by
+       * its marker (on the desktop the step is display: contents, no box to
+       * watch). The observer
        * reports in steps of 1% of the part's area, so "whole" allows 3%
        * short of it. */
       if (document.documentElement.dataset.proposal === "blueprint-live") {
@@ -73,7 +75,10 @@ const { proposal } = Astro.props;
                   entry.intersectionRect.height >= whole * 0.97 ||
                   box.bottom <= screen.top;
                 if (whole > 0 && seen) {
-                  const part = entry.target.classList.contains("mb-ui-h2")
+                  const byChild =
+                    entry.target.classList.contains("mb-ui-h2") ||
+                    entry.target.classList.contains("mb-step-marker");
+                  const part = byChild
                     ? entry.target.parentElement
                     : entry.target;
                   part.dataset.blDrawn = "";
@@ -84,7 +89,7 @@ const { proposal } = Astro.props;
             { threshold: Array.from({ length: 101 }, (_, i) => i / 100) }
           );
           for (const part of document.querySelectorAll(
-            ".mb-section-head, .mb-ui-h2, .mb-card, .mb-step, .mb-footer, .mb-footer-bottom, .mb-hero-status"
+            ".mb-section-head, .mb-ui-h2, .mb-card, .mb-step-marker, .mb-footer, .mb-footer-bottom, .mb-hero-status"
           )) {
             observer.observe(part);
           }
