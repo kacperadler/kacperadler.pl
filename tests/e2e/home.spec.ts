@@ -383,15 +383,61 @@ test.describe("home page", () => {
     expect(m.y).toBeGreaterThan(t.y + t.height);
   });
 
-  test("the hero status card is as tall as the text beside it", async ({
+  test("the hero's text, buttons, card rows and figures sit on one grid", async ({
     page,
   }) => {
-    await page.setViewportSize({ height: 900, width: 1440 });
+    // Every box in one read, so nothing moves between two measurements.
+    const measure = () =>
+      page.locator("#top").evaluate((hero) => {
+        const r = (el: Element) =>
+          el.getBoundingClientRect().toJSON() as DOMRect;
+        const all = (selector: string) =>
+          [...hero.querySelectorAll(selector)].map(r);
+        return {
+          card: r(hero.querySelector(".mb-hero-status") as Element),
+          cardButton: r(
+            hero.querySelector(".mb-status-cta .mb-btn") as Element
+          ),
+          ctas: all(".mb-hero-ctas .mb-btn"),
+          figures: all(".mb-status-figure"),
+          rows: all(".mb-status-row"),
+          text: r(hero.querySelector(".mb-hero-text") as Element),
+        };
+      });
+
+    await page.setViewportSize({ height: 1000, width: 1440 });
     await page.goto("/");
-    const text = await box(page.locator("#top .mb-hero-text"));
-    const card = await box(page.locator("#top .mb-hero-status"));
-    expect(Math.abs(card.y - text.y)).toBeLessThan(TOLERANCE);
-    expect(Math.abs(card.height - text.height)).toBeLessThan(TOLERANCE);
+    const wide = await measure();
+    // The two columns start and end on the same lines, and the hero's
+    // buttons rest on the card button's line.
+    expect(Math.abs(wide.card.y - wide.text.y)).toBeLessThan(TOLERANCE);
+    expect(Math.abs(wide.card.height - wide.text.height)).toBeLessThan(
+      TOLERANCE
+    );
+    for (const cta of wide.ctas) {
+      expect(Math.abs(cta.bottom - wide.cardButton.bottom)).toBeLessThan(
+        TOLERANCE
+      );
+    }
+
+    await page.setViewportSize({ height: 844, width: 390 });
+    const narrow = await measure();
+    // Stacked, every hero button takes the column's full width.
+    for (const cta of narrow.ctas) {
+      expect(Math.abs(cta.width - narrow.text.width)).toBeLessThan(TOLERANCE);
+    }
+
+    // At both widths: the card's rows are equally tall and its figures
+    // start at one x.
+    for (const { figures, rows } of [wide, narrow]) {
+      expect(rows).toHaveLength(3);
+      const heights = rows.map((row) => row.height);
+      expect(Math.max(...heights) - Math.min(...heights)).toBeLessThan(
+        TOLERANCE
+      );
+      const xs = figures.map((figure) => figure.x);
+      expect(Math.max(...xs) - Math.min(...xs)).toBeLessThan(TOLERANCE);
+    }
   });
 
   test("the offer's labels run in straight lines, and only the first step's button is the primary one", async ({

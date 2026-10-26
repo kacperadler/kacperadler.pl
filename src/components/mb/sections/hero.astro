@@ -1,13 +1,18 @@
 ---
 import Badge from "../badge.astro";
 import Button from "../button.astro";
-import Link from "../link.astro";
 
-/* Hero (#top): a heavy headline on the bare substrate beside the results
- * card, a framed cell as tall as the text column: a mono caption and the
- * "Przyjmuję nowe projekty" badge, then a ruled table of facts the page
- * backs up further down - a big figure and what it counts - and a link to
- * the case highlights (#cases). One column at 880px and below. */
+/* Hero (#top): the headline, subtitle and two buttons beside the results
+ * card ("W liczbach": the status badge, three ruled rows of a big figure
+ * over what it counts, and a button to the case highlights, #cases).
+ *
+ * The two columns share one grid: they are equally tall, the text column
+ * is padded like the card, so the headline starts level with the card's
+ * caption and the hero buttons sit on the same line as the card's button,
+ * at the foot of both. The card's rows split the height left between its
+ * head and its button evenly (equal rows at every width), and every
+ * figure starts at the same x. At 880px and below the columns stack and
+ * every button takes the full width. */
 const results = [
   {
     figure: "+250",
@@ -61,15 +66,18 @@ const results = [
         ))}
       </ul>
 
-      <p class="mb-status-link">
-        <Link href="#cases" variant="case">Zobacz realizacje</Link>
-      </p>
+      <div class="mb-status-cta">
+        <Button href="#cases" iconEnd="lucide:arrow-right" variant="outline"
+          >Zobacz realizacje</Button
+        >
+      </div>
     </aside>
   </div>
 </section>
 
 <style>
   .mb-hero {
+    --mb-hero-pad: var(--v2-space-lg);
     padding: var(--v2-space-2xl) 0 var(--v2-space-xl);
   }
 
@@ -80,19 +88,24 @@ const results = [
     align-items: stretch;
   }
 
+  /* Padded like the card (its padding plus its 1px rule), so the headline
+   * and the card's caption share a top line and the buttons a bottom one. */
   .mb-hero-text {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
+    padding: calc(var(--mb-hero-pad) + 1px) 0;
   }
 
   h1 {
     max-width: 22ch;
-    margin: 0 0 24px;
+    margin: 0 0 var(--v2-space-lg);
     font-family: var(--mb-display);
-    font-size: clamp(40px, 5.8vw, 70px);
+    font-size: clamp(40px, 5.2vw, 64px);
     font-weight: 800;
-    line-height: 0.98;
+    line-height: 1;
     color: var(--ink);
-    letter-spacing: -0.055em;
+    letter-spacing: -0.05em;
     text-wrap: balance;
   }
 
@@ -107,7 +120,7 @@ const results = [
 
   .mb-hero-sub {
     max-width: 56ch;
-    margin: 0 0 32px;
+    margin: 0 0 var(--v2-space-lg);
     font-size: 18px;
     line-height: 1.55;
     color: var(--ink-2);
@@ -118,13 +131,15 @@ const results = [
     flex-wrap: wrap;
     gap: 16px;
     align-items: center;
+    margin-top: auto;
   }
 
   .mb-hero-status {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    padding: var(--v2-space-lg);
+    min-width: 0;
+    padding: var(--mb-hero-pad);
     background: var(--v2-bg);
     border: 1px solid var(--mb-rule);
   }
@@ -147,34 +162,30 @@ const results = [
     letter-spacing: 0.14em;
   }
 
-  /* The rows share the card's spare height, so the table fills the cell
-   * beside a taller text column instead of leaving a gap above it. */
+  /* Equal rows: each as tall as the tallest, and together they take the
+   * height the card has between its head and its button. */
   .mb-status-rows {
-    display: flex;
+    display: grid;
     flex: 1;
-    flex-direction: column;
-    justify-content: space-between;
+    grid-auto-rows: 1fr;
     padding: 0;
     margin: 0;
     list-style: none;
+    border-bottom: 1px solid var(--mb-hair);
   }
 
   .mb-status-row {
-    display: grid;
-    grid-template-columns: 112px minmax(0, 1fr);
-    gap: 16px;
-    align-items: baseline;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
     padding: 14px 0;
     border-top: 1px solid var(--mb-hair);
   }
 
-  .mb-status-row:last-child {
-    border-bottom: 1px solid var(--mb-hair);
-  }
-
   .mb-status-figure {
     font-family: var(--mb-display);
-    font-size: 34px;
+    font-size: 30px;
     font-weight: 800;
     line-height: 1;
     color: var(--ink);
@@ -187,12 +198,13 @@ const results = [
     color: var(--ink-2);
   }
 
-  .mb-status-link {
-    margin: 0;
+  .mb-status-cta {
+    display: flex;
   }
 
   @media (max-width: 880px) {
     .mb-hero {
+      --mb-hero-pad: var(--v2-space-md);
       padding: 48px 0 var(--v2-space-lg);
     }
 
@@ -201,18 +213,21 @@ const results = [
       gap: var(--v2-space-lg);
     }
 
-    .mb-hero-status {
-      padding: var(--v2-space-md);
+    .mb-hero-text {
+      padding: 0;
     }
-  }
 
-  @media (max-width: 400px) {
-    .mb-status-row {
-      grid-template-columns: 88px minmax(0, 1fr);
+    .mb-hero-ctas {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .mb-hero :global(.mb-btn) {
+      width: 100%;
     }
 
     .mb-status-figure {
-      font-size: 30px;
+      font-size: 26px;
     }
   }
 </style>
