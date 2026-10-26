@@ -8,13 +8,19 @@ import SectionHead from "../section-head.astro";
 import StepMarker from "../step-marker.astro";
 
 /* Process (#how): the steps on a rail of square numbered marks that fills
- * blue as the page scrolls (step-marker.astro). On the desktop the rail
- * runs down the middle and the steps alternate left and right of it, the
- * duration badge beside the rail on the other side. At 880px and below
- * one column with the rail on the left, the cards stacked into one ruled
- * column and the duration in each card's head (the badge is in the HTML
- * twice, and each layout shows one). Under them, the button to the contact
- * form. */
+ * blue as the page scrolls (step-marker.astro). Each card's head carries
+ * its title and duration.
+ *
+ * Desktop: the rail runs down the middle and the steps alternate left and
+ * right of it, staggered - one grid whose steps each span two rows, every
+ * next step one row lower, so a card starts about halfway down the one
+ * before it on the other side and no side is left empty. A short
+ * horizontal connector joins each card to its mark at the mark's height:
+ * 1px ink, 2px blue once the mark has filled.
+ *
+ * At 880px and below one column with the rail on the left, the cards
+ * stacked into one ruled column, no connectors. Under the steps, the
+ * button to the contact form. */
 ---
 
 <section class="mb-how" id="how">
@@ -24,22 +30,18 @@ import StepMarker from "../step-marker.astro";
     </SectionHead>
 
     <ol class="mb-how-steps">
-      {processSteps.map((step) => (
-        <li class="mb-step">
+      {processSteps.map((step, i) => (
+        <li class="mb-step" style={`--mb-step-row: ${i + 1}`}>
           <StepMarker num={step.num} />
           <Card tag="div">
             <div class="mb-step-head">
               <Icon aria-hidden="true" class="mb-step-icon" name={step.icon} />
               <h3>{step.title}</h3>
-              <span class="mb-step-when-card">
-                <Badge variant="outline">{step.badge}</Badge>
-              </span>
+              <Badge variant="outline">{step.badge}</Badge>
             </div>
             <p class="mb-step-desc">{step.description}</p>
           </Card>
-          <span class="mb-step-when">
-            <Badge variant="outline">{step.badge}</Badge>
-          </span>
+          <span aria-hidden="true" class="mb-step-link" />
         </li>
       ))}
     </ol>
@@ -54,55 +56,87 @@ import StepMarker from "../step-marker.astro";
 
 <style>
   .mb-how {
+    --mb-how-rail: 80px;
+    --mb-how-dot: 48px;
     margin-top: var(--mb-section-gap);
   }
 
+  /* Desktop: card | rail | card. A step takes rows n and n+1, the next
+   * step n+1 and n+2, so the two sides overlap by a row; two cards on one
+   * side stand a row gap apart. */
   .mb-how-steps {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--mb-how-rail) minmax(0, 1fr);
+    row-gap: var(--v2-space-lg);
     padding: 0;
     margin: 0;
     list-style: none;
   }
 
-  /* Desktop: card | rail | duration, mirrored on every other step. The
-   * card's vertical margins are equal, so the mark (on the row's centre)
-   * stays on the card's centre, and the rail runs through the gaps. */
   .mb-step {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 80px minmax(0, 1fr);
-    align-items: center;
+    display: contents;
+  }
+
+  .mb-step > :global(*) {
+    grid-row: var(--mb-step-row) / span 2;
   }
 
   .mb-step > :global(.mb-step-marker) {
-    grid-row: 1;
     grid-column: 2;
-    align-self: stretch;
   }
 
   .mb-step > :global(.mb-card) {
-    grid-row: 1;
     grid-column: 1;
-    margin: 12px 0;
-  }
-
-  .mb-step-when {
-    grid-row: 1;
-    grid-column: 3;
-    justify-self: start;
   }
 
   .mb-step:nth-child(even) > :global(.mb-card) {
     grid-column: 3;
   }
 
-  .mb-step:nth-child(even) > .mb-step-when {
-    grid-column: 1;
+  /* The connector: from the mark's edge to the card's, on the mark's
+   * centre. A 2px box drawing a 1px ink line until the fill reaches the
+   * mark, then a 2px blue one; filled from the start under reduced motion
+   * or without view timelines, like the rail. */
+  .mb-step-link {
+    position: relative;
+    grid-column: 2;
+    align-self: center;
+    justify-self: start;
+    width: calc((var(--mb-how-rail) - var(--mb-how-dot)) / 2);
+    height: 2px;
+    pointer-events: none;
+    background: var(--blue);
+  }
+
+  .mb-step:nth-child(even) > .mb-step-link {
     justify-self: end;
   }
 
-  .mb-step-when-card {
-    display: none;
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .mb-step-link {
+        animation: mb-step-link linear both;
+        animation-range: cover calc(50vh + 1px) cover calc(50vh + 2px);
+      }
+
+      /* Its own rule: the build's minifier folds an animation-timeline
+       * into the animation shorthand, where browsers drop it. */
+      .mb-step > .mb-step-link {
+        animation-timeline: view();
+      }
+    }
+  }
+
+  @keyframes mb-step-link {
+    from {
+      background-color: transparent;
+      box-shadow: inset 0 1px 0 var(--mb-rule);
+    }
+
+    to {
+      background-color: var(--blue);
+      box-shadow: none;
+    }
   }
 
   .mb-step-head {
@@ -144,12 +178,22 @@ import StepMarker from "../step-marker.astro";
   }
 
   /* Phone: the rail on the left, the cards one ruled column sharing their
-   * rules, the duration back in each card's head. */
+   * rules. */
   @media (max-width: 880px) {
+    .mb-how-steps {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0;
+    }
+
     .mb-step {
+      display: grid;
       grid-template-columns: 40px minmax(0, 1fr);
       gap: 12px;
-      align-items: stretch;
+    }
+
+    .mb-step > :global(*) {
+      grid-row: 1;
     }
 
     .mb-step > :global(.mb-step-marker) {
@@ -159,19 +203,14 @@ import StepMarker from "../step-marker.astro";
     .mb-step > :global(.mb-card),
     .mb-step:nth-child(even) > :global(.mb-card) {
       grid-column: 2;
-      margin: 0;
     }
 
     .mb-step + .mb-step {
       margin-top: -1px;
     }
 
-    .mb-step-when {
+    .mb-step-link {
       display: none;
-    }
-
-    .mb-step-when-card {
-      display: inline-flex;
     }
 
     .mb-how-cta {

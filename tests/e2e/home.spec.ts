@@ -628,27 +628,28 @@ test.describe("home page", () => {
     );
   });
 
-  test("the process alternates around a central rail on the desktop and runs in one column on a phone", async ({
+  test("the process alternates around a central rail, staggered and joined to it, and runs in one column on a phone", async ({
     page,
   }) => {
     const layout = () =>
       page.locator("#how").evaluate((how) => {
         const r = (el: Element | null) =>
           (el as Element).getBoundingClientRect().toJSON() as DOMRect;
-        const shown = (el: Element | null) =>
-          (el as HTMLElement).checkVisibility();
-        return [...how.querySelectorAll(".mb-step")].map((step) => ({
-          card: r(step.querySelector(".mb-card")),
-          cardBadge: shown(step.querySelector(".mb-step-when-card")),
-          dot: r(step.querySelector(".mb-step-dot")),
-          railBadge: shown(step.querySelector(".mb-step-when")),
-          when: r(step.querySelector(".mb-step-when")),
-        }));
+        return {
+          list: r(how.querySelector(".mb-how-steps")),
+          steps: [...how.querySelectorAll(".mb-step")].map((step) => ({
+            badge: r(step.querySelector(".mb-card .mb-step-head .mb-badge")),
+            card: r(step.querySelector(".mb-card")),
+            dot: r(step.querySelector(".mb-step-dot")),
+            link: r(step.querySelector(".mb-step-link")),
+            title: r(step.querySelector(".mb-card h3")),
+          })),
+        };
       });
 
     await page.setViewportSize({ height: 1000, width: 1440 });
     await page.goto("/");
-    const wide = await layout();
+    const { list, steps: wide } = await layout();
     expect(wide).toHaveLength(5);
     const container = await box(page.locator("#how .container"));
     for (const [i, step] of wide.entries()) {
@@ -657,29 +658,59 @@ test.describe("home page", () => {
       expect(
         Math.abs(middle - (container.x + container.width / 2))
       ).toBeLessThan(TOLERANCE + 16);
-      // Odd steps left of the rail, even ones right; the duration on the
-      // other side, next to the mark.
+      // Odd steps left of the rail, even ones right, each joined to its
+      // mark by a connector on the mark's centre, from edge to edge.
+      const dotMiddle = step.dot.y + step.dot.height / 2;
+      expect(
+        Math.abs(step.link.y + step.link.height / 2 - dotMiddle)
+      ).toBeLessThan(TOLERANCE);
       if (i % 2 === 0) {
-        expect(step.card.right).toBeLessThan(step.dot.left);
-        expect(step.when.left - step.dot.right).toBeLessThan(24);
+        expect(Math.abs(step.link.left - step.card.right)).toBeLessThan(
+          TOLERANCE
+        );
+        expect(Math.abs(step.link.right - step.dot.left)).toBeLessThan(
+          TOLERANCE
+        );
       } else {
-        expect(step.card.left).toBeGreaterThan(step.dot.right);
-        expect(step.dot.left - step.when.right).toBeLessThan(24);
+        expect(Math.abs(step.link.left - step.dot.right)).toBeLessThan(
+          TOLERANCE
+        );
+        expect(Math.abs(step.link.right - step.card.left)).toBeLessThan(
+          TOLERANCE
+        );
       }
-      expect(step.railBadge).toBe(true);
-      expect(step.cardBadge).toBe(false);
+      // The duration in the card's head, beside the title.
+      expect(step.badge.x).toBeGreaterThan(step.title.right);
+      expect(step.badge.right).toBeLessThanOrEqual(step.card.right);
+      // Staggered: each card starts about halfway down the one before it.
+      const previous = wide[i - 1];
+      if (previous) {
+        const into = (step.card.top - previous.card.top) / previous.card.height;
+        expect(into, `card ${i + 1}`).toBeGreaterThan(0.3);
+        expect(into, `card ${i + 1}`).toBeLessThan(0.75);
+      }
     }
+    // The steps take well under the height of the cards stacked one under
+    // another.
+    const stacked = wide.reduce((sum, step) => sum + step.card.height, 0);
+    expect(list.height).toBeLessThan(stacked * 0.75);
 
     await page.setViewportSize({ height: 844, width: 390 });
-    const narrow = await layout();
-    for (const step of narrow) {
-      // One column: the mark left of every card, the duration in the card.
+    const { steps: narrow } = await layout();
+    for (const [i, step] of narrow.entries()) {
+      // One column: the mark left of every card, the cards sharing their
+      // rules, no connectors.
       expect(Math.abs(step.card.x - (narrow[0]?.card.x ?? 0))).toBeLessThan(
         TOLERANCE
       );
       expect(step.dot.right).toBeLessThan(step.card.left);
-      expect(step.railBadge).toBe(false);
-      expect(step.cardBadge).toBe(true);
+      expect(step.link.width).toBe(0);
+      const previous = narrow[i - 1];
+      if (previous) {
+        expect(
+          Math.abs(step.card.top - (previous.card.bottom - 1))
+        ).toBeLessThan(TOLERANCE);
+      }
     }
   });
 
@@ -697,6 +728,11 @@ test.describe("home page", () => {
         lines: [...how.querySelectorAll(".mb-step-fill")].map(
           (line) =>
             new DOMMatrix(getComputedStyle(line, "::before").transform).d
+        ),
+        // A connector turns blue with its mark.
+        links: [...how.querySelectorAll(".mb-step-link")].map(
+          (link) =>
+            getComputedStyle(link).backgroundColor === "rgb(142, 174, 216)"
         ),
       }));
     // Puts the element's centre a little past the viewport's middle line.
@@ -721,6 +757,7 @@ test.describe("home page", () => {
     await expect.poll(fill).toEqual({
       dots: [false, false, false, false, false],
       lines: [0, 0, 0, 0, 0],
+      links: [false, false, false, false, false],
     });
 
     // The middle of the viewport on the third mark: the first two segments
@@ -732,11 +769,13 @@ test.describe("home page", () => {
     const middle = await fill();
     expect(middle.lines.slice(0, 2)).toEqual([1, 1]);
     expect(middle.lines.slice(3)).toEqual([0, 0]);
+    expect(middle.links).toEqual(middle.dots);
 
     await scrollTo("#how .mb-how-cta");
     await expect.poll(fill).toEqual({
       dots: [true, true, true, true, true],
       lines: [1, 1, 1, 1, 1],
+      links: [true, true, true, true, true],
     });
   });
 
@@ -754,8 +793,12 @@ test.describe("home page", () => {
       lines: [...how.querySelectorAll(".mb-step-fill")].map(
         (line) => getComputedStyle(line, "::before").transform
       ),
+      links: [...how.querySelectorAll(".mb-step-link")].map(
+        (link) => getComputedStyle(link).backgroundColor
+      ),
     }));
     expect(state.animations).toBe(0);
+    expect(new Set(state.links)).toEqual(new Set(["rgb(142, 174, 216)"]));
     expect(new Set(state.dots)).toEqual(new Set(["rgb(142, 174, 216)"]));
     expect(new Set(state.lines)).toEqual(new Set(["none"]));
     await context.close();
