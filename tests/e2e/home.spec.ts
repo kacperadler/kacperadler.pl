@@ -238,6 +238,13 @@ test.describe("home page", () => {
       expect(spread(boxes.map((cell) => cell.height))).toBeLessThan(TOLERANCE);
       expect(spread(boxes.map((cell) => cell.width))).toBeLessThan(TOLERANCE);
     }
+
+    // On a phone the button spans the column, like the hero's.
+    const grid = await box(problems.locator(".mb-problems-grid"));
+    const button = await box(
+      problems.getByRole("link", { name: "Umów bezpłatną rozmowę" })
+    );
+    expect(Math.abs(button.width - grid.width)).toBeLessThan(TOLERANCE);
   });
 
   test("nothing on the page is a placeholder or removed copy", async ({

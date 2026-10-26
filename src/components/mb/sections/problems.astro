@@ -102,6 +102,13 @@ const problems = [
     color: var(--ink);
   }
 
+  /* Stacked like the hero's: the button takes the full width. */
+  @media (max-width: 880px) {
+    .mb-problems :global(.mb-problems-close .mb-btn) {
+      width: 100%;
+    }
+  }
+
   @media (min-width: 560px) and (max-width: 880px) {
     .mb-problems :global(.mb-problems-grid) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
