@@ -146,12 +146,12 @@ test.describe("home page", () => {
     await page.goto("/");
     const hero = page.locator("#top");
     await expect(hero.locator("h1")).toHaveText(
-      "Wdrożenia AI i automatyzacje, które zamieniają ręczną robotę w czas na rozwój Twojej firmy"
+      "Wdrożenia AI i automatyzacje, które przejmują nudną pracę, żebyś mógł skupić się na rozwoju firmy"
     );
-    // The hero's headline is the page's only h1, and "czas" is its
+    // The hero's headline is the page's only h1, and "rozwoju" is its
     // underlined word.
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(hero.locator("h1 em")).toHaveText("czas");
+    await expect(hero.locator("h1 em")).toHaveText("rozwoju");
     await expect(hero.locator(".mb-hero-sub")).toHaveText(
       "Tworzę automatyzacje, integracje i aplikacje szyte na miarę dla firm. Znajduję procesy, które zabierają czas Tobie i Twojemu zespołowi, a potem zamieniam je w działające systemy. Bez zatrudniania nowych osób."
     );
@@ -446,9 +446,15 @@ test.describe("home page", () => {
       Math.abs(narrow.cardButton.width - (narrow.rows[0]?.width ?? 0))
     ).toBeLessThan(TOLERANCE);
 
-    // At both widths: the card's rows are equally tall and its figures
+    await page.setViewportSize({ height: 800, width: 360 });
+    const smallest = await measure();
+    for (const cta of smallest.ctas) {
+      expect(Math.abs(cta.width - smallest.text.width)).toBeLessThan(TOLERANCE);
+    }
+
+    // At every width: the card's rows are equally tall and its figures
     // start at one x.
-    for (const { figures, rows } of [wide, narrow]) {
+    for (const { figures, rows } of [wide, narrow, smallest]) {
       expect(rows).toHaveLength(3);
       const heights = rows.map((row) => row.height);
       expect(Math.max(...heights) - Math.min(...heights)).toBeLessThan(
@@ -459,6 +465,7 @@ test.describe("home page", () => {
     }
 
     // A row whose text runs a line longer still keeps the rows equal.
+    await page.setViewportSize({ height: 844, width: 390 });
     await page
       .locator("#top .mb-status-text")
       .first()
