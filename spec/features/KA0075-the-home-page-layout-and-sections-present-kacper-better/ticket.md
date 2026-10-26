@@ -71,3 +71,4 @@ Out:
 - 2026-10-26: Correction from the human: the lead marketplace was NOT built from scratch; he took over existing code, fixed it and adapted it to the clients' requirements, then launched it and keeps supporting, maintaining and developing it.
 - 2026-10-26: The human: the Energia Direct mobile app has about 100 daily users (not 200); the cases card effect becomes "Ok. 100 użytkowników dziennie."
 - 2026-10-26: The human: the marketplace launch date is shown as the month only, "Platforma działa od 10.2026", wherever "19.10.2026" appears.
+- 2026-10-26: The human: Proces (#how) timeline, build ideas 1 and 2 to see them: (1) the rail fills blue while scrolling and each step marker lights up when reached (static, fully filled with prefers-reduced-motion); (2) on desktop the steps alternate left and right of a central rail with the duration at the rail; one column on a phone. Step texts unchanged.
