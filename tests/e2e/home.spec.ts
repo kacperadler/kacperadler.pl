@@ -146,14 +146,14 @@ test.describe("home page", () => {
     await page.goto("/");
     const hero = page.locator("#top");
     await expect(hero.locator("h1")).toHaveText(
-      "Wdrożenia AI i automatyzacje, które przejmują nudną pracę, żebyś mógł skupić się na rozwoju firmy"
+      "Wdrożenia AI i automatyzacje, które przejmują nudną pracę"
     );
-    // The hero's headline is the page's only h1, and "rozwoju" is its
-    // underlined word.
+    // The hero's headline is the page's only h1, and "nudną pracę" is its
+    // underlined phrase.
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(hero.locator("h1 em")).toHaveText("rozwoju");
+    await expect(hero.locator("h1 em")).toHaveText("nudną pracę");
     await expect(hero.locator(".mb-hero-sub")).toHaveText(
-      "Tworzę automatyzacje, integracje i aplikacje szyte na miarę dla firm. Znajduję procesy, które zabierają czas Tobie i Twojemu zespołowi, a potem zamieniam je w działające systemy. Bez zatrudniania nowych osób."
+      "Tworzę automatyzacje, integracje i aplikacje szyte na miarę dla firm. Znajduję procesy, które zabierają czas Tobie i Twojemu zespołowi, a potem zamieniam je w działające systemy. Bez zatrudniania nowych osób, a Ty skupiasz się na rozwoju firmy."
     );
     await expect(
       hero.getByRole("link", { name: "Umów bezpłatną konsultację" })
