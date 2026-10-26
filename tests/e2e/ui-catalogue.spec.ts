@@ -347,23 +347,6 @@ test.describe("component catalogue (astro dev)", () => {
     );
   });
 
-  test("a forced step hover fills the marker like a real one", async ({
-    page,
-  }) => {
-    const props = ["background-color", "border-color", "color"];
-    const forced = sample(page, "mb-step-marker", "hover").locator(
-      ".mb-step-dot"
-    );
-    const idle = sample(page, "mb-step-marker", "idle");
-    const idleDot = idle.locator(".mb-step-dot");
-
-    const forcedPaint = await paint(forced, props);
-    expect(forcedPaint["background-color"]).toBe("rgb(142, 174, 216)");
-    expect(forcedPaint).not.toEqual(await paint(idleDot, props));
-    await idle.locator(".mb-card").hover();
-    expect(await paint(idleDot, props)).toEqual(forcedPaint);
-  });
-
   for (const width of [1440, 390, 360]) {
     test(`the step rail runs from the first mark to the last at ${width}px`, async ({
       page,
@@ -1484,25 +1467,6 @@ test.describe("production build", () => {
       })
     ).toBe("7px 7px rgb(142, 174, 216)");
     await expect(page.locator(".mb-tag, .mb-status-pill")).toHaveCount(0);
-  });
-
-  // The process steps are the catalogue's step marker: a mark that fills
-  // with its step and no other.
-  test("a process step mark fills with its step", async ({ page }) => {
-    await page.goto("/");
-    await expect(page.locator("#how .mb-step > .mb-step-marker")).toHaveCount(
-      5
-    );
-
-    const step = page.locator("#how .mb-step").nth(2);
-    await step.locator(".mb-card").hover();
-    await expect(step.locator(".mb-step-dot")).toHaveCSS(
-      "background-color",
-      "rgb(142, 174, 216)"
-    );
-    await expect(
-      page.locator("#how .mb-step").nth(1).locator(".mb-step-dot")
-    ).toHaveCSS("background-color", "rgb(10, 12, 16)");
   });
 
   for (const width of [1440, 390]) {

@@ -628,6 +628,139 @@ test.describe("home page", () => {
     );
   });
 
+  test("the process alternates around a central rail on the desktop and runs in one column on a phone", async ({
+    page,
+  }) => {
+    const layout = () =>
+      page.locator("#how").evaluate((how) => {
+        const r = (el: Element | null) =>
+          (el as Element).getBoundingClientRect().toJSON() as DOMRect;
+        const shown = (el: Element | null) =>
+          (el as HTMLElement).checkVisibility();
+        return [...how.querySelectorAll(".mb-step")].map((step) => ({
+          card: r(step.querySelector(".mb-card")),
+          cardBadge: shown(step.querySelector(".mb-step-when-card")),
+          dot: r(step.querySelector(".mb-step-dot")),
+          railBadge: shown(step.querySelector(".mb-step-when")),
+          when: r(step.querySelector(".mb-step-when")),
+        }));
+      });
+
+    await page.setViewportSize({ height: 1000, width: 1440 });
+    await page.goto("/");
+    const wide = await layout();
+    expect(wide).toHaveLength(5);
+    const container = await box(page.locator("#how .container"));
+    for (const [i, step] of wide.entries()) {
+      const middle = step.dot.x + step.dot.width / 2;
+      // The marks run down the middle of the container.
+      expect(
+        Math.abs(middle - (container.x + container.width / 2))
+      ).toBeLessThan(TOLERANCE + 16);
+      // Odd steps left of the rail, even ones right; the duration on the
+      // other side, next to the mark.
+      if (i % 2 === 0) {
+        expect(step.card.right).toBeLessThan(step.dot.left);
+        expect(step.when.left - step.dot.right).toBeLessThan(24);
+      } else {
+        expect(step.card.left).toBeGreaterThan(step.dot.right);
+        expect(step.dot.left - step.when.right).toBeLessThan(24);
+      }
+      expect(step.railBadge).toBe(true);
+      expect(step.cardBadge).toBe(false);
+    }
+
+    await page.setViewportSize({ height: 844, width: 390 });
+    const narrow = await layout();
+    for (const step of narrow) {
+      // One column: the mark left of every card, the duration in the card.
+      expect(Math.abs(step.card.x - (narrow[0]?.card.x ?? 0))).toBeLessThan(
+        TOLERANCE
+      );
+      expect(step.dot.right).toBeLessThan(step.card.left);
+      expect(step.railBadge).toBe(false);
+      expect(step.cardBadge).toBe(true);
+    }
+  });
+
+  test("the process rail fills as the page scrolls through it", async ({
+    page,
+  }) => {
+    // The 2px blue line over each segment (its scale), and which marks are
+    // blue.
+    const fill = () =>
+      page.locator("#how").evaluate((how) => ({
+        dots: [...how.querySelectorAll(".mb-step-dot")].map(
+          (dot) =>
+            getComputedStyle(dot).backgroundColor === "rgb(142, 174, 216)"
+        ),
+        lines: [...how.querySelectorAll(".mb-step-fill")].map(
+          (line) =>
+            new DOMMatrix(getComputedStyle(line, "::before").transform).d
+        ),
+      }));
+    // Puts the element's centre a little past the viewport's middle line.
+    const scrollTo = (selector: string) =>
+      page.evaluate((target) => {
+        const rect = (
+          document.querySelector(target) as Element
+        ).getBoundingClientRect();
+        window.scrollTo(
+          0,
+          rect.top +
+            rect.height / 2 +
+            8 +
+            window.scrollY -
+            window.innerHeight / 2
+        );
+      }, selector);
+
+    await page.setViewportSize({ height: 1000, width: 1440 });
+    await page.goto("/");
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect.poll(fill).toEqual({
+      dots: [false, false, false, false, false],
+      lines: [0, 0, 0, 0, 0],
+    });
+
+    // The middle of the viewport on the third mark: the first two segments
+    // full, the marks up to the third blue, the rest still empty.
+    await scrollTo("#how .mb-step:nth-child(3) .mb-step-dot");
+    await expect
+      .poll(async () => (await fill()).dots)
+      .toEqual([true, true, true, false, false]);
+    const middle = await fill();
+    expect(middle.lines.slice(0, 2)).toEqual([1, 1]);
+    expect(middle.lines.slice(3)).toEqual([0, 0]);
+
+    await scrollTo("#how .mb-how-cta");
+    await expect.poll(fill).toEqual({
+      dots: [true, true, true, true, true],
+      lines: [1, 1, 1, 1, 1],
+    });
+  });
+
+  test("with reduced motion the process rail shows filled, nothing moves", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce" });
+    const page = await context.newPage();
+    await page.goto("/");
+    const state = await page.locator("#how").evaluate((how) => ({
+      animations: how.getAnimations({ subtree: true }).length,
+      dots: [...how.querySelectorAll(".mb-step-dot")].map(
+        (dot) => getComputedStyle(dot).backgroundColor
+      ),
+      lines: [...how.querySelectorAll(".mb-step-fill")].map(
+        (line) => getComputedStyle(line, "::before").transform
+      ),
+    }));
+    expect(state.animations).toBe(0);
+    expect(new Set(state.dots)).toEqual(new Set(["rgb(142, 174, 216)"]));
+    expect(new Set(state.lines)).toEqual(new Set(["none"]));
+    await context.close();
+  });
+
   test("between the offer and the contact form, the process ends at a button to the form", async ({
     page,
   }) => {

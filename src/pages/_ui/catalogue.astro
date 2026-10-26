@@ -1338,32 +1338,14 @@ const steps = [
       <p class="mb-ui-note">
         <code>step-marker.astro</code>
         - kwadratowy numer mono na szynie 1px przy karcie etapu (proces). Stoi
-        pierwszy w wierszu, karta zaraz za nim, i siedzi na środku wysokości
-        karty, jakkolwiek jest wysoka; wiersze ułożone w listę łączą szyny w
-        jedną linię od pierwszego znacznika do ostatniego. Znacznik wypełnia się
-        na niebiesko, gdy jego karta jest pod kursorem (tu wymuszone
-        <code>data-state="hover"</code>
-        na karcie).
+        pierwszy w wierszu i siedzi na środku wysokości wiersza; wiersze ułożone
+        w listę łączą szyny w jedną linię od pierwszego znacznika do ostatniego.
+        Przy przewijaniu szynę wypełnia niebieska linia 2px (za linią w połowie
+        wysokości okna), a znacznik robi się niebieski, gdy linia dojdzie do
+        jego środka - animacje CSS sterowane przewijaniem, bez skryptu. Przy
+        <code>prefers-reduced-motion</code>
+        szyna i znaczniki są od razu wypełnione.
       </p>
-      <div class="mb-ui-row">
-        <p class="mb-ui-row-label">Stany</p>
-        <div class="mb-ui-grid mb-ui-grid-wide">
-          {(["idle", "hover"] as const).map((state) => (
-            <div class="mb-ui-sample">
-              <ol class="mb-ui-steps">
-                <li class="mb-ui-step">
-                  <StepMarker num="01" />
-                  <Card data-state={forced(state)} tag="div">
-                    <span slot="title">Rozmowa</span>
-                    Krótka rozmowa o celu projektu.
-                  </Card>
-                </li>
-              </ol>
-              <p class="mb-ui-caption">{state}</p>
-            </div>
-          ))}
-        </div>
-      </div>
       <div class="mb-ui-row">
         <p class="mb-ui-row-label">Szyna</p>
         <div class="mb-ui-sample mb-ui-narrow">

@@ -7,10 +7,14 @@ import Card from "../card.astro";
 import SectionHead from "../section-head.astro";
 import StepMarker from "../step-marker.astro";
 
-/* Process (#how): the steps stack into one ruled column beside a 1px ink
- * rail with square numbered marks; a mark fills blue with its step, the
- * duration badge too (fillOnCellHover). Under them, the button to the
- * contact form. */
+/* Process (#how): the steps on a rail of square numbered marks that fills
+ * blue as the page scrolls (step-marker.astro). On the desktop the rail
+ * runs down the middle and the steps alternate left and right of it, the
+ * duration badge beside the rail on the other side. At 880px and below
+ * one column with the rail on the left, the cards stacked into one ruled
+ * column and the duration in each card's head (the badge is in the HTML
+ * twice, and each layout shows one). Under them, the button to the contact
+ * form. */
 ---
 
 <section class="mb-how" id="how">
@@ -27,12 +31,15 @@ import StepMarker from "../step-marker.astro";
             <div class="mb-step-head">
               <Icon aria-hidden="true" class="mb-step-icon" name={step.icon} />
               <h3>{step.title}</h3>
-              <Badge fillOnCellHover variant="outline">
-                {step.badge}
-              </Badge>
+              <span class="mb-step-when-card">
+                <Badge variant="outline">{step.badge}</Badge>
+              </span>
             </div>
             <p class="mb-step-desc">{step.description}</p>
           </Card>
+          <span class="mb-step-when">
+            <Badge variant="outline">{step.badge}</Badge>
+          </span>
         </li>
       ))}
     </ol>
@@ -58,14 +65,44 @@ import StepMarker from "../step-marker.astro";
     list-style: none;
   }
 
+  /* Desktop: card | rail | duration, mirrored on every other step. The
+   * card's vertical margins are equal, so the mark (on the row's centre)
+   * stays on the card's centre, and the rail runs through the gaps. */
   .mb-step {
     display: grid;
-    grid-template-columns: 56px minmax(0, 1fr);
-    gap: var(--v2-space-md);
+    grid-template-columns: minmax(0, 1fr) 80px minmax(0, 1fr);
+    align-items: center;
   }
 
-  .mb-step + .mb-step {
-    margin-top: -1px;
+  .mb-step > :global(.mb-step-marker) {
+    grid-row: 1;
+    grid-column: 2;
+    align-self: stretch;
+  }
+
+  .mb-step > :global(.mb-card) {
+    grid-row: 1;
+    grid-column: 1;
+    margin: 12px 0;
+  }
+
+  .mb-step-when {
+    grid-row: 1;
+    grid-column: 3;
+    justify-self: start;
+  }
+
+  .mb-step:nth-child(even) > :global(.mb-card) {
+    grid-column: 3;
+  }
+
+  .mb-step:nth-child(even) > .mb-step-when {
+    grid-column: 1;
+    justify-self: end;
+  }
+
+  .mb-step-when-card {
+    display: none;
   }
 
   .mb-step-head {
@@ -99,20 +136,46 @@ import StepMarker from "../step-marker.astro";
     margin: 0;
   }
 
-  /* Starts where the step cells do, past the rail. */
+  /* Under the rail, centred on it. */
   .mb-how-cta {
     display: flex;
-    padding-left: calc(56px + var(--v2-space-md));
+    justify-content: center;
     margin-top: var(--mb-block-gap);
   }
 
+  /* Phone: the rail on the left, the cards one ruled column sharing their
+   * rules, the duration back in each card's head. */
   @media (max-width: 880px) {
     .mb-step {
       grid-template-columns: 40px minmax(0, 1fr);
       gap: 12px;
+      align-items: stretch;
+    }
+
+    .mb-step > :global(.mb-step-marker) {
+      grid-column: 1;
+    }
+
+    .mb-step > :global(.mb-card),
+    .mb-step:nth-child(even) > :global(.mb-card) {
+      grid-column: 2;
+      margin: 0;
+    }
+
+    .mb-step + .mb-step {
+      margin-top: -1px;
+    }
+
+    .mb-step-when {
+      display: none;
+    }
+
+    .mb-step-when-card {
+      display: inline-flex;
     }
 
     .mb-how-cta {
+      justify-content: flex-start;
       padding-left: calc(40px + 12px);
     }
   }
