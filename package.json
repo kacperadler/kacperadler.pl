@@ -19,19 +19,19 @@
     "*.{ts,tsx,js,jsx,json,jsonc,css,astro}": "ultracite fix"
   },
   "dependencies": {
-    "@astrojs/markdown-satteri": "^0.4.3",
-    "@astrojs/mdx": "^8.0.3",
-    "@astrojs/node": "^11.1.7",
+    "@astrojs/markdown-satteri": "^0.4.5",
+    "@astrojs/mdx": "^8.1.1",
+    "@astrojs/node": "^11.1.9",
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^7.3.8",
+    "astro": "^7.4.2",
     "astro-icon": "^1.2.0"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
-    "@axe-core/playwright": "^4.13.0",
-    "@biomejs/biome": "2.5.15",
-    "@iconify-json/lucide": "^1.2.142",
-    "@playwright/test": "^1.64.0",
+    "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
+    "@biomejs/biome": "2.6.2",
+    "@iconify-json/lucide": "^1.2.147",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^22",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
