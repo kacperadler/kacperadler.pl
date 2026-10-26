@@ -363,7 +363,7 @@ test.describe("home page", () => {
 
     const experience = page.locator("#about details");
     await expect(experience).not.toHaveAttribute("open");
-    await expect(experience.locator(".mb-card")).toHaveCount(6);
+    await expect(experience.locator(".mb-card")).toHaveCount(8);
     await experience.locator("summary").click();
     await expect(experience.locator(".mb-card").first()).toBeVisible();
   });
@@ -634,11 +634,62 @@ test.describe("home page", () => {
     ).toHaveAttribute("href", "#contact");
   });
 
-  test("a case names its company once, with no logo", async ({ page }) => {
+  test("the cases are four projects, newest first, each named once by its logos", async ({
+    page,
+    request,
+  }) => {
+    await page.setViewportSize({ height: 1000, width: 1440 });
     await page.goto("/");
     const cards = page.locator("#cases .mb-card");
-    await expect(cards).toHaveCount(2);
-    await expect(cards.locator("img")).toHaveCount(0);
+    await expect(cards).toHaveCount(4);
+    // The heading is the logo (two for the marketplace); its alt text is
+    // the company, so the heading reads as the name.
+    await expect(cards.locator("h3")).toHaveText(["", " i ", "", ""]);
+    const names = await cards
+      .locator("h3")
+      .evaluateAll((headings) =>
+        headings.map((h) =>
+          [...h.querySelectorAll("img")].map((img) => img.alt).join(" i ")
+        )
+      );
+    expect(names).toEqual([
+      "ReX Recruitment Exchange",
+      "LeadBuster i LeadApartament",
+      "Helpfind",
+      "Energia Direct",
+    ]);
+    // Helpfind was team work, and the card says so.
+    await expect(cards.locator(".mb-cases-row dd").nth(7)).toContainText(
+      "W zespole budowałem wewnętrzny CRM"
+    );
+
+    // In a row the cells are equally tall and each label starts on one line.
+    const rows = await cards.evaluateAll((els) =>
+      Object.values(
+        Object.groupBy(
+          els.map((el) => ({
+            height: el.getBoundingClientRect().height,
+            labels: [...el.querySelectorAll("dt")].map(
+              (dt) => dt.getBoundingClientRect().top
+            ),
+            y: Math.round(el.getBoundingClientRect().y),
+          })),
+          (cell) => cell.y
+        )
+      )
+    );
+    expect(rows).toHaveLength(2);
+    for (const row of rows) {
+      const [first, second] = (row ?? []) as unknown as [
+        { height: number; labels: number[] },
+        { height: number; labels: number[] },
+      ];
+      expect(Math.abs(first.height - second.height)).toBeLessThan(TOLERANCE);
+      for (const [i, top] of first.labels.entries()) {
+        expect(Math.abs(top - (second.labels[i] ?? 0))).toBeLessThan(TOLERANCE);
+      }
+    }
+
     const head = cards.first().locator(".mb-cases-head");
     const [title, badge] = [
       await box(head.locator("h3")),
@@ -646,7 +697,7 @@ test.describe("home page", () => {
     ];
     expect(badge.x).toBeGreaterThan(title.x + title.width);
 
-    // On a phone every badge sits under its name, a long one and a short
+    // On a phone every badge sits under its logos, a long one and a short
     // one alike.
     await page.setViewportSize({ height: 844, width: 390 });
     for (const card of await cards.all()) {
@@ -658,6 +709,11 @@ test.describe("home page", () => {
       expect(kind.y).toBeGreaterThan(name.y + name.height - 1);
       expect(Math.abs(kind.x - name.x)).toBeLessThan(TOLERANCE);
     }
+
+    const llmsFull = await (await request.get("/llms-full.txt")).text();
+    expect(llmsFull).toContain(
+      "### LeadBuster i LeadApartament (Marketplace · Od zera)"
+    );
   });
 
   test("the trust bar names a bare mark, sizes logos by weight, and stays a short band on a phone", async ({

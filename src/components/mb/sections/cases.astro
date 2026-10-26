@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { logoBySlug } from "@/data/experience-logos";
 import { caseHighlights } from "@/data/home";
 import { caseStudiesByExperience, caseStudyPath } from "@/lib/case-studies";
 import Badge from "../badge.astro";
@@ -10,11 +11,15 @@ import Link from "../link.astro";
 import SectionHead from "../section-head.astro";
 
 /* Case highlights (#cases): projects told as problem, solution and effect,
- * a two-column cell table. Each card names its company once, in the h3
- * with the kind badge beside it (no logo: the trust bar shows them). The
- * company comes from its experience entry (an unknown id fails the build),
- * and the card links the entry's case study when there is one. "Wszystkie realizacje" leads to the
- * /realizacje/ list, which is built only when a case study exists. */
+ * newest first, a two-column cell table (one column at 880px and below)
+ * whose cells in a row are equally tall. Each card names its company once:
+ * the h3 is its logo (two for a project built for two companies), the alt
+ * text the company, grey until the cell is hovered, with the kind badge
+ * beside it. The companies and logos come from their experience entries
+ * (an unknown id or a missing logo fails the build), and the card links
+ * the first entry's case study when there is one. "Wszystkie realizacje"
+ * leads to the /realizacje/ list, which is built only when a case study
+ * exists. */
 const experience = new Map(
   (await getCollection("experience")).map((entry) => [entry.id, entry.data])
 );
@@ -22,16 +27,24 @@ const caseStudies = await caseStudiesByExperience();
 const hasCaseStudies = (await getCollection("caseStudies")).length > 0;
 
 const cases = caseHighlights.map((highlight) => {
-  const entry = experience.get(highlight.experience);
-  if (!entry) {
-    throw new Error(
-      `Case highlight links to experience "${highlight.experience}", which does not exist.`
-    );
-  }
+  const companies = highlight.experiences.map((id) => {
+    const entry = experience.get(id);
+    const logo = logoBySlug[id];
+    if (!(entry && logo)) {
+      throw new Error(
+        `Case highlight links to experience "${id}", which does not exist or has no logo.`
+      );
+    }
+    return { logo, name: entry.company };
+  });
+  const caseStudy = highlight.experiences
+    .map((id) => caseStudies.get(id))
+    .find(Boolean);
   return {
     ...highlight,
-    caseStudy: caseStudies.get(highlight.experience),
-    company: entry.company,
+    caseStudy,
+    companies,
+    company: companies.map((company) => company.name).join(" i "),
   };
 });
 ---
@@ -46,11 +59,25 @@ const cases = caseHighlights.map((highlight) => {
       </Fragment>
     </SectionHead>
 
-    <CellGrid columns={2}>
+    <CellGrid class="mb-cases-grid" columns={2}>
       {cases.map((item) => (
         <Card>
           <div class="mb-cases-head">
-            <h3>{item.company}</h3>
+            <h3 class="mb-cases-logos">
+              {item.companies.map((company, i) => (
+                <>
+                  {i > 0 && <span class="sr-only"> i </span>}
+                  <img
+                    alt={company.name}
+                    class="mb-cases-logo"
+                    height={company.logo.height}
+                    loading="lazy"
+                    src={company.logo.src}
+                    width={company.logo.width}
+                  >
+                </>
+              ))}
+            </h3>
             <Badge variant="outline">{item.kind}</Badge>
           </div>
           <dl class="mb-cases-rows">
@@ -98,6 +125,23 @@ const cases = caseHighlights.map((highlight) => {
     margin-top: var(--mb-section-gap);
   }
 
+  /* The cells of a row share five row tracks (head, problem, solution,
+   * effect, the case study link): card, content and list are nested
+   * subgrids, so the cells are equally tall and each label starts on one
+   * line across the row. */
+  .mb-cases :global(.mb-cases-grid > .mb-card) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 5;
+  }
+
+  .mb-cases :global(.mb-cases-grid .mb-card-content) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / -1;
+    row-gap: 0;
+  }
+
   .mb-cases-head {
     display: flex;
     flex-wrap: wrap;
@@ -107,18 +151,39 @@ const cases = caseHighlights.map((highlight) => {
     margin-bottom: 16px;
   }
 
-  h3 {
+  /* The logos stand for the company name: grey until the cell is hovered,
+   * like every logo on the page. */
+  .mb-cases-logos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    align-items: center;
+    min-height: 32px;
     margin: 0;
-    font-family: var(--mb-display);
-    font-size: 24px;
-    font-weight: 750;
-    line-height: 1.2;
-    color: var(--ink);
-    letter-spacing: -0.035em;
+  }
+
+  .mb-cases-logo {
+    width: auto;
+    max-width: 160px;
+    height: auto;
+    max-height: 28px;
+    opacity: 0.6;
+    filter: grayscale(100%);
+    transition:
+      filter var(--mb-snap),
+      opacity var(--mb-snap);
+  }
+
+  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-cases-logo {
+    opacity: 1;
+    filter: grayscale(0%);
   }
 
   .mb-cases-rows {
-    flex: 1;
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    row-gap: 0;
     margin: 0;
   }
 
@@ -151,6 +216,7 @@ const cases = caseHighlights.map((highlight) => {
   }
 
   .mb-cases-link {
+    grid-row: 5;
     margin: 16px 0 0;
   }
 
@@ -159,8 +225,9 @@ const cases = caseHighlights.map((highlight) => {
     margin-top: var(--mb-block-gap);
   }
 
-  /* Narrow, a long badge would wrap under its h3 while a short one stays
-   * beside it; every badge goes under the name, so the cards read alike. */
+  /* Narrow, a long badge would wrap under its logos while a short one stays
+   * beside them; every badge goes under the logos, so the cards read
+   * alike. */
   @media (max-width: 480px) {
     .mb-cases-head {
       flex-direction: column;
@@ -173,6 +240,12 @@ const cases = caseHighlights.map((highlight) => {
     .mb-cases-row {
       grid-template-columns: minmax(0, 1fr);
       gap: 4px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-cases-logo {
+      transition: none;
     }
   }
 </style>

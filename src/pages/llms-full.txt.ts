@@ -53,7 +53,9 @@ export async function GET(): Promise<Response> {
 
   const highlightBlock = caseHighlights
     .map(
-      (h) => `### ${companyById.get(h.experience) ?? h.experience} (${h.kind})
+      (
+        h
+      ) => `### ${h.experiences.map((id) => companyById.get(id) ?? id).join(" i ")} (${h.kind})
 
 **Problem**: ${h.problem}
 

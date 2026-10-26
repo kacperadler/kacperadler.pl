@@ -60,12 +60,14 @@ export const customApps = {
 export const offerPricing =
   "Każdy projekt wyceniam indywidualnie. Wycenę dostajesz w 2–3 dni po rozmowie. Rozmowa i wycena są bezpłatne i do niczego nie zobowiązują.";
 
-/* A project told as problem, solution and effect. `experience` is the id of
- * its entry in src/content/experience (company, logo, case study link); an
- * id with no entry fails the build (sections/cases.astro). */
+/* A project told as problem, solution and effect, newest first.
+ * `experiences` are the ids of its entries in src/content/experience (one,
+ * or two for a project built for two companies): the card shows their
+ * logos and links the first one's case study; an id with no entry or no
+ * logo fails the build (sections/cases.astro). */
 export interface CaseHighlight {
   effect: string;
-  experience: string;
+  experiences: readonly string[];
   kind: string;
   problem: string;
   solution: string;
@@ -73,17 +75,37 @@ export interface CaseHighlight {
 
 export const caseHighlights: readonly CaseHighlight[] = [
   {
+    effect:
+      "Pracuję przy niej na co dzień, a nowe funkcje trafiają do użytkowników na bieżąco.",
+    experiences: ["rex"],
+    kind: "Platforma rekrutacyjna",
+    problem:
+      "Platforma rex.hr, która łączy pracodawców, headhunterów i kandydatów, potrzebowała frontendu, który nadąży za jej rozwojem.",
+    solution:
+      "Buduję, optymalizuję i rozwijam jej frontend: nowe widoki, szybsze działanie i porządek w starszym kodzie.",
+  },
+  {
+    effect:
+      "Platforma działa od 19.10.2026 na leadbuster.pl i leadapartament.pl, a ja dbam o jej utrzymanie i rozwój.",
+    experiences: ["leadbuster", "leadapartament"],
+    kind: "Marketplace · Od zera",
+    problem:
+      "Dwie firmy potrzebowały własnego marketplace'u do sprzedaży leadów.",
+    solution:
+      "Zbudowałem platformę od zera dla obu marek, a dziś zapewniam jej wsparcie, utrzymanie i dalszy rozwój.",
+  },
+  {
     effect: "Ponad 200 osób pracuje w nim codziennie.",
-    experience: "helpfind",
+    experiences: ["helpfind"],
     kind: "Narzędzie wewnętrzne · B2B",
     problem:
       "Firma potrzebowała jednego narzędzia do codziennej pracy dla ponad 200 pracowników i partnerów.",
     solution:
-      "Wewnętrzny CRM z integracjami z Gmailem i Weylo/Focus, obsługą bardzo długich list i własną biblioteką komponentów.",
+      "W zespole budowałem wewnętrzny CRM z integracjami z Gmailem i Weylo/Focus, obsługą bardzo długich list i własną biblioteką komponentów, a także strony landingowe firmy.",
   },
   {
     effect: "Ok. 200 użytkowników dziennie.",
-    experience: "energiadirect",
+    experiences: ["energiadirect"],
     kind: "Aplikacja mobilna",
     problem:
       "Działający marketplace leadów dla branży OZE i budowlanej potrzebował aplikacji dla handlowców i wykonawców.",
