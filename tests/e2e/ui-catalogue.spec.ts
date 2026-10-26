@@ -1457,14 +1457,19 @@ test.describe("production build", () => {
     ).toBe(1);
   });
 
-  // Tag and status pill are badge variants now: the example tags keep their
-  // own case in the muted frame, the availability (in the mobile menu) keeps
-  // its blue frame and square dot.
-  test("example tags and the availability are badge variants", async ({
+  // Tag and status pill are badge variants now: a case study's stack tags
+  // keep their own case in the muted frame, the availability (in the mobile
+  // menu) keeps its blue frame and square dot.
+  test("stack tags and the availability are badge variants", async ({
     page,
   }) => {
-    await page.goto("/");
-    const tags = page.locator("#examples .mb-example-tags li > .mb-badge-tag");
+    await page.goto("/realizacje/");
+    const caseStudy = await page
+      .locator("a.mb-link-case")
+      .first()
+      .getAttribute("href");
+    await page.goto(caseStudy ?? "/realizacje/");
+    const tags = page.locator(".mb-case-stack li > .mb-badge-tag");
     expect(await tags.count()).toBeGreaterThan(0);
     await expect(tags.first()).toHaveCSS("text-transform", "none");
     await expect(tags.first()).toHaveCSS("border-color", "rgb(157, 156, 149)");

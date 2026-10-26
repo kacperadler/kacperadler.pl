@@ -7,7 +7,7 @@
  * full body copy (the offer, the projects, the process, the FAQ). */
 
 import { getCollection } from "astro:content";
-import { automations } from "@/data/home";
+import { customApps, problems } from "@/data/home";
 import { siteConfig } from "@/data/site-config";
 import { caseStudyPath, sortedCaseStudies } from "@/lib/case-studies";
 
@@ -31,8 +31,8 @@ export async function GET(): Promise<Response> {
     )
     .join("\n");
 
-  const automationList = automations
-    .map((a) => `- **${a.title}**: ${a.description}`)
+  const automationList = problems
+    .map((p) => `- **${p.title}**: ${p.text} → ${p.effect}`)
     .join("\n");
 
   const experienceList = experience
@@ -70,6 +70,7 @@ export async function GET(): Promise<Response> {
 ## Oferta
 
 ${offerList}
+- **${customApps.title}**: ${customApps.description}
 
 ## Co mogę zautomatyzować
 

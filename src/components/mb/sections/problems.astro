@@ -1,42 +1,19 @@
 ---
+import { problems } from "@/data/home";
 import Button from "../button.astro";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
 import SectionHead from "../section-head.astro";
 
 /* Problems (#problems): the situations a visitor should recognise, six
- * equal cells of a ruled table across the container - three a row on the
- * desktop, two between 560px and 880px, one below - each a bold short
- * heading (h3) over one sentence. Every cell has the same padding above
- * and below and the rows are equally tall, so the table reads as an even
- * block under the head. Then the closing line and the button to the
- * contact form. */
-const problems = [
-  {
-    text: "Zespół godzinami kopiuje te same dane między systemami.",
-    title: "Przepisywanie danych",
-  },
-  {
-    text: "Odpowiadacie w kółko na podobne maile i zapytania klientów.",
-    title: "Te same pytania",
-  },
-  {
-    text: "Co tydzień składacie raport z kilku Exceli.",
-    title: "Ręczne raporty",
-  },
-  {
-    text: "Ktoś ręcznie wypełnia i sprawdza dokumenty, faktury i umowy.",
-    title: "Dokumenty i faktury",
-  },
-  {
-    text: "Odpowiedzi znają tylko konkretne osoby, a reszta czeka na nie.",
-    title: "Wiedza w głowach",
-  },
-  {
-    text: "Wiesz, że AI mogłoby pomóc, ale nie wiesz, od czego zacząć.",
-    title: "AI bez planu",
-  },
-];
+ * cells of a ruled table across the container - three a row on the
+ * desktop, two between 560px and 880px, one below. Each cell: a bold short
+ * heading (h3), one sentence, and under a hairline the effect an
+ * automation gives, after an arrow (the copy in data/home.ts, which the
+ * llms files read too). The cells of a row share their row tracks (CSS
+ * subgrid: heading, sentence, effect), so the cells are equally tall and
+ * the effects' hairlines run on one line across the row. Then the closing
+ * line and the button to the contact form. */
 ---
 
 <section class="mb-problems" id="problems">
@@ -54,6 +31,12 @@ const problems = [
         <Card tag="li">
           <span slot="title">{problem.title}</span>
           <p class="mb-problem">{problem.text}</p>
+          <p class="mb-problem-effect">
+            <span aria-hidden="true" class="mb-problem-arrow">
+              →
+            </span>
+            {problem.effect}
+          </p>
         </Card>
       ))}
     </CellGrid>
@@ -72,9 +55,20 @@ const problems = [
     margin-top: var(--mb-section-gap);
   }
 
-  /* Equal rows at every width: every cell as tall as the tallest one. */
-  .mb-problems :global(.mb-problems-grid) {
-    grid-auto-rows: 1fr;
+  /* A cell spans three row tracks of the table (heading, sentence,
+   * effect) and its content two, all subgrids, so a longer sentence in one
+   * cell moves the effect line of the whole row. */
+  .mb-problems :global(.mb-problems-grid > .mb-card) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+  }
+
+  .mb-problems :global(.mb-problems-grid .mb-card-content) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    row-gap: var(--v2-space-md);
   }
 
   .mb-problem {
@@ -82,6 +76,23 @@ const problems = [
     font-size: 16px;
     line-height: 1.55;
     color: var(--ink-2);
+  }
+
+  .mb-problem-effect {
+    display: flex;
+    gap: 10px;
+    padding-top: var(--v2-space-md);
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--ink);
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-problem-arrow {
+    flex-shrink: 0;
+    color: var(--blue);
   }
 
   .mb-problems-close {

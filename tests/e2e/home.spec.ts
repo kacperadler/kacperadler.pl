@@ -8,7 +8,6 @@ const SECTIONS = [
   "top",
   "trust",
   "problems",
-  "examples",
   "services",
   "cases",
   "how",
@@ -18,7 +17,6 @@ const SECTIONS = [
 ];
 const SECTION_LABELS = [
   "Problem",
-  "Możliwości",
   "Oferta",
   "Realizacje",
   "Proces",
@@ -185,14 +183,20 @@ test.describe("home page", () => {
     ).toHaveAttribute("href", "#cases");
   });
 
-  test("the problems are six equal cells, three a row on the desktop and one on a phone", async ({
+  test("the problems are six cells with their effects, three a row on the desktop and one on a phone", async ({
     page,
   }) => {
     const problems = page.locator("#problems");
     const cells = problems.locator(".mb-card");
+    // Each cell's box and the top of its effect line, in one read.
     const cellBoxes = () =>
       cells.evaluateAll((els) =>
-        els.map((el) => el.getBoundingClientRect().toJSON() as DOMRect)
+        els.map((el) => ({
+          ...(el.getBoundingClientRect().toJSON() as DOMRect),
+          effect: (
+            el.querySelector(".mb-problem-effect") as Element
+          ).getBoundingClientRect().top,
+        }))
       );
     const spread = (values: number[]) =>
       Math.max(...values) - Math.min(...values);
@@ -215,6 +219,17 @@ test.describe("home page", () => {
       "Odpowiedzi znają tylko konkretne osoby, a reszta czeka na nie.",
       "Wiesz, że AI mogłoby pomóc, ale nie wiesz, od czego zacząć.",
     ]);
+    // Under each sentence, after an arrow, the effect (the arrow is hidden
+    // from screen readers).
+    await expect(cells.locator(".mb-problem-effect")).toHaveText([
+      "→ CRM, poczta i arkusze wymieniają się danymi same.",
+      "→ Agent AI odpowiada na proste sprawy, a trudne przekazuje Wam z gotowym podsumowaniem.",
+      "→ Raport jest gotowy, zanim o niego poprosisz.",
+      "→ Dane z dokumentów trafiają do systemu same.",
+      "→ Asystent AI odpowiada każdemu w zespole na podstawie Waszych dokumentów.",
+      "→ Na bezpłatnej rozmowie pokażę, od czego zacząć i ile to kosztuje.",
+    ]);
+    await expect(cells.locator(".mb-badge, .mb-badge-tag")).toHaveCount(0);
     // Lede, closing line and button stay.
     await expect(problems.locator(".mb-section-lede")).toContainText(
       "Jeśli rozpoznajesz swoją firmę"
@@ -232,11 +247,14 @@ test.describe("home page", () => {
       await page.setViewportSize({ height: 900, width });
       const boxes = await cellBoxes();
       expect(boxes).toHaveLength(6);
-      const rows = new Set(boxes.map((cell) => Math.round(cell.y)));
+      const rows = Map.groupBy(boxes, (cell) => Math.round(cell.y));
       expect(rows.size, `${width}px`).toBe(6 / perRow);
-      // Equal cells: one width and one height at every breakpoint.
-      expect(spread(boxes.map((cell) => cell.height))).toBeLessThan(TOLERANCE);
       expect(spread(boxes.map((cell) => cell.width))).toBeLessThan(TOLERANCE);
+      // In a row: the cells equally tall, the effects on one line.
+      for (const row of rows.values()) {
+        expect(spread(row.map((cell) => cell.height))).toBeLessThan(TOLERANCE);
+        expect(spread(row.map((cell) => cell.effect))).toBeLessThan(TOLERANCE);
+      }
     }
 
     // On a phone the button spans the column, like the hero's.
@@ -282,7 +300,12 @@ test.describe("home page", () => {
     const titles = (await offer.locator(".mb-card h3").allTextContents()).map(
       (title) => title.trim()
     );
-    expect(titles).toEqual(["Audyt AI", "Wdrożenie", "Partner technologiczny"]);
+    expect(titles).toEqual([
+      "Audyt AI",
+      "Wdrożenie",
+      "Partner technologiczny",
+      "Aplikacje szyte na miarę",
+    ]);
 
     await expect(offer).toContainText("Koszt audytu odliczam od wdrożenia.");
     for (const cta of ["Zamów audyt", "Wyceń projekt", "Porozmawiajmy"]) {
@@ -293,14 +316,35 @@ test.describe("home page", () => {
       );
     }
 
+    // Custom apps: one full-width row under the three steps, sharing the
+    // table's bottom rule.
+    const steps = await box(offer.locator(".mb-services-grid"));
+    const apps = await box(offer.locator(".mb-services-apps .mb-card"));
+    expect(Math.abs(apps.y - (steps.y + steps.height - 1))).toBeLessThan(
+      TOLERANCE
+    );
+    expect(Math.abs(apps.width - steps.width)).toBeLessThan(TOLERANCE);
+
     const llms = await (await request.get("/llms.txt")).text();
     const llmsOffer = llms.match(OFFER_SECTION)?.[1] ?? "";
-    expect([...llmsOffer.matchAll(LLMS_ITEM)].map((m) => m[1])).toEqual(titles);
+    expect([...llmsOffer.matchAll(LLMS_ITEM)].map((m) => m[1])).toEqual(
+      titles.slice(0, 3)
+    );
+    expect(llmsOffer).toContain("- **Aplikacje szyte na miarę**: Gotowe");
     const llmsFull = await (await request.get("/llms-full.txt")).text();
     const fullOffer = llmsFull.match(OFFER_SECTION)?.[1] ?? "";
     expect([...fullOffer.matchAll(LLMS_FULL_ITEM)].map((m) => m[1])).toEqual(
-      titles
+      titles.slice(0, 3)
     );
+    expect(fullOffer).toContain("### Aplikacje szyte na miarę");
+
+    // What can be automated: the six problems with their effects, in both.
+    for (const text of [llms, llmsFull]) {
+      expect(text).toContain(
+        "- **Przepisywanie danych**: Zespół godzinami kopiuje te same dane między systemami. → CRM, poczta i arkusze wymieniają się danymi same."
+      );
+      expect(text).toContain("- **AI bez planu**: ");
+    }
   });
 
   test("the FAQ and the experience list are in the HTML while closed", async ({
@@ -546,7 +590,7 @@ test.describe("home page", () => {
     await page.setViewportSize({ height: 900, width: 1440 });
     await page.goto("/");
     const offer = page.locator("#services");
-    const cells = offer.locator(".mb-card");
+    const cells = offer.locator(".mb-services-grid > .mb-card");
     await expect(cells).toHaveCount(3);
     // The first cell's "Dla kogo" wraps onto two lines at this width; the
     // rows under it stay level with the other cells' rows anyway.
@@ -632,17 +676,6 @@ test.describe("home page", () => {
     await page.setViewportSize({ height: 844, width: 390 });
     const strip = await box(trust.locator(".mb-trust-logos"));
     expect(strip.height).toBeLessThan(260);
-  });
-
-  test("the wide last example keeps the prose measure", async ({ page }) => {
-    await page.setViewportSize({ height: 900, width: 1440 });
-    await page.goto("/");
-    const last = page.locator("#examples .mb-card").last();
-    const [cell, text] = [
-      await box(last),
-      await box(last.locator(".mb-example-desc")),
-    ];
-    expect(text.width).toBeLessThan(cell.width * 0.7);
   });
 
   test("the meta follow the brief", async ({ page, request }) => {

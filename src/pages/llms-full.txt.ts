@@ -1,6 +1,6 @@
 /* llms-full.txt - extended machine-friendly content for AI agents that
- * want the full picture without parsing HTML: the offer, the automation
- * examples, the selected projects, the process, the about text, the
+ * want the full picture without parsing HTML: the offer, the problems
+ * and what automating them gives, the selected projects, the process, the about text, the
  * experience, the case studies, the FAQ and how to get in touch. The copy
  * shared with the home page comes from src/data/home.ts and
  * src/data/process.ts. */
@@ -8,10 +8,11 @@
 import { getCollection } from "astro:content";
 import {
   about,
-  automations,
   caseHighlights,
+  customApps,
   faq,
   offerPricing,
+  problems,
 } from "@/data/home";
 import { processSteps } from "@/data/process";
 import { siteConfig } from "@/data/site-config";
@@ -46,8 +47,8 @@ export async function GET(): Promise<Response> {
     )
     .join("\n\n");
 
-  const automationBlock = automations
-    .map((a) => `- **${a.title}**: ${a.description}`)
+  const automationBlock = problems
+    .map((p) => `- **${p.title}**: ${p.text} → ${p.effect}`)
     .join("\n");
 
   const highlightBlock = caseHighlights
@@ -141,6 +142,10 @@ Dla firm w Polsce i Unii Europejskiej, które chcą mniej ręcznej roboty bez za
 Trzy kroki. Zacznij od tego, który pasuje.
 
 ${offerBlock}
+
+### ${customApps.title}
+
+${customApps.description}
 
 ${offerPricing}
 

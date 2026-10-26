@@ -1,46 +1,59 @@
 /* Home page copy that /llms-full.txt serves too, so both read one source:
- * the automation examples (#examples), the offer's pricing lede
- * (#services), the case highlights (#cases), the about text (#about) and
- * the FAQ (#faq). Copy used only on the page stays in its section. */
+ * the problems and their effects (#problems), the offer's pricing lede and
+ * custom apps (#services), the case highlights (#cases), the about text
+ * (#about) and the FAQ (#faq). Copy used only on the page stays in its section. */
 
-export interface Automation {
-  description: string;
-  tags: readonly string[];
+/* The situations a visitor should recognise (#problems), each with the
+ * effect an automation gives: the card's heading, its sentence and, under
+ * a hairline, the effect. /llms.txt and /llms-full.txt list them as what
+ * can be automated. */
+export interface Problem {
+  effect: string;
+  text: string;
   title: string;
 }
 
-export const automations: readonly Automation[] = [
+export const problems: readonly Problem[] = [
   {
-    description:
-      "Agent AI odpowiada na maile i wiadomości z czatu. Proste sprawy załatwia sam, trudne przekazuje człowiekowi z gotowym podsumowaniem.",
-    tags: ["LLM", "MCP"],
-    title: "Obsługa zapytań",
+    effect: "CRM, poczta i arkusze wymieniają się danymi same.",
+    text: "Zespół godzinami kopiuje te same dane między systemami.",
+    title: "Przepisywanie danych",
   },
   {
-    description:
-      "Faktury, umowy, CV, zamówienia. Dane trafiają do systemu same, bez ręcznego przepisywania.",
-    tags: ["LLM", "API"],
-    title: "Przetwarzanie dokumentów",
+    effect:
+      "Agent AI odpowiada na proste sprawy, a trudne przekazuje Wam z gotowym podsumowaniem.",
+    text: "Odpowiadacie w kółko na podobne maile i zapytania klientów.",
+    title: "Te same pytania",
   },
   {
-    description:
-      "CRM, poczta, arkusze i systemy, których używacie, wymieniają się danymi automatycznie. Koniec z kopiuj-wklej.",
-    tags: ["API", "MCP"],
-    title: "Integracje narzędzi",
+    effect: "Raport jest gotowy, zanim o niego poprosisz.",
+    text: "Co tydzień składacie raport z kilku Exceli.",
+    title: "Ręczne raporty",
   },
   {
-    description:
-      "Dane z wielu źródeł w jednym miejscu, aktualne na bieżąco. Raport, który składał się godzinę, jest gotowy, zanim o niego poprosisz.",
-    tags: ["API", "React"],
-    title: "Raporty i dashboardy",
+    effect: "Dane z dokumentów trafiają do systemu same.",
+    text: "Ktoś ręcznie wypełnia i sprawdza dokumenty, faktury i umowy.",
+    title: "Dokumenty i faktury",
   },
   {
-    description:
-      "Gotowe programy nie pasują do Twojego procesu? Buduję aplikacje webowe i mobilne, CRM-y i panele dokładnie pod to, jak pracuje Twoja firma. Z AI tam, gdzie pomaga, bez AI tam, gdzie nie jest potrzebne.",
-    tags: ["React", "React Native", "TypeScript"],
-    title: "Aplikacje szyte na miarę",
+    effect:
+      "Asystent AI odpowiada każdemu w zespole na podstawie Waszych dokumentów.",
+    text: "Odpowiedzi znają tylko konkretne osoby, a reszta czeka na nie.",
+    title: "Wiedza w głowach",
+  },
+  {
+    effect: "Na bezpłatnej rozmowie pokażę, od czego zacząć i ile to kosztuje.",
+    text: "Wiesz, że AI mogłoby pomóc, ale nie wiesz, od czego zacząć.",
+    title: "AI bez planu",
   },
 ];
+
+// Under the offer's table (#services): custom apps, beside the three steps.
+export const customApps = {
+  description:
+    "Gotowe programy nie pasują do Twojego procesu? Buduję aplikacje webowe i mobilne, CRM-y i panele dokładnie pod to, jak pracuje Twoja firma. Z AI tam, gdzie pomaga, bez AI tam, gdzie nie jest potrzebne.",
+  title: "Aplikacje szyte na miarę",
+};
 
 // The offer's lede: how pricing works. The audit credit is the audit
 // step's own `note` (src/content/services/audit.json).

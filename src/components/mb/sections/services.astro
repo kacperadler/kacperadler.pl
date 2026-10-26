@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import { offerPricing } from "@/data/home";
+import { customApps, offerPricing } from "@/data/home";
 import Button from "../button.astro";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
@@ -13,7 +13,10 @@ import SectionHead from "../section-head.astro";
  * how long it takes (with the step's own note under the time), and a
  * button to the contact form - default on the first step, the one to
  * start from, outline on the others. The cells share their rows (CSS
- * subgrid), so each label runs in one straight line through the table. */
+ * subgrid), so each label runs in one straight line through the table.
+ * Under the three steps, sharing the table's bottom rule, one full-width
+ * cell for custom apps: built in the implementation step, but not a step
+ * of its own. */
 const steps = (await getCollection("services")).sort(
   (a, b) => a.data.order - b.data.order
 );
@@ -61,12 +64,32 @@ const steps = (await getCollection("services")).sort(
         </Card>
       ))}
     </CellGrid>
+
+    <div class="mb-services-apps">
+      <Card>
+        <span slot="title">{customApps.title}</span>
+        <p class="mb-services-apps-text">{customApps.description}</p>
+      </Card>
+    </div>
   </div>
 </section>
 
 <style>
   .mb-services {
     margin-top: var(--mb-section-gap);
+  }
+
+  /* One more row of the table: -1px puts its top rule on the table's
+   * bottom one. The text keeps the prose measure. */
+  .mb-services-apps {
+    display: flex;
+    flex-direction: column;
+    margin-top: -1px;
+  }
+
+  .mb-services-apps-text {
+    max-width: 65ch;
+    margin: 0;
   }
 
   .mb-service-num {
