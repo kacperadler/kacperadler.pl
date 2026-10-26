@@ -177,7 +177,7 @@ test.describe("home page", () => {
     ]);
     await expect(card.locator("dl > div > dd")).toHaveText([
       "osób codziennie pracuje w systemach, które współtworzyłem",
-      "osób codziennie korzysta z aplikacji mobilnej, którą współtworzyłem dla klienta",
+      "osób codziennie korzysta z aplikacji mobilnej, którą stworzyłem dla klienta",
       "w tym czasie wracam z pierwszym pomysłem na automatyzację",
     ]);
     await expect(
