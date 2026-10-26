@@ -4,14 +4,38 @@ import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
 import SectionHead from "../section-head.astro";
 
-/* Problems (#problems): the situations a visitor should recognise, as a
- * two-column cell table, then the closing line and the button to the
+/* Problems (#problems): the situations a visitor should recognise, six
+ * equal cells of a ruled table across the container - three a row on the
+ * desktop, two between 560px and 880px, one below - each a bold short
+ * heading (h3) over one sentence. Every cell has the same padding above
+ * and below and the rows are equally tall, so the table reads as an even
+ * block under the head. Then the closing line and the button to the
  * contact form. */
 const problems = [
-  "Twój zespół godzinami przepisuje dane między systemami.",
-  "Odpowiadacie w kółko na te same maile i zapytania.",
-  "Raporty składacie ręcznie z kilku Exceli.",
-  "Wiesz, że AI mogłoby pomóc, ale nie wiesz, od czego zacząć.",
+  {
+    text: "Zespół godzinami kopiuje te same dane między systemami.",
+    title: "Przepisywanie danych",
+  },
+  {
+    text: "Odpowiadacie w kółko na podobne maile i zapytania klientów.",
+    title: "Te same pytania",
+  },
+  {
+    text: "Co tydzień składacie raport z kilku Exceli.",
+    title: "Ręczne raporty",
+  },
+  {
+    text: "Ktoś ręcznie wypełnia i sprawdza dokumenty, faktury i umowy.",
+    title: "Dokumenty i faktury",
+  },
+  {
+    text: "Odpowiedzi znają tylko konkretne osoby, a reszta czeka na nie.",
+    title: "Wiedza w głowach",
+  },
+  {
+    text: "Wiesz, że AI mogłoby pomóc, ale nie wiesz, od czego zacząć.",
+    title: "AI bez planu",
+  },
 ];
 ---
 
@@ -25,10 +49,11 @@ const problems = [
       </Fragment>
     </SectionHead>
 
-    <CellGrid columns={2} tag="ul">
+    <CellGrid class="mb-problems-grid" columns={3} tag="ul">
       {problems.map((problem) => (
         <Card tag="li">
-          <p class="mb-problem">{problem}</p>
+          <span slot="title">{problem.title}</span>
+          <p class="mb-problem">{problem.text}</p>
         </Card>
       ))}
     </CellGrid>
@@ -47,14 +72,16 @@ const problems = [
     margin-top: var(--mb-section-gap);
   }
 
+  /* Equal rows at every width: every cell as tall as the tallest one. */
+  .mb-problems :global(.mb-problems-grid) {
+    grid-auto-rows: 1fr;
+  }
+
   .mb-problem {
     margin: 0;
-    font-family: var(--mb-display);
-    font-size: 20px;
-    font-weight: 650;
-    line-height: 1.3;
-    color: var(--ink);
-    letter-spacing: -0.025em;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-2);
   }
 
   .mb-problems-close {
@@ -75,9 +102,9 @@ const problems = [
     color: var(--ink);
   }
 
-  @media (max-width: 880px) {
-    .mb-problem {
-      font-size: 18px;
+  @media (min-width: 560px) and (max-width: 880px) {
+    .mb-problems :global(.mb-problems-grid) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>

@@ -185,6 +185,61 @@ test.describe("home page", () => {
     ).toHaveAttribute("href", "#cases");
   });
 
+  test("the problems are six equal cells, three a row on the desktop and one on a phone", async ({
+    page,
+  }) => {
+    const problems = page.locator("#problems");
+    const cells = problems.locator(".mb-card");
+    const cellBoxes = () =>
+      cells.evaluateAll((els) =>
+        els.map((el) => el.getBoundingClientRect().toJSON() as DOMRect)
+      );
+    const spread = (values: number[]) =>
+      Math.max(...values) - Math.min(...values);
+
+    await page.setViewportSize({ height: 1000, width: 1440 });
+    await page.goto("/");
+    await expect(cells.locator("h3")).toHaveText([
+      "Przepisywanie danych",
+      "Te same pytania",
+      "Ręczne raporty",
+      "Dokumenty i faktury",
+      "Wiedza w głowach",
+      "AI bez planu",
+    ]);
+    await expect(cells.locator(".mb-problem")).toHaveText([
+      "Zespół godzinami kopiuje te same dane między systemami.",
+      "Odpowiadacie w kółko na podobne maile i zapytania klientów.",
+      "Co tydzień składacie raport z kilku Exceli.",
+      "Ktoś ręcznie wypełnia i sprawdza dokumenty, faktury i umowy.",
+      "Odpowiedzi znają tylko konkretne osoby, a reszta czeka na nie.",
+      "Wiesz, że AI mogłoby pomóc, ale nie wiesz, od czego zacząć.",
+    ]);
+    // Lede, closing line and button stay.
+    await expect(problems.locator(".mb-section-lede")).toContainText(
+      "Jeśli rozpoznajesz swoją firmę"
+    );
+    await expect(
+      problems.getByRole("link", { name: "Umów bezpłatną rozmowę" })
+    ).toHaveAttribute("href", "#contact");
+
+    for (const [width, perRow] of [
+      [1440, 3],
+      [700, 2],
+      [390, 1],
+    ] as const) {
+      // biome-ignore lint/performance/noAwaitInLoops: one width at a time
+      await page.setViewportSize({ height: 900, width });
+      const boxes = await cellBoxes();
+      expect(boxes).toHaveLength(6);
+      const rows = new Set(boxes.map((cell) => Math.round(cell.y)));
+      expect(rows.size, `${width}px`).toBe(6 / perRow);
+      // Equal cells: one width and one height at every breakpoint.
+      expect(spread(boxes.map((cell) => cell.height))).toBeLessThan(TOLERANCE);
+      expect(spread(boxes.map((cell) => cell.width))).toBeLessThan(TOLERANCE);
+    }
+  });
+
   test("nothing on the page is a placeholder or removed copy", async ({
     page,
     request,
