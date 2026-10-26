@@ -229,6 +229,16 @@ const results = [
 
     .mb-hero :global(.mb-btn) {
       width: 100%;
+      height: auto;
+      min-height: 44px;
+      white-space: normal;
+    }
+
+    /* A label longer than a narrow column (a wider fallback font before
+     * Geist loads) wraps inside the button instead of widening the page. */
+    .mb-hero :global(.mb-btn-face) {
+      padding-block: 10px;
+      text-align: center;
     }
 
     .mb-status-figure {
