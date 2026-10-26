@@ -1458,8 +1458,8 @@ test.describe("production build", () => {
   });
 
   // Tag and status pill are badge variants now: the example tags keep their
-  // own case in the muted frame, the availability keeps its blue frame and
-  // square dot.
+  // own case in the muted frame, the availability (in the mobile menu) keeps
+  // its blue frame and square dot.
   test("example tags and the availability are badge variants", async ({
     page,
   }) => {
@@ -1469,7 +1469,7 @@ test.describe("production build", () => {
     await expect(tags.first()).toHaveCSS("text-transform", "none");
     await expect(tags.first()).toHaveCSS("border-color", "rgb(157, 156, 149)");
 
-    const status = page.locator(".mb-hero-status .mb-badge-status");
+    const status = page.locator("#mobile-sheet .mb-badge-status");
     await expect(status).toHaveText("Przyjmuję nowe projekty");
     await expect(status).toHaveCSS("border-color", "rgb(142, 174, 216)");
     expect(
