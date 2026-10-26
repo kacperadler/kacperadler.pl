@@ -422,10 +422,14 @@ test.describe("home page", () => {
 
     await page.setViewportSize({ height: 844, width: 390 });
     const narrow = await measure();
-    // Stacked, every hero button takes the column's full width.
+    // Stacked, every hero button takes the column's full width, and the
+    // card's button the card's.
     for (const cta of narrow.ctas) {
       expect(Math.abs(cta.width - narrow.text.width)).toBeLessThan(TOLERANCE);
     }
+    expect(
+      Math.abs(narrow.cardButton.width - (narrow.rows[0]?.width ?? 0))
+    ).toBeLessThan(TOLERANCE);
 
     // At both widths: the card's rows are equally tall and its figures
     // start at one x.
@@ -438,6 +442,17 @@ test.describe("home page", () => {
       const xs = figures.map((figure) => figure.x);
       expect(Math.max(...xs) - Math.min(...xs)).toBeLessThan(TOLERANCE);
     }
+
+    // A row whose text runs a line longer still keeps the rows equal.
+    await page
+      .locator("#top .mb-status-text")
+      .first()
+      .evaluate((text) => {
+        text.textContent += " i jeszcze jedna linia opisu ponad pozostałe";
+      });
+    const longer = (await measure()).rows.map((row) => row.height);
+    expect(longer[0]).toBeGreaterThan(narrow.rows[0]?.height ?? 0);
+    expect(Math.max(...longer) - Math.min(...longer)).toBeLessThan(TOLERANCE);
   });
 
   test("the offer's labels run in straight lines, and only the first step's button is the primary one", async ({
