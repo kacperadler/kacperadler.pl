@@ -153,7 +153,7 @@ test.describe("home page", () => {
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(hero.locator("h1 em")).toHaveText("nudną pracę");
     await expect(hero.locator(".mb-hero-sub")).toHaveText(
-      "Tworzę automatyzacje, integracje i aplikacje szyte na miarę. Znajduję procesy, które zabierają czas, a potem zamieniam je w działające systemy. Bez zatrudniania nowych osób, a Ty skupiasz się na rozwoju firmy."
+      "Tworzę automatyzacje, integracje i aplikacje szyte na miarę. Znajduję procesy, które zabierają czas, i zamieniam je w działające systemy. Ty skupiasz się na biznesie i rozwoju firmy, a powtarzalne zadania zostawiasz mnie."
     );
     await expect(
       hero.getByRole("link", { name: "Umów bezpłatną konsultację" })
