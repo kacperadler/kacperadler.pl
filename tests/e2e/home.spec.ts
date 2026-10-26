@@ -168,6 +168,7 @@ test.describe("home page", () => {
     // case highlights.
     const card = hero.getByRole("complementary", { name: "Efekty w liczbach" });
     await expect(card.locator("img")).toHaveCount(0);
+    await expect(card.locator(".mb-badge")).toHaveCount(0);
     // A description list: each figure (dt) over what it counts (dd).
     await expect(card.locator("dl > div > dt")).toHaveText([
       "250+",
