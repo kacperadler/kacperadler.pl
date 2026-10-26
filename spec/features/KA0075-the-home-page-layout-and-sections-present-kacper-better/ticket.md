@@ -60,3 +60,4 @@ Out:
 - 2026-10-26: The human, after the live preview: new hero copy (title, subtitle, buttons, right panel "W liczbach" rows and "Zobacz realizacje"), sent verbatim to the worker; align everything neatly; the client logo strip stays.
 - 2026-10-26: The human approved the coordinator's SEO/semantic rewrite of his hero copy (title with the "wdrożenia AI i automatyzacje" phrase, "współtworzyłem", one h1, figures as a semantic list), sent verbatim to the worker.
 - 2026-10-26: The human chose the H1 "Wdrożenia AI i automatyzacje, które przejmują nudną pracę, żebyś mógł skupić się na rozwoju firmy" (comma before "żebyś" added by the coordinator).
+- 2026-10-26: The human, superseding the previous line: H1 "Wdrożenia AI i automatyzacje, które przejmują nudną pracę" (underline on "nudną pracę"); the subtitle's last sentence becomes "Bez zatrudniania nowych osób, a Ty skupiasz się na rozwoju firmy."
