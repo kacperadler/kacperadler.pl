@@ -86,7 +86,7 @@ export const caseHighlights: readonly CaseHighlight[] = [
   },
   {
     effect:
-      "Platforma działa od 19.10.2026 na leadbuster.pl i leadapartament.pl, a ja zapewniam jej wsparcie, utrzymanie i rozwój.",
+      "Platforma działa od 10.2026 na leadbuster.pl i leadapartament.pl, a ja zapewniam jej wsparcie, utrzymanie i rozwój.",
     experiences: ["leadbuster", "leadapartament"],
     kind: "Marketplace leadów",
     problem:
@@ -104,7 +104,7 @@ export const caseHighlights: readonly CaseHighlight[] = [
       "W zespole budowałem wewnętrzny CRM z integracjami z Gmailem i Weylo/Focus, obsługą bardzo długich list i własną biblioteką komponentów, a także strony landingowe firmy.",
   },
   {
-    effect: "Ok. 200 użytkowników dziennie.",
+    effect: "Ok. 100 użytkowników dziennie.",
     experiences: ["energiadirect"],
     kind: "Aplikacja mobilna",
     problem:

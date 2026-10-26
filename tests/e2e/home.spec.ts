@@ -713,10 +713,20 @@ test.describe("home page", () => {
       expect(Math.abs(kind.x - name.x)).toBeLessThan(TOLERANCE);
     }
 
+    // The facts as the human gave them: the marketplace's launch month,
+    // Energia Direct's ~100 daily users (the hero's "100+"), on the page
+    // and in the full text for AI agents.
     const llmsFull = await (await request.get("/llms-full.txt")).text();
     expect(llmsFull).toContain(
       "### LeadBuster i LeadApartament (Marketplace leadów)"
     );
+    const casesText = await page.locator("#cases").textContent();
+    for (const text of [casesText, llmsFull]) {
+      expect(text).toContain("Platforma działa od 10.2026 na leadbuster.pl");
+      expect(text).toContain("Ok. 100 użytkowników dziennie.");
+      expect(text).not.toContain("200 użytkowników");
+      expect(text).not.toContain("19.10.2026");
+    }
   });
 
   test("the trust bar names a bare mark, sizes logos by weight, and stays a short band on a phone", async ({
