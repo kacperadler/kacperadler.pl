@@ -3,8 +3,10 @@ import Badge from "../badge.astro";
 import Button from "../button.astro";
 
 /* Hero (#top): the headline, subtitle and two buttons beside the results
- * card ("W liczbach": the status badge, three ruled rows of a big figure
- * over what it counts, and a button to the case highlights, #cases).
+ * card ("W liczbach": the status badge, a description list of three ruled
+ * rows - the figure (dt) in large type over what it counts (dd) - and a
+ * button to the case highlights, #cases). The headline is the page's only
+ * h1.
  *
  * The two columns share one grid: they are equally tall, the text column
  * is padded like the card, so the headline starts level with the card's
@@ -15,16 +17,16 @@ import Button from "../button.astro";
  * every button takes the full width. */
 const results = [
   {
-    figure: "+250",
-    text: "osób pracuje dziennie na narzędziach, które tworzyłem",
+    figure: "250+",
+    text: "osób codziennie pracuje w systemach, które współtworzyłem",
   },
   {
-    figure: "+100",
-    text: "osób dziennie korzysta z aplikacji mobilnej jednego z moich klientów",
+    figure: "100+",
+    text: "osób codziennie korzysta z aplikacji mobilnej, którą współtworzyłem dla klienta",
   },
   {
-    figure: "24 godziny",
-    text: "tyle potrzebuję, aby przyjść do Ciebie z pierwszym pomysłem",
+    figure: "24 h",
+    text: "w tym czasie wracam z pierwszym pomysłem na automatyzację",
   },
 ];
 ---
@@ -32,13 +34,16 @@ const results = [
 <section class="mb-hero" id="top">
   <div class="container mb-hero-grid">
     <div class="mb-hero-text">
-      <h1>Zamień ręczną robotę na <em>czas</em> na rozwój Twojego biznesu</h1>
+      <h1>
+        Wdrożenia AI i automatyzacje, które zamieniają ręczną robotę w
+        <em>czas</em>
+        na rozwój Twojej firmy
+      </h1>
 
       <p class="mb-hero-sub">
-        Wdrożenia AI, automatyzacje oraz aplikacje szyte na miarę dla firm.
-        Znajduję procesy, które zjadają czas Twój oraz Twojego zespołu, a
-        następnie zamieniam je w działające systemy i automatyzacje. Bez
-        zatrudniania dodatkowego zespołu.
+        Tworzę automatyzacje, integracje i aplikacje szyte na miarę dla firm.
+        Znajduję procesy, które zabierają czas Tobie i Twojemu zespołowi, a
+        potem zamieniam je w działające systemy. Bez zatrudniania nowych osób.
       </p>
 
       <div class="mb-hero-ctas">
@@ -46,7 +51,7 @@ const results = [
           >Umów bezpłatną konsultację</Button
         >
         <Button href="#services" variant="outline"
-          >Zobacz, co mogę dla Ciebie zrobić</Button
+          >Zobacz, co mogę zrobić dla Twojej firmy</Button
         >
       </div>
     </div>
@@ -57,14 +62,14 @@ const results = [
         <Badge variant="status">Przyjmuję nowe projekty</Badge>
       </div>
 
-      <ul class="mb-status-rows">
+      <dl class="mb-status-rows">
         {results.map((result) => (
-          <li class="mb-status-row">
-            <span class="mb-status-figure">{result.figure}</span>
-            <span class="mb-status-text">{result.text}</span>
-          </li>
+          <div class="mb-status-row">
+            <dt class="mb-status-figure">{result.figure}</dt>
+            <dd class="mb-status-text">{result.text}</dd>
+          </div>
         ))}
-      </ul>
+      </dl>
 
       <div class="mb-status-cta">
         <Button href="#cases" iconEnd="lucide:arrow-right" variant="outline"
@@ -170,7 +175,6 @@ const results = [
     grid-auto-rows: 1fr;
     padding: 0;
     margin: 0;
-    list-style: none;
     border-bottom: 1px solid var(--mb-hair);
   }
 
@@ -193,6 +197,7 @@ const results = [
   }
 
   .mb-status-text {
+    margin: 0;
     font-size: 15px;
     line-height: 1.4;
     color: var(--ink-2);

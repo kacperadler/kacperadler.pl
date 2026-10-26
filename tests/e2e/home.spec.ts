@@ -146,23 +146,38 @@ test.describe("home page", () => {
     await page.goto("/");
     const hero = page.locator("#top");
     await expect(hero.locator("h1")).toHaveText(
-      "Zamień ręczną robotę na czas na rozwój Twojego biznesu"
+      "Wdrożenia AI i automatyzacje, które zamieniają ręczną robotę w czas na rozwój Twojej firmy"
+    );
+    // The hero's headline is the page's only h1, and "czas" is its
+    // underlined word.
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(hero.locator("h1 em")).toHaveText("czas");
+    await expect(hero.locator(".mb-hero-sub")).toHaveText(
+      "Tworzę automatyzacje, integracje i aplikacje szyte na miarę dla firm. Znajduję procesy, które zabierają czas Tobie i Twojemu zespołowi, a potem zamieniam je w działające systemy. Bez zatrudniania nowych osób."
     );
     await expect(
       hero.getByRole("link", { name: "Umów bezpłatną konsultację" })
     ).toHaveAttribute("href", "#contact");
     await expect(
-      hero.getByRole("link", { name: "Zobacz, co mogę dla Ciebie zrobić" })
+      hero.getByRole("link", {
+        name: "Zobacz, co mogę zrobić dla Twojej firmy",
+      })
     ).toHaveAttribute("href", "#services");
 
     // Beside the text: results, not a photo and a bio, and a button to the
     // case highlights.
     const card = hero.getByRole("complementary", { name: "Efekty w liczbach" });
     await expect(card.locator("img")).toHaveCount(0);
-    await expect(card.locator(".mb-status-figure")).toHaveText([
-      "+250",
-      "+100",
-      "24 godziny",
+    // A description list: each figure (dt) over what it counts (dd).
+    await expect(card.locator("dl > div > dt")).toHaveText([
+      "250+",
+      "100+",
+      "24 h",
+    ]);
+    await expect(card.locator("dl > div > dd")).toHaveText([
+      "osób codziennie pracuje w systemach, które współtworzyłem",
+      "osób codziennie korzysta z aplikacji mobilnej, którą współtworzyłem dla klienta",
+      "w tym czasie wracam z pierwszym pomysłem na automatyzację",
     ]);
     await expect(
       card.getByRole("link", { name: "Zobacz realizacje" })
