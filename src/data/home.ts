@@ -86,13 +86,13 @@ export const caseHighlights: readonly CaseHighlight[] = [
   },
   {
     effect:
-      "Platforma działa od 19.10.2026 na leadbuster.pl i leadapartament.pl, a ja dbam o jej utrzymanie i rozwój.",
+      "Platforma działa od 19.10.2026 na leadbuster.pl i leadapartament.pl, a ja zapewniam jej wsparcie, utrzymanie i rozwój.",
     experiences: ["leadbuster", "leadapartament"],
-    kind: "Marketplace · Od zera",
+    kind: "Marketplace leadów",
     problem:
-      "Dwie firmy potrzebowały własnego marketplace'u do sprzedaży leadów.",
+      "Dwie firmy miały marketplace do sprzedaży leadów, ale istniejący kod nie był gotowy do startu.",
     solution:
-      "Zbudowałem platformę od zera dla obu marek, a dziś zapewniam jej wsparcie, utrzymanie i dalszy rozwój.",
+      "Przejąłem kod, naprawiłem go i dostosowałem do wymagań każdej z firm, a potem uruchomiłem platformę.",
   },
   {
     effect: "Ponad 200 osób pracuje w nim codziennie.",

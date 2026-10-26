@@ -34,6 +34,9 @@ const REMOVED = [
   "Inżynier oprogramowania",
   "Frontend dev w ReX",
   "React Native · TypeScript · Astro",
+  // The lead marketplace was taken over, not built from scratch.
+  "od zera",
+  "Od zera",
 ];
 const OFFER_SECTION = /^## Oferta$([\s\S]*?)^## /m;
 const LLMS_ITEM = /^- \*\*(.+?)\*\* \(/gm;
@@ -712,7 +715,7 @@ test.describe("home page", () => {
 
     const llmsFull = await (await request.get("/llms-full.txt")).text();
     expect(llmsFull).toContain(
-      "### LeadBuster i LeadApartament (Marketplace · Od zera)"
+      "### LeadBuster i LeadApartament (Marketplace leadów)"
     );
   });
 
