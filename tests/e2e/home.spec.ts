@@ -682,27 +682,27 @@ test.describe("home page", () => {
       // The duration in the card's head, beside the title.
       expect(step.badge.x).toBeGreaterThan(step.title.right);
       expect(step.badge.right).toBeLessThanOrEqual(step.card.right);
-      // Staggered: each card starts past the middle of the one before it
-      // (they overlap, so no side has a hole, but not too much: the steps
-      // need room), and two cards on one side stand 64px apart.
+      // Staggered: each card starts near the foot of the one before it
+      // (they still overlap, so no side has a hole, but each step stands
+      // clear), and two cards on one side stand 128px apart.
       const previous = wide[i - 1];
       if (previous) {
         const into = (step.card.top - previous.card.top) / previous.card.height;
-        expect(into, `card ${i + 1}`).toBeGreaterThan(0.6);
-        expect(into, `card ${i + 1}`).toBeLessThan(0.9);
+        expect(into, `card ${i + 1}`).toBeGreaterThan(0.8);
+        expect(into, `card ${i + 1}`).toBeLessThan(1);
       }
       const sameSide = wide[i - 2];
       if (sameSide) {
         expect(
-          Math.abs(step.card.top - sameSide.card.bottom - 64),
+          Math.abs(step.card.top - sameSide.card.bottom - 128),
           `card ${i + 1}`
         ).toBeLessThan(TOLERANCE);
       }
     }
-    // The steps take well under the height of the cards stacked one under
-    // another.
+    // The overlap still makes the steps shorter than the cards stacked one
+    // under another.
     const stacked = wide.reduce((sum, step) => sum + step.card.height, 0);
-    expect(list.height).toBeLessThan(stacked * 0.85);
+    expect(list.height).toBeLessThan(stacked);
 
     await page.setViewportSize({ height: 844, width: 390 });
     const { steps: narrow } = await layout();
@@ -713,11 +713,11 @@ test.describe("home page", () => {
       );
       expect(step.dot.right).toBeLessThan(step.card.left);
       expect(step.link.width).toBe(0);
-      // The cards 20px apart, the rail through the space between.
+      // The cards 40px apart, the rail through the space between.
       const previous = narrow[i - 1];
       if (previous) {
         expect(
-          Math.abs(step.card.top - previous.card.bottom - 20)
+          Math.abs(step.card.top - previous.card.bottom - 40)
         ).toBeLessThan(TOLERANCE);
       }
     }
