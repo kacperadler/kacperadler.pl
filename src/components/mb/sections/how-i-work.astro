@@ -19,7 +19,7 @@ import StepMarker from "../step-marker.astro";
  * 1px ink, 2px blue once the mark has filled.
  *
  * At 880px and below one column with the rail on the left, the cards
- * stacked into one ruled column, no connectors. Under the steps, the
+ * 20px apart, no connectors. Under the steps, the
  * button to the contact form. */
 ---
 
@@ -63,11 +63,13 @@ import StepMarker from "../step-marker.astro";
 
   /* Desktop: card | rail | card. A step takes rows n and n+1, the next
    * step n+1 and n+2, so the two sides overlap by a row; two cards on one
-   * side stand a row gap apart. */
+   * side stand a row gap apart. The gap is wide (64px), so a card starts
+   * well past the middle of the one before it: the steps breathe, and
+   * neither side has a hole. */
   .mb-how-steps {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--mb-how-rail) minmax(0, 1fr);
-    row-gap: var(--v2-space-lg);
+    row-gap: var(--v2-space-xl);
     padding: 0;
     margin: 0;
     list-style: none;
@@ -177,8 +179,7 @@ import StepMarker from "../step-marker.astro";
     margin-top: var(--mb-block-gap);
   }
 
-  /* Phone: the rail on the left, the cards one ruled column sharing their
-   * rules. */
+  /* Phone: the rail on the left, the cards one column, 20px apart. */
   @media (max-width: 880px) {
     .mb-how-steps {
       display: flex;
@@ -200,13 +201,12 @@ import StepMarker from "../step-marker.astro";
       grid-column: 1;
     }
 
+    /* The cards stand apart; their equal margins keep each mark on its
+     * card's centre and the rail running through the space between. */
     .mb-step > :global(.mb-card),
     .mb-step:nth-child(even) > :global(.mb-card) {
       grid-column: 2;
-    }
-
-    .mb-step + .mb-step {
-      margin-top: -1px;
+      margin: 10px 0;
     }
 
     .mb-step-link {

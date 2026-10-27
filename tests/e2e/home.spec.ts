@@ -628,7 +628,7 @@ test.describe("home page", () => {
     );
   });
 
-  test("the process alternates around a central rail, staggered and joined to it, and runs in one column on a phone", async ({
+  test("the process alternates around a central rail, staggered with room and joined to it, and runs in one column on a phone", async ({
     page,
   }) => {
     const layout = () =>
@@ -682,33 +682,42 @@ test.describe("home page", () => {
       // The duration in the card's head, beside the title.
       expect(step.badge.x).toBeGreaterThan(step.title.right);
       expect(step.badge.right).toBeLessThanOrEqual(step.card.right);
-      // Staggered: each card starts about halfway down the one before it.
+      // Staggered: each card starts past the middle of the one before it
+      // (they overlap, so no side has a hole, but not too much: the steps
+      // need room), and two cards on one side stand 64px apart.
       const previous = wide[i - 1];
       if (previous) {
         const into = (step.card.top - previous.card.top) / previous.card.height;
-        expect(into, `card ${i + 1}`).toBeGreaterThan(0.3);
-        expect(into, `card ${i + 1}`).toBeLessThan(0.75);
+        expect(into, `card ${i + 1}`).toBeGreaterThan(0.6);
+        expect(into, `card ${i + 1}`).toBeLessThan(0.9);
+      }
+      const sameSide = wide[i - 2];
+      if (sameSide) {
+        expect(
+          Math.abs(step.card.top - sameSide.card.bottom - 64),
+          `card ${i + 1}`
+        ).toBeLessThan(TOLERANCE);
       }
     }
     // The steps take well under the height of the cards stacked one under
     // another.
     const stacked = wide.reduce((sum, step) => sum + step.card.height, 0);
-    expect(list.height).toBeLessThan(stacked * 0.75);
+    expect(list.height).toBeLessThan(stacked * 0.85);
 
     await page.setViewportSize({ height: 844, width: 390 });
     const { steps: narrow } = await layout();
     for (const [i, step] of narrow.entries()) {
-      // One column: the mark left of every card, the cards sharing their
-      // rules, no connectors.
+      // One column: the mark left of every card, no connectors.
       expect(Math.abs(step.card.x - (narrow[0]?.card.x ?? 0))).toBeLessThan(
         TOLERANCE
       );
       expect(step.dot.right).toBeLessThan(step.card.left);
       expect(step.link.width).toBe(0);
+      // The cards 20px apart, the rail through the space between.
       const previous = narrow[i - 1];
       if (previous) {
         expect(
-          Math.abs(step.card.top - (previous.card.bottom - 1))
+          Math.abs(step.card.top - previous.card.bottom - 20)
         ).toBeLessThan(TOLERANCE);
       }
     }
