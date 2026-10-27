@@ -971,6 +971,58 @@ test.describe("home page", () => {
     expect(strip.height).toBeLessThan(260);
   });
 
+  test("the about text is the three paragraphs, its column level with the photo and the links ending on the photo's foot", async ({
+    page,
+  }) => {
+    const about = page.locator("#about");
+    const layout = () =>
+      about.evaluate((section) => {
+        const r = (selector: string) =>
+          (section.querySelector(selector) as Element)
+            .getBoundingClientRect()
+            .toJSON() as DOMRect;
+        // The top of the first line's text (its content area).
+        const first = section.querySelector(".mb-about-text > p") as Element;
+        const range = document.createRange();
+        range.selectNodeContents(first);
+        const line = range.getClientRects()[0] as DOMRect;
+        return {
+          links: r(".mb-about-text .mb-cell-grid"),
+          photo: r(".mb-about-photo"),
+          textTop: line.top,
+        };
+      });
+
+    await page.setViewportSize({ height: 1000, width: 1440 });
+    await page.goto("/");
+    await expect(about.locator(".mb-about-text > p")).toHaveText([
+      "Od 2020 roku buduję oprogramowanie: od enterprise, przez software house, po wewnętrzne systemy używane codziennie przez setki osób.",
+      "Dziś łączę to doświadczenie z AI. Sam dowożę to, na co kiedyś trzeba było całego zespołu: analizę procesu, backend, frontend, integracje i wdrożenie.",
+      "Pracuję z firmami jako ich partner technologiczny. Rozumiem biznes, tłumaczę technologię na ludzki język i biorę odpowiedzialność za efekt.",
+    ]);
+
+    for (const width of [1440, 1024]) {
+      // biome-ignore lint/performance/noAwaitInLoops: one width at a time
+      await page.setViewportSize({ height: 1000, width });
+      const { links, photo, textTop } = await layout();
+      expect(Math.abs(textTop - photo.top), `${width}px top`).toBeLessThan(
+        TOLERANCE
+      );
+      expect(
+        Math.abs(links.bottom - photo.bottom),
+        `${width}px bottom`
+      ).toBeLessThan(TOLERANCE);
+    }
+
+    // A phone: the photo above the text, nothing wider than the screen.
+    await page.setViewportSize({ height: 844, width: 390 });
+    const { links, photo } = await layout();
+    expect(links.top).toBeGreaterThan(photo.bottom);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(390);
+  });
+
   test("the meta follow the brief", async ({ page, request }) => {
     await page.goto("/");
     await expect(page).toHaveTitle(TITLE);

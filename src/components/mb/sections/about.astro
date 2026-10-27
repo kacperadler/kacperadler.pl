@@ -44,13 +44,15 @@ const caseStudies = await caseStudiesByExperience();
     </SectionHead>
 
     <div class="mb-about-grid">
-      <Image
-        alt={`${siteConfig.name} - ${siteConfig.role}`}
-        class="mb-about-photo"
-        loading="lazy"
-        src={meImage}
-        width={320}
-      />
+      <div class="mb-about-frame">
+        <Image
+          alt={`${siteConfig.name} - ${siteConfig.role}`}
+          class="mb-about-photo"
+          loading="lazy"
+          src={meImage}
+          width={440}
+        />
+      </div>
       <div class="mb-about-text">
         {about.map((paragraph) => <p>{paragraph}</p>)}
         <CellGrid min="280px">
@@ -136,17 +138,30 @@ const caseStudies = await caseStudiesByExperience();
     margin-top: var(--mb-section-gap);
   }
 
+  /* Photo and text on one band: the text column sets the height, and the
+   * photo (out of the flow, so it adds no height of its own) fills its
+   * frame, cropped to fit with the face kept in view, so it ends where the
+   * link cells under the text end, at any desktop width. */
   .mb-about-grid {
     display: grid;
-    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
     gap: var(--v2-space-xl);
-    align-items: start;
+    align-items: stretch;
+  }
+
+  .mb-about-frame {
+    position: relative;
+    min-height: 240px;
   }
 
   .mb-about-grid :global(.mb-about-photo) {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
     border: 1px solid var(--mb-rule);
   }
 
@@ -163,6 +178,18 @@ const caseStudies = await caseStudiesByExperience();
     font-size: 18px;
     line-height: 1.6;
     color: var(--ink);
+  }
+
+  /* The first line's text starts on the photo's top edge: the line box's
+   * extra leading over the text (about 0.16em here) sits above it. */
+  .mb-about-text > p:first-child {
+    margin-top: -0.16em;
+  }
+
+  /* Smaller link cells than the default sm card, so the column is not
+   * taller than the photo needs. */
+  .mb-about-text :global(.mb-card) {
+    --mb-card-pad: 20px;
   }
 
   .mb-about-experience {
@@ -252,8 +279,18 @@ const caseStudies = await caseStudiesByExperience();
       gap: var(--v2-space-lg);
     }
 
+    .mb-about-frame {
+      min-height: 0;
+    }
+
     .mb-about-grid :global(.mb-about-photo) {
+      position: static;
       max-width: 240px;
+      height: auto;
+    }
+
+    .mb-about-text > p:first-child {
+      margin-top: 0;
     }
   }
 
