@@ -115,7 +115,7 @@ export const caseHighlights: readonly CaseHighlight[] = [
 ];
 
 export const about: readonly string[] = [
-  "Od 2021 roku buduję oprogramowanie: od PwC, przez software house Apptension, po wewnętrzne systemy używane codziennie przez setki osób.",
+  "Od 2020 roku buduję oprogramowanie: od enterprise, przez software house, po wewnętrzne systemy używane codziennie przez setki osób.",
   "Dziś łączę to doświadczenie z AI. Sam dowożę to, na co kiedyś trzeba było całego zespołu: analizę procesu, backend, frontend, integracje i wdrożenie.",
   "Pracuję z firmami jako ich partner technologiczny. Rozumiem biznes, tłumaczę technologię na ludzki język i biorę odpowiedzialność za efekt.",
 ];
