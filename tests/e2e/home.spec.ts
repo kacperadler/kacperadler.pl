@@ -640,9 +640,27 @@ test.describe("home page", () => {
           steps: [...how.querySelectorAll(".mb-step")].map((step) => ({
             badge: r(step.querySelector(".mb-card .mb-step-head .mb-badge")),
             card: r(step.querySelector(".mb-card")),
+            contentRight: (() => {
+              const card = step.querySelector(".mb-card") as Element;
+              const style = getComputedStyle(card);
+              return (
+                card.getBoundingClientRect().right -
+                Number.parseFloat(style.paddingRight) -
+                Number.parseFloat(style.borderRightWidth)
+              );
+            })(),
             dot: r(step.querySelector(".mb-step-dot")),
             link: r(step.querySelector(".mb-step-link")),
             title: r(step.querySelector(".mb-card h3")),
+            // The title's first line of text, and where the card's content
+            // ends on the right.
+            titleLine: (() => {
+              const range = document.createRange();
+              range.selectNodeContents(
+                step.querySelector(".mb-card h3") as Element
+              );
+              return range.getClientRects()[0]?.toJSON() as DOMRect;
+            })(),
           })),
         };
       });
@@ -679,9 +697,18 @@ test.describe("home page", () => {
           TOLERANCE
         );
       }
-      // The duration in the card's head, beside the title.
+      // The duration on the title's line, at its right end.
       expect(step.badge.x).toBeGreaterThan(step.title.right);
-      expect(step.badge.right).toBeLessThanOrEqual(step.card.right);
+      expect(Math.abs(step.badge.right - step.contentRight)).toBeLessThan(
+        TOLERANCE
+      );
+      expect(
+        Math.abs(
+          step.badge.y +
+            step.badge.height / 2 -
+            (step.titleLine.y + step.titleLine.height / 2)
+        )
+      ).toBeLessThan(TOLERANCE);
       // Staggered: each card starts near the foot of the one before it
       // (they still overlap, so no side has a hole, but each step stands
       // clear), and two cards on one side stand 128px apart.
@@ -713,6 +740,18 @@ test.describe("home page", () => {
       );
       expect(step.dot.right).toBeLessThan(step.card.left);
       expect(step.link.width).toBe(0);
+      // The duration stays on the title's line, at its right end, even
+      // when a narrow card wraps the title.
+      expect(Math.abs(step.badge.right - step.contentRight)).toBeLessThan(
+        TOLERANCE
+      );
+      expect(
+        Math.abs(
+          step.badge.y +
+            step.badge.height / 2 -
+            (step.titleLine.y + step.titleLine.height / 2)
+        )
+      ).toBeLessThan(TOLERANCE);
       // The cards 40px apart, the rail through the space between.
       const previous = narrow[i - 1];
       if (previous) {

@@ -8,8 +8,8 @@ import SectionHead from "../section-head.astro";
 import StepMarker from "../step-marker.astro";
 
 /* Process (#how): the steps on a rail of square numbered marks that fills
- * blue as the page scrolls (step-marker.astro). Each card's head carries
- * its title and duration.
+ * blue as the page scrolls (step-marker.astro). Each card's head is one
+ * line: the title on the left, the duration badge at the right end.
  *
  * Desktop: the rail runs down the middle and the steps alternate left and
  * right of it, staggered - one grid whose steps each span two rows, every
@@ -142,11 +142,13 @@ import StepMarker from "../step-marker.astro";
     }
   }
 
+  /* One line: icon and title left, the duration at the right end. It
+   * never wraps below: a long title wraps inside its own box, and icon and
+   * badge sit on its first line (24px high). */
   .mb-step-head {
     display: flex;
-    flex-wrap: wrap;
     gap: 12px;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 12px;
   }
 
@@ -154,11 +156,18 @@ import StepMarker from "../step-marker.astro";
     flex-shrink: 0;
     width: 22px;
     height: 22px;
+    margin-top: 1px;
     color: var(--blue);
+  }
+
+  .mb-step-head :global(.mb-badge) {
+    margin-top: 1px;
+    margin-left: auto;
   }
 
   .mb-step-head h3 {
     flex: 1;
+    min-width: 0;
     margin: 0;
     font-family: var(--mb-display);
     font-size: 20px;
