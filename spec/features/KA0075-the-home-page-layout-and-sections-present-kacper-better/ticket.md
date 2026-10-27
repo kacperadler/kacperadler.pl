@@ -75,3 +75,4 @@ Out:
 - 2026-10-26: The human picked process option B: keep the vertical alternating rail, but cards overlap vertically so no empty gaps, each joined to the rail by a short horizontal connector, the duration badge moves into the card head.
 - 2026-10-27: The human, after the live preview: the option B timeline is fine overall, but the steps sit a bit too close together; give them more vertical space (less overlap, still no empty gaps), desktop and phone.
 - 2026-10-27: The human, after 7eb71e6: the steps are still too close together; spacing must grow clearly, not a nudge.
+- 2026-10-27: The human: in each process card the small duration badge ("~30 min") moves into the card head, on the same line as the step title ("Rozmowa") but at the opposite end of that line.
