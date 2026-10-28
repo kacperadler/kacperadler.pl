@@ -47,10 +47,12 @@ const paint = (locator: Locator, props: string[]) =>
     );
   }, props);
 
+// A caption's spaces match any space: the one after a one-letter word is a
+// non-breaking one ("5 z 12", src/middleware.ts).
 const sample = (page: Page, sectionId: string, caption: string) =>
   page.locator(`section[aria-labelledby="${sectionId}"] .mb-ui-sample`).filter({
     has: page.locator(".mb-ui-caption", {
-      hasText: new RegExp(`^${caption}$`),
+      hasText: new RegExp(`^${caption.replaceAll(" ", "\\s")}$`),
     }),
   });
 
