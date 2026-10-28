@@ -309,6 +309,70 @@ test.describe("contact form", () => {
     ]);
   });
 
+  test("the message box grows with the text from 5 to 14 lines, the sheet with it, and the success card fills the taller sheet", async ({
+    page,
+  }) => {
+    await page.route(LEAD_API, (route) =>
+      route.fulfill({ json: { ok: true }, status: 200 })
+    );
+    await page.goto("/#contact");
+    await page.waitForLoadState("networkidle");
+
+    const box = page.locator('[data-contact-form] textarea[name="message"]');
+    const sheet = page.locator("[data-contact-wrap]");
+    const measure = () =>
+      box.evaluate((el) => ({
+        clientHeight: el.clientHeight,
+        height: el.getBoundingClientRect().height,
+        lineHeight: Number.parseFloat(getComputedStyle(el).lineHeight),
+        scrollHeight: el.scrollHeight,
+      }));
+    const lines = (count: number): string =>
+      Array.from({ length: count }, (_, i) => `Linia ${i + 1}`).join("\n");
+    const sheetHeight = async (): Promise<number> =>
+      (await sheet.boundingBox())?.height ?? 0;
+
+    // No drag handle: a dragged height would stop the box from growing.
+    await expect(box).toHaveCSS("resize", "none");
+
+    // Empty, it stands 5 lines high (padding and border included).
+    const empty = await measure();
+    expect(empty.height).toBeCloseTo(5 * empty.lineHeight, 0);
+    const sheetEmpty = await sheetHeight();
+
+    // Eight lines: the box grows to show them all, nothing scrolls inside,
+    // and the sheet grows by as much.
+    await box.fill(lines(8));
+    const eight = await measure();
+    expect(eight.height).toBeGreaterThan(empty.height + 3 * empty.lineHeight);
+    expect(eight.scrollHeight).toBeLessThanOrEqual(eight.clientHeight);
+    expect(await sheetHeight()).toBeCloseTo(
+      sheetEmpty + eight.height - empty.height,
+      0
+    );
+
+    // Thirty lines: the box stops at 14 lines and scrolls the rest.
+    await box.fill(lines(30));
+    const thirty = await measure();
+    expect(thirty.height).toBeCloseTo(14 * empty.lineHeight, 0);
+    expect(thirty.scrollHeight).toBeGreaterThan(thirty.clientHeight);
+
+    // Sent with the tall box: the sheet keeps its height and the success
+    // card fills the whole cell the form leaves.
+    await page.fill('[data-contact-form] input[name="email"]', "a@example.com");
+    await pickType(page, "audit");
+    const sheetBefore = await sheetHeight();
+    await page.click("[data-contact-form] [data-submit]");
+    await expect(sheet).toHaveAttribute("data-state", "success");
+    expect(await sheetHeight()).toBe(sheetBefore);
+    const formHeight = await page
+      .locator("[data-contact-form]")
+      .evaluate((el) => el.getBoundingClientRect().height);
+    expect(
+      (await page.locator("[data-form-success]").boundingBox())?.height
+    ).toBe(formHeight);
+  });
+
   test("a lead sent with the company left empty is saved without one", async ({
     page,
   }) => {
