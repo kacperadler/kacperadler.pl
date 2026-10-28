@@ -946,9 +946,9 @@
   {
     "id": "KA0116",
     "title": "A global rule strips every transition under reduced motion",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0116-a-global-rule-strips-every-transition-under-reduced-motion/ticket.md",
-    "updated": "2026-10-28T20:40:45.275Z",
+    "updated": "2026-10-28T23:08:09.813Z",
     "after": [
       "KA0130"
     ]
