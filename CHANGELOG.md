@@ -7,6 +7,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 ### Added
 
 - KA0075 The home page layout and sections present Kacper better (01f7736)
+- KA0096 The contact form asks for the company name, optionally (d7541b7)
 - KA0098 The live site wears the chosen signature, blueprint-live (794139c)
 - KA0102 The 404 page's rule is the one line the pen does not draw (1399005)
 - KA0104 Audit the site CSS against good-css.com and propose what to adopt (6f0a0eb)
@@ -16,6 +17,10 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 
 - KA0103 The 360px entrance-after-paint test is flaky (545af2d)
 - KA0105 In-page links park the section head under the sticky header (2a54f5c)
+
+### Other
+
+- KA0120 The marketplace case says I adapted code from another project, not that I fixed theirs (73cb530)
 
 ## 2026-10-14
 

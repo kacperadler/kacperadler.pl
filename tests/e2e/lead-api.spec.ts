@@ -1,4 +1,4 @@
-import { mkdtempSync } from "node:fs";
+import { existsSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -17,6 +17,7 @@ const ENV_KEYS = [
   "LEAD_NOTIFY_TO",
 ] as const;
 const LEAD = {
+  company: "Kowalski i Synowie sp.j.",
   email: "jan.kowalski@example.com",
   message: "Potrzebuję agenta AI do obsługi zgłoszeń.",
   types: ["audit"],
@@ -54,7 +55,9 @@ function post(body: unknown): Promise<Response> {
 function rows(): Record<string, unknown>[] {
   const db = new DatabaseSync(dbPath, { readOnly: true });
   try {
-    return db.prepare("SELECT id, email, type, message FROM leads").all();
+    return db
+      .prepare("SELECT id, email, type, message, company FROM leads")
+      .all();
   } finally {
     db.close();
   }
@@ -94,6 +97,7 @@ test.afterEach(() => {
 });
 
 const SAVED_ROW = {
+  company: LEAD.company,
   email: LEAD.email,
   id: 1,
   message: LEAD.message,
@@ -125,6 +129,7 @@ test.describe("POST /api/lead", () => {
     expect(sent.text).toContain("#1");
     for (const part of [sent.subject, sent.text]) {
       expect(part).not.toContain(LEAD.email);
+      expect(part).not.toContain(LEAD.company);
       expect(part).not.toContain(LEAD.message);
     }
     expect(logged).toEqual([]);
@@ -147,6 +152,45 @@ test.describe("POST /api/lead", () => {
     };
     expect(sent.subject).toBe("Nowy lead #1 - Audyt AI, Stała współpraca");
     expect(sent.text).toContain("Typ projektu: Audyt AI, Stała współpraca");
+  });
+
+  // The company is optional: left out, empty, blank or not a string, the
+  // lead is saved with ''.
+  for (const [name, company] of [
+    ["left out", undefined],
+    ["empty", ""],
+    ["blank", "   "],
+    ["not a string", 42],
+  ] as const) {
+    test(`saves the lead with no company when it is ${name}`, async () => {
+      stubFetch(() => Promise.resolve(Response.json({ id: "x" })));
+
+      const res = await post({ ...LEAD, company });
+
+      expect(res.status).toBe(200);
+      expect(rows()).toEqual([{ ...SAVED_ROW, company: "" }]);
+    });
+  }
+
+  test("saves the company trimmed, up to 200 characters", async () => {
+    stubFetch(() => Promise.resolve(Response.json({ id: "x" })));
+    const company = "F".repeat(200);
+
+    const res = await post({ ...LEAD, company: `  ${company}  ` });
+
+    expect(res.status).toBe(200);
+    expect(rows()).toEqual([{ ...SAVED_ROW, company }]);
+  });
+
+  test("answers 400 naming the company, saves nothing and sends nothing when it is over 200 characters", async () => {
+    stubFetch(() => Promise.resolve(Response.json({ id: "x" })));
+
+    const res = await post({ ...LEAD, company: "F".repeat(201) });
+
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: "invalid", fields: ["company"] });
+    expect(existsSync(dbPath)).toBe(false);
+    expect(fetchCalls).toEqual([]);
   });
 
   test("keeps the lead and answers 200 when Resend answers with an error", async () => {
@@ -239,6 +283,7 @@ test.describe("POST /api/lead", () => {
 
     const text = JSON.stringify(logged.map((entry) => entry.args.map(String)));
     expect(text).not.toContain(LEAD.email);
+    expect(text).not.toContain(LEAD.company);
     expect(text).not.toContain(LEAD.message);
   });
 });

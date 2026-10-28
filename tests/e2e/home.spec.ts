@@ -522,7 +522,7 @@ test.describe("home page", () => {
     );
   });
 
-  test("the contact sheet fills the width, the email and the project type side by side on the desktop", async ({
+  test("the contact sheet fills the width, the email and the company side by side over the project types on the desktop", async ({
     page,
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
@@ -533,13 +533,21 @@ test.describe("home page", () => {
       Math.abs(sheet.x + sheet.width - (head.x + head.width))
     ).toBeLessThan(TOLERANCE);
     const email = page.locator('#contact [data-field="email"]');
+    const company = page.locator('#contact [data-field="company"]');
     const type = page.locator('#contact [data-field="type"]');
     const message = page.locator('#contact [data-field="message"]');
-    let [e, t, m] = [await box(email), await box(type), await box(message)];
-    expect(Math.abs(e.y - t.y)).toBeLessThanOrEqual(TOLERANCE);
-    expect(t.x).toBeGreaterThan(e.x + e.width);
-    expect(m.y).toBeGreaterThan(e.y + e.height);
-    expect(Math.abs(m.width - (t.x + t.width - e.x))).toBeLessThan(TOLERANCE);
+    let [e, c, t, m] = [
+      await box(email),
+      await box(company),
+      await box(type),
+      await box(message),
+    ];
+    expect(Math.abs(e.y - c.y)).toBeLessThanOrEqual(TOLERANCE);
+    expect(c.x).toBeGreaterThan(e.x + e.width);
+    expect(t.y).toBeGreaterThan(e.y + e.height);
+    expect(Math.abs(t.x - e.x)).toBeLessThanOrEqual(TOLERANCE);
+    expect(m.y).toBeGreaterThan(t.y + t.height);
+    expect(Math.abs(m.width - (c.x + c.width - e.x))).toBeLessThan(TOLERANCE);
 
     // The form comes first; the direct links are the sheet's last row,
     // sharing its bottom rule, and the submit button sits right under the
@@ -555,9 +563,16 @@ test.describe("home page", () => {
     );
 
     await page.setViewportSize({ height: 844, width: 390 });
-    [e, t, m] = [await box(email), await box(type), await box(message)];
+    [e, c, t, m] = [
+      await box(email),
+      await box(company),
+      await box(type),
+      await box(message),
+    ];
+    expect(Math.abs(e.x - c.x)).toBeLessThanOrEqual(TOLERANCE);
     expect(Math.abs(e.x - t.x)).toBeLessThanOrEqual(TOLERANCE);
-    expect(t.y).toBeGreaterThan(e.y + e.height);
+    expect(c.y).toBeGreaterThan(e.y + e.height);
+    expect(t.y).toBeGreaterThan(c.y + c.height);
     expect(m.y).toBeGreaterThan(t.y + t.height);
   });
 

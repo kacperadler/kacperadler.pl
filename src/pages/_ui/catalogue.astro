@@ -150,6 +150,7 @@ const inputStates = [
   "disabled",
   "invalid",
   "required",
+  "optional",
 ] as const;
 const textareaStates = [
   "default",
@@ -837,6 +838,7 @@ const steps = [
                 invalid={state === "invalid"}
                 label="Twój email"
                 name={`mb-input-${state}`}
+                optional={state === "optional"}
                 required={state === "required"}
               >
                 <Input
