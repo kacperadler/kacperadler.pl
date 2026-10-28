@@ -38,7 +38,7 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 - **`prefers-reduced-motion`** szanowany w każdej animowanej tranzycji.
 - **iOS Safari**: pole, w które się pisze (`input.astro`, `textarea.astro`, pole „Strona” paginacji), ma `font-size: max(16px, 1rem)` - mniejszy tekst i Safari zoomuje stronę przy tapnięciu; `html` ma `-webkit-text-size-adjust: 100%` (bez powiększania tekstu po obrocie telefonu); wysokość względem ekranu w `svh`, nie `vh` (Safari liczy `100vh` ze schowanym paskiem). Bez `maximum-scale` / `user-scalable=no` w viewport meta. Pilnuje `ios-safari.spec.ts`.
 - **Tracking custom events**: `window.umami?.track(name, data)` - używaj optional chaining, w dev `umami` nie istnieje.
-- **Copy po polsku**, w tonie istniejących sekcji. Zamiast em-dasha piszemy myślnik ` - `.
+- **Copy po polsku**, w tonie istniejących sekcji. Zamiast em-dasha piszemy myślnik ` - `. Jednoliterowe słowa (a, i, o, u, w, z) nie kończą linii: `src/middleware.ts` przepuszcza każdą stronę HTML (prerenderowane w buildzie) przez `bindOneLetterWords` z `src/lib/one-letter-words.ts`, który zamienia spację po nich na `&nbsp;` - tylko w tekście, bez atrybutów, komentarzy i zawartości `script`, `style`, `pre`, `code`, `textarea`, `svg`, `title`. W copy piszemy zwykłą spację; odpowiedzi nie-HTML (`llms-full.txt`, OG image, `/api/lead`) zostają bez zmian. Słowo na końcu węzła tekstu (przed tagiem) zostaje ze zwykłą spacją. Pilnuje `one-letter-words.spec.ts`.
 
 ## Don't
 
@@ -105,15 +105,16 @@ src/
 ├── content/{services,experience}/  # JSON
 ├── content/{case-studies,blog}/    # MDX; blog pusty
 ├── content.config.ts      # Zod schemas collections
+├── middleware.ts          # każda strona HTML przez bindOneLetterWords (jednoliterowe słowa z &nbsp;)
 ├── data/                  # site-config, navigation, process, home (copy wspólne z llms-full), experience-logos
 ├── layouts/               # base-layout, legal-layout
 ├── pages/                 # index, 404, *.md (legal), realizacje/{[slug],[...index]}, api/lead.ts (jedyna trasa na żądanie), og-default.png.ts, llms.txt.ts, llms-full.txt.ts
 ├── scripts/               # vanilla TS: blueprint-live (szerokości komórek, znacznik live), contact-form, mobile-sheet, nav-active
 ├── styles/                # tokens.css, global.css (reset, blueprint i wejście)
-├── lib/                   # seo, case-studies, lead (reguły formularza), leads-db (SQLite), send-email (Resend)
+├── lib/                   # seo, case-studies, lead (reguły formularza), leads-db (SQLite), send-email (Resend), one-letter-words (spacja po a/i/o/u/w/z)
 └── assets/                # me.jpg (OG), fonts/ (Geist TTF + OFL dla OG), experience/ logotypy, logotyp_fundusze_eu.png
 
-tests/e2e/       # Playwright specs (a11y, blueprint (wejście pierwszego ekranu, rysunek stoi, reduced motion, bez JS), case-studies, check-input, contact-form, design, e2e-ports, favicon, ios-safari (pola od 16px, text-size-adjust, 404 w svh), lead-api, lead-rate-limit (nginx w Dockerze), leads-db, mobile-sheet, nav-active, og-image, pagination-jump, send-email, home, skip-link; ui-catalogue i dev-no-reload na dev serverze, który w runie e2e nie obserwuje plików (`E2E_DEV_NO_WATCH=1`), więc commit albo `astro check` w trakcie runu nie przeładowuje stron; check-input pilnuje, że `astro check` nie czyta folderów z runu e2e; e2e-ports - że dwa runy naraz dostają różne porty; pagination-jump serwuje build e2e (`dist/client`) przez `nginx.conf` w obrazie nginx z `Dockerfile`, więc wymaga Dockera)
+tests/e2e/       # Playwright specs (a11y, blueprint (wejście pierwszego ekranu, rysunek stoi, reduced motion, bez JS), case-studies, check-input, contact-form, design, e2e-ports, favicon, ios-safari (pola od 16px, text-size-adjust, 404 w svh), lead-api, lead-rate-limit (nginx w Dockerze), leads-db, mobile-sheet, nav-active, og-image, one-letter-words, pagination-jump, send-email, home, skip-link; ui-catalogue i dev-no-reload na dev serverze, który w runie e2e nie obserwuje plików (`E2E_DEV_NO_WATCH=1`), więc commit albo `astro check` w trakcie runu nie przeładowuje stron; check-input pilnuje, że `astro check` nie czyta folderów z runu e2e; e2e-ports - że dwa runy naraz dostają różne porty; pagination-jump serwuje build e2e (`dist/client`) przez `nginx.conf` w obrazie nginx z `Dockerfile`, więc wymaga Dockera)
 tests/fixtures/  # dla buildów e2e: case studies (przykładowy i pusty) i `pagination/list.astro` - 12 stron pod `/lista/` (tylko `E2E_FIXTURES=1`)
 spec/            # vision.md + tickets (spec/features/<id>/)
 .agents/harness/ # kryteria review / audit / retro + styleguide
