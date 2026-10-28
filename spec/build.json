@@ -767,9 +767,9 @@
   {
     "id": "KA0096",
     "title": "The contact form asks for the company name, optionally",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0096-the-contact-form-asks-for-the-company-name-optionally/ticket.md",
-    "updated": "2026-10-28T17:04:23.319Z",
+    "updated": "2026-10-28T17:22:04.732Z",
     "after": [
       "KA0105"
     ]
@@ -966,9 +966,9 @@
   {
     "id": "KA0118",
     "title": "Audit the site design against Taste Skill and propose what to raise",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0118-audit-the-site-design-against-taste-skill-and-propose-what-to-raise/ticket.md",
-    "updated": "2026-10-28T17:13:46.162Z"
+    "updated": "2026-10-28T17:22:26.389Z"
   },
   {
     "id": "KA0119",
@@ -980,8 +980,75 @@
   {
     "id": "KA0120",
     "title": "The marketplace case says I adapted code from another project, not that I fixed theirs",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0120-the-marketplace-case-says-i-adapted-code-from-another-project-not-that-i-fixed-theirs/ticket.md",
-    "updated": "2026-10-28T17:16:06.892Z"
+    "updated": "2026-10-28T17:19:15.425Z"
+  },
+  {
+    "id": "KA0121",
+    "title": "The hero headline in two lines at a size that leads the first screen",
+    "status": "planned",
+    "path": "spec/features/KA0121-the-hero-headline-in-two-lines-at-a-size-that-leads-the-first-screen/ticket.md",
+    "updated": "2026-10-28T17:22:49.479Z",
+    "after": [
+      "KA0123"
+    ]
+  },
+  {
+    "id": "KA0122",
+    "title": "\"Co już działa\" shows the work, not only describes it",
+    "status": "planning",
+    "path": "spec/features/KA0122-co-juz-dzia-a-shows-the-work-not-only-describes-it/ticket.md",
+    "updated": "2026-10-28T17:22:26.366Z"
+  },
+  {
+    "id": "KA0123",
+    "title": "Content labels in the text face, in sentence case",
+    "status": "planned",
+    "path": "spec/features/KA0123-content-labels-in-the-text-face-in-sentence-case/ticket.md",
+    "updated": "2026-10-28T17:22:49.038Z",
+    "after": [
+      "KA0124"
+    ]
+  },
+  {
+    "id": "KA0124",
+    "title": "Running text in the full ink and at 16px",
+    "status": "planned",
+    "path": "spec/features/KA0124-running-text-in-the-full-ink-and-at-16px/ticket.md",
+    "updated": "2026-10-28T17:22:48.639Z",
+    "after": [
+      "KA0125"
+    ]
+  },
+  {
+    "id": "KA0125",
+    "title": "\"CRM-y\" in \"Aplikacje szyte na miarę\" breaks at its hyphen",
+    "status": "planned",
+    "path": "spec/features/KA0125-crm-y-in-aplikacje-szyte-na-miare-breaks-at-its-hyphen/ticket.md",
+    "updated": "2026-10-28T17:22:48.258Z",
+    "after": [
+      "KA0111"
+    ]
+  },
+  {
+    "id": "KA0126",
+    "title": "Twelve type sizes where the skill counts five",
+    "status": "planned",
+    "path": "spec/features/KA0126-twelve-type-sizes-where-the-skill-counts-five/ticket.md",
+    "updated": "2026-10-28T17:22:50.003Z",
+    "after": [
+      "KA0121"
+    ]
+  },
+  {
+    "id": "KA0127",
+    "title": "The phone's logos stay grey",
+    "status": "planned",
+    "path": "spec/features/KA0127-the-phone-s-logos-stay-grey/ticket.md",
+    "updated": "2026-10-28T17:22:50.402Z",
+    "after": [
+      "KA0126"
+    ]
   }
 ]

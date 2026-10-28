@@ -43,7 +43,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: hero (#top), `src/components/mb/sections/hero.astro:166-177` (h1: `clamp(40px, 5.2vw, 64px)`, `max-width: 22ch`), `:115-122` (two-column grid), `:158-164` (text column padded to the card's caption line), `:289-321` (the card's rows)
 - What: Taste Skill house rule "Headlines: two lines or fewer, at every width" and the laws "Two or three sizes do the visible work: one very large" (largest type: median 8.4vw on top sites, 5.0vw on weak ones) and "One dominant thing per screen" (`critique.md` pass 2). `inspect.mjs`: the h1 is 64px (4.4vw), four lines at 1440, `focal-point` FAIL ("the first screen has no dominant element"); the section h2s are 54px, so the hero barely outranks them (`type.md` §8). Throwaway at 1440: the h1 spans the full width above the two columns (subtitle and buttons left, the card right), `clamp(40px, 5.6vw, 84px)`; the card's rows set figure beside text so it is shorter; the subtitle 21px. Measured after: two lines, 80.6px (5.6vw), `focal-point` and the 1440 `headline-lines` FAILs gone; the hero buttons still sit on the card button's line, and the trust bar's caption moves into the first screen (`screenshots/p1-hero-1440-{before,after}.png`). At 390 the throwaway raises the h1 from 40 to 46px: still four lines (`p1-hero-390-{before,after}.png`); two lines on a phone need a headline of about 32 characters, and today's is 57.
 - Suggestion: the desktop rearrangement above, the phone at about 46px. Visitor sees: the headline as the one big thing on the first screen, set in two lines across the sheet, the figures and the buttons under it. Cost: about 50 lines of CSS in `hero.astro`, updating `blueprint.spec.ts:492-496` (headline level with the card's caption) and `home.spec.ts:516` ("the hero's text, buttons, card rows and figures sit on one grid"); the entrance moves the same elements (transform only), [INFERENCE] unchanged, to be checked in a recording. Approved decision: touches KA0075's hero layout (2026-10-26, "align everything neatly"; AGENTS.md: the headline on the card's caption line, the buttons on the card button's line - the second still holds); the copy stays. A shorter headline that fits two lines on a phone would touch KA0075's chosen H1 (2026-10-26) and is the human's call, not proposed here.
-- Status: open
+- Status: ticket KA0121
 
 ## F2. "Co już działa" shows the work, not only describes it
 
@@ -52,7 +52,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: cases (#cases), `src/components/mb/sections/cases.astro:63-106` (cell: logo head, problem / solution / effect), `:132-136` (five subgrid rows), `:165-180` (logos grey at 0.6 opacity until hover)
 - What: Taste Skill imagery floor ("at least four real pictures ... for software, its cropped interface fragments count") and `critique.md` cap "fewer than four real pictures: design cannot exceed 6.5"; `copy.md` §5 "Show the thing itself, large. A real demonstration outranks any quote." `inspect.mjs`: 1 real picture on the page (`me.webp`), `few-pictures` FAIL at 1440. The cases are the page's proof and every one of them is text in a ruled table; the logos naming the companies stay grey on a phone, which has no hover to light them. Throwaway: a 16:9 picture of the product under each logo, here the public home pages of rex.hr and leadbuster.pl captured 2026-10-28 as stand-ins (rex.hr's own app screen is visible in its hero) (`screenshots/p2-cases-{1440,390}-{before,after}.png`). The picture also breaks the three-grids-in-a-row sameness (problems, services, cases) from inside the cells.
 - Suggestion: one picture per case, chosen by the human: a cropped screen of the interface he built (ReX's recruiter view, the lead marketplace, the Helpfind CRM if it may be shown, two phone screens of the Energia Direct app), same ratio and treatment for all four, `alt` saying what it shows; logos in their colours on touch screens. Visitor sees: the products themselves before the words about them. Cost: the human supplies the screenshots and confirms each may be published (the internal CRM may not); about 25 lines in `cases.astro` (a sixth subgrid row) and `astro:assets` images; `home.spec.ts` cases checks rerun. Approved decision: adds a row to the KA0075 cases cell (2026-10-26: h3 is the logo, badge beside it); the copy stays. Related: KA0095 (own automation with a demo) and the case-study pages KA0030-KA0035.
-- Status: open
+- Status: ticket KA0122
 
 ## F3. Content labels in the text face, in sentence case
 
@@ -61,7 +61,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: `src/components/mb/sections/services.astro:147-154` (Dla kogo / Co dostajesz / Czas), `src/components/mb/sections/cases.astro:203-209` (Problem / Rozwiązanie / Efekt), `src/components/mb/label.astro:27-35` (form: Email, Wiadomość), `src/components/mb/field-set.astro:55-62` (Czego potrzebujesz), `src/components/mb/contact-link.astro:52-59`, `src/components/mb/sections/hero.astro:277-285` (W liczbach), `src/components/mb/sections/trust.astro:66-75`, `src/components/mb/footer.astro:128-135`
 - What: Taste Skill "No tiny uppercase letter-spaced labels" (the one gallery fashion the data condemns: 16% of top sites against 57% of weak ones, `tells.md` §4) and "No text under 13px" (`copy.md` §7). `inspect.mjs`: 52 micro-labels and 20 text blocks under 13px on the home page. Most are labels a visitor reads to understand content (11px Geist Mono caps, 0.12em tracking), not the drawing's own marks. Throwaway on services, cases and the form labels: Geist 13px, weight 500, `--muted`, sentence case. Measured after: 28 micro-labels, 16 blocks under 13px (`screenshots/p3-labels-{1440,390}-{before,after}.png`).
 - Suggestion: the same for every content label in the list above; keep Geist Mono for the drawing's marks (the "§ 01 / Oferta" label, cell numbers, dimension lines, the title block's header, the footer legend, the datum). Visitor sees: "Dla kogo", "Problem", "Efekt" as quiet captions above the text they belong to, easier to read on a phone; the drawing stays. Cost: about 8 rules in 8 files, `DESIGN.md` (mono labels) updated; `home.spec.ts:600-615` reads the `dt` text, which stays. Approved decision: touches KA0098's direction ("minimal brutalism: ruled cells, square corners, mono labels, Geist") and DESIGN.md; the human decides where the line between label and drawing sits.
-- Status: open
+- Status: ticket KA0123
 
 ## F4. One name for the main action, one arrow, quieter second actions
 
@@ -79,7 +79,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: `--ink-2` on running text: `src/components/mb/section-head.astro:169-174` (section leads), `src/components/mb/sections/hero.astro:218-224` (subtitle), `src/components/mb/sections/problems.astro:74-79`, `src/components/mb/card.astro:262-281`, `src/components/mb/accordion-item.astro:139-144` (FAQ answers); 15px in 15 component files (`grep -rln 'font-size: 15px'`)
 - What: Taste Skill "Running text is in the full ink at 16px or more; grey is for secondary notes" (`SKILL.md` step 6.7) and `colour.md` §3. `inspect.mjs`: body 15px (`body-size` WARN at 1440 and 768), and 55% of the page's text is `#c8c3b8` (`--ink-2`) against 37% in `--ink` (`report.json` `textColors`). The difference from ink is small on this ground, so the visible change is modest: every lead and card sentence a step brighter and 1px larger.
 - Suggestion: running text (leads, card sentences, FAQ answers, the hero subtitle) in `--ink` at 16px; `--ink-2` for notes, captions and the drawing. Visitor sees: a page that reads finished and confident, less "grey on dark". Cost: about 15 declarations; DESIGN.md's typography roles updated; no test under `tests/` names `--ink-2` or its value. Approved decision: none recorded; the palette is unchanged, only which role running text uses. KA0108 (form fields at 15px) is separate.
-- Status: open
+- Status: ticket KA0124
 
 ## F6. One live thing from the visitor's problem: what the manual work costs
 
@@ -115,7 +115,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: services, "Aplikacje szyte na miarę" (`customApps` in `src/data/home.ts`, rendered by `src/components/mb/sections/services.astro`)
 - What: Taste Skill `type.md` §8 "a break that splits a phrase ... Author the break". At 1440 the line ends "CRM-" and the next starts "y i panele" (`screenshots/p3-labels-1440-before.png`, the 02.4 cell).
 - Suggestion: a non-breaking hyphen (U+2011) in "CRM‑y", or carry it in KA0114 (one-letter Polish words), which already touches how copy breaks. Visitor sees: "CRM-y" whole. Cost: one character. Approved decision: none (same words).
-- Status: open
+- Status: ticket KA0125
 
 ## F10. Twelve type sizes where the skill counts five
 
@@ -124,7 +124,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: `inspect.mjs` sizes at 1440: 11 / 12 / 13 / 14 / 15 / 16 / 18 / 20 / 22 / 30 / 54 / 64; `font-size: 13px` ×9, `14px` ×18, `15px` ×15, `16px` ×5 in components (`grep -rn`)
 - What: Taste Skill "Five sizes on a page is the ceiling ... nine sizes that are all near each other reads as mush" (`type.md` §2), `size-count` WARN. The four text sizes 13-16 and the three lead sizes 18-22 are a pixel or two apart.
 - Suggestion: fold 13/14 into one small size and 15/16 into the body (F5), 18/20/22 into one lead; keep the mono marks at their size. Visitor sees: little on its own; it makes F1's contrast cleaner. Cost: about 40 declarations; DESIGN.md typography. Approved decision: touches the component sizes of the approved look (KA0075 / KA0098); KA0104 F16 dropped a full fluid scale for that reason, this is the narrower merge. Lowest benefit in this list.
-- Status: open
+- Status: ticket KA0126
 
 ## F11. The phone's logos stay grey
 
@@ -133,7 +133,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: `src/components/mb/sections/cases.astro:165-180`, the trust bar's logos (`src/components/mb/sections/trust.astro`)
 - What: Taste Skill `motion.md` "Hover styles go behind `(hover: hover)`"; the logos are grey (`grayscale(100%)`, 0.6 opacity in cases) until a pointer hovers their cell, so on a phone a visitor never sees ReX, LeadBuster or Energia Direct in their colours (`screenshots/p2-cases-390-before.png`). Not in KA0110, which guards hover styles from sticky taps but leaves the resting state grey.
 - Suggestion: under `(hover: none)` show the logos in colour at rest. Visitor sees on a phone: the client logos as the companies use them. Cost: 2 small rules. Approved decision: the grey-until-hover logos are part of the KA0075 trust bar and cases ("grey until the cell is hovered, like every logo on the page"); the human picks.
-- Status: open
+- Status: ticket KA0127
 
 ## F12. Blueprint devices the skill bans as house style
 

@@ -38,3 +38,4 @@ Out: other cases, layout.
 ## Decisions
 
 - 2026-10-28: The human corrected the facts of the case (see Description).
+- 2026-10-28: The human approved the proposed text as is.
