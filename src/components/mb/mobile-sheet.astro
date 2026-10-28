@@ -76,6 +76,9 @@ const closeHook = preview ? {} : { "data-menu-close": true };
 </div>
 
 <style>
+  /* The page behind is locked (mobile-sheet.ts), so the sheet scrolls its
+   * own overflow (a phone held sideways) and never hands it to the page.
+   * The close button scrolls away with it; Esc and the links still close. */
   .mb-sheet {
     position: fixed;
     inset: 0;
@@ -84,6 +87,8 @@ const closeHook = preview ? {} : { "data-menu-close": true };
     visibility: hidden;
     flex-direction: column;
     padding: 80px var(--v2-space-md) 32px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     pointer-events: none;
     background: var(--v2-bg);
     opacity: 0;
