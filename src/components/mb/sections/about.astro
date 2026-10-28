@@ -214,8 +214,14 @@ const caseStudies = await caseStudiesByExperience();
   /* A lit panel would end in mid-air at the table's open edges, so here
    * the hover keeps the cell's ground and shows only the card's grips and
    * blue item number and the logo taking its colour. */
-  .mb-about-experience :global(.mb-card:is(:hover, [data-state="hover"])) {
+  .mb-about-experience :global(.mb-card[data-state="hover"]) {
     background-color: var(--v2-bg);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-about-experience :global(.mb-card:hover) {
+      background-color: var(--v2-bg);
+    }
   }
 
   .mb-exp-head {
@@ -238,9 +244,16 @@ const caseStudies = await caseStudiesByExperience();
       opacity var(--mb-snap);
   }
 
-  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-exp-logo {
+  :global(.mb-card[data-state="hover"]) .mb-exp-logo {
     opacity: 1;
     filter: grayscale(0%);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global(.mb-card:hover) .mb-exp-logo {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
   }
 
   h3 {

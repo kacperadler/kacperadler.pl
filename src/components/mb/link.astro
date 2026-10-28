@@ -66,9 +66,16 @@ const iconAfter = variant === "case";
       outline-offset var(--mb-snap);
   }
 
-  .mb-link-inline:is(:hover, [data-state="hover"]) {
+  .mb-link-inline[data-state="hover"] {
     color: var(--blue);
     text-decoration-thickness: 3px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-link-inline:hover {
+      color: var(--blue);
+      text-decoration-thickness: 3px;
+    }
   }
 
   .mb-link-inline:is(:active, [data-state="pressed"]) {
@@ -105,12 +112,22 @@ const iconAfter = variant === "case";
       transform var(--mb-snap);
   }
 
-  .mb-link-nav:is(:hover, [data-state="hover"]) {
+  .mb-link-nav[data-state="hover"] {
     color: var(--ink);
   }
 
-  .mb-link-nav:is(:hover, .active, [data-state="hover"])::after {
+  .mb-link-nav:is(.active, [data-state="hover"])::after {
     transform: scaleX(1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-link-nav:hover {
+      color: var(--ink);
+    }
+
+    .mb-link-nav:hover::after {
+      transform: scaleX(1);
+    }
   }
 
   .mb-link-nav.active {
@@ -182,9 +199,16 @@ const iconAfter = variant === "case";
     transition: color var(--mb-snap);
   }
 
-  .mb-link-footer:is(:hover, [data-state="hover"]) {
+  .mb-link-footer[data-state="hover"] {
     color: var(--ink);
     text-decoration-color: var(--ink);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-link-footer:hover {
+      color: var(--ink);
+      text-decoration-color: var(--ink);
+    }
   }
 
   .mb-link-footer:is(:active, [data-state="pressed"]) {
@@ -192,18 +216,23 @@ const iconAfter = variant === "case";
     text-decoration-color: var(--blue);
   }
 
-  .mb-link-footer:is(
-      :hover,
-      :active,
-      [data-state="hover"],
-      [data-state="pressed"]
-    )
+  .mb-link-footer:is(:active, [data-state="hover"], [data-state="pressed"])
     :global(svg) {
     color: var(--blue);
   }
 
-  .mb-link-case:is(:hover, [data-state="hover"]) :global(svg) {
+  .mb-link-case[data-state="hover"] :global(svg) {
     transform: translateX(3px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-link-footer:hover :global(svg) {
+      color: var(--blue);
+    }
+
+    .mb-link-case:hover :global(svg) {
+      transform: translateX(3px);
+    }
   }
 
   .mb-link-case:is(:active, [data-state="pressed"]) :global(svg) {

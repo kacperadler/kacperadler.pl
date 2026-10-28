@@ -44,8 +44,14 @@ const { class: extraClass, ...rest } = Astro.props;
     opacity: 1;
   }
 
-  .mb-input:is(:hover, [data-state="hover"]) {
+  .mb-input[data-state="hover"] {
     border-color: var(--ink-2);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-input:hover {
+      border-color: var(--ink-2);
+    }
   }
 
   .mb-input:is(:focus, [data-state="focus"]) {

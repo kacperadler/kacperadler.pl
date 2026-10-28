@@ -329,8 +329,14 @@ const busy = loading ? "true" : undefined;
     color: var(--v2-bg);
   }
 
-  .mb-btn-default:is(:hover, [data-state="hover"]) {
+  .mb-btn-default[data-state="hover"] {
     --mb-btn-fill: var(--blue-2);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-btn-default:hover {
+      --mb-btn-fill: var(--blue-2);
+    }
   }
 
   .mb-btn-secondary {
@@ -345,12 +351,22 @@ const busy = loading ? "true" : undefined;
   }
 
   /* The lit cell: an ink face would melt into the ink layer. */
-  .mb-btn-outline:is(:hover, [data-state="hover"]) {
+  .mb-btn-outline[data-state="hover"] {
     --mb-btn-fill: var(--v2-panel-elevated);
   }
 
-  .mb-btn-ghost:is(:hover, [data-state="hover"]) {
+  .mb-btn-ghost[data-state="hover"] {
     --mb-btn-fill: var(--v2-panel-elevated);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-btn-outline:hover {
+      --mb-btn-fill: var(--v2-panel-elevated);
+    }
+
+    .mb-btn-ghost:hover {
+      --mb-btn-fill: var(--v2-panel-elevated);
+    }
   }
 
   .mb-btn-destructive {
@@ -359,8 +375,14 @@ const busy = loading ? "true" : undefined;
     color: var(--v2-bg);
   }
 
-  .mb-btn-destructive:is(:hover, [data-state="hover"]) {
+  .mb-btn-destructive[data-state="hover"] {
     --mb-btn-fill: color-mix(in srgb, var(--error) 80%, var(--ink));
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-btn-destructive:hover {
+      --mb-btn-fill: color-mix(in srgb, var(--error) 80%, var(--ink));
+    }
   }
 
   .mb-btn-link {
@@ -372,18 +394,33 @@ const busy = loading ? "true" : undefined;
     text-underline-offset: 4px;
   }
 
-  .mb-btn-link:is(:hover, [data-state="hover"]) {
+  .mb-btn-link[data-state="hover"] {
     color: var(--blue);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-btn-link:hover {
+      color: var(--blue);
+    }
   }
 
   /* The face lifts off the still layer on hover and goes down onto it on
    * press, covering it whole. */
   @media (prefers-reduced-motion: no-preference) {
-    .mb-btn-raised:is(:hover, [data-state="hover"]) .mb-btn-face {
+    .mb-btn-raised[data-state="hover"] .mb-btn-face {
       transform: translate(
         calc(-1 * var(--mb-btn-lift)),
         calc(-1 * var(--mb-btn-lift))
       );
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .mb-btn-raised:hover .mb-btn-face {
+        transform: translate(
+          calc(-1 * var(--mb-btn-lift)),
+          calc(-1 * var(--mb-btn-lift))
+        );
+      }
     }
 
     .mb-btn-raised:is(:active, [data-state="pressed"]) .mb-btn-face {

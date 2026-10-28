@@ -201,8 +201,10 @@ const id = (name: string) => `${idPrefix}-${name}`;
       box-shadow var(--mb-snap);
   }
 
-  .mb-contact-form:hover {
-    background: var(--v2-panel);
+  @media (hover: hover) and (pointer: fine) {
+    .mb-contact-form:hover {
+      background: var(--v2-panel);
+    }
   }
 
   .mb-contact-form[data-state="success"] {

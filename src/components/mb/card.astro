@@ -191,13 +191,24 @@ const hasHeader = has("title") || has("description") || has("action");
     );
   }
 
-  .mb-card:is(:hover, [data-state="hover"]) {
+  .mb-card[data-state="hover"] {
     background-color: var(--v2-panel-elevated);
   }
 
-  .mb-card:is(:hover, [data-state="hover"])::before {
+  .mb-card[data-state="hover"]::before {
     color: var(--v2-bg);
     background: var(--blue);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-card:hover {
+      background-color: var(--v2-panel-elevated);
+    }
+
+    .mb-card:hover::before {
+      color: var(--v2-bg);
+      background: var(--blue);
+    }
   }
 
   /* Under the cursor the item number reads the cell's outer width, a
@@ -205,16 +216,28 @@ const hasHeader = has("title") || has("description") || has("action");
    * query container would do it in CSS alone, but its layout containment
    * breaks the subgrids the home sections make of their cells); without
    * the script the number stands alone. */
-  :global(html[data-bl-live])
-  .mb-card:is(:hover, [data-state="hover"])::before {
+  :global(html[data-bl-live]) .mb-card[data-state="hover"]::before {
     content:
       counter(mb-section, decimal-leading-zero) "." counter(bl-cell) " ↔ "
       counter(bl-w) / "";
     counter-reset: bl-w var(--bl-w);
   }
 
-  .mb-card:is(:hover, [data-state="hover"])::after {
+  .mb-card[data-state="hover"]::after {
     visibility: visible;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global(html[data-bl-live]) .mb-card:hover::before {
+      content:
+        counter(mb-section, decimal-leading-zero) "." counter(bl-cell) " ↔ "
+        counter(bl-w) / "";
+      counter-reset: bl-w var(--bl-w);
+    }
+
+    .mb-card:hover::after {
+      visibility: visible;
+    }
   }
 
   a.mb-card:is(:active, [data-state="pressed"]) {

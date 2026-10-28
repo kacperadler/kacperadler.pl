@@ -88,8 +88,14 @@ const descriptionId = description && id ? `${id}-description` : undefined;
       border-color var(--mb-snap);
   }
 
-  .mb-checkbox-row:is(:hover, [data-state="hover"]) .mb-checkbox-input {
+  .mb-checkbox-row[data-state="hover"] .mb-checkbox-input {
     border-color: var(--ink);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-checkbox-row:hover .mb-checkbox-input {
+      border-color: var(--ink);
+    }
   }
 
   .mb-checkbox-input:checked {
@@ -127,11 +133,20 @@ const descriptionId = description && id ? `${id}-description` : undefined;
     opacity: 1;
   }
 
-  .mb-checkbox-row:is(:hover, [data-state="hover"])
+  .mb-checkbox-row[data-state="hover"]
     .mb-checkbox-input:not(:checked, :disabled)
     + :global(.mb-checkbox-mark) {
     color: var(--ink);
     opacity: 0.35;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-checkbox-row:hover
+      .mb-checkbox-input:not(:checked, :disabled)
+      + :global(.mb-checkbox-mark) {
+      color: var(--ink);
+      opacity: 0.35;
+    }
   }
 
   .mb-checkbox-text {

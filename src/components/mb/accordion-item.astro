@@ -104,8 +104,14 @@ const { disabled = false, open = false, title } = Astro.props;
     transition: text-decoration-color var(--mb-snap);
   }
 
-  .mb-accordion-trigger:is(:hover, [data-state="hover"]) span {
+  .mb-accordion-trigger[data-state="hover"] span {
     text-decoration-color: var(--blue);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-accordion-trigger:hover span {
+      text-decoration-color: var(--blue);
+    }
   }
 
   .mb-accordion-trigger :global(.mb-accordion-chevron) {

@@ -174,9 +174,16 @@ const cases = caseHighlights.map((highlight) => {
       opacity var(--mb-snap);
   }
 
-  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-cases-logo {
+  :global(.mb-card[data-state="hover"]) .mb-cases-logo {
     opacity: 1;
     filter: grayscale(0%);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global(.mb-card:hover) .mb-cases-logo {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
   }
 
   .mb-cases-rows {

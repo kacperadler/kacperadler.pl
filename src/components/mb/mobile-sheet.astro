@@ -173,10 +173,17 @@ const closeHook = preview ? {} : { "data-menu-close": true };
       transform var(--mb-snap);
   }
 
-  .mb-sheet-link:is(:hover, :focus-visible, [data-state="hover"])
+  .mb-sheet-link:is(:focus-visible, [data-state="hover"])
     :global(.mb-sheet-arrow) {
     color: var(--blue);
     transform: translateX(4px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-sheet-link:hover :global(.mb-sheet-arrow) {
+      color: var(--blue);
+      transform: translateX(4px);
+    }
   }
 
   .mb-sheet-link:is(:active, [data-state="pressed"]) :global(.mb-sheet-arrow) {
