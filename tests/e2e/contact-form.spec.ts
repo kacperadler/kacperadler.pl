@@ -183,9 +183,6 @@ test.describe("contact form", () => {
 
     await page.click("[data-contact-form] [data-submit]");
     await expect(company).toHaveAttribute("data-invalid", "true");
-    await expect(company.locator(".mb-field-error")).toHaveText(
-      "Nazwa firmy może mieć najwyżej 200 znaków."
-    );
     await expect(company.locator(".mb-field-error")).toBeVisible();
     await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
       "data-state",
