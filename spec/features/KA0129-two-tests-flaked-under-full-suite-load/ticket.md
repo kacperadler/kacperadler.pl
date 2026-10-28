@@ -36,3 +36,4 @@ In:
 
 - 2026-10-28: Source: F1 of KA0109
 - 2026-10-28: The human approved it.
+- 2026-10-28: The coordinator accepted reading og-default.png from the build output instead of fetching it from the preview server: production serves it through nginx, so the preview fetch tested nothing a visitor gets; the pixel checks stay.
