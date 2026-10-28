@@ -7,6 +7,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 ### Added
 
 - KA0075 The home page layout and sections present Kacper better (01f7736)
+- KA0098 The live site wears the chosen signature, blueprint-live (794139c)
 
 ## 2026-10-14
 

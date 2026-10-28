@@ -787,9 +787,9 @@
   {
     "id": "KA0098",
     "title": "The live site wears the chosen signature, blueprint-live",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0098-the-live-site-wears-the-chosen-signature-blueprint-live/ticket.md",
-    "updated": "2026-10-14T19:02:29.058Z",
+    "updated": "2026-10-28T16:12:18.713Z",
     "after": [
       "KA0075"
     ]
@@ -814,5 +814,19 @@
     "status": "planning",
     "path": "spec/features/KA0101-the-editorial-proposal-stacks-a-section-s-content-blocks-on-top-of-each-other/ticket.md",
     "updated": "2026-10-28T13:21:56.580Z"
+  },
+  {
+    "id": "KA0102",
+    "title": "The 404 page's rule is the one line the pen does not draw",
+    "status": "planning",
+    "path": "spec/features/KA0102-the-404-page-s-rule-is-the-one-line-the-pen-does-not-draw/ticket.md",
+    "updated": "2026-10-28T16:12:18.710Z"
+  },
+  {
+    "id": "KA0103",
+    "title": "The 360px entrance-after-paint test is flaky",
+    "status": "planning",
+    "path": "spec/features/KA0103-the-360px-entrance-after-paint-test-is-flaky/ticket.md",
+    "updated": "2026-10-28T16:12:28.277Z"
   }
 ]
