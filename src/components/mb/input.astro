@@ -10,6 +10,8 @@ import type { HTMLAttributes } from "astro/types";
  *             on an invalid input keeps the coral frame and adds the shadow
  *   disabled  the flat panel in a hairline, muted text
  *   file      the picker button as a raised mono cell inside the frame
+ * Text never under 16px: iOS Safari zooms the page into a focused field
+ * with smaller text (textarea.astro and the pagination jump field too).
  * Native input attributes pass through. [data-state="hover"] and
  * [data-state="focus"] force those looks on the catalogue page (/ui). */
 type Props = HTMLAttributes<"input">;
@@ -26,7 +28,7 @@ const { class: extraClass, ...rest } = Astro.props;
     height: 44px;
     padding: 0 14px;
     font-family: var(--sans);
-    font-size: 15px;
+    font-size: max(16px, 1rem);
     color: var(--ink);
     outline: none;
     background: var(--v2-bg);
