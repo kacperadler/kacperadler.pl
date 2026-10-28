@@ -20,8 +20,10 @@ import Textarea from "./textarea.astro";
  * that field. While it is sending, contact-form.ts disables every field
  * and the submit button; `state` "submitting" renders them disabled too.
  * The form and the success card stack in one cell, so the page does not
- * jump when one replaces the other. The fields go in the brief's order:
- * email, company (optional: <Field optional> says so), project types, message.
+ * jump when one replaces the other; once sent, the sheet is as high as the
+ * empty form, however long the message was. The fields go in the brief's
+ * order: email, company (optional: <Field optional> says so), project types,
+ * message.
  * The project types are <Choice> checkboxes, so a visitor can tick
  * several. Once the sheet is at least 720px wide (a container query), the
  * email and the company sit side by side, the project types in one row
@@ -188,8 +190,14 @@ const id = (name: string) => `${idPrefix}-${name}`;
 
 <style>
   /* The form and the success card share one grid cell, the one not shown
-   * kept in layout but invisible, so the sheet is always as tall as the
-   * taller of the two and nothing jumps when one replaces the other. */
+   * kept in layout but invisible, so nothing jumps when one replaces the
+   * other. Once sent, the hidden form stands as high as it does empty: its
+   * message box drops to its floor (a max-height under the min-height gives
+   * way to it, in every browser and over a dragged height), so a long message
+   * leaves no tall, empty card. The sheet gets shorter only at its bottom
+   * edge, so what stands above it keeps its place; only when the page is
+   * scrolled so near its end that it gets shorter than the scroll, the browser
+   * pulls it down by the difference (the footer stays put). */
   .mb-contact-form {
     display: grid;
     width: 100%;
@@ -227,6 +235,10 @@ const id = (name: string) => `${idPrefix}-${name}`;
 
   .mb-contact-form[data-state="success"] .mb-form {
     visibility: hidden;
+  }
+
+  .mb-contact-form[data-state="success"] .mb-form :global(textarea) {
+    max-height: 0;
   }
 
   .mb-hp {
