@@ -767,9 +767,9 @@
   {
     "id": "KA0096",
     "title": "The contact form asks for the company name, optionally",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0096-the-contact-form-asks-for-the-company-name-optionally/ticket.md",
-    "updated": "2026-10-28T16:54:28.628Z",
+    "updated": "2026-10-28T17:04:23.319Z",
     "after": [
       "KA0105"
     ]
@@ -839,9 +839,9 @@
   {
     "id": "KA0105",
     "title": "In-page links park the section head under the sticky header",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0105-in-page-links-park-the-section-head-under-the-sticky-header/ticket.md",
-    "updated": "2026-10-28T16:50:21.665Z"
+    "updated": "2026-10-28T17:14:53.175Z"
   },
   {
     "id": "KA0106",
@@ -966,9 +966,9 @@
   {
     "id": "KA0118",
     "title": "Audit the site design against Taste Skill and propose what to raise",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0118-audit-the-site-design-against-taste-skill-and-propose-what-to-raise/ticket.md",
-    "updated": "2026-10-28T16:52:56.716Z"
+    "updated": "2026-10-28T17:13:46.162Z"
   },
   {
     "id": "KA0119",
@@ -976,5 +976,12 @@
     "status": "dropped",
     "path": "spec/features/KA0119-the-hero-entrance-timing-test-is-flaky-under-load/ticket.md",
     "updated": "2026-10-28T16:59:12.378Z"
+  },
+  {
+    "id": "KA0120",
+    "title": "The marketplace case says I adapted code from another project, not that I fixed theirs",
+    "status": "planning",
+    "path": "spec/features/KA0120-the-marketplace-case-says-i-adapted-code-from-another-project-not-that-i-fixed-theirs/ticket.md",
+    "updated": "2026-10-28T17:16:06.892Z"
   }
 ]
