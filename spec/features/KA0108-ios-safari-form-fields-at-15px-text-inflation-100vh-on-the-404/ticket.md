@@ -34,6 +34,7 @@ Evidence:
 
 In:
 - raise the two field sizes to `max(16px, 1rem)` (the visible change: field text 1px larger), add `-webkit-text-size-adjust: 100%` to the root, write `100svh` in `404.astro`. Cost: about 4 lines and a check on an iPhone; would rank second if the zoom is confirmed there. Out: `maximum-scale` / `user-scalable=no` in the viewport meta (good-css forbids it).
+- raise the pagination page-jump input (`src/components/mb/pagination.astro`, `.mb-page-jump-input`) to `max(16px, 1rem)` as well.
 
 ## Decisions
 

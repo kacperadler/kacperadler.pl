@@ -10,11 +10,13 @@
  * (--mb-header), not behind it, 8px lower so a section head's extension
  * ticks (6px above its dimension line) clear the header's rule.
  * text-wrap: pretty keeps a lone word off a paragraph's last line;
- * headlines set balance over it. */
+ * headlines set balance over it. text-size-adjust stops iOS Safari from
+ * inflating text after a turn to landscape. */
 html {
   scroll-behavior: smooth;
   scroll-padding-block-start: calc(var(--mb-header) + 8px);
   text-wrap: pretty;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
