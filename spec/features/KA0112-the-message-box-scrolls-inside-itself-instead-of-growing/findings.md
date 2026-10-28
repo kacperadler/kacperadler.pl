@@ -7,7 +7,7 @@
 - Where: `src/components/mb/sections/contact` form and success card sharing one grid cell
 - What: a grown message box makes the sheet taller, and the success card fills that height with its small content centred in empty space.
 - Suggestion: on success the sheet returns to the empty form's height (or the card keeps its natural height), without a layout jump that moves the page.
-- Status: open
+- Status: ticket KA0128
 
 ## F2. The fallback for browsers without field-sizing has no automated test
 

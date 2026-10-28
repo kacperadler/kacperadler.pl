@@ -906,9 +906,9 @@
   {
     "id": "KA0112",
     "title": "The message box scrolls inside itself instead of growing",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0112-the-message-box-scrolls-inside-itself-instead-of-growing/ticket.md",
-    "updated": "2026-10-28T19:46:01.081Z",
+    "updated": "2026-10-28T19:49:40.304Z",
     "after": [
       "KA0110"
     ]
@@ -1050,5 +1050,12 @@
     "after": [
       "KA0126"
     ]
+  },
+  {
+    "id": "KA0128",
+    "title": "After a long message the success card is a tall, mostly empty box",
+    "status": "planning",
+    "path": "spec/features/KA0128-after-a-long-message-the-success-card-is-a-tall-mostly-empty-box/ticket.md",
+    "updated": "2026-10-28T19:49:40.301Z"
   }
 ]
