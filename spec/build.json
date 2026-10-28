@@ -956,9 +956,9 @@
   {
     "id": "KA0117",
     "title": "Derived colours are hard-coded instead of mixed from the palette",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0117-derived-colours-are-hard-coded-instead-of-mixed-from-the-palette/ticket.md",
-    "updated": "2026-10-28T16:52:26.985Z",
+    "updated": "2026-10-28T23:36:49.206Z",
     "after": [
       "KA0116"
     ]
