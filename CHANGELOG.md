@@ -2,6 +2,12 @@
 
 Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at the next merge.
 
+## 2026-10-28
+
+### Added
+
+- KA0075 The home page layout and sections present Kacper better (01f7736)
+
 ## 2026-10-14
 
 ### Added

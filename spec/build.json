@@ -598,9 +598,9 @@
   {
     "id": "KA0075",
     "title": "The home page layout and sections present Kacper better",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0075-the-home-page-layout-and-sections-present-kacper-better/ticket.md",
-    "updated": "2026-10-27T19:10:22.252Z",
+    "updated": "2026-10-28T13:21:56.585Z",
     "after": [
       "KA0072",
       "KA0071"
@@ -800,5 +800,19 @@
     "status": "planning",
     "path": "spec/features/KA0099-dev-no-reload-fails-once-on-a-navigation-right-after-its-first-page-load/ticket.md",
     "updated": "2026-10-14T19:35:10.153Z"
+  },
+  {
+    "id": "KA0100",
+    "title": "The `sm` card has the default card's padding",
+    "status": "planning",
+    "path": "spec/features/KA0100-the-sm-card-has-the-default-card-s-padding/ticket.md",
+    "updated": "2026-10-28T13:21:56.568Z"
+  },
+  {
+    "id": "KA0101",
+    "title": "The editorial proposal stacks a section's content blocks on top of each other",
+    "status": "planning",
+    "path": "spec/features/KA0101-the-editorial-proposal-stacks-a-section-s-content-blocks-on-top-of-each-other/ticket.md",
+    "updated": "2026-10-28T13:21:56.580Z"
   }
 ]
