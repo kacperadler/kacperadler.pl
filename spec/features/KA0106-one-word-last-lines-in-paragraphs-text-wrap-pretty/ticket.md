@@ -39,3 +39,4 @@ In:
 
 - 2026-10-28: Source: F2 of KA0104
 - 2026-10-28: Carried by KA0105, approved together with it.
+- 2026-10-28: The human dropped it: carried and merged by KA0105.
