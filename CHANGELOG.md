@@ -15,6 +15,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 ### Fixed
 
 - KA0103 The 360px entrance-after-paint test is flaky (545af2d)
+- KA0105 In-page links park the section head under the sticky header (2a54f5c)
 
 ## 2026-10-14
 
