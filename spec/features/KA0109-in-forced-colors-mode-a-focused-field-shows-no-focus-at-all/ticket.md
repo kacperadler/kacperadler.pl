@@ -39,3 +39,4 @@ In:
 
 - 2026-10-28: Source: F5 of KA0104
 - 2026-10-28: The human approved it; runs one at a time after KA0112 (shared CSS files).
+- 2026-10-28: The coordinator accepted the worker's variant: drop `outline: none` from the base rules and put `outline: 2px solid transparent` in each focus rule, because the literal swap framed every resting field in forced colors and the focused one least (screenshot rejected-base-rule.png).
