@@ -1,4 +1,5 @@
-import { type APIRequestContext, expect, test } from "@playwright/test";
+import { readFileSync } from "node:fs";
+import { expect, test } from "@playwright/test";
 import sharp from "sharp";
 
 // The share image is drawn in the site's minimal brutalism (KA0073): a solid
@@ -13,13 +14,18 @@ const INSET = 45;
 const SHEET = { bottom: 584, left: INSET, right: 1154, top: INSET };
 const MARK = { bottom: 120, left: 625, right: 660, top: 85 };
 
-// The decoded image and a reader of one pixel's RGB.
-const loadImage = async (request: APIRequestContext) => {
-  const response = await request.get("/og-default.png");
-  expect(response.ok()).toBe(true);
-  expect(response.headers()["content-type"]).toBe("image/png");
+// The image the run's build wrote (playwright.config.ts builds before the
+// tests), read from the folder nginx serves, where siteConfig.ogImage
+// (/og-default.png) finds it. Read from disk, not fetched from the preview:
+// the test checks the drawing, and a request to a preview busy with the
+// rest of the suite only gave it a way to fail that has nothing to do with
+// the image (it failed once on the fetch under full-suite load, KA0129).
+const loadImage = async () => {
+  const png = readFileSync(
+    new URL("../../dist/client/og-default.png", import.meta.url)
+  );
 
-  const { data, info } = await sharp(await response.body())
+  const { data, info } = await sharp(png)
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
@@ -32,10 +38,8 @@ const loadImage = async (request: APIRequestContext) => {
   return { info, pixel };
 };
 
-test("the OG image is a ruled sheet on a solid substrate", async ({
-  request,
-}) => {
-  const { info, pixel } = await loadImage(request);
+test("the OG image is a ruled sheet on a solid substrate", async () => {
+  const { info, pixel } = await loadImage();
 
   // Solid substrate: no dot grid, no gradient in the margin around the sheet.
   const stray: string[] = [];
@@ -72,8 +76,8 @@ test("the OG image is a ruled sheet on a solid substrate", async ({
 // The headline is the site's Geist (ExtraBold, from src/assets/fonts), not a
 // fallback: set in Geist, "Kacper" (baseline 240, cap top 172) ends at x 941;
 // the DejaVu Sans Bold that fontconfig falls back to runs on to 979.
-test("the OG headline is set in Geist", async ({ request }) => {
-  const { pixel } = await loadImage(request);
+test("the OG headline is set in Geist", async () => {
+  const { pixel } = await loadImage();
 
   let right = 0;
   for (let y = 172; y <= 240; y += 1) {
