@@ -116,7 +116,10 @@ const Heading = as;
   .mb-section-title {
     margin: 0;
     font-family: var(--mb-display);
-    font-size: clamp(32px, 4.6vw, 54px);
+    /* 32px on a 390px phone to 54px at the 1160px container; rem follows
+     * the reader's font size. 13vw caps it on a narrow screen with a large
+     * font, so the longest <em> with its callout (about 6.2em) still fits. */
+    font-size: min(clamp(2rem, 1.3036rem + 2.8571vw, 3.375rem), 13vw);
     font-weight: 800;
     line-height: 1.02;
     color: var(--ink);

@@ -54,9 +54,11 @@
 
   /* Page rhythm: --mb-section-gap between two sections, --mb-block-gap
    * between the blocks inside one (the head and the table, the table and
-   * its button). Both tighten at 880px and below. */
-  --mb-section-gap: 136px;
-  --mb-block-gap: 48px;
+   * its button). Fluid between a 390px phone (88px / 32px) and the 1160px
+   * container (136px / 48px), held at those ends; rem bounds and the rem
+   * share of the slope follow the reader's font size. */
+  --mb-section-gap: clamp(5.5rem, 3.9805rem + 6.2338vw, 8.5rem);
+  --mb-block-gap: clamp(2rem, 1.4935rem + 2.0779vw, 3rem);
 
   /* The sticky header's height (header.astro, its min-height), read again
    * as the page's scroll padding (global.css) so an in-page link parks its
@@ -100,8 +102,6 @@
 
 @media (max-width: 880px) {
   :root {
-    --mb-section-gap: 88px;
-    --mb-block-gap: 32px;
     --mb-header: 65px;
   }
 }

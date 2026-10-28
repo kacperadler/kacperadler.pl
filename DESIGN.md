@@ -22,7 +22,7 @@ typography:
     letterSpacing: -0.055em
   display-lg:
     fontFamily: Geist
-    fontSize: 54px
+    fontSize: "min(clamp(2rem, 1.3036rem + 2.8571vw, 3.375rem), 13vw)"
     fontWeight: 800
     lineHeight: 1.02
     letterSpacing: -0.045em
@@ -61,8 +61,8 @@ spacing:
   lg: 32px
   xl: 64px
   2xl: 96px
-  section-gap: 136px
-  block-gap: 48px
+  section-gap: "clamp(5.5rem, 3.9805rem + 6.2338vw, 8.5rem)"
+  block-gap: "clamp(2rem, 1.4935rem + 2.0779vw, 3rem)"
 components:
   cell:
     backgroundColor: "{colors.base}"
@@ -143,12 +143,14 @@ Two faces, both self-hosted variable woff2:
 
 `text-wrap: balance` on headlines; every other text takes `text-wrap: pretty` from `html`, so a paragraph does not end on a lone word (Chrome and Safari; Firefox wraps as before). `<em>` in a headline stays `ink`, on one line, under a `blue` dimension brace (a 0.14em-high bracket, open at the top, `max(2px, 0.05em)` thick) with a callout letter (A, B, counted per headline) on a `blue` box at its right end.
 
+Fluid sizes, one `clamp()` each, bounds in `rem` and a `rem + vw` slope worked out from a 390px phone and the 1160px container, held at both ends, so they follow the reader's font size as well as the width: the hero headline 40px → 64px, a section headline (`display-lg`) 32px → 54px, `--mb-section-gap` and `--mb-block-gap` (Layout). A headline is also capped at a share of the viewport (12vw in the hero, 13vw in a section) so a large font on a narrow screen never pushes its longest unbreakable word (`automatyzacje,` about 7em, `działającego` with its callout about 6.2em) past the edge. Every other size is in px (KA0104 F16).
+
 The drawing's annotations (`--mb-note`: 500 10px/1 Geist Mono, uppercase or figures, 0.08em tracking) are the dimension on a section's line (`blue`), a cell's item number (`ink-2` on `base`, `base` on `blue` when selected), the callout letters, the datum (`X 0  Y 0`), the title block's header and the footer's legend.
 
 ## Layout
 
 - **Container:** max-width `1160px` (`--container`), 16px side padding. `page-frame.astro` draws a fixed ruler down each edge of the container width (a `muted` hairline at 0.45 opacity with a tick every 16px, longer at 32 and 64, mirrored on the right); below 1160px they are gone.
-- **Sections:** each opens with `section-head.astro` - an `ink` rule as a dimension line (11px extension ticks at both ends, the section's own width in px in `blue` on its middle, from the head's container size through typed trigonometry; a browser without it prints nothing), the numbered mono label (`§ 01 / Problem`, a CSS counter the frame resets; the trust bar has no head, so it takes no number, and its cells read `00.1`, `00.2`), then the headline left and the lede right, bottom-aligned; one column at 880px and below. Sections are `--mb-section-gap` apart (136px, 88px at 880px and below); inside a section, the head, the table and the button under it are `--mb-block-gap` apart (48px, 32px on mobile). The hero opens 96px under the header.
+- **Sections:** each opens with `section-head.astro` - an `ink` rule as a dimension line (11px extension ticks at both ends, the section's own width in px in `blue` on its middle, from the head's container size through typed trigonometry; a browser without it prints nothing), the numbered mono label (`§ 01 / Problem`, a CSS counter the frame resets; the trust bar has no head, so it takes no number, and its cells read `00.1`, `00.2`), then the headline left and the lede right, bottom-aligned; one column at 880px and below. Sections are `--mb-section-gap` apart (88px on a 390px phone growing to 136px at 1160px); inside a section, the head, the table and the button under it are `--mb-block-gap` apart (32px growing to 48px over the same widths). The hero opens 96px under the header.
 - **Cells:** `cell-grid.astro` collapses cells into one ruled table - no gap, every cell pulled 1px over its neighbour so two cells share one rule. Fixed columns (case highlights: 2; problems and the offer: 3, problems 2 between 560px and 880px, its cells on a shared subgrid; one column at 880px; with 2 an odd last cell spans the row) or as many as fit a minimum width (the experience list: 300px, case studies: 320px). The trust bar sets its own: five logos a row, two at 880px with the lone last one spanning.
 - **No radius:** every corner is square. A new component sets `border-radius: 0` on native controls that carry a UA radius.
 
