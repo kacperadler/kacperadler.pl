@@ -876,9 +876,9 @@
   {
     "id": "KA0109",
     "title": "In forced-colors mode a focused field shows no focus at all",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0109-in-forced-colors-mode-a-focused-field-shows-no-focus-at-all/ticket.md",
-    "updated": "2026-10-28T20:03:12.822Z",
+    "updated": "2026-10-28T20:09:42.895Z",
     "after": [
       "KA0112"
     ]
