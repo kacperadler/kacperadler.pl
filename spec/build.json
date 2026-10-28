@@ -767,9 +767,9 @@
   {
     "id": "KA0096",
     "title": "The contact form asks for the company name, optionally",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0096-the-contact-form-asks-for-the-company-name-optionally/ticket.md",
-    "updated": "2026-10-28T17:26:50.121Z",
+    "updated": "2026-10-28T17:30:36.623Z",
     "after": [
       "KA0105"
     ]
@@ -866,9 +866,9 @@
   {
     "id": "KA0108",
     "title": "iOS Safari: form fields at 15px, text inflation, 100vh on the 404",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0108-ios-safari-form-fields-at-15px-text-inflation-100vh-on-the-404/ticket.md",
-    "updated": "2026-10-28T16:52:20.984Z",
+    "updated": "2026-10-28T17:29:10.524Z",
     "after": [
       "KA0105"
     ]
@@ -980,9 +980,9 @@
   {
     "id": "KA0120",
     "title": "The marketplace case says I adapted code from another project, not that I fixed theirs",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0120-the-marketplace-case-says-i-adapted-code-from-another-project-not-that-i-fixed-theirs/ticket.md",
-    "updated": "2026-10-28T17:23:12.404Z"
+    "updated": "2026-10-28T17:32:41.222Z"
   },
   {
     "id": "KA0121",
