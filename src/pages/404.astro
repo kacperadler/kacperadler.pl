@@ -1,22 +1,22 @@
 ---
 import Button from "@/components/mb/button.astro";
+import SectionHead from "@/components/mb/section-head.astro";
 import BaseLayout from "@/layouts/base-layout.astro";
 ---
 
 <BaseLayout noindex title="Strona nie znaleziona">
   <main class="mb-not-found" id="top">
     <div class="container">
-      <div class="mb-not-found-inner">
-        <div class="mb-not-found-code">404</div>
-        <h1>Tej strony nie ma.</h1>
-        <p>
+      <SectionHead as="h1" label="404">
+        Tej strony nie ma.
+        <Fragment slot="lede">
           Może adres się zmienił, może literówka, może w ogóle jej nie było. Tak
           czy siak - strona główna ma to, czego szukasz.
-        </p>
-        <div class="mb-not-found-ctas">
-          <Button href="/" iconEnd="lucide:arrow-right">Strona główna</Button>
-          <Button href="/#contact" variant="outline">Napisz do mnie</Button>
-        </div>
+        </Fragment>
+      </SectionHead>
+      <div class="mb-not-found-ctas">
+        <Button href="/" iconEnd="lucide:arrow-right">Strona główna</Button>
+        <Button href="/#contact" variant="outline">Napisz do mnie</Button>
       </div>
     </div>
   </main>
@@ -32,38 +32,6 @@ import BaseLayout from "@/layouts/base-layout.astro";
 
   .mb-not-found .container {
     width: 100%;
-  }
-
-  .mb-not-found-inner {
-    max-width: 56ch;
-    padding-top: var(--v2-space-md);
-    border-top: 1px solid var(--mb-rule);
-  }
-
-  .mb-not-found-code {
-    margin-bottom: var(--v2-space-lg);
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--blue);
-    letter-spacing: 0.14em;
-  }
-
-  h1 {
-    margin: 0 0 16px;
-    font-family: var(--mb-display);
-    font-size: clamp(36px, 5vw, 56px);
-    font-weight: 800;
-    line-height: 1.02;
-    letter-spacing: -0.045em;
-    text-wrap: balance;
-  }
-
-  p {
-    margin: 0 0 32px;
-    font-size: 17px;
-    line-height: 1.6;
-    color: var(--ink-2);
   }
 
   .mb-not-found-ctas {

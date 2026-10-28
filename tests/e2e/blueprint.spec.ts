@@ -545,16 +545,50 @@ test.describe("the first screen's entrance", () => {
         (await motions(page)).filter((m) => m.name !== "bl-enter-down")
       ).toEqual([]);
       const head = page.locator("#top .mb-section-head").first();
-      if ((await head.count()) > 0) {
-        await expect(head).not.toHaveCSS("border-top-color", NO_COLOR);
-        await expect(head).toHaveCSS("background-size", "100% 1px");
-      }
+      await expect(head).not.toHaveCSS("border-top-color", NO_COLOR);
+      await expect(head).toHaveCSS("background-size", "100% 1px");
       await expect(page.locator(".mb-footer")).not.toHaveCSS(
         "border-top-color",
         NO_COLOR
       );
     });
   }
+
+  // The 404 opens as every other page does: its h1 in a section head with
+  // `404` for a label, under the rule drawn as a dimension line - ticks at
+  // both ends and the head's own width in px on its middle (KA0102).
+  test("the 404 opens with a section head, its rule a dimension line", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/this-route-does-not-exist", { waitUntil: "load" });
+    const head = page.locator("#top .mb-section-head");
+    await expect(head).toHaveCount(1);
+    await expect(head.locator("h1")).toHaveText("Tej strony nie ma.");
+    await expect(head.locator(".mb-section-label")).toHaveText("404");
+    const rule = await head.evaluate((el) => {
+      const ticks = getComputedStyle(el, "::before");
+      const dimension = getComputedStyle(el, "::after");
+      return {
+        background: getComputedStyle(el).backgroundSize,
+        dimension: Number(dimension.getPropertyValue("--bl-w")),
+        dimensionClip: dimension.clipPath,
+        dimensionContent: dimension.content,
+        ticks: [ticks.borderLeftWidth, ticks.borderRightWidth],
+        ticksClip: ticks.clipPath,
+        ticksHeight: ticks.height,
+        width: Math.round(el.getBoundingClientRect().width),
+      };
+    });
+    expect(rule.background).toBe("100% 1px");
+    expect(rule.ticks).toEqual(["1px", "1px"]);
+    expect(rule.ticksHeight).toBe("11px");
+    expect(rule.ticksClip).toMatch(UNCLIPPED);
+    expect(rule.dimensionContent).toContain("counter(bl-w)");
+    expect(rule.dimensionClip).toMatch(UNCLIPPED);
+    expect(rule.width).toBeGreaterThan(0);
+    expect(rule.dimension).toBe(rule.width);
+  });
 
   test("a page reached through the ClientRouter shows at once, no entrance", async ({
     page,
