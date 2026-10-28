@@ -906,9 +906,9 @@
   {
     "id": "KA0112",
     "title": "The message box scrolls inside itself instead of growing",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0112-the-message-box-scrolls-inside-itself-instead-of-growing/ticket.md",
-    "updated": "2026-10-28T16:52:23.526Z",
+    "updated": "2026-10-28T19:46:01.081Z",
     "after": [
       "KA0110"
     ]
