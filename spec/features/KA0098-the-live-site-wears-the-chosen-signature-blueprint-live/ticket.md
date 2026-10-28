@@ -51,3 +51,4 @@ Out:
 - 2026-10-14: The human: the worker runs on Fable 5.1; it may adjust layout, components and propose or make copy changes, with the full direction (style, aim, positioning) in hand.
 - 2026-10-28: The human lifted the worker's budget limit (resume with no limit) after two runs spent $10 with no commits.
 - 2026-10-28: The human finds too many lines drawing while scrolling and asked to see option 2: only the hero draws, on page load; every other part of every page stands drawn from the start (no drawing on scroll). Built as one revertable commit to judge on the preview.
+- 2026-10-28: The human: the first screen gets one unified entrance animation on load: the hero's drawing plus the nav menu sliding down from the top, the headline text, the figures/graphics and the buttons appearing in sequence; everything below the first screen stands still (no scroll animation). Reduced motion and no-JS show it all at once.
