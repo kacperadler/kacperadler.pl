@@ -14,6 +14,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0108 iOS Safari: form fields at 15px, text inflation, 100vh on the 404 (a1ead45)
 - KA0110 Hover styles answer taps on touch screens (64523ac)
 - KA0112 The message box scrolls inside itself instead of growing (b7ac93a)
+- KA0113 Section rhythm jumps at 880px; headline sizes ignore the reader's font size (40a35d6)
 - KA0114 One-letter Polish words end lines (e1c3a33)
 - KA0118 Audit the site design against Taste Skill and propose what to raise (35c837d)
 - KA0128 After a long message the success card is a tall, mostly empty box (d32edd4)
