@@ -167,7 +167,10 @@ const results = [
     max-width: 22ch;
     margin: 0 0 var(--v2-space-lg);
     font-family: var(--mb-display);
-    font-size: clamp(40px, 5.2vw, 64px);
+    /* 40px on a 390px phone to 64px at the 1160px container; rem follows
+     * the reader's font size. 12vw caps it on a narrow screen with a large
+     * font, so "automatyzacje," (about 7em, unbreakable) still fits. */
+    font-size: min(clamp(2.5rem, 1.7403rem + 3.1169vw, 4rem), 12vw);
     font-weight: 800;
     line-height: 1;
     color: var(--ink);
