@@ -84,7 +84,6 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 ## F6. One live thing from the visitor's problem: what the manual work costs
 
 - Kind: improvement
-- Budget: 15
 - Found by: 2026-10-28-ka0118-taste-audit-bf2d703a (worker), 2026-10-28
 - Where: problems (#problems) or contact (#contact), `src/components/mb/sections/problems.astro:43-49` (the closing sentence and button)
 - What: Taste Skill step 4 "One live thing ... made from the idea ... set the loan and read the real monthly figure", `critique.md` cap "No live thing: creativity cannot exceed 7.5" ("in blind tests every winning page had one and the jurors named it first"). The page's one live element is the cell width readout under the cursor: it belongs to the drawing, not to the visitor's business.
