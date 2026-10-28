@@ -980,9 +980,9 @@
   {
     "id": "KA0120",
     "title": "The marketplace case says I adapted code from another project, not that I fixed theirs",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0120-the-marketplace-case-says-i-adapted-code-from-another-project-not-that-i-fixed-theirs/ticket.md",
-    "updated": "2026-10-28T17:32:41.222Z"
+    "updated": "2026-10-28T17:36:34.458Z"
   },
   {
     "id": "KA0121",
