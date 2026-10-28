@@ -6,7 +6,7 @@
   "title": "The contact form asks for the company name, optionally",
   "date": "2026-10-14",
   "after": [
-    "KA0075"
+    "KA0105"
   ]
 }
 ```
@@ -37,3 +37,4 @@ Out:
 ## Decisions
 
 - 2026-10-14: From the redesign brief (KA0075 `brief.md` 4.11); the human: the field may be there but is not required.
+- 2026-10-28: The human approved it.

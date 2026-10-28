@@ -767,11 +767,11 @@
   {
     "id": "KA0096",
     "title": "The contact form asks for the company name, optionally",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0096-the-contact-form-asks-for-the-company-name-optionally/ticket.md",
-    "updated": "2026-10-14T18:59:32.033Z",
+    "updated": "2026-10-28T16:54:28.628Z",
     "after": [
-      "KA0075"
+      "KA0105"
     ]
   },
   {
@@ -896,9 +896,12 @@
   {
     "id": "KA0111",
     "title": "Header menu button, header CTA and footer links are small tap targets",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0111-header-menu-button-header-cta-and-footer-links-are-small-tap-targets/ticket.md",
-    "updated": "2026-10-28T16:49:30.992Z"
+    "updated": "2026-10-28T16:54:28.218Z",
+    "after": [
+      "KA0115"
+    ]
   },
   {
     "id": "KA0112",
@@ -963,8 +966,8 @@
   {
     "id": "KA0118",
     "title": "Audit the site design against Taste Skill and propose what to raise",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0118-audit-the-site-design-against-taste-skill-and-propose-what-to-raise/ticket.md",
-    "updated": "2026-10-28T16:52:41.217Z"
+    "updated": "2026-10-28T16:52:56.716Z"
   }
 ]

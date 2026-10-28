@@ -4,7 +4,10 @@
 {
   "id": "KA0111",
   "title": "Header menu button, header CTA and footer links are small tap targets",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0115"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F7 of KA0104
+- 2026-10-28: The human approved it.
