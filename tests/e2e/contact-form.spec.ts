@@ -309,7 +309,7 @@ test.describe("contact form", () => {
     ]);
   });
 
-  test("the message box grows with the text from 5 to 14 lines, the sheet with it, and the success card fills the taller sheet", async ({
+  test("the message box grows with the text from 5 to 14 lines, the sheet with it, and once sent the sheet is back to the empty form's height without moving the page", async ({
     page,
   }) => {
     await page.route(LEAD_API, (route) =>
@@ -357,14 +357,39 @@ test.describe("contact form", () => {
     expect(thirty.height).toBeCloseTo(14 * empty.lineHeight, 0);
     expect(thirty.scrollHeight).toBeGreaterThan(thirty.clientHeight);
 
-    // Sent with the tall box: the sheet keeps its height and the success
-    // card fills the whole cell the form leaves.
+    // Sent with the tall box: the success card does not fill a tall, empty
+    // sheet. The sheet is back to the empty form's height, and it gets
+    // shorter only at its bottom: its top stays where the visitor saw it and
+    // the page does not scroll.
     await page.fill('[data-contact-form] input[name="email"]', "a@example.com");
     await pickType(page, "audit");
-    const sheetBefore = await sheetHeight();
-    await page.click("[data-contact-form] [data-submit]");
+    const submit = page.locator("[data-contact-form] [data-submit]");
+    await submit.scrollIntoViewIfNeeded();
+    const where = () =>
+      page.evaluate(() => ({
+        scrollY: window.scrollY,
+        top: document
+          .querySelector("[data-contact-wrap]")
+          ?.getBoundingClientRect().top,
+      }));
+    // goto("/#contact") may still be smooth-scrolling: wait for it to settle.
+    let before = await where();
+    await expect
+      .poll(async () => {
+        const now = await where();
+        const settled = now.scrollY === before.scrollY;
+        before = now;
+        return settled;
+      })
+      .toBe(true);
+    expect(await sheetHeight()).toBeGreaterThan(
+      sheetEmpty + 8 * empty.lineHeight
+    );
+    await submit.click();
     await expect(sheet).toHaveAttribute("data-state", "success");
-    expect(await sheetHeight()).toBe(sheetBefore);
+    expect(await sheetHeight()).toBeCloseTo(sheetEmpty, 0);
+    expect(await where()).toEqual(before);
+    // The card still fills the sheet: the hidden form is as high as the card.
     const formHeight = await page
       .locator("[data-contact-form]")
       .evaluate((el) => el.getBoundingClientRect().height);
