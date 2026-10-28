@@ -27,7 +27,6 @@ const { class: extraClass, value, ...rest } = Astro.props;
     line-height: 1.55;
     color: var(--ink);
     resize: vertical;
-    outline: none;
     background: var(--v2-bg);
     border: 1px solid var(--muted);
     border-radius: 0;
@@ -60,7 +59,9 @@ const { class: extraClass, value, ...rest } = Astro.props;
     }
   }
 
+  /* Forced colors paint the transparent outline in place of the shadow. */
   .mb-textarea:is(:focus, [data-state="focus"]) {
+    outline: 2px solid transparent;
     border-color: var(--ink);
     box-shadow: var(--mb-shift) var(--mb-shift) 0 var(--blue);
   }

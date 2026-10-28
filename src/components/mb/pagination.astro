@@ -273,7 +273,6 @@ const [previousEnd, nextEnd] = ends;
     font-size: max(16px, 1rem);
     font-weight: 600;
     color: var(--ink);
-    outline: none;
     background: var(--v2-bg);
     border: 1px solid var(--muted);
     border-radius: 0;
@@ -288,7 +287,9 @@ const [previousEnd, nextEnd] = ends;
     }
   }
 
+  /* Forced colors paint the transparent outline in place of the shadow. */
   .mb-page-jump-input:focus {
+    outline: 2px solid transparent;
     border-color: var(--ink);
     box-shadow: 3px 3px 0 var(--blue);
   }

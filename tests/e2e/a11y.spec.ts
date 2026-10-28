@@ -137,3 +137,61 @@ test.describe("axe-core a11y", () => {
     expect((await axe()).violations).toEqual([]);
   });
 });
+
+// The text fields: the contact form's and the pagination "go to page" field
+// (/lista/, the e2e fixture).
+const FIELDS = [
+  { path: "/", selector: '[data-contact-form] input[name="email"]' },
+  { path: "/", selector: '[data-contact-form] input[name="company"]' },
+  { path: "/", selector: '[data-contact-form] textarea[name="message"]' },
+  { path: "/lista/", selector: ".mb-page-jump-input" },
+];
+
+const outline = (page: Page, selector: string) =>
+  page.locator(selector).evaluate((el) => {
+    const style = getComputedStyle(el);
+    return {
+      color: style.outlineColor,
+      style: style.outlineStyle,
+      width: Number.parseFloat(style.outlineWidth),
+    };
+  });
+
+// Windows high contrast (forced colors) drops box-shadow, so the blue hard
+// shadow of a focused field is gone there. The field's focus rule keeps a
+// transparent outline, which forced colors paint in a system color: the one
+// ring that marks the field the visitor types in.
+test.describe("forced colors", () => {
+  test.use({ forcedColors: "active" });
+
+  for (const { path, selector } of FIELDS) {
+    test(`${selector} on ${path} shows a ring only while focused`, async ({
+      page,
+    }) => {
+      await page.goto(path);
+      expect((await outline(page, selector)).style).toBe("none");
+
+      await page.locator(selector).focus();
+      const focused = await outline(page, selector);
+      expect(focused.style).toBe("solid");
+      expect(focused.width).toBeGreaterThanOrEqual(2);
+      expect(focused.color).not.toBe("rgba(0, 0, 0, 0)");
+    });
+  }
+});
+
+// In normal colors the same outline stays transparent: a focused field shows
+// the ink frame and the blue shadow, never the global focus ring.
+for (const { path, selector } of FIELDS) {
+  test(`${selector} on ${path} shows no ring while focused in normal colors`, async ({
+    page,
+  }) => {
+    await page.goto(path);
+    await page.locator(selector).focus();
+    const ring = await outline(page, selector);
+    expect(
+      ring.style === "none" || ring.color === "rgba(0, 0, 0, 0)",
+      `outline ${ring.style} ${ring.color}`
+    ).toBe(true);
+  });
+}

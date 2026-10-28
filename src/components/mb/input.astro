@@ -30,7 +30,6 @@ const { class: extraClass, ...rest } = Astro.props;
     font-family: var(--sans);
     font-size: max(16px, 1rem);
     color: var(--ink);
-    outline: none;
     background: var(--v2-bg);
     border: 1px solid var(--muted);
     border-radius: 0;
@@ -54,7 +53,10 @@ const { class: extraClass, ...rest } = Astro.props;
     }
   }
 
+  /* The transparent outline: forced colors drop the shadow and paint this
+   * in a system color instead, so the focused field keeps a ring there. */
   .mb-input:is(:focus, [data-state="focus"]) {
+    outline: 2px solid transparent;
     border-color: var(--ink);
     box-shadow: var(--mb-shift) var(--mb-shift) 0 var(--blue);
   }
