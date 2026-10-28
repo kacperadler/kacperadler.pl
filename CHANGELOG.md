@@ -24,6 +24,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0103 The 360px entrance-after-paint test is flaky (545af2d)
 - KA0105 In-page links park the section head under the sticky header (2a54f5c)
 - KA0109 In forced-colors mode a focused field shows no focus at all (8d9d6c5)
+- KA0129 Two tests flaked under full-suite load (8be5bac)
 
 ### Other
 

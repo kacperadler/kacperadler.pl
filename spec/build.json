@@ -1064,9 +1064,9 @@
   {
     "id": "KA0129",
     "title": "Two tests flaked under full-suite load",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0129-two-tests-flaked-under-full-suite-load/ticket.md",
-    "updated": "2026-10-28T21:46:00.480Z"
+    "updated": "2026-10-28T21:50:32.048Z"
   },
   {
     "id": "KA0130",
@@ -1077,5 +1077,26 @@
     "after": [
       "KA0113"
     ]
+  },
+  {
+    "id": "KA0131",
+    "title": "Every e2e page load on the preview sends a pageview to the production Umami",
+    "status": "planning",
+    "path": "spec/features/KA0131-every-e2e-page-load-on-the-preview-sends-a-pageview-to-the-production-umami/ticket.md",
+    "updated": "2026-10-28T21:50:32.039Z"
+  },
+  {
+    "id": "KA0132",
+    "title": "Other specs still wait for networkidle on preview pages",
+    "status": "planning",
+    "path": "spec/features/KA0132-other-specs-still-wait-for-networkidle-on-preview-pages/ticket.md",
+    "updated": "2026-10-28T21:50:32.041Z"
+  },
+  {
+    "id": "KA0133",
+    "title": "Above the default worker count, more specs time out",
+    "status": "planning",
+    "path": "spec/features/KA0133-above-the-default-worker-count-more-specs-time-out/ticket.md",
+    "updated": "2026-10-28T21:50:32.045Z"
   }
 ]
