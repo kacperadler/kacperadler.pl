@@ -149,9 +149,7 @@ const closeHook = preview ? {} : { "data-menu-close": true };
     color: var(--ink);
     letter-spacing: -0.04em;
     border-bottom: 1px solid var(--mb-rule);
-    transition:
-      color var(--mb-snap),
-      outline-offset var(--mb-snap);
+    transition: color var(--mb-snap);
   }
 
   /* The focus ring (global.css) grows out of the edge instead of popping. */
@@ -168,9 +166,7 @@ const closeHook = preview ? {} : { "data-menu-close": true };
     width: 20px;
     height: 20px;
     color: var(--ink-2);
-    transition:
-      color var(--mb-snap),
-      transform var(--mb-snap);
+    transition: color var(--mb-snap);
   }
 
   .mb-sheet-link:is(:focus-visible, [data-state="hover"])
@@ -197,12 +193,19 @@ const closeHook = preview ? {} : { "data-menu-close": true };
     margin-top: auto;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mb-sheet,
-    .mb-sheet[data-mobile-sheet="open"],
-    .mb-sheet-link,
+  /* The moves: the ring grows out of the edge, the arrow nudges. Without
+   * them each switches at once; the sheet's fade runs for everyone. */
+  @media (prefers-reduced-motion: no-preference) {
+    .mb-sheet-link {
+      transition:
+        color var(--mb-snap),
+        outline-offset var(--mb-snap);
+    }
+
     .mb-sheet-link :global(.mb-sheet-arrow) {
-      transition: none;
+      transition:
+        color var(--mb-snap),
+        transform var(--mb-snap);
     }
   }
 </style>

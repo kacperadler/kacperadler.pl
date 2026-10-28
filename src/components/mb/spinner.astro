@@ -7,7 +7,7 @@ import { Icon } from "astro-icon/components";
  *   - alone it is a live status, "Ładowanie";
  *   - `decorative` (inside a button or a badge) hides it from assistive
  *     tech, so the label of its host stays the name.
- * It stops turning under prefers-reduced-motion. */
+ * It turns only under prefers-reduced-motion: no-preference. */
 interface Props extends HTMLAttributes<"span"> {
   decorative?: boolean;
   size?: "sm" | "default" | "lg";
@@ -49,18 +49,17 @@ const a11y = decorative
   .mb-spinner :global(svg) {
     width: 1em;
     height: 1em;
-    animation: mb-spin 0.8s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mb-spinner :global(svg) {
+      animation: mb-spin 0.8s linear infinite;
+    }
   }
 
   @keyframes mb-spin {
     to {
       transform: rotate(360deg);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .mb-spinner :global(svg) {
-      animation: none;
     }
   }
 </style>

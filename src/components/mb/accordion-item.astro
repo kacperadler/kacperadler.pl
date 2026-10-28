@@ -6,10 +6,11 @@ import { Icon } from "astro-icon/components";
  *   open      the item starts open
  *   disabled  the row is plain text that cannot be focused or opened, the
  *             content is not rendered
- * Opening and closing animate with --mb-snap: the content's height (the
+ * Opening and closing animate with --mb-snap, under
+ * prefers-reduced-motion: no-preference only: the content's height (the
  * ::details-content box, from 0 to its own height through
- * interpolate-size) and the chevron's half turn. Where the browser has no
- * ::details-content the content snaps, as under prefers-reduced-motion.
+ * interpolate-size) and the chevron's half turn. Otherwise, and where the
+ * browser has no ::details-content, the content snaps.
  * The `data-mb-accordion-item` marker is where <Accordion> writes the
  * shared `name`. */
 interface Props {
@@ -59,9 +60,6 @@ const { disabled = false, open = false, title } = Astro.props;
   .mb-accordion-item::details-content {
     height: 0;
     overflow: clip;
-    transition:
-      height var(--mb-snap),
-      content-visibility var(--mb-snap) allow-discrete;
   }
 
   .mb-accordion-item[open]::details-content {
@@ -119,9 +117,7 @@ const { disabled = false, open = false, title } = Astro.props;
     width: 18px;
     height: 18px;
     color: var(--ink-2);
-    transition:
-      color var(--mb-snap),
-      transform var(--mb-snap);
+    transition: color var(--mb-snap);
   }
 
   .mb-accordion-item-disabled .mb-accordion-trigger {
@@ -157,11 +153,17 @@ const { disabled = false, open = false, title } = Astro.props;
     margin-bottom: 0;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mb-accordion-trigger span,
-    .mb-accordion-trigger :global(.mb-accordion-chevron),
+  @media (prefers-reduced-motion: no-preference) {
     .mb-accordion-item::details-content {
-      transition: none;
+      transition:
+        height var(--mb-snap),
+        content-visibility var(--mb-snap) allow-discrete;
+    }
+
+    .mb-accordion-trigger :global(.mb-accordion-chevron) {
+      transition:
+        color var(--mb-snap),
+        transform var(--mb-snap);
     }
   }
 </style>

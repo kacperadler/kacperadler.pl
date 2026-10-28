@@ -152,8 +152,7 @@ const menuId = `mb-crumbs-${hash.toString(36)}`;
     text-underline-offset: 4px;
     transition:
       color var(--mb-snap),
-      text-decoration-color var(--mb-snap),
-      outline-offset var(--mb-snap);
+      text-decoration-color var(--mb-snap);
   }
 
   /* The focus ring (global.css) grows out of the edge instead of popping. */
@@ -201,8 +200,7 @@ const menuId = `mb-crumbs-${hash.toString(36)}`;
     transition:
       background-color var(--mb-snap),
       border-color var(--mb-snap),
-      color var(--mb-snap),
-      outline-offset var(--mb-snap);
+      color var(--mb-snap);
   }
 
   .mb-crumb-more-trigger :global(svg) {
@@ -283,8 +281,7 @@ const menuId = `mb-crumbs-${hash.toString(36)}`;
     color: var(--ink-2);
     transition:
       background-color var(--mb-snap),
-      color var(--mb-snap),
-      outline-offset var(--mb-snap);
+      color var(--mb-snap);
   }
 
   .mb-crumb-menu-item:focus-visible {
@@ -317,12 +314,28 @@ const menuId = `mb-crumbs-${hash.toString(36)}`;
     height: 14px;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mb-crumb-link,
-    .mb-crumb-more-trigger,
-    .mb-crumb-menu,
+  /* The ring grows out of the edge; without motion it shows at once. */
+  @media (prefers-reduced-motion: no-preference) {
+    .mb-crumb-link {
+      transition:
+        color var(--mb-snap),
+        text-decoration-color var(--mb-snap),
+        outline-offset var(--mb-snap);
+    }
+
+    .mb-crumb-more-trigger {
+      transition:
+        background-color var(--mb-snap),
+        border-color var(--mb-snap),
+        color var(--mb-snap),
+        outline-offset var(--mb-snap);
+    }
+
     .mb-crumb-menu-item {
-      transition: none;
+      transition:
+        background-color var(--mb-snap),
+        color var(--mb-snap),
+        outline-offset var(--mb-snap);
     }
   }
 </style>

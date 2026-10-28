@@ -194,8 +194,7 @@ const [previousEnd, nextEnd] = ends;
     transition:
       background-color var(--mb-snap),
       border-color var(--mb-snap),
-      color var(--mb-snap),
-      outline-offset var(--mb-snap);
+      color var(--mb-snap);
   }
 
   /* The focus ring (global.css) grows out of the edge instead of popping. */
@@ -276,9 +275,7 @@ const [previousEnd, nextEnd] = ends;
     background: var(--v2-bg);
     border: 1px solid var(--muted);
     border-radius: 0;
-    transition:
-      border-color var(--mb-snap),
-      box-shadow var(--mb-snap);
+    transition: border-color var(--mb-snap);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -298,10 +295,21 @@ const [previousEnd, nextEnd] = ends;
     border-color: var(--error);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mb-page,
+  /* The ring grows out of the edge, the focus shadow slides out; without
+   * motion each shows at once. */
+  @media (prefers-reduced-motion: no-preference) {
+    .mb-page {
+      transition:
+        background-color var(--mb-snap),
+        border-color var(--mb-snap),
+        color var(--mb-snap),
+        outline-offset var(--mb-snap);
+    }
+
     .mb-page-jump-input {
-      transition: none;
+      transition:
+        border-color var(--mb-snap),
+        box-shadow var(--mb-snap);
     }
   }
 </style>

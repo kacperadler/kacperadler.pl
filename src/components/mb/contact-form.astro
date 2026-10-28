@@ -205,9 +205,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
     container-type: inline-size;
     background: var(--v2-bg);
     border: 1px solid var(--mb-rule);
-    transition:
-      background-color var(--mb-snap),
-      box-shadow var(--mb-snap);
+    transition: background-color var(--mb-snap);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -343,9 +341,12 @@ const id = (name: string) => `${idPrefix}-${name}`;
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  /* The sent sheet's shadow slides out; without motion it shows at once. */
+  @media (prefers-reduced-motion: no-preference) {
     .mb-contact-form {
-      transition: none;
+      transition:
+        background-color var(--mb-snap),
+        box-shadow var(--mb-snap);
     }
   }
 </style>

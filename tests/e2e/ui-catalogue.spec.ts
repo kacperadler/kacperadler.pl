@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Locator, type Page, test } from "@playwright/test";
+import { FADES, motionOf } from "./motion";
 import { sendALead } from "./send-a-lead";
 
 // The catalogue (/ui) exists only on `astro dev`; playwright.config.ts starts
@@ -12,6 +13,15 @@ const TRANSLUCENT = /rgba\(|\/ /;
 const FOLLOWED_CRUMB = /\/realizacje\/#2025$/;
 const UI_UNPAGED = /\/ui$/;
 const UI_PAGE_7 = /\/ui\?strona=7#mb-pagination$/;
+
+// What moves in the catalogue under no-preference, as motionOf lists it.
+const MOVES_IN_CATALOGUE = [
+  /^html scroll-behavior: smooth$/,
+  /^a\.skip-link transition: transform /,
+  /^a\.mb-link mb-link-nav.*::after transition: transform /,
+  /^svg.* animation: mb-spin$/,
+  /::details-content transition: height /,
+];
 
 const SECTIONS = [
   "Przycisk",
@@ -142,8 +152,7 @@ const between = (heights: number[]) => {
   );
 };
 
-// CSS transitions running on the element or inside it. Under reduced
-// motion global.css turns every transition off, so there are none.
+// CSS transitions running on the element or inside it.
 const runningTransitions = (locator: Locator) =>
   locator.evaluate((el) =>
     el
@@ -152,17 +161,12 @@ const runningTransitions = (locator: Locator) =>
       .map((a) => (a as CSSTransition).transitionProperty)
   );
 
-// The CSS transitions an action starts on the element or inside it
-// (`transitionrun` bubbles, and a pseudo-element's fires on its element).
+// Listens for the CSS transitions an action starts on the element or inside
+// it (`transitionrun` bubbles, and a pseudo-element's fires on its element).
 // It waits for the ones already running to end and for their events to go
-// out, so none of theirs is counted, listens, acts, then waits for the
-// first event. Sampling the running ones after the action instead races
-// them: a --mb-snap transition is over in 0.12s.
-const transitionsStartedBy = async (
-  locator: Locator,
-  action: () => Promise<void>,
-  what: string
-) => {
+// out, so none of theirs is counted. Sampling the running ones after the
+// action instead races them: a --mb-snap transition is over in 0.12s.
+const listenForTransitions = async (locator: Locator) => {
   await expect.poll(() => runningTransitions(locator)).toEqual([]);
   await locator.evaluate(async (el) => {
     // Events of transitions that ended go out at the next frame.
@@ -182,18 +186,60 @@ const transitionsStartedBy = async (
     store.transitionsStop = () =>
       el.removeEventListener("transitionrun", listener);
   });
-  await action();
-  const read = () =>
-    locator.page().evaluate(() => {
-      const store = window as unknown as { transitionsRun: string[] };
-      return [...store.transitionsRun];
-    });
-  await expect.poll(read, { message: what }).not.toEqual([]);
-  await locator.page().evaluate(() => {
+};
+
+const transitionsRun = (page: Page) =>
+  page.evaluate(() => {
+    const store = window as unknown as { transitionsRun: string[] };
+    return [...store.transitionsRun];
+  });
+
+const stopListening = (page: Page) =>
+  page.evaluate(() => {
     const store = window as unknown as { transitionsStop: () => void };
     store.transitionsStop();
   });
+
+// The CSS transitions an action starts: waits for the first one.
+const transitionsStartedBy = async (
+  locator: Locator,
+  action: () => Promise<void>,
+  what: string
+) => {
+  await listenForTransitions(locator);
+  await action();
+  await expect
+    .poll(() => transitionsRun(locator.page()), { message: what })
+    .not.toEqual([]);
+  const run = await transitionsRun(locator.page());
+  await stopListening(locator.page());
+  return run;
 };
+
+// The CSS transitions an action starts, none or some: what started by the
+// second frame after it (a transition starts at the first style update).
+const transitionsAfter = async (
+  locator: Locator,
+  action: () => Promise<void>
+) => {
+  await listenForTransitions(locator);
+  await action();
+  await locator.evaluate(async () => {
+    for (const _ of [1, 2]) {
+      const { promise, resolve } = Promise.withResolvers<number>();
+      requestAnimationFrame(resolve);
+      // biome-ignore lint/performance/noAwaitInLoops: one frame after another
+      await promise;
+    }
+  });
+  const run = await transitionsRun(locator.page());
+  await stopListening(locator.page());
+  return run;
+};
+
+// What of `properties` would move: all but the colour and opacity fades.
+const moving = (properties: string[]) =>
+  properties.filter((property) => !FADES.includes(property));
 
 // A rendered box, and the layer's and the face's boxes in one frame.
 interface Box {
@@ -205,6 +251,7 @@ interface Box {
 interface BoxFrame {
   face: Box;
   layer: Box;
+  layerShown: boolean;
 }
 
 // A button of one variant row in the catalogue, by its state caption.
@@ -264,10 +311,10 @@ test.describe("component catalogue (astro dev)", () => {
   }
 
   // The page loads wide, so the resize to 360px restyles it. Under reduced
-  // motion nothing transitions, so the first frame after the resize already
-  // lays out with the narrow values (KA0086). Paused animations hold that
-  // frame, so a transition the resize started is still listed when it is
-  // measured, every run.
+  // motion nothing that moves transitions, so the first frame after the
+  // resize already lays out with the narrow values (KA0086). Paused
+  // animations hold that frame, so a transition the resize started is still
+  // listed when it is measured, every run.
   test("does not scroll sideways at 360px", async ({ page }) => {
     const cdp = await page.context().newCDPSession(page);
     await cdp.send("Animation.enable");
@@ -282,7 +329,7 @@ test.describe("component catalogue (astro dev)", () => {
         .map((a) => a.transitionProperty),
     }));
     await cdp.send("Animation.setPlaybackRate", { playbackRate: 1 });
-    expect(first.transitions).toEqual([]);
+    expect(moving(first.transitions)).toEqual([]);
     expect(first.scroll).toBeLessThanOrEqual(first.client);
   });
 
@@ -297,8 +344,9 @@ test.describe("component catalogue (astro dev)", () => {
 
     const forcedPaint = await paint(forced, props);
     expect(forcedPaint).not.toEqual(await paint(idle, props));
+    // The colours fade in --mb-snap, also under reduced motion.
     await idle.hover();
-    expect(await paint(idle, props)).toEqual(forcedPaint);
+    await expect.poll(() => paint(idle, props)).toEqual(forcedPaint);
   });
 
   // Under reduced motion the face never moves: hover keeps the layer and
@@ -456,13 +504,17 @@ test.describe("component catalogue (astro dev)", () => {
     );
 
     await idle.hover();
-    expect(await paint(idle, card)).toEqual(forcedCard);
+    await expect.poll(() => paint(idle, card)).toEqual(forcedCard);
+    await expect
+      .poll(async () => (await tag(idle)).background)
+      .toBe(forcedTag.background);
     const hoveredTag = await tag(idle);
     expect(hoveredTag.content).toContain("↔");
     expect(hoveredTag.reads).toBe(hoveredTag.width);
-    expect(hoveredTag.background).toBe(forcedTag.background);
     expect(await grips(idle)).toBe("visible");
-    expect(await paint(idle.locator(".mb-badge"), badge)).toEqual(forcedBadge);
+    await expect
+      .poll(() => paint(idle.locator(".mb-badge"), badge))
+      .toEqual(forcedBadge);
 
     await page.mouse.move(0, 0);
     expect(await grips(idle)).toBe("hidden");
@@ -534,7 +586,7 @@ test.describe("component catalogue (astro dev)", () => {
 
     await nav("idle").hover();
     await page.mouse.down();
-    expect(await paint(nav("idle"), ["color"])).toEqual(forced);
+    await expect.poll(() => paint(nav("idle"), ["color"])).toEqual(forced);
     await page.mouse.up();
   });
 
@@ -602,7 +654,7 @@ test.describe("component catalogue (astro dev)", () => {
     const forcedPaint = await paint(forced, props);
     expect(forcedPaint).not.toEqual(await paint(idle, props));
     await idle.focus();
-    expect(await paint(idle, props)).toEqual(forcedPaint);
+    await expect.poll(() => paint(idle, props)).toEqual(forcedPaint);
 
     const sheet = ["background-color", "box-shadow"];
     const forcedForm = page.locator(
@@ -831,25 +883,33 @@ test.describe("motion (astro dev)", () => {
       }
     });
 
-    test(`hover, press and focus ${reducedMotion === "reduce" ? "do not move" : "move"} under ${reducedMotion}`, async ({
+    test(`hover, press and focus ${reducedMotion === "reduce" ? "only fade" : "move"} under ${reducedMotion}`, async ({
       page,
     }) => {
       await page.emulateMedia({ reducedMotion });
       await page.goto("/ui", { waitUntil: "networkidle" });
       const idle = (section: string, selector: string) =>
         sample(page, section, "idle").locator(selector).first();
-      // Under reduced motion nothing may be running after the action; else
-      // the action has to start a transition.
+      // Under reduced motion an action starts no transition but a colour or
+      // opacity fade, and a `fade` action still starts one; else the action
+      // has to start a transition, of something that moves for a `move`.
       const expectMotion = async (
         locator: Locator,
         what: string,
+        kind: "fade" | "move",
         action: () => Promise<void>
       ) => {
         if (reducedMotion === "reduce") {
-          await action();
-          expect(await runningTransitions(locator), what).toEqual([]);
+          const started = await transitionsAfter(locator, action);
+          expect(moving(started), what).toEqual([]);
+          if (kind === "fade") {
+            expect(started, what).not.toEqual([]);
+          }
         } else {
-          await transitionsStartedBy(locator, action, what);
+          const started = await transitionsStartedBy(locator, action, what);
+          if (kind === "move") {
+            expect(moving(started), what).not.toEqual([]);
+          }
         }
       };
 
@@ -857,48 +917,61 @@ test.describe("motion (astro dev)", () => {
       await expectMotion(
         button,
         "button hover: the face lifts off its layer",
+        "move",
         () => button.hover()
       );
       await expectMotion(
         button,
         "button press: the face goes onto its layer",
+        "move",
         () => page.mouse.down()
       );
       await page.mouse.up();
 
       const nav = idle("mb-link", ".mb-link-nav");
-      await expectMotion(nav, "nav hover: the bar draws in", () => nav.hover());
+      await expectMotion(nav, "nav hover: the bar draws in", "move", () =>
+        nav.hover()
+      );
 
       const caseLink = idle("mb-link", ".mb-link-case");
       await caseLink.hover();
-      await expectMotion(caseLink, "case press: the arrow nudges further", () =>
-        page.mouse.down()
+      await expectMotion(
+        caseLink,
+        "case press: the arrow nudges further",
+        "move",
+        () => page.mouse.down()
       );
       await page.mouse.up();
 
       const card = idle("mb-card", ".mb-card");
-      await expectMotion(card, "card hover: the item number fills", () =>
+      await expectMotion(card, "card hover: the cell lights", "fade", () =>
         card.hover()
       );
 
       const badge = sample(page, "mb-badge", "href, idle").locator(".mb-badge");
       await badge.hover();
-      await expectMotion(badge, "badge link press: the ink block", () =>
+      await expectMotion(badge, "badge link press: the ink block", "fade", () =>
         page.mouse.down()
       );
       await page.mouse.up();
 
       const input = sample(page, "mb-form", "default").first().locator("input");
-      await expectMotion(input, "input focus: the shadow shifts out", () =>
-        input.focus()
+      await expectMotion(
+        input,
+        "input focus: the shadow shifts out",
+        "move",
+        () => input.focus()
       );
 
       // The focus ring grows out of the edge: reach the button by keyboard.
       await page.mouse.click(1, 1);
       await button.focus();
       await page.keyboard.press("Shift+Tab");
-      await expectMotion(button, "button focus: the ring grows out", () =>
-        page.keyboard.press("Tab")
+      await expectMotion(
+        button,
+        "button focus: the ring grows out",
+        "move",
+        () => page.keyboard.press("Tab")
       );
       await expect(button).toBeFocused();
       expect(await button.evaluate((el) => el.matches(":focus-visible"))).toBe(
@@ -906,6 +979,26 @@ test.describe("motion (astro dev)", () => {
       );
     });
   }
+
+  // Motion is opt-in (KA0116): nothing strips it under reduced motion, so
+  // each component must keep what moves inside no-preference itself. The
+  // catalogue shows every component in every state.
+  test("under reduced motion nothing in the catalogue moves, under no-preference it does", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/ui", { waitUntil: "networkidle" });
+    expect(await motionOf(page)).toEqual([]);
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    const motion = await motionOf(page);
+    for (const expected of MOVES_IN_CATALOGUE) {
+      expect(
+        motion.some((line) => expected.test(line)),
+        String(expected)
+      ).toBe(true);
+    }
+  });
 });
 
 // Where the label and the spinner of `button` sit (their translateX), how
@@ -1035,6 +1128,9 @@ test.describe("button layer and loading (astro dev)", () => {
             frames.push({
               face: box(".mb-btn-face"),
               layer: box(".mb-btn-layer"),
+              layerShown:
+                getComputedStyle(el.querySelector(".mb-btn-layer") as Element)
+                  .visibility === "visible",
             });
             if (frames.length < 40) {
               requestAnimationFrame(tick);
@@ -1094,8 +1190,9 @@ test.describe("button layer and loading (astro dev)", () => {
       expect(await faceOnTop()).toBe(true);
 
       // Press: the face goes down onto the layer and covers it exactly; the
-      // layer box again never moves, and the resting box's top-left corner,
-      // which the face has left, is still the button's.
+      // layer box again never moves and stays shown while the face sinks,
+      // and the resting box's top-left corner, which the face has left, is
+      // still the button's.
       await record();
       await page.mouse.down();
       const pressing = await collect();
@@ -1105,6 +1202,7 @@ test.describe("button layer and loading (astro dev)", () => {
       expect(sinking.length).toBeGreaterThanOrEqual(2);
       for (const frame of pressing) {
         expect(frame.layer).toEqual(layer);
+        expect(frame.layerShown).toBe(true);
       }
       expect(pressing.at(-1)?.face).toEqual(layer);
       expect(await faceOnTop()).toBe(true);
