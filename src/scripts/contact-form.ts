@@ -17,6 +17,12 @@
  * checkboxes: every checked one goes in `types`. Any answer other than
  * 2xx, or no answer, is "error-submit".
  *
+ * On success focus moves to the success card (the focused submit button
+ * hides with the form), and the page scrolls only when the card's heading
+ * is out of view: the card is centred in a sheet whose top stays put, so
+ * after a send from far down a long form its heading can sit above the
+ * viewport.
+ *
  * Listeners are document-delegated so they survive ClientRouter
  * swaps. astro:page-load resets the wrapper to "idle" so navigating
  * back to the page never lands on a stale success/error view. */
@@ -49,6 +55,33 @@ function getWrap(form: HTMLFormElement): HTMLElement | null {
   return form.closest<HTMLElement>("[data-contact-wrap]");
 }
 
+// The visible band is the viewport under the sticky header: html's
+// scroll-padding-block-start, which scrollIntoView honours too. A card that
+// fits in it scrolls in whole, by as little as it takes; a taller one,
+// scrolled "nearest", would line up one of its edges and could leave its
+// heading out, so then its heading goes to the middle.
+function revealSuccess(wrap: HTMLElement): void {
+  const card = wrap.querySelector<HTMLElement>("[data-form-success]");
+  const heading = card?.querySelector("h3");
+  if (!(card && heading)) {
+    return;
+  }
+  card.focus({ preventScroll: true });
+  const top = Number.parseFloat(
+    getComputedStyle(document.documentElement).scrollPaddingBlockStart
+  );
+  const bottom = document.documentElement.clientHeight;
+  const title = heading.getBoundingClientRect();
+  if (title.top >= top && title.bottom <= bottom) {
+    return;
+  }
+  if (card.getBoundingClientRect().height <= bottom - top) {
+    card.scrollIntoView({ block: "nearest" });
+  } else {
+    heading.scrollIntoView({ block: "center" });
+  }
+}
+
 function setState(form: HTMLFormElement, state: WrapState): void {
   const wrap = getWrap(form);
   if (wrap) {
@@ -67,6 +100,9 @@ function setState(form: HTMLFormElement, state: WrapState): void {
         : state;
     submit.dataset.state = buttonState;
     submit.setAttribute("aria-busy", state === "submitting" ? "true" : "false");
+  }
+  if (state === "success" && wrap) {
+    revealSuccess(wrap);
   }
 }
 

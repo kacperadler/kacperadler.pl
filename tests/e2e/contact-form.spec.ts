@@ -374,12 +374,19 @@ test.describe("contact form", () => {
 
     // Sent with the tall box: the success card does not fill a tall, empty
     // sheet. The sheet is back to the empty form's height, and it gets
-    // shorter only at its bottom: its top stays where the visitor saw it and
-    // the page does not scroll.
+    // shorter only at its bottom: its top stays where the visitor saw it and,
+    // with the card's heading in view, the page does not scroll, even with
+    // the card's bottom below the viewport.
     await page.fill('[data-contact-form] input[name="email"]', "a@example.com");
     await pickType(page, "audit");
-    const submit = page.locator("[data-contact-form] [data-submit]");
-    await submit.scrollIntoViewIfNeeded();
+    // The sheet's top 300px down; sent with Enter from the e-mail field,
+    // since a click would scroll to the button below the fold.
+    await sheet.evaluate((el) =>
+      window.scrollBy({
+        behavior: "instant",
+        top: el.getBoundingClientRect().top - 300,
+      })
+    );
     const where = () =>
       page.evaluate(() => ({
         scrollY: window.scrollY,
@@ -400,10 +407,20 @@ test.describe("contact form", () => {
     expect(await sheetHeight()).toBeGreaterThan(
       sheetEmpty + 8 * empty.lineHeight
     );
-    await submit.click();
+    await page
+      .locator('[data-contact-form] input[name="email"]')
+      .evaluate((el: HTMLInputElement) => el.focus({ preventScroll: true }));
+    await page.keyboard.press("Enter");
     await expect(sheet).toHaveAttribute("data-state", "success");
     expect(await sheetHeight()).toBeCloseTo(sheetEmpty, 0);
+    // A scroll would be smooth: give it time to move the page first.
+    await page.waitForTimeout(500);
     expect(await where()).toEqual(before);
+    await expect(page.locator("[data-form-success]")).toBeFocused();
+    const card = await page.locator("[data-form-success]").boundingBox();
+    expect((card?.y ?? 0) + (card?.height ?? 0)).toBeGreaterThan(
+      page.viewportSize()?.height ?? 0
+    );
     // The card still fills the sheet: the hidden form is as high as the card.
     const formHeight = await page
       .locator("[data-contact-form]")
@@ -411,6 +428,140 @@ test.describe("contact form", () => {
     expect(
       (await page.locator("[data-form-success]").boundingBox())?.height
     ).toBe(formHeight);
+  });
+
+  // Fills a 30-line message, scrolls so the top of `from` (the submit button
+  // or the e-mail field) sits `at` px down the viewport (when negative, its
+  // bottom that far up from the viewport's bottom) and sends: a click on the
+  // button, Enter in the field.
+  async function sendLong(
+    page: Page,
+    from: "email" | "submit",
+    at: number
+  ): Promise<void> {
+    await page.route(LEAD_API, (route) =>
+      route.fulfill({ json: { ok: true }, status: 200 })
+    );
+    await page.goto("/#contact");
+    await page.waitForLoadState("networkidle");
+    const email = page.locator('[data-contact-form] input[name="email"]');
+    await email.fill("a@example.com");
+    await pickType(page, "audit");
+    await page.fill(
+      '[data-contact-form] textarea[name="message"]',
+      Array.from({ length: 30 }, (_, i) => `Linia ${i + 1}`).join("\n")
+    );
+    const submit = page.locator("[data-contact-form] [data-submit]");
+    const anchor = from === "email" ? email : submit;
+    await anchor.evaluate((el, y) => {
+      const rect = el.getBoundingClientRect();
+      const top = y < 0 ? window.innerHeight + y - rect.height : y;
+      window.scrollBy({ behavior: "instant", top: rect.top - top });
+    }, at);
+    if (from === "email") {
+      await email.evaluate((el: HTMLInputElement) =>
+        el.focus({ preventScroll: true })
+      );
+      await page.keyboard.press("Enter");
+    } else {
+      await submit.click();
+    }
+    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+      "data-state",
+      "success"
+    );
+  }
+
+  // Where the success card and its heading stand, against the band of the
+  // viewport under the sticky header (html's scroll-padding-block-start).
+  function successView(page: Page) {
+    return page.evaluate(() => {
+      const card = document.querySelector("[data-form-success]");
+      const heading = card?.querySelector("h3");
+      const c = card?.getBoundingClientRect();
+      const h = heading?.getBoundingClientRect();
+      return {
+        bandBottom: document.documentElement.clientHeight,
+        bandTop: Number.parseFloat(
+          getComputedStyle(document.documentElement).scrollPaddingBlockStart
+        ),
+        cardBottom: c?.bottom ?? Number.NaN,
+        cardTop: c?.top ?? Number.NaN,
+        headingBottom: h?.bottom ?? Number.NaN,
+        headingTop: h?.top ?? Number.NaN,
+      };
+    });
+  }
+
+  // The sheet's top stays put and the card is centred in it, so after a send
+  // from low down a long form its heading would sit above the viewport, or
+  // behind the sticky header.
+  for (const { heading, submitTop } of [
+    { heading: "above the viewport", submitTop: 361 },
+    { heading: "under the header", submitTop: 464 },
+  ]) {
+    test(`with the success heading ${heading}, the card scrolls in whole under the header and takes focus`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ height: 720, width: 1280 });
+      await sendLong(page, "submit", submitTop);
+
+      await expect(page.locator("[data-form-success]")).toBeFocused();
+      // The page scrolls (smoothly) as little as it takes: the card's top
+      // lands under the header, the whole card on screen.
+      await expect
+        .poll(async () => {
+          const view = await successView(page);
+          return Math.abs(Math.round(view.cardTop - view.bandTop));
+        })
+        .toBe(0);
+      const view = await successView(page);
+      expect(view.cardBottom).toBeLessThanOrEqual(view.bandBottom);
+    });
+  }
+
+  test("sent with Enter from the e-mail field at the viewport's bottom, the success card scrolls up whole and takes focus", async ({
+    page,
+  }) => {
+    // The card's heading lands below the viewport.
+    await page.setViewportSize({ height: 720, width: 1280 });
+    await sendLong(page, "email", -1);
+
+    await expect(page.locator("[data-form-success]")).toBeFocused();
+    await expect
+      .poll(async () => {
+        const view = await successView(page);
+        return Math.abs(Math.round(view.cardBottom - view.bandBottom));
+      })
+      .toBe(0);
+    const view = await successView(page);
+    expect(view.cardTop).toBeGreaterThanOrEqual(view.bandTop);
+  });
+
+  test("a success card taller than the viewport under the header brings its heading to the middle", async ({
+    page,
+  }) => {
+    // Scrolled "nearest", a card this tall would line its bottom up with the
+    // viewport's and leave its heading behind the header.
+    await page.setViewportSize({ height: 400, width: 390 });
+    await sendLong(page, "submit", -1);
+
+    await expect(page.locator("[data-form-success]")).toBeFocused();
+    await expect
+      .poll(async () => {
+        const view = await successView(page);
+        return Math.abs(
+          Math.round(
+            (view.headingTop + view.headingBottom) / 2 -
+              (view.bandTop + view.bandBottom) / 2
+          )
+        );
+      })
+      .toBe(0);
+    const view = await successView(page);
+    expect(view.cardBottom - view.cardTop).toBeGreaterThan(
+      view.bandBottom - view.bandTop
+    );
   });
 
   test("a lead sent with the company left empty is saved without one", async ({
