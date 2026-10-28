@@ -44,7 +44,11 @@ export const motionOf = (page: Page) =>
         const durations = style.transitionDuration.split(", ");
         style.transitionProperty.split(", ").forEach((property, i) => {
           const duration = durations[i % durations.length] ?? "0s";
-          if (Number.parseFloat(duration) > 0 && !fades.includes(property)) {
+          if (
+            property !== "none" &&
+            Number.parseFloat(duration) > 0 &&
+            !fades.includes(property)
+          ) {
             found.push(`${what} transition: ${property} ${duration}`);
           }
         });

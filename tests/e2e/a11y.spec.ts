@@ -70,9 +70,14 @@ test.describe("axe-core a11y", () => {
   test("contact form error states have no detectable WCAG 2.1 AA violations", async ({
     page,
   }) => {
+    // Colour fades run under reduced motion too: axe reads the colours once
+    // the blur's and the pointer's fades are over.
     const axe = async () => {
       await page.evaluate(() => (document.activeElement as HTMLElement).blur());
       await page.mouse.move(0, 0);
+      await page.evaluate(() =>
+        Promise.all(document.getAnimations().map((a) => a.finished))
+      );
       return new AxeBuilder({ page })
         .include("[data-contact-wrap]")
         .withTags(WCAG)

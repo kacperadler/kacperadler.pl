@@ -251,6 +251,7 @@ interface Box {
 interface BoxFrame {
   face: Box;
   layer: Box;
+  layerShown: boolean;
 }
 
 // A button of one variant row in the catalogue, by its state caption.
@@ -1127,6 +1128,9 @@ test.describe("button layer and loading (astro dev)", () => {
             frames.push({
               face: box(".mb-btn-face"),
               layer: box(".mb-btn-layer"),
+              layerShown:
+                getComputedStyle(el.querySelector(".mb-btn-layer") as Element)
+                  .visibility === "visible",
             });
             if (frames.length < 40) {
               requestAnimationFrame(tick);
@@ -1186,8 +1190,9 @@ test.describe("button layer and loading (astro dev)", () => {
       expect(await faceOnTop()).toBe(true);
 
       // Press: the face goes down onto the layer and covers it exactly; the
-      // layer box again never moves, and the resting box's top-left corner,
-      // which the face has left, is still the button's.
+      // layer box again never moves and stays shown while the face sinks,
+      // and the resting box's top-left corner, which the face has left, is
+      // still the button's.
       await record();
       await page.mouse.down();
       const pressing = await collect();
@@ -1197,6 +1202,7 @@ test.describe("button layer and loading (astro dev)", () => {
       expect(sinking.length).toBeGreaterThanOrEqual(2);
       for (const frame of pressing) {
         expect(frame.layer).toEqual(layer);
+        expect(frame.layerShown).toBe(true);
       }
       expect(pressing.at(-1)?.face).toEqual(layer);
       expect(await faceOnTop()).toBe(true);
