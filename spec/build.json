@@ -767,9 +767,9 @@
   {
     "id": "KA0096",
     "title": "The contact form asks for the company name, optionally",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0096-the-contact-form-asks-for-the-company-name-optionally/ticket.md",
-    "updated": "2026-10-28T17:30:36.623Z",
+    "updated": "2026-10-28T17:43:20.393Z",
     "after": [
       "KA0105"
     ]
@@ -866,9 +866,9 @@
   {
     "id": "KA0108",
     "title": "iOS Safari: form fields at 15px, text inflation, 100vh on the 404",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0108-ios-safari-form-fields-at-15px-text-inflation-100vh-on-the-404/ticket.md",
-    "updated": "2026-10-28T17:29:10.524Z",
+    "updated": "2026-10-28T17:42:10.503Z",
     "after": [
       "KA0105"
     ]
