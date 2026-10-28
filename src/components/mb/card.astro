@@ -115,9 +115,7 @@ const hasHeader = has("title") || has("description") || has("action");
       calc(clamp(0, var(--bl-e) * 4 - 2, 1) * 100%) 1px,
       1px calc(clamp(0, var(--bl-e) * 4 - 3, 1) * 100%);
     border: 1px solid var(--mb-rule);
-    transition:
-      background-color var(--mb-snap),
-      outline-offset var(--mb-snap);
+    transition: background-color var(--mb-snap);
   }
 
   :where(.mb-card) {
@@ -318,10 +316,12 @@ const hasHeader = has("title") || has("description") || has("action");
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mb-card,
-    .mb-card::before {
-      transition: none;
+  /* The ring grows out of the edge; without motion it shows at once. */
+  @media (prefers-reduced-motion: no-preference) {
+    .mb-card {
+      transition:
+        background-color var(--mb-snap),
+        outline-offset var(--mb-snap);
     }
   }
 </style>

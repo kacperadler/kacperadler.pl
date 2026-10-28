@@ -189,9 +189,7 @@ const busy = loading ? "true" : undefined;
     border: 0;
     border-radius: 0;
     isolation: isolate;
-    transition:
-      color var(--mb-snap),
-      outline-offset var(--mb-snap);
+    transition: color var(--mb-snap);
   }
 
   /* Below global.css's :focus-visible, so the ring keeps its offset there
@@ -231,8 +229,7 @@ const busy = loading ? "true" : undefined;
     border: 1px solid var(--mb-btn-rule);
     transition:
       background-color var(--mb-snap),
-      border-color var(--mb-snap),
-      transform 0.08s linear;
+      border-color var(--mb-snap);
   }
 
   .mb-btn-label {
@@ -241,7 +238,6 @@ const busy = loading ? "true" : undefined;
     gap: var(--mb-btn-gap);
     align-items: center;
     justify-content: center;
-    transition: transform var(--mb-slide);
   }
 
   .mb-btn :global(.mb-btn-icon) {
@@ -259,9 +255,6 @@ const busy = loading ? "true" : undefined;
     justify-content: center;
     font-size: 16px;
     transform: translateX(calc(100% + var(--mb-btn-pad)));
-    transition:
-      transform var(--mb-slide),
-      visibility var(--mb-slide);
   }
 
   .mb-btn :global(.mb-btn-spinner svg) {
@@ -404,8 +397,14 @@ const busy = loading ? "true" : undefined;
     }
   }
 
-  /* The face lifts off the still layer on hover and goes down onto it on
-   * press, covering it whole. */
+  /* With no movement the press hides the layer, so the face stands where
+   * the layer was; the face lifts off the still layer on hover and goes
+   * down onto it on press, covering it whole, only where motion is
+   * welcome. */
+  .mb-btn-raised:is(:active, [data-state="pressed"]) .mb-btn-layer {
+    visibility: hidden;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     .mb-btn-raised[data-state="hover"] .mb-btn-face {
       transform: translate(
@@ -426,12 +425,9 @@ const busy = loading ? "true" : undefined;
     .mb-btn-raised:is(:active, [data-state="pressed"]) .mb-btn-face {
       transform: translate(var(--mb-btn-shift), var(--mb-btn-shift));
     }
-  }
 
-  /* With no movement the press hides the layer instead. */
-  @media (prefers-reduced-motion: reduce) {
     .mb-btn-raised:is(:active, [data-state="pressed"]) .mb-btn-layer {
-      visibility: hidden;
+      visibility: visible;
     }
   }
 
@@ -536,12 +532,31 @@ const busy = loading ? "true" : undefined;
     animation-play-state: running;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mb-btn,
-    .mb-btn-face,
-    .mb-btn-label,
+  /* The moves: the ring grows out of the edge, the face lifts and lands,
+   * the label and the spinner slide; the spinner stays shown while it
+   * slides out. Without them each switches at once. */
+  @media (prefers-reduced-motion: no-preference) {
+    .mb-btn {
+      transition:
+        color var(--mb-snap),
+        outline-offset var(--mb-snap);
+    }
+
+    .mb-btn-face {
+      transition:
+        background-color var(--mb-snap),
+        border-color var(--mb-snap),
+        transform 0.08s linear;
+    }
+
+    .mb-btn-label {
+      transition: transform var(--mb-slide);
+    }
+
     .mb-btn :global(.mb-btn-spinner) {
-      transition: none;
+      transition:
+        transform var(--mb-slide),
+        visibility var(--mb-slide);
     }
   }
 </style>

@@ -1,4 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
+import { FADES, motionOf } from "./motion";
 
 // Minimal brutalism on every production page (KA0069): square corners, no
 // glass, no drifting ribbons over a dot grid - nothing of the old style.
@@ -45,11 +46,11 @@ test.describe("minimal brutalism", () => {
     }
   });
 
-  // Under reduced motion nothing transitions, also where no rule declares a
-  // transition: a resize restyles the page in the frame it happens, so no
-  // element keeps a wide value for a frame and overflows (KA0086). Paused
-  // animations hold that frame, so a transition started by the resize is
-  // still listed when the page is read.
+  // Under reduced motion nothing that moves transitions (a colour fades, it
+  // never widens anything): a resize restyles the page's layout in the frame
+  // it happens, so no element keeps a wide value for a frame and overflows
+  // (KA0086). Paused animations hold that frame, so a transition started by
+  // the resize is still listed when the page is read.
   test("under reduced motion a resize restyles every page in the same frame", async ({
     page,
   }) => {
@@ -82,9 +83,58 @@ test.describe("minimal brutalism", () => {
           }),
       }));
       await cdp.send("Animation.setPlaybackRate", { playbackRate: 1 });
-      expect(frame.transitions, path).toEqual([]);
+      expect(
+        frame.transitions.filter(
+          (transition) => !FADES.includes(transition.split(" ").at(-1) ?? "")
+        ),
+        path
+      ).toEqual([]);
       expect(frame.scroll, path).toBeLessThanOrEqual(frame.client);
     }
+  });
+
+  // Motion is opt-in (KA0116): every page moves under no-preference, and
+  // under reduced motion nothing does - no transform, height, shadow or
+  // focus ring transitions, no animation, no smooth scroll - while the
+  // colour and opacity fades stay.
+  test("under reduced motion nothing moves on any page, colour fades stay", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/realizacje/");
+    const cases = await page
+      .locator("#top a[href^='/realizacje/']")
+      .evaluateAll((links) =>
+        links.map((link) => link.getAttribute("href") ?? "")
+      );
+    expect(cases.length).toBeGreaterThan(0);
+
+    for (const path of [...PAGES, ...cases]) {
+      // biome-ignore lint/performance/noAwaitInLoops: one page at a time
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      expect(await motionOf(page), path).toEqual([]);
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      expect(await motionOf(page), path).toContain(
+        "html scroll-behavior: smooth"
+      );
+    }
+
+    // The header's nav link still fades its colour on hover.
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    const nav = page
+      .getByRole("navigation", { name: "Główna nawigacja" })
+      .getByRole("link", { exact: true, name: "Oferta" });
+    await nav.evaluate((el) => {
+      el.addEventListener("transitionrun", (event) => {
+        const { propertyName } = event as TransitionEvent;
+        el.dataset.transitionsRun = `${el.dataset.transitionsRun ?? ""}${propertyName};`;
+      });
+    });
+    await nav.hover();
+    await expect(nav).toHaveAttribute("data-transitions-run", "color;");
   });
 });
 

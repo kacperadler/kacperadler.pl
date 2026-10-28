@@ -85,8 +85,7 @@ const Tag = href ? "a" : "span";
     transition:
       background-color var(--mb-snap),
       border-color var(--mb-snap),
-      color var(--mb-snap),
-      outline-offset var(--mb-snap);
+      color var(--mb-snap);
   }
 
   /* The focus ring (global.css) grows out of the edge instead of popping. */
@@ -239,9 +238,14 @@ const Tag = href ? "a" : "span";
     border-color: transparent;
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  /* The ring grows out of the edge; without motion it shows at once. */
+  @media (prefers-reduced-motion: no-preference) {
     .mb-badge {
-      transition: none;
+      transition:
+        background-color var(--mb-snap),
+        border-color var(--mb-snap),
+        color var(--mb-snap),
+        outline-offset var(--mb-snap);
     }
   }
 </style>

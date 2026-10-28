@@ -60,10 +60,7 @@ const iconAfter = variant === "case";
     text-decoration-thickness: 2px;
     text-decoration-color: var(--blue);
     text-underline-offset: 4px;
-    transition:
-      color var(--mb-snap),
-      text-decoration-thickness var(--mb-snap),
-      outline-offset var(--mb-snap);
+    transition: color var(--mb-snap);
   }
 
   .mb-link-inline[data-state="hover"] {
@@ -92,9 +89,7 @@ const iconAfter = variant === "case";
     font-weight: 600;
     color: var(--ink-2);
     letter-spacing: -0.015em;
-    transition:
-      color var(--mb-snap),
-      outline-offset var(--mb-snap);
+    transition: color var(--mb-snap);
   }
 
   .mb-link-nav::after {
@@ -107,9 +102,7 @@ const iconAfter = variant === "case";
     background: var(--ink);
     transform: scaleX(0);
     transform-origin: left center;
-    transition:
-      background-color var(--mb-snap),
-      transform var(--mb-snap);
+    transition: background-color var(--mb-snap);
   }
 
   .mb-link-nav[data-state="hover"] {
@@ -159,9 +152,7 @@ const iconAfter = variant === "case";
     text-decoration-thickness: 2px;
     text-decoration-color: var(--blue);
     text-underline-offset: 4px;
-    transition:
-      color var(--mb-snap),
-      outline-offset var(--mb-snap);
+    transition: color var(--mb-snap);
   }
 
   .mb-link-case:is(:active, [data-state="pressed"]) {
@@ -173,7 +164,6 @@ const iconAfter = variant === "case";
     width: 16px;
     height: 16px;
     color: var(--blue);
-    transition: transform var(--mb-snap);
   }
 
   .mb-link-footer {
@@ -188,8 +178,7 @@ const iconAfter = variant === "case";
     text-underline-offset: 4px;
     transition:
       color var(--mb-snap),
-      text-decoration-color var(--mb-snap),
-      outline-offset var(--mb-snap);
+      text-decoration-color var(--mb-snap);
   }
 
   .mb-link-footer :global(svg) {
@@ -239,16 +228,39 @@ const iconAfter = variant === "case";
     transform: translateX(6px);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mb-link,
-    .mb-link-inline,
+  /* The moves: the ring grows out of the edge, the inline underline
+   * thickens, the nav bar draws in, the case arrow nudges. Without them
+   * each switches at once. */
+  @media (prefers-reduced-motion: no-preference) {
+    .mb-link-inline {
+      transition:
+        color var(--mb-snap),
+        text-decoration-thickness var(--mb-snap),
+        outline-offset var(--mb-snap);
+    }
+
     .mb-link-nav,
-    .mb-link-nav::after,
-    .mb-link-case,
-    .mb-link-footer,
-    .mb-link-footer :global(svg),
+    .mb-link-case {
+      transition:
+        color var(--mb-snap),
+        outline-offset var(--mb-snap);
+    }
+
+    .mb-link-nav::after {
+      transition:
+        background-color var(--mb-snap),
+        transform var(--mb-snap);
+    }
+
     .mb-link-case :global(svg) {
-      transition: none;
+      transition: transform var(--mb-snap);
+    }
+
+    .mb-link-footer {
+      transition:
+        color var(--mb-snap),
+        text-decoration-color var(--mb-snap),
+        outline-offset var(--mb-snap);
     }
   }
 </style>

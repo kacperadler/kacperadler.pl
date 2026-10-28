@@ -33,9 +33,7 @@ const { class: extraClass, ...rest } = Astro.props;
     background: var(--v2-bg);
     border: 1px solid var(--muted);
     border-radius: 0;
-    transition:
-      border-color var(--mb-snap),
-      box-shadow var(--mb-snap);
+    transition: border-color var(--mb-snap);
   }
 
   .mb-input::placeholder {
@@ -104,9 +102,12 @@ const { class: extraClass, ...rest } = Astro.props;
     border-right-color: var(--mb-hair);
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  /* The focus shadow slides out; without motion it shows at once. */
+  @media (prefers-reduced-motion: no-preference) {
     .mb-input {
-      transition: none;
+      transition:
+        border-color var(--mb-snap),
+        box-shadow var(--mb-snap);
     }
   }
 </style>

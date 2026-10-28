@@ -15,11 +15,21 @@
  * and Android would flash a grey box over the square cells; the press
  * states (:active) answer a tap instead. */
 html {
-  scroll-behavior: smooth;
   scroll-padding-block-start: calc(var(--mb-header) + 8px);
   text-wrap: pretty;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Motion is opt-in: every component builds its states outside a motion
+ * query and puts only what moves (a scroll, a transform, a height, a
+ * shadow or a focus ring sliding out) inside
+ * prefers-reduced-motion: no-preference. Colour and opacity fades are not
+ * motion and run for everyone. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -83,7 +93,12 @@ a,
   color: var(--v2-bg);
   background: var(--ink);
   transform: translateY(calc(-100% - 16px));
-  transition: transform var(--mb-snap);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skip-link {
+    transition: transform var(--mb-snap);
+  }
 }
 
 .skip-link:focus,
@@ -110,20 +125,6 @@ a,
   max-width: var(--container);
   padding: 0 var(--v2-space-md);
   margin: 0 auto;
-}
-
-/* Reduced motion: no transitions at all. A short duration instead would
- * turn on the default `all` on every element, so a resize or a media query
- * would show the old style for a frame. */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-property: none !important;
-    scroll-behavior: auto !important;
-  }
 }
 
 /* The blueprint: the page is an engineer's drawing (section-head.astro:

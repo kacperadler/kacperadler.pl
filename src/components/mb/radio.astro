@@ -61,8 +61,7 @@ const { label, state, class: extraClass, ...rest } = Astro.props;
     border-radius: 50%;
     transition:
       background-color var(--mb-snap),
-      border-color var(--mb-snap),
-      box-shadow var(--mb-snap);
+      border-color var(--mb-snap);
   }
 
   .mb-radio[data-state="hover"] .mb-radio-input {
@@ -100,9 +99,13 @@ const { label, state, class: extraClass, ...rest } = Astro.props;
     color: var(--muted);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mb-radio-input {
-      transition: none;
+  /* The ring closes in on the dot; without motion it shows at once. */
+  @media (prefers-reduced-motion: no-preference) {
+    .mb-radio .mb-radio-input {
+      transition:
+        background-color var(--mb-snap),
+        border-color var(--mb-snap),
+        box-shadow var(--mb-snap);
     }
   }
 </style>

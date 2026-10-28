@@ -1,8 +1,9 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
-// Reduced motion: every transition collapses (global.css), so axe reads the
-// final paint instead of a state halfway through a switch.
+// Reduced motion: the first screen stands in place from the first frame and
+// nothing moves, so axe reads the final paint instead of a state halfway
+// through the entrance.
 test.use({ contextOptions: { reducedMotion: "reduce" } });
 
 const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
