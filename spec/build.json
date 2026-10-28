@@ -818,22 +818,22 @@
   {
     "id": "KA0102",
     "title": "The 404 page's rule is the one line the pen does not draw",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0102-the-404-page-s-rule-is-the-one-line-the-pen-does-not-draw/ticket.md",
-    "updated": "2026-10-28T16:12:18.710Z"
+    "updated": "2026-10-28T16:20:56.871Z"
   },
   {
     "id": "KA0103",
     "title": "The 360px entrance-after-paint test is flaky",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0103-the-360px-entrance-after-paint-test-is-flaky/ticket.md",
-    "updated": "2026-10-28T16:12:28.277Z"
+    "updated": "2026-10-28T16:20:56.441Z"
   },
   {
     "id": "KA0104",
     "title": "Audit the site CSS against good-css.com and propose what to adopt",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0104-audit-the-site-css-against-good-css-com-and-propose-what-to-adopt/ticket.md",
-    "updated": "2026-10-28T16:14:41.125Z"
+    "updated": "2026-10-28T16:14:53.326Z"
   }
 ]
