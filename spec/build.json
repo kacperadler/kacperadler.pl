@@ -916,9 +916,9 @@
   {
     "id": "KA0113",
     "title": "Section rhythm jumps at 880px; headline sizes ignore the reader's font size",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0113-section-rhythm-jumps-at-880px-headline-sizes-ignore-the-reader-s-font-size/ticket.md",
-    "updated": "2026-10-28T20:39:48.285Z",
+    "updated": "2026-10-28T21:34:52.809Z",
     "after": [
       "KA0128"
     ]
@@ -1064,9 +1064,9 @@
   {
     "id": "KA0129",
     "title": "Two tests flaked under full-suite load",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0129-two-tests-flaked-under-full-suite-load/ticket.md",
-    "updated": "2026-10-28T20:40:44.876Z"
+    "updated": "2026-10-28T21:25:07.369Z"
   },
   {
     "id": "KA0130",
