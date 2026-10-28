@@ -876,9 +876,9 @@
   {
     "id": "KA0109",
     "title": "In forced-colors mode a focused field shows no focus at all",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0109-in-forced-colors-mode-a-focused-field-shows-no-focus-at-all/ticket.md",
-    "updated": "2026-10-28T20:09:42.895Z",
+    "updated": "2026-10-28T20:13:13.454Z",
     "after": [
       "KA0112"
     ]
@@ -1060,5 +1060,12 @@
     "after": [
       "KA0109"
     ]
+  },
+  {
+    "id": "KA0129",
+    "title": "Two tests flaked under full-suite load",
+    "status": "planning",
+    "path": "spec/features/KA0129-two-tests-flaked-under-full-suite-load/ticket.md",
+    "updated": "2026-10-28T20:13:13.451Z"
   }
 ]

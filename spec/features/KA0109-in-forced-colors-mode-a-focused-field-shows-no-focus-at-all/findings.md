@@ -7,4 +7,4 @@
 - Where: `tests/e2e/contact-form.spec.ts` (submit-lock timeout), `tests/e2e/og-image.spec.ts` (fetch)
 - What: each failed once and passed on retry in the full run; untouched by this branch. A flaky suite can block a merge on main.
 - Suggestion: find why each times out under load and make it wait for the state it asserts.
-- Status: open
+- Status: ticket KA0129
