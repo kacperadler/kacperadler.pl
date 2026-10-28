@@ -1071,9 +1071,9 @@
   {
     "id": "KA0130",
     "title": "After sending, the \"Wiadomość wysłana.\" heading can land above the viewport",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0130-after-sending-the-wiadomosc-wys-ana-heading-can-land-above-the-viewport/ticket.md",
-    "updated": "2026-10-28T22:17:47.451Z",
+    "updated": "2026-10-28T22:22:32.791Z",
     "after": [
       "KA0113"
     ]

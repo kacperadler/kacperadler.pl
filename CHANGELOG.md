@@ -18,6 +18,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0114 One-letter Polish words end lines (e1c3a33)
 - KA0118 Audit the site design against Taste Skill and propose what to raise (35c837d)
 - KA0128 After a long message the success card is a tall, mostly empty box (d32edd4)
+- KA0130 After sending, the "Wiadomość wysłana." heading can land above the viewport (f64413f)
 
 ### Fixed
 
