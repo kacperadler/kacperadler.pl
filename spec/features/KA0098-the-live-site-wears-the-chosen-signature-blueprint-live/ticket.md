@@ -49,3 +49,4 @@ Out:
 - 2026-10-14: The human approved the ticket and confirmed blueprint-live.
 - 2026-10-14: The human: this design update runs on Opus (anthropic/claude-opus-5-5); it matters.
 - 2026-10-14: The human: the worker runs on Fable 5.1; it may adjust layout, components and propose or make copy changes, with the full direction (style, aim, positioning) in hand.
+- 2026-10-28: The human lifted the worker's budget limit (resume with no limit) after two runs spent $10 with no commits.
