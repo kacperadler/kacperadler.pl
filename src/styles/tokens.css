@@ -69,12 +69,12 @@
    *                 swapping while it loads
    *   --mb-display  headlines in heavy Geist; Geist Mono stays for labels
    * The blueprint (the engineer's drawing the page is, global.css):
-   *   --mb-enter    the entrance's easing (a fast start that settles softly):
-   *                 the first screen's parts rise into place on page load,
-   *                 each over --mb-enter-rise
+   *   --mb-enter    the entrance's easing (ease-out: the travel is seen, the
+   *                 landing is soft): the first screen's parts come into
+   *                 place on page load, each over --mb-enter-rise
    *   --mb-enter-pen  when, into the entrance, the pen starts on the hero
    *   --mb-pen      how long the pen takes over the hero; the buttons rise
-   *                 in last and the entrance ends about 1.5s after the load
+   *                 in last and the entrance ends about 1.6s after it starts
    *   --mb-note     the drawing's annotation type: small mono caps
    *   --mb-grip     the side of a selected cell's corner grips */
   --mb-rule: var(--ink);
@@ -83,9 +83,9 @@
   --mb-snap: 0.12s linear;
   --mb-slide: 0.3s ease-out;
   --mb-display: var(--sans);
-  --mb-enter: cubic-bezier(0.16, 1, 0.3, 1);
-  --mb-enter-rise: 0.5s;
-  --mb-enter-pen: 0.3s;
+  --mb-enter: cubic-bezier(0.33, 1, 0.68, 1);
+  --mb-enter-rise: 0.6s;
+  --mb-enter-pen: 0.4s;
   --mb-pen: 1s;
   --mb-note: 500 10px / 1 var(--mono);
   --mb-grip: 7px;

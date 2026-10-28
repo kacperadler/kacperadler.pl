@@ -12,10 +12,11 @@ const OTHER_PAGES = [
   "/realizacje/",
   "/this-route-does-not-exist",
 ];
-// The entrance ends by 1.5s; the hero pen runs 1s from 0.3s.
-const ENTRANCE_MS = 1500;
+// The entrance ends by 1.7s (the last trust bar cell); the hero pen runs
+// 1s from 0.4s.
+const ENTRANCE_MS = 1700;
 const PEN_MS = 1000;
-const PEN_FROM_MS = 300;
+const PEN_FROM_MS = 400;
 // Chrome writes an inset of nothing as "inset(0px)", "inset(0px 0px 0%)"...
 const UNCLIPPED = /^inset\(0(?:px|%)?(?: 0(?:px|%)?){0,3}\)$/;
 const LEGAL_PAGE = /\/polityka-prywatnosci\/?$/;
@@ -249,6 +250,7 @@ const expectFirstScreenInPlace = async (page: Page) => {
       },
       rising: {
         caption: rising(".mb-status-caption"),
+        cell: rising("#trust .mb-card:last-child"),
         ctas: rising(".mb-hero-ctas"),
         h1: rising(".mb-hero h1"),
         header: rising(".mb-header"),
@@ -270,27 +272,51 @@ test.describe("the first screen's entrance", () => {
   test.use({ contextOptions: { reducedMotion: "no-preference" } });
 
   for (const width of [1440, 360]) {
-    test(`on load the header, the headline, the hero drawing and the buttons come in as one sequence within 1.5s at ${width}px`, async ({
+    test(`on load the header, the headline, the hero drawing, the buttons and the trust bar come in as one sequence of about 1.7s at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ height: 900, width });
       await page.goto("/", { waitUntil: "load" });
-      await expect(page.locator("html")).toHaveAttribute("data-bl-enter", "");
+      await expect(page.locator("html")).toHaveAttribute("data-bl-enter", "go");
       await expect(page.locator("html")).toHaveAttribute("data-bl-live", "");
+
+      // Held at its first frame until that frame paints: every animation
+      // of the entrance started no earlier than the first contentful
+      // paint, and runs.
+      const started = await page.evaluate(() => {
+        const paint =
+          performance.getEntriesByName("first-contentful-paint")[0]
+            ?.startTime ?? Number.NaN;
+        return document
+          .getAnimations()
+          .filter(
+            (a) =>
+              a instanceof CSSAnimation && a.animationName.startsWith("bl-")
+          )
+          .map((a) => ({
+            afterPaint: Number(a.startTime) >= paint - 20,
+            state: a.playState,
+          }));
+      });
+      expect(started.length).toBeGreaterThan(0);
+      for (const a of started) {
+        expect(a.afterPaint).toBe(true);
+        expect(a.state).not.toBe("paused");
+      }
 
       const all = await motions(page);
       const byPiece = new Map(all.map((m) => [`${m.name} ${m.piece}`, m]));
       // The cast: what enters, in what order.
       const ends = (key: string) => byPiece.get(key)?.endsMs;
-      expect(ends("bl-enter-down div.mb-header")).toBe(500);
-      // The headline slides without fading: painted from the first frame,
-      // it stays the largest contentful paint.
-      expect(ends("bl-enter-slide h1")).toBe(500);
+      expect(ends("bl-enter-down div.mb-header")).toBe(600);
+      // The headline rises without fading, before the subtitle: painted
+      // from the first frame, it stays the largest contentful paint.
+      expect(ends("bl-enter-slide h1")).toBe(650);
       expect(byPiece.get("bl-enter-slide h1")?.properties).toEqual([
         "transform",
       ]);
-      expect(ends("bl-enter p.mb-hero-sub")).toBe(700);
-      expect(ends("bl-enter p.mb-status-caption")).toBe(1200);
+      expect(ends("bl-enter p.mb-hero-sub")).toBe(900);
+      expect(ends("bl-enter p.mb-status-caption")).toBe(1350);
       // The rows cascade, 80ms apart.
       expect(
         all
@@ -298,9 +324,19 @@ test.describe("the first screen's entrance", () => {
             (m) => m.name === "bl-enter" && m.piece === "div.mb-status-row"
           )
           .map((m) => m.endsMs)
-      ).toEqual([1300, 1380, 1460]);
-      expect(ends("bl-enter div.mb-status-cta")).toBe(ENTRANCE_MS);
-      expect(ends("bl-enter div.mb-hero-ctas")).toBe(ENTRANCE_MS);
+      ).toEqual([1420, 1500, 1580]);
+      expect(ends("bl-enter div.mb-status-cta")).toBe(1550);
+      expect(ends("bl-enter div.mb-hero-ctas")).toBe(1550);
+      // The trust bar closes the sequence: its caption, then the five
+      // logo cells one after another, left to right, 80ms apart.
+      expect(ends("bl-enter p.mb-trust-caption")).toBe(1450);
+      expect(
+        all
+          .filter(
+            (m) => m.name === "bl-enter" && m.piece === "li.mb-card.mb-card-sm"
+          )
+          .map((m) => Math.round(m.endsMs))
+      ).toEqual([1380, 1460, 1540, 1620, 1700]);
       for (const piece of [
         "div.container.mb-hero-grid ::before",
         "div.container.mb-hero-grid ::after",
@@ -313,8 +349,8 @@ test.describe("the first screen's entrance", () => {
       }
       // Nothing else of the blueprint moves: no piece below the first
       // screen, no ruler, nothing on a scroll timeline, nothing past
-      // 1.5s, nothing but transform and opacity in the rising ones.
-      expect(all.length).toBe(15);
+      // 1.7s, nothing but transform and opacity in the rising ones.
+      expect(all.length).toBe(21);
       for (const m of all) {
         expect(m.onScroll, m.piece).toBe(false);
         expect(m.iterations, m.piece).toBe(1);
@@ -327,11 +363,11 @@ test.describe("the first screen's entrance", () => {
         }
       }
 
-      // Held a tenth in: the header on its way down, the headline on its
+      // Held at 0.15s: the header on its way down, the headline on its
       // way up and opaque, the subtitle not yet in, the hero undrawn. At
-      // 0.6s: the headline in place, the subtitle on its last stretch,
+      // 0.8s: the headline in place, the subtitle on its last stretch,
       // the pen some way in, the buttons still to come.
-      await entranceAt(page, 100);
+      await entranceAt(page, 150);
       const early = await motions(page);
       const at = (list: Motion[], key: string) =>
         list.find((m) => `${m.name} ${m.piece}` === key)?.progress;
@@ -344,16 +380,34 @@ test.describe("the first screen's entrance", () => {
       expect(at(early, "bl-enter p.mb-hero-sub")).toBe(0);
       expect(at(early, "bl-draw aside.mb-hero-status")).toBe(0);
       expect(await shift(".mb-header")).toBeLessThan(0);
-      await entranceAt(page, 600);
+      await entranceAt(page, 800);
       const mid = await motions(page);
       expect(await shift(".mb-hero h1")).toBe(0);
       expect(at(mid, "bl-enter p.mb-hero-sub")).toBeGreaterThan(0);
       expect(at(mid, "bl-enter p.mb-hero-sub")).toBeLessThan(1);
       expect(at(mid, "bl-draw aside.mb-hero-status")).toBeCloseTo(
-        (600 - PEN_FROM_MS) / PEN_MS,
+        (800 - PEN_FROM_MS) / PEN_MS,
         2
       );
       expect(at(mid, "bl-enter div.mb-hero-ctas")).toBe(0);
+      expect(
+        mid
+          .filter((m) => m.piece === "li.mb-card.mb-card-sm")
+          .map((m) => m.progress)
+      ).toEqual([0, 0, 0, 0, 0]);
+      // At 1.2s the cells are mid-cascade, each further in than the next:
+      // the first nearly there, the last not started.
+      await entranceAt(page, 1200);
+      const cells = (await motions(page))
+        .filter((m) => m.piece === "li.mb-card.mb-card-sm")
+        .map((m) => m.progress);
+      expect(cells).toHaveLength(5);
+      expect(cells[0]).toBeGreaterThan(0.9);
+      expect(cells[4]).toBe(0);
+      for (let i = 1; i < 4; i += 1) {
+        expect(cells[i - 1], `cell ${i}`).toBeGreaterThan(cells[i] ?? 1);
+      }
+      await entranceAt(page, 800);
       await expect(page.locator(".mb-hero-status")).toHaveCSS(
         "border-top-color",
         NO_COLOR
@@ -486,7 +540,7 @@ test.describe("the first screen's entrance", () => {
     }) => {
       await page.setViewportSize({ height: 900, width: 1440 });
       await page.goto(path, { waitUntil: "load" });
-      await expect(page.locator("html")).toHaveAttribute("data-bl-enter", "");
+      await expect(page.locator("html")).toHaveAttribute("data-bl-enter", "go");
       expect(
         (await motions(page)).filter((m) => m.name !== "bl-enter-down")
       ).toEqual([]);

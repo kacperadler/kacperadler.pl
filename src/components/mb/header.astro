@@ -10,8 +10,9 @@ import Link from "./link.astro";
  * ([data-nav-cta]) and, at 880px and below instead of the links, the menu
  * button that opens the mobile sheet ([data-menu-open],
  * aria-controls="mobile-sheet"). On page load it opens the first screen's
- * entrance (global.css): it comes down from the top edge over
- * --mb-enter-rise, as the headline rises in under it. */
+ * entrance (global.css): held above the top edge until the first frame
+ * has painted, it comes down over --mb-enter-rise as the headline slides
+ * up under it. */
 ---
 
 <div class="mb-header" data-nav-wrap>
@@ -62,7 +63,11 @@ import Link from "./link.astro";
 
   @media (prefers-reduced-motion: no-preference) {
     :global(html[data-bl-enter]) .mb-header {
-      animation: bl-enter-down var(--mb-enter-rise) var(--mb-enter) both;
+      animation: bl-enter-down var(--mb-enter-rise) var(--mb-enter) both paused;
+    }
+
+    :global(html[data-bl-enter="go"]) .mb-header {
+      animation-play-state: running;
     }
   }
 

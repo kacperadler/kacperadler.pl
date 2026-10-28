@@ -110,12 +110,14 @@ button {
  * hero.astro: the datum and the title block; page-frame.astro: the
  * rulers). The page stands drawn; only the first screen enters, once, on
  * page load, in one choreographed sequence of about 1.5s (the entrance):
- * the header slides down (header.astro) as the headline slides up into
- * place, the subtitle rises in, the pen draws the hero - the datum, the brace and its callout,
- * the title block's frame and header - while the title block's caption
- * and rows cascade in, and its button and the hero buttons rise in last
- * (hero.astro). Transform and opacity only (bl-enter, bl-enter-slide,
- * bl-enter-down), no blur.
+ * the header slides down (header.astro) as the headline rises into
+ * place, the subtitle rises in after it, the pen draws the hero - the
+ * datum, the brace and its callout, the title block's frame and header -
+ * while the title block's caption and rows cascade in, its button and
+ * the hero buttons rise in (hero.astro), and the trust bar's logo cells
+ * rise in one after another, left to right, to close it (trust.astro).
+ * Transform and opacity only (bl-enter, bl-enter-slide, bl-enter-down),
+ * no blur.
  *
  * Each drawn piece of the hero (an element or a pseudo-element) reads one
  * number, --bl-p (0 undrawn, 1 drawn), and draws its own stage of it: it
@@ -130,10 +132,16 @@ button {
  * scripts/blueprint-live.ts keeps it after a ClientRouter swap) and
  * data-bl-enter (this document load gets the entrance; a swap drops it,
  * so a page reached through the ClientRouter stands at once) inline,
- * before the first paint. The motion blocks sit in the components under
- * html[data-bl-enter] and inside prefers-reduced-motion: no-preference:
- * without JavaScript, under reduced motion and after a swap nothing
- * animates, --bl-p stays at its initial 1 and everything shows at once. */
+ * before the first paint. Under data-bl-enter the entrance's animations
+ * are declared paused, so the first painted frame is their first frame
+ * (the header above the top edge, the hero's parts below their places
+ * or unwritten); once that frame is on the screen (DOMContentLoaded and
+ * two animation frames later) the same script sets data-bl-enter="go"
+ * and they run, so the whole travel is seen. The motion blocks sit in
+ * the components under html[data-bl-enter] and inside
+ * prefers-reduced-motion: no-preference: without JavaScript, under
+ * reduced motion and after a swap nothing animates, --bl-p stays at its
+ * initial 1 and everything shows at once. */
 @property --bl-p {
   syntax: "<number>";
   inherits: false;
@@ -172,7 +180,7 @@ button {
 @keyframes bl-enter {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
 
   to {
@@ -181,12 +189,12 @@ button {
   }
 }
 
-/* The headline slides up into place without fading: it is painted from
- * the first frame, so it stays the page's largest contentful paint (an
+/* The headline rises into place without fading: it is painted from the
+ * first frame, so it stays the page's largest contentful paint (an
  * element faded in from opacity 0 never counts). */
 @keyframes bl-enter-slide {
   from {
-    transform: translateY(24px);
+    transform: translateY(64px);
   }
 
   to {

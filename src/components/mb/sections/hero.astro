@@ -22,24 +22,27 @@ import Button from "../button.astro";
  * KA-001 · Arkusz 1/1") as a strip across its top, which the text column
  * is padded for, so the headline stays level with the caption.
  *
- * The entrance (global.css, html[data-bl-enter]): on page load the first
- * screen comes in as one sequence of about 1.5s, the stages overlapping
- * so nothing waits. As the header comes down (header.astro, 0-0.5s) the
- * headline slides up into place (from the first frame, painted all
- * along: it is the page's largest contentful paint, and a fade from
- * opacity 0 would take it out of that measure), then the subtitle rises
- * in (0.2s), each over --mb-enter-rise (0.5s); the pen starts at
- * --mb-enter-pen (0.3s) and
- * runs --mb-pen (1s): the cross grows from its centre (0-0.25 of the
- * pen), the datum is written (0.25-0.5), the brace runs out under the
- * headline (0.3-0.7) and gets its callout (0.7-0.9); the title block
- * traces its frame clockwise (0-0.6) and writes its header (0.5-0.8).
- * While it is traced its caption (0.7s) and its rows (0.8s, 0.88s,
- * 0.96s, a cascade) rise in, and its button and the hero buttons rise in
- * last (1s). Everything ends by 1.5s and stays. At 880px and below the
- * title block is under the fold and plays the same. Under reduced motion,
- * without JavaScript, and on a page reached through the ClientRouter,
- * everything shows at once. */
+ * The entrance (global.css, html[data-bl-enter]): the first screen paints
+ * at its first frame and holds until that frame is on the screen (the
+ * animations are declared paused; base-head.astro sets
+ * data-bl-enter="go"), then comes in as one sequence of about 1.6s, the
+ * stages overlapping so nothing waits. As the header comes down
+ * (header.astro, 0-0.6s) the headline rises 64px into place (0.05-0.65s,
+ * painted all along: it is the page's largest contentful paint, and a
+ * fade from opacity 0 would take it out of that measure), then the
+ * subtitle rises in after it (0.3-0.9s), each over --mb-enter-rise
+ * (0.6s); the
+ * pen starts at --mb-enter-pen (0.4s) and runs --mb-pen (1s): the cross
+ * grows from its centre (0-0.25 of the pen), the datum is written
+ * (0.25-0.5), the brace runs out under the headline (0.3-0.7) and gets
+ * its callout (0.7-0.9); the title block traces its frame clockwise
+ * (0-0.6) and writes its header (0.5-0.8). While it is traced its
+ * caption (0.75s) and its rows (0.82s, 0.9s, 0.98s, a cascade) rise in,
+ * and its button and the hero buttons rise in (0.95s); the trust bar
+ * closes the sequence (trust.astro, to 1.7s). At 880px and below the
+ * title block is under the fold and plays the same. Under reduced motion, without JavaScript,
+ * and on a page reached through the ClientRouter, everything shows at
+ * once. */
 const results = [
   {
     figure: "250+",
@@ -324,7 +327,8 @@ const results = [
   /* The entrance, on this document's load: the title block's frame is
    * drawn by its backgrounds, not its border, and the pen plays after the
    * header and the headline; the text, the card's parts and the buttons
-   * rise into place in order. */
+   * rise into place in order. Every animation is declared paused, at its
+   * first frame, and runs once <html> reads data-bl-enter="go". */
   @media (prefers-reduced-motion: no-preference) {
     :global(html[data-bl-enter]) .mb-hero-status {
       border-color: transparent;
@@ -336,11 +340,12 @@ const results = [
     :global(html[data-bl-enter]) h1 em::after,
     :global(html[data-bl-enter]) .mb-hero-status,
     :global(html[data-bl-enter]) .mb-hero-status::before {
-      animation: bl-draw var(--mb-pen) linear var(--mb-enter-pen) both;
+      animation: bl-draw var(--mb-pen) linear var(--mb-enter-pen) both paused;
     }
 
     :global(html[data-bl-enter]) h1 {
-      animation: bl-enter-slide var(--mb-enter-rise) var(--mb-enter) both;
+      animation: bl-enter-slide var(--mb-enter-rise) var(--mb-enter) 0.05s both
+        paused;
     }
 
     :global(html[data-bl-enter]) .mb-hero-sub,
@@ -348,24 +353,39 @@ const results = [
     :global(html[data-bl-enter]) .mb-status-caption,
     :global(html[data-bl-enter]) .mb-status-row,
     :global(html[data-bl-enter]) .mb-status-cta {
-      animation: bl-enter var(--mb-enter-rise) var(--mb-enter) both;
+      animation: bl-enter var(--mb-enter-rise) var(--mb-enter) both paused;
     }
 
     :global(html[data-bl-enter]) .mb-hero-sub {
-      animation-delay: 0.2s;
+      animation-delay: 0.3s;
     }
 
     :global(html[data-bl-enter]) .mb-status-caption {
-      animation-delay: 0.7s;
+      animation-delay: 0.75s;
     }
 
     :global(html[data-bl-enter]) .mb-status-row {
-      animation-delay: calc(0.72s + 0.08s * var(--mb-row));
+      animation-delay: calc(0.74s + 0.08s * var(--mb-row));
     }
 
     :global(html[data-bl-enter]) .mb-hero-ctas,
     :global(html[data-bl-enter]) .mb-status-cta {
-      animation-delay: 1s;
+      animation-delay: 0.95s;
+    }
+
+    :global(html[data-bl-enter="go"]) .mb-hero-grid::before,
+    :global(html[data-bl-enter="go"]) .mb-hero-grid::after,
+    :global(html[data-bl-enter="go"]) h1,
+    :global(html[data-bl-enter="go"]) h1 em::before,
+    :global(html[data-bl-enter="go"]) h1 em::after,
+    :global(html[data-bl-enter="go"]) .mb-hero-sub,
+    :global(html[data-bl-enter="go"]) .mb-hero-ctas,
+    :global(html[data-bl-enter="go"]) .mb-hero-status,
+    :global(html[data-bl-enter="go"]) .mb-hero-status::before,
+    :global(html[data-bl-enter="go"]) .mb-status-caption,
+    :global(html[data-bl-enter="go"]) .mb-status-row,
+    :global(html[data-bl-enter="go"]) .mb-status-cta {
+      animation-play-state: running;
     }
   }
 

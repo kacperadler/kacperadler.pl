@@ -99,13 +99,21 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
 {/* The blueprint (global.css, scripts/blueprint-live.ts): with JavaScript
  * <html> is marked live (the script runs) and enter (this document load
  * plays the first screen's entrance) here, before the body is parsed, so
- * nothing paints in place and then jumps back to start. A ClientRouter
- * swap takes the new document's bare <html>: the script restores the
- * live mark, not the entrance. Without JavaScript neither is set and
- * everything shows at once. */}
+ * nothing paints in place and then jumps back to start. The entrance
+ * holds at its first frame until that frame has been painted (the
+ * document parsed, then two animation frames), then "go" runs it, so
+ * the header's drop and the headline's slide are seen from their start.
+ * A ClientRouter swap takes the new document's bare <html>: the script
+ * restores the live mark, not the entrance. Without JavaScript neither
+ * is set and everything shows at once. */}
 <script is:inline>
   document.documentElement.dataset.blLive = "";
   document.documentElement.dataset.blEnter = "";
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.documentElement.dataset.blEnter = "go";
+    });
+  });
 </script>
 {/* Umami analytics, self-hosted at analytics.kacperadler.pl. PROD-only
  * so dev pageviews don't pollute the data.
