@@ -58,6 +58,12 @@
   --mb-section-gap: 136px;
   --mb-block-gap: 48px;
 
+  /* The sticky header's height (header.astro, its min-height), read again
+   * as the page's scroll padding (global.css) so an in-page link parks its
+   * section just under the header. One row on desktop and phones; below
+   * 360px the header's CTA and menu button take a second row. */
+  --mb-header: 71px;
+
   /* Minimal brutalism:
    *   --mb-rule     the 1px ink rule that draws a cell
    *   --mb-hair     the hairline for dividers inside a cell and the page edges
@@ -96,5 +102,12 @@
   :root {
     --mb-section-gap: 88px;
     --mb-block-gap: 32px;
+    --mb-header: 65px;
+  }
+}
+
+@media (max-width: 359px) {
+  :root {
+    --mb-header: 105px;
   }
 }

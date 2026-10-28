@@ -273,6 +273,54 @@ test.describe("home page", () => {
     expect(Math.abs(button.width - grid.width)).toBeLessThan(TOLERANCE);
   });
 
+  test("fewer paragraphs end on a lone word than with plain wrapping, on the desktop and on a phone", async ({
+    page,
+  }) => {
+    // The text blocks of at least four words whose last word sits alone on
+    // its line, with the page's wrapping and then with plain `wrap`.
+    const lone = () =>
+      page.evaluate(() => {
+        const count = () =>
+          Array.from(
+            document.querySelectorAll("main :is(p, li, dd, summary, h3)")
+          ).filter((el) => {
+            const words: Range[] = [];
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+              for (const word of node.textContent?.matchAll(/\S+/g) ?? []) {
+                const range = document.createRange();
+                range.setStart(node, word.index);
+                range.setEnd(node, word.index + word[0].length);
+                words.push(range);
+              }
+            }
+            const [before, last] = words.slice(-2);
+            return (
+              words.length >= 4 &&
+              before !== undefined &&
+              last !== undefined &&
+              last.getBoundingClientRect().top -
+                before.getBoundingClientRect().top >
+                4
+            );
+          }).length;
+        const pretty = count();
+        document.documentElement.style.textWrap = "wrap";
+        const plain = count();
+        document.documentElement.style.textWrap = "";
+        return { plain, pretty };
+      });
+
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    const wide = await lone();
+    expect(wide.pretty).toBeLessThan(wide.plain);
+
+    await page.setViewportSize({ height: 844, width: 390 });
+    const narrow = await lone();
+    expect(narrow.pretty).toBeLessThan(narrow.plain);
+  });
+
   test("nothing on the page is a placeholder or removed copy", async ({
     page,
     request,
