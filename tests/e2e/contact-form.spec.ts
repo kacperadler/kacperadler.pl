@@ -1,4 +1,8 @@
-import { existsSync } from "node:fs";
+import { spawn } from "node:child_process";
+import { once } from "node:events";
+import { existsSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
@@ -15,8 +19,14 @@ interface SavedLead {
 
 // The preview's SQLite file (playwright.config.ts). Every test uses an e-mail
 // of its own, so the rows it finds are its own even when tests run at once.
-function savedLeads(email: string): SavedLead[] {
-  const path = process.env.E2E_LEADS_DB;
+// Tests that run at once also write at once: a read that comes while the
+// server writes another test's lead waits for that write (the busy timeout
+// the server's own connection has, src/lib/leads-db.ts) instead of failing
+// with "database is locked".
+function savedLeads(
+  email: string,
+  path = process.env.E2E_LEADS_DB
+): SavedLead[] {
   if (!path) {
     throw new Error("E2E_LEADS_DB is not set (playwright.config.ts sets it)");
   }
@@ -24,6 +34,7 @@ function savedLeads(email: string): SavedLead[] {
     return [];
   }
   const db = new DatabaseSync(path, { readOnly: true });
+  db.exec("PRAGMA busy_timeout = 5000");
   try {
     return db
       .prepare(
@@ -105,6 +116,13 @@ function contrast(a: string, b: string): number {
   return ((hi ?? 0) + 0.05) / ((lo ?? 0) + 0.05);
 }
 
+// A test opens the form with goto("/#contact") alone: goto waits for the load
+// event, and the form's script (a module script) runs before it. No test
+// waits for "networkidle": on the preview build the page loads Umami from
+// analytics.kacperadler.pl when the browser is idle and sends it a pageview,
+// so the idle network came after two round trips to a remote server, or
+// before them when the machine was busy enough to delay the idle callback.
+// A slow answer from that server ran the wait into the 30 s test timeout.
 test.describe("contact form", () => {
   test('the company label reads "Firma", then a smaller, dimmer "(opcjonalnie)" still at 4.5:1', async ({
     page,
@@ -216,7 +234,6 @@ test.describe("contact form", () => {
       return route.fulfill({ json: { ok: true }, status: 200 });
     });
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
 
     const company = page.locator('[data-contact-form] [data-field="company"]');
     await page.fill(
@@ -262,7 +279,6 @@ test.describe("contact form", () => {
 
     await stubUmami(page);
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
 
     await page.fill('[data-contact-form] input[name="email"]', email);
     await page.fill(
@@ -316,7 +332,6 @@ test.describe("contact form", () => {
       route.fulfill({ json: { ok: true }, status: 200 })
     );
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
 
     const box = page.locator('[data-contact-form] textarea[name="message"]');
     const sheet = page.locator("[data-contact-wrap]");
@@ -403,7 +418,6 @@ test.describe("contact form", () => {
   }) => {
     const email = uniqueEmail("no-company");
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
 
     await page.fill('[data-contact-form] input[name="email"]', email);
     await pickType(page, "other");
@@ -568,6 +582,41 @@ test.describe("contact form", () => {
     ]);
   });
 
+  // Under several workers a test read the store while the server wrote
+  // another test's lead, and failed with "database is locked". Here another
+  // process holds the write lock for half a second: the read waits for it and
+  // finds the lead written under it.
+  test("reading the lead store waits for a lead being written", async () => {
+    const path = join(
+      mkdtempSync(join(tmpdir(), "kacperadler-leads-lock-")),
+      "leads.sqlite"
+    );
+    const email = uniqueEmail("locked");
+    const writer = spawn(
+      process.execPath,
+      [
+        "-e",
+        `const { DatabaseSync } = require("node:sqlite");
+        const db = new DatabaseSync(process.argv[1]);
+        db.exec("CREATE TABLE leads (email TEXT, type TEXT, message TEXT, company TEXT)");
+        db.exec("BEGIN EXCLUSIVE");
+        db.prepare("INSERT INTO leads VALUES (?, 'other', 'Treść', '')").run(process.argv[2]);
+        process.stdout.write("locked");
+        setTimeout(() => db.exec("COMMIT"), 500);`,
+        path,
+        email,
+      ],
+      { stdio: ["ignore", "pipe", "inherit"] }
+    );
+    const exited = once(writer, "exit");
+    await once(writer.stdout, "data");
+
+    expect(savedLeads(email, path)).toEqual([
+      { company: "", email, message: "Treść", type: "other" },
+    ]);
+    expect(await exited).toEqual([0, null]);
+  });
+
   test("the project types are checkboxes a keyboard can tick, several at once", async ({
     page,
   }) => {
@@ -575,7 +624,6 @@ test.describe("contact form", () => {
       route.fulfill({ json: { ok: true }, status: 200 })
     );
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
 
     const types = page.locator('[data-contact-form] input[name="type"]');
     await expect(types).toHaveCount(4);
@@ -698,7 +746,6 @@ test.describe("contact form", () => {
     );
 
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
 
     await page.fill(
       '[data-contact-form] input[name="email"]',
@@ -742,7 +789,6 @@ test.describe("contact form", () => {
 
     await stubUmami(page);
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
 
     await page.fill(
       '[data-contact-form] input[name="email"]',
@@ -795,7 +841,6 @@ test.describe("contact form", () => {
     });
 
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
 
     const email = page.locator('[data-contact-form] input[name="email"]');
     const company = page.locator('[data-contact-form] input[name="company"]');
@@ -870,7 +915,6 @@ test.describe("contact form", () => {
 
     await stubUmami(page);
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
 
     await page.fill(
       '[data-contact-form] input[name="email"]',
