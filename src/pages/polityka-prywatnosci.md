@@ -2,7 +2,7 @@
 layout: "@/layouts/legal-layout.astro"
 title: Polityka prywatności
 description: Jak przetwarzam Twoje dane przesyłane przez kacperadler.pl - zakres, podstawa prawna, retencja i Twoje prawa wynikające z RODO.
-lastUpdated: "2026-10-10"
+lastUpdated: "2026-10-28"
 ---
 
 ## 1. Administrator danych
@@ -22,6 +22,7 @@ Kontakt w sprawach związanych z danymi osobowymi: **kontakt@kacperadler.pl**.
 Dane osobowe zbieram, gdy sam przekazujesz je przez formularz kontaktowy w sekcji „Kontakt" na stronie kacperadler.pl. Są to:
 
 - adres e-mail,
+- nazwa firmy, jeśli ją podasz (pole nieobowiązkowe),
 - typ projektu, którego dotyczy zapytanie (z predefiniowanej listy),
 - treść wiadomości.
 

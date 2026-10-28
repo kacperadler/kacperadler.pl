@@ -13,7 +13,9 @@ import Label from "./label.astro";
  *     responsive (beside once the field is at least 480px wide, through a
  *     container query).
  *   - `required` marks the label with a coral (`--error`) asterisk; the
- *     control carries `required` itself. */
+ *     control carries `required` itself.
+ *   - `optional` follows the label with "(opcjonalnie)", a size smaller and
+ *     in `--muted` (6.5:1 on the panel), so it reads after the name. */
 interface Props {
   description?: string;
   disabled?: boolean;
@@ -22,6 +24,7 @@ interface Props {
   invalid?: boolean;
   label: string;
   name: string;
+  optional?: boolean;
   orientation?: "vertical" | "horizontal" | "responsive";
   required?: boolean;
 }
@@ -34,6 +37,7 @@ const {
   invalid = false,
   label,
   name,
+  optional = false,
   orientation = "vertical",
   required = false,
 } = Astro.props;
@@ -49,6 +53,8 @@ const {
     <Label disabled={disabled} for={forId}
       >{label}{required && (
         <span aria-hidden="true" class="mb-field-required" set:text="*" />
+      )}{optional && (
+        <span class="mb-field-optional" set:text=" (opcjonalnie)" />
       )}</Label
     >
     <div class="mb-field-control">
@@ -102,6 +108,11 @@ const {
   .mb-field-required {
     margin-left: 2px;
     color: var(--error);
+  }
+
+  .mb-field-optional {
+    font-size: 10px;
+    color: var(--muted);
   }
 
   .mb-field-description {

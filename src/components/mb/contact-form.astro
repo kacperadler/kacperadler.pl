@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import { projectTypes } from "@/lib/lead";
+import { MAX_COMPANY_LENGTH, projectTypes } from "@/lib/lead";
 import Alert from "./alert.astro";
 import Button from "./button.astro";
 import Choice from "./choice.astro";
@@ -20,11 +20,12 @@ import Textarea from "./textarea.astro";
  * that field. While it is sending, contact-form.ts disables every field
  * and the submit button; `state` "submitting" renders them disabled too.
  * The form and the success card stack in one cell, so the page does not
- * jump when one replaces the other. The project types are <Choice>
- * checkboxes, so a visitor can tick several. Once the sheet is at least
- * 720px wide (a container query), the email and the project types sit
- * side by side above the message, the chips as high as the email field
- * and level with it.
+ * jump when one replaces the other. The fields go in the brief's order:
+ * email, company (optional: <Field optional> says so), project types, message.
+ * The project types are <Choice> checkboxes, so a visitor can tick
+ * several. Once the sheet is at least 720px wide (a container query), the
+ * email and the company sit side by side, the project types in one row
+ * under them, the chips as high as the fields.
  *
  * For the catalogue (/ui), which shows every state at once:
  *   state       the wrapper's starting data-state, with the fields, the
@@ -80,23 +81,41 @@ const id = (name: string) => `${idPrefix}-${name}`;
       </Field>
 
       <Field
-        errorMessage="Wybierz co najmniej jedną opcję."
+        errorMessage={`Nazwa firmy może mieć najwyżej ${MAX_COMPANY_LENGTH} znaków.`}
+        for={id("company")}
         invalid={invalid}
-        label="Czego potrzebujesz"
-        name="type"
+        label="Firma"
+        name="company"
+        optional
       >
-        <fieldset aria-label="Czego potrzebujesz" class="mb-choices">
-          {projectTypes.map((option) => (
-            <Choice
-              disabled={submitting}
-              label={option.label}
-              name="type"
-              value={option.value}
-            />
-          ))}
-        </fieldset>
+        <Input
+          autocomplete="organization"
+          disabled={submitting}
+          id={id("company")}
+          name="company"
+          placeholder="Nazwa firmy"
+          type="text"
+        />
       </Field>
     </div>
+
+    <Field
+      errorMessage="Wybierz co najmniej jedną opcję."
+      invalid={invalid}
+      label="Czego potrzebujesz"
+      name="type"
+    >
+      <fieldset aria-label="Czego potrzebujesz" class="mb-choices">
+        {projectTypes.map((option) => (
+          <Choice
+            disabled={submitting}
+            label={option.label}
+            name="type"
+            value={option.value}
+          />
+        ))}
+      </fieldset>
+    </Field>
 
     <Field
       errorMessage="Dodaj krótki opis projektu."

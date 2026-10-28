@@ -1,13 +1,15 @@
 /* POST /api/lead - the contact form's lead store, the one route rendered on
  * demand (Node adapter); every page stays prerendered.
  *
- * It takes JSON { email, types, message, website }, `types` an array of one
- * or more project types (lib/lead.ts). A filled honeypot
+ * It takes JSON { email, company, types, message, website }, `types` an
+ * array of one or more project types, `company` optional (lib/lead.ts; a
+ * missing or non-string company is saved as ''). A filled honeypot
  * (website) gets 200 and saves nothing; a lead that fails lib/lead.ts's
  * checks gets 400; a valid one is saved in SQLite (lib/leads-db.ts) and gets
  * 200, or 500 when it cannot be saved. After the save an e-mail with the lead
- * number and project types (no visitor data) goes out through Resend
- * (lib/send-email.ts); a send that fails or is not configured is only logged.
+ * number and project types (no visitor data: no e-mail, company or message)
+ * goes out through Resend (lib/send-email.ts); a send that fails or is not
+ * configured is only logged.
  *
  * Settings come from process.env on each request, not import.meta.env,
  * which Astro would bake into the build:
@@ -50,6 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
     ? body.types.map((type) => (typeof type === "string" ? type.trim() : ""))
     : [];
   const lead = {
+    company: field("company"),
     email: field("email"),
     message: field("message"),
     types,
@@ -59,6 +62,7 @@ export const POST: APIRoute = async ({ request }) => {
     return json(400, {
       error: "invalid",
       fields: Object.entries({
+        company: check.company,
         email: check.email,
         message: check.message,
         types: check.types,
@@ -103,7 +107,7 @@ export const POST: APIRoute = async ({ request }) => {
         `Typ projektu: ${label}`,
         `Czas: ${new Date().toISOString()}`,
         "",
-        "Email i treść są w bazie. W terminalu kontenera w Dokploy:",
+        "Email, firma i treść są w bazie. W terminalu kontenera w Dokploy:",
         `node -e "const {DatabaseSync}=require('node:sqlite');console.table(new DatabaseSync(process.env.LEADS_DB_PATH,{readOnly:true}).prepare('select * from leads where id = ${id}').all())"`,
       ].join("\n"),
       to: LEAD_NOTIFY_TO,

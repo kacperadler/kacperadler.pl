@@ -13,8 +13,9 @@
  * Submit flow: validate client-side with lib/lead.ts's checkLead (the
  * same rules the server applies), drop silently if the honeypot is
  * filled, then POST the payload as JSON to /api/lead, which saves it in
- * SQLite. The project types are checkboxes: every checked one goes in
- * `types`. Any answer other than 2xx, or no answer, is "error-submit".
+ * SQLite. The company is optional (empty passes). The project types are
+ * checkboxes: every checked one goes in `types`. Any answer other than
+ * 2xx, or no answer, is "error-submit".
  *
  * Listeners are document-delegated so they survive ClientRouter
  * swaps. astro:page-load resets the wrapper to "idle" so navigating
@@ -88,6 +89,7 @@ function setFieldInvalid(
 function readPayload(form: HTMLFormElement): Lead {
   const data = new FormData(form);
   return {
+    company: String(data.get("company") ?? "").trim(),
     email: String(data.get("email") ?? "").trim(),
     message: String(data.get("message") ?? "").trim(),
     types: data.getAll("type").map((type) => String(type).trim()),
@@ -97,6 +99,7 @@ function readPayload(form: HTMLFormElement): Lead {
 function validate(form: HTMLFormElement, payload: Lead): boolean {
   const check = checkLead(payload);
   setFieldInvalid(form, "email", !check.email);
+  setFieldInvalid(form, "company", !check.company);
   setFieldInvalid(form, "type", !check.types);
   setFieldInvalid(form, "message", !check.message);
   return check.ok;
@@ -124,6 +127,7 @@ async function submitLead(payload: Lead): Promise<boolean> {
 function clearState(form: HTMLFormElement): void {
   setState(form, "idle");
   setFieldInvalid(form, "email", false);
+  setFieldInvalid(form, "company", false);
   setFieldInvalid(form, "type", false);
   setFieldInvalid(form, "message", false);
 }
