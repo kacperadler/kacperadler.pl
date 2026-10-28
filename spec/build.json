@@ -767,9 +767,9 @@
   {
     "id": "KA0096",
     "title": "The contact form asks for the company name, optionally",
-    "status": "review",
+    "status": "in-progress",
     "path": "spec/features/KA0096-the-contact-form-asks-for-the-company-name-optionally/ticket.md",
-    "updated": "2026-10-28T17:22:04.732Z",
+    "updated": "2026-10-28T17:23:41.341Z",
     "after": [
       "KA0105"
     ]
@@ -839,9 +839,9 @@
   {
     "id": "KA0105",
     "title": "In-page links park the section head under the sticky header",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0105-in-page-links-park-the-section-head-under-the-sticky-header/ticket.md",
-    "updated": "2026-10-28T17:14:53.175Z"
+    "updated": "2026-10-28T17:23:48.260Z"
   },
   {
     "id": "KA0106",
