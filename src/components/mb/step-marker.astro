@@ -4,7 +4,9 @@
  * the row's height, so the mark sits on the row's vertical centre however
  * tall the card is. The rows stack in a list, so the rails join into one
  * line that runs from the first mark to the last (the first row's rail
- * starts at its centre, the last one's ends there).
+ * starts at its centre, the last one's ends there). The rail is a centre
+ * line, dash-dot, standing drawn from the start (global.css: only the
+ * hero enters on page load).
  *
  * The rail fills as the page scrolls: a 2px blue line over the ink one
  * follows a line across the middle of the viewport (each row's segment
@@ -52,9 +54,14 @@ const { num } = Astro.props;
   }
 
   .mb-step-marker::before {
+    --bl-s: var(--bl-p);
     width: 1px;
     content: "";
     background: var(--mb-rule);
+    clip-path: inset(0 0 calc((1 - var(--bl-e)) * 100%) 0);
+    mask:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='16'%3E%3Cpath d='M0 0h1v9H0zM0 12h1v1H0z'/%3E%3C/svg%3E")
+      0 0 / 1px 16px repeat-y;
   }
 
   /* The rail runs from the first mark to the last. */

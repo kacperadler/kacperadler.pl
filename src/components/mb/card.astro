@@ -1,15 +1,19 @@
 ---
-/* Card: a cell drawn by a 1px ink rule on the substrate. Hover lights it
- * from inside - a lighter panel, and a 3px blue top rule that slides in and
- * out at `--mb-slide` - and moves nothing; [data-state="hover"] forces it on
- * the catalogue page (/ui). The rule follows a mouse: it draws in from the
- * side edge nearer where the pointer came in and leaves toward the side
- * nearer where it went out (through the top or bottom, the nearer side by
- * horizontal position), so a sweep across a grid reads as one movement
- * either way. Without a mouse (touch, pen, keyboard, no JavaScript) it draws
- * in from the left and leaves to the right. A card that is a link (`tag`
- * "a") presses to the flat panel ([data-state="pressed"]) and its focus ring
- * grows out of the edge.
+/* Card: a cell drawn by a 1px ink rule on the substrate, numbered on its
+ * top rule as an item of its section ("01.3": the `mb-section` counter,
+ * then `bl-cell`, which <SectionHead> resets). Hover selects it as a CAD
+ * selection does: it lights from inside - a lighter panel - under four
+ * square blue grips on the corners, and the item number fills blue and
+ * reads the cell's outer width ("01.3 ↔ 368"); nothing moves.
+ * [data-state="hover"] forces it on the catalogue page (/ui). A card that
+ * is a link (`tag` "a") presses to the flat panel ([data-state="pressed"])
+ * and its focus ring grows out of the edge.
+ *
+ * It stands drawn from the start (global.css: only the hero enters on page
+ * load). Its frame and number still read --bl-p, at its initial 1, in
+ * stages (the frame clockwise from the top-left corner over 0-0.8, the
+ * number over 0.8-1), so a pen could trace a cell again without a new
+ * rule.
  *
  * shadcn's parts are named slots: "image" (full bleed on top), "title" (in
  * `titleAs`, h3 by default), "description", "action" (beside the title),
@@ -23,6 +27,7 @@ interface Props {
   href?: string;
   rel?: string;
   size?: "default" | "sm";
+  style?: string;
   tag?: "article" | "li" | "div" | "a";
   target?: string;
   titleAs?: "h2" | "h3";
@@ -82,81 +87,33 @@ const hasHeader = has("title") || has("description") || has("action");
   )}
 </Tag>
 
-<script>
-  // Turns the top rule's two ends for a mouse: data-bar-in="right" grows it
-  // from the right, data-bar-out="left" gathers it at the left. The entry
-  // side lives only while the pointer is in, the exit side until the rule
-  // has slid out, so touch, pen and keyboard always meet the CSS default
-  // (in from the left, out to the right). Under reduced motion the rule
-  // does not slide, so nothing is turned. Delegated from document in the
-  // capture phase (pointerenter and pointerleave do not bubble), so cards
-  // swapped in by ClientRouter work too.
-  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-
-  const cardOf = (event: Event) =>
-    event.target instanceof HTMLElement &&
-    event.target.classList.contains("mb-card")
-      ? event.target
-      : null;
-
-  const nearerSide = (card: HTMLElement, x: number) => {
-    const box = card.getBoundingClientRect();
-    return x < box.left + box.width / 2 ? "left" : "right";
-  };
-
-  document.addEventListener(
-    "pointerenter",
-    (event) => {
-      const card = cardOf(event);
-      if (!card) {
-        return;
-      }
-      delete card.dataset.barOut;
-      if (event.pointerType === "mouse" && !reducedMotion.matches) {
-        card.dataset.barIn = nearerSide(card, event.clientX);
-      }
-    },
-    true
-  );
-
-  document.addEventListener(
-    "pointerleave",
-    (event) => {
-      const card = cardOf(event);
-      if (!card) {
-        return;
-      }
-      delete card.dataset.barIn;
-      if (event.pointerType === "mouse" && !reducedMotion.matches) {
-        card.dataset.barOut = nearerSide(card, event.clientX);
-      }
-    },
-    true
-  );
-
-  document.addEventListener("transitionend", (event) => {
-    const card = cardOf(event);
-    if (
-      card &&
-      event.pseudoElement === "::before" &&
-      event.propertyName === "transform" &&
-      !card.matches(":hover")
-    ) {
-      delete card.dataset.barOut;
-    }
-  });
-</script>
-
 <style>
   .mb-card {
     --mb-card-pad: var(--v2-space-lg);
+    --bl-s: clamp(0, var(--bl-p) / 0.8, 1);
     position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--v2-space-md);
     padding: var(--mb-card-pad);
     color: var(--ink);
+    counter-increment: bl-cell;
     background: var(--v2-bg);
+    background-image:
+      linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0),
+      linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0);
+    background-repeat: no-repeat;
+    background-position:
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%;
+    background-origin: border-box;
+    background-size:
+      calc(clamp(0, var(--bl-e) * 4, 1) * 100%) 1px,
+      1px calc(clamp(0, var(--bl-e) * 4 - 1, 1) * 100%),
+      calc(clamp(0, var(--bl-e) * 4 - 2, 1) * 100%) 1px,
+      1px calc(clamp(0, var(--bl-e) * 4 - 3, 1) * 100%);
     border: 1px solid var(--mb-rule);
     transition:
       background-color var(--mb-snap),
@@ -167,42 +124,101 @@ const hasHeader = has("title") || has("description") || has("action");
     outline-offset: 0;
   }
 
-  /* At rest the rule is gathered at the right edge, so it leaves that way;
-   * hovered it grows from the left. The script above turns either end for
-   * a mouse. */
+  /* The item number on the top rule. */
   .mb-card::before {
+    --bl-s: clamp(0, var(--bl-p) * 5 - 4, 1);
     position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    height: 3px;
+    top: -1px;
+    left: 12px;
+    z-index: 2;
+    padding: 3px 6px;
+    font: var(--mb-note);
+    color: var(--ink-2);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
     pointer-events: none;
-    content: "";
-    background: var(--blue);
-    transform: scaleX(0);
-    transform-origin: right center;
-    transition: transform var(--mb-slide);
+    content:
+      counter(mb-section, decimal-leading-zero) "." counter(bl-cell) / "";
+    background: var(--v2-bg);
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
+    transform: translateY(-50%);
+    transition:
+      background-color var(--mb-snap),
+      color var(--mb-snap);
   }
 
-  .mb-card[data-bar-out="left"]::before {
-    transform-origin: left center;
+  /* Grips: four squares on the corners, shown selected. One box on the
+   * padding edge, painted past it by its outline and inside by its inset
+   * shadow (ink overflow only: a box placed past the edge would widen the
+   * cell's scrollable overflow), cut to the four corners. */
+  .mb-card::after {
+    --bl-out: calc((var(--mb-grip) + 1px) / 2);
+    --bl-in: calc((var(--mb-grip) - 1px) / 2);
+    --bl-o: calc(-1 * var(--bl-out));
+    --bl-xo: calc(100% + var(--bl-out));
+    --bl-xi: calc(100% - var(--bl-in));
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    visibility: hidden;
+    pointer-events: none;
+    outline: var(--bl-out) solid var(--blue);
+    content: "";
+    box-shadow: inset 0 0 0 var(--bl-in) var(--blue);
+    clip-path: polygon(
+      var(--bl-o) var(--bl-o),
+      var(--bl-in) var(--bl-o),
+      var(--bl-in) var(--bl-in),
+      var(--bl-o) var(--bl-in),
+      var(--bl-o) var(--bl-o),
+      var(--bl-xi) var(--bl-o),
+      var(--bl-xo) var(--bl-o),
+      var(--bl-xo) var(--bl-in),
+      var(--bl-xi) var(--bl-in),
+      var(--bl-xi) var(--bl-o),
+      var(--bl-o) var(--bl-o),
+      var(--bl-o) var(--bl-xi),
+      var(--bl-in) var(--bl-xi),
+      var(--bl-in) var(--bl-xo),
+      var(--bl-o) var(--bl-xo),
+      var(--bl-o) var(--bl-xi),
+      var(--bl-xi) var(--bl-xi),
+      var(--bl-xo) var(--bl-xi),
+      var(--bl-xo) var(--bl-xo),
+      var(--bl-xi) var(--bl-xo),
+      var(--bl-xi) var(--bl-xi),
+      var(--bl-o) var(--bl-xi)
+    );
   }
 
   .mb-card:is(:hover, [data-state="hover"]) {
-    background: var(--v2-panel-elevated);
+    background-color: var(--v2-panel-elevated);
   }
 
   .mb-card:is(:hover, [data-state="hover"])::before {
-    transform: scaleX(1);
-    transform-origin: left center;
+    color: var(--v2-bg);
+    background: var(--blue);
   }
 
-  .mb-card[data-bar-in="right"]:is(:hover, [data-state="hover"])::before {
-    transform-origin: right center;
+  /* Under the cursor the item number reads the cell's outer width, a
+   * number of px scripts/blueprint-live.ts keeps in --bl-w on the cell (a
+   * query container would do it in CSS alone, but its layout containment
+   * breaks the subgrids the home sections make of their cells); without
+   * the script the number stands alone. */
+  :global(html[data-bl-live])
+  .mb-card:is(:hover, [data-state="hover"])::before {
+    content:
+      counter(mb-section, decimal-leading-zero) "." counter(bl-cell) " ↔ "
+      counter(bl-w) / "";
+    counter-reset: bl-w var(--bl-w);
+  }
+
+  .mb-card:is(:hover, [data-state="hover"])::after {
+    visibility: visible;
   }
 
   a.mb-card:is(:active, [data-state="pressed"]) {
-    background: var(--v2-panel);
+    background-color: var(--v2-panel);
   }
 
   .mb-card-image {

@@ -20,7 +20,7 @@ import SectionHead from "../section-head.astro";
  * LinkedIn / GitHub link cells; under them a closed accordion with the
  * full experience list, a cell table three a row on the desktop. The table
  * has no frame of its own: its cells are ruled only between each other,
- * and a hovered cell lights no panel, only the blue top rule slides in.
+ * and a hovered cell lights no panel, only the grips and the number show.
  * Logos stay grey until their cell is hovered. The badge is "teraz" for
  * the current role, the entry's own `badge` field (e.g. "Zlecenie"), or
  * the year range; an entry with a case study links to it. The list is in
@@ -212,10 +212,10 @@ const caseStudies = await caseStudiesByExperience();
   }
 
   /* A lit panel would end in mid-air at the table's open edges, so here
-   * the hover keeps the cell's ground and shows only the card's blue top
-   * rule sliding in and the logo taking its colour. */
+   * the hover keeps the cell's ground and shows only the card's grips and
+   * blue item number and the logo taking its colour. */
   .mb-about-experience :global(.mb-card:is(:hover, [data-state="hover"])) {
-    background: var(--v2-bg);
+    background-color: var(--v2-bg);
   }
 
   .mb-exp-head {

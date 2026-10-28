@@ -102,3 +102,113 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+/* The blueprint: the page is an engineer's drawing (section-head.astro:
+ * a dimension line, ticks, the width, the § label, the brace under the
+ * <em> and its callout; card.astro: the numbered frame, the grips;
+ * step-marker.astro: the dash-dot rail; footer.astro: the legend;
+ * hero.astro: the datum and the title block; page-frame.astro: the
+ * rulers). The page stands drawn; only the first screen enters, once, on
+ * page load, in one choreographed sequence of about 1.5s (the entrance):
+ * the header slides down (header.astro) as the headline rises into
+ * place, the subtitle rises in after it, the pen draws the hero - the
+ * datum, the brace and its callout, the title block's frame and header -
+ * while the title block's caption and rows cascade in, its button and
+ * the hero buttons rise in (hero.astro), and the trust bar's logo cells
+ * rise in one after another, left to right, to close it (trust.astro).
+ * Transform and opacity only (bl-enter, bl-enter-slide, bl-enter-down),
+ * no blur.
+ *
+ * Each drawn piece of the hero (an element or a pseudo-element) reads one
+ * number, --bl-p (0 undrawn, 1 drawn), and draws its own stage of it: it
+ * sets --bl-s, its stage's share of the pen run linearly from 0 to 1, and
+ * draws by --bl-e, the same eased (a smoothstep: it starts and ends
+ * softly), so every stage eases on its own rather than the run as a
+ * whole. --bl-e is set here on every box, so it reads that box's own
+ * --bl-s. The pen runs bl-draw over --mb-pen, --mb-enter-pen into the
+ * entrance, after the header and the headline.
+ *
+ * base-head.astro marks <html> data-bl-live (the page's script runs:
+ * scripts/blueprint-live.ts keeps it after a ClientRouter swap) and
+ * data-bl-enter (this document load gets the entrance; a swap drops it,
+ * so a page reached through the ClientRouter stands at once) inline,
+ * before the first paint. Under data-bl-enter the entrance's animations
+ * are declared paused, so the first painted frame is their first frame
+ * (the header above the top edge, the hero's parts below their places
+ * or unwritten); once that frame is on the screen (DOMContentLoaded and
+ * two animation frames later) the same script sets data-bl-enter="go"
+ * and they run, so the whole travel is seen. The motion blocks sit in
+ * the components under html[data-bl-enter] and inside
+ * prefers-reduced-motion: no-preference: without JavaScript, under
+ * reduced motion and after a swap nothing animates, --bl-p stays at its
+ * initial 1 and everything shows at once. */
+@property --bl-p {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+/* A width in px as a number, for a dimension written in counter(): a
+ * section head's own (section-head.astro, from its container size), a
+ * cell's (scripts/blueprint-live.ts sets it on the cell, its item number
+ * inherits it). */
+@property --bl-w {
+  syntax: "<integer>";
+  inherits: true;
+  initial-value: 0;
+}
+
+*,
+::before,
+::after {
+  --bl-e: calc(var(--bl-s) * var(--bl-s) * (3 - 2 * var(--bl-s)));
+}
+
+/* The run is linear on purpose: each stage eases itself (--bl-e), so an
+ * eased run would ease the stages in its middle twice and hurry them. */
+@keyframes bl-draw {
+  from {
+    --bl-p: 0;
+  }
+
+  to {
+    --bl-p: 1;
+  }
+}
+
+/* The entrance: a part rises into place. */
+@keyframes bl-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* The headline rises into place without fading: it is painted from the
+ * first frame, so it stays the page's largest contentful paint (an
+ * element faded in from opacity 0 never counts). */
+@keyframes bl-enter-slide {
+  from {
+    transform: translateY(64px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* The header comes down from the top edge. */
+@keyframes bl-enter-down {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}

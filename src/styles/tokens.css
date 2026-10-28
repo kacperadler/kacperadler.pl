@@ -65,15 +65,30 @@
    *                 contact form); a button's white layer sits a tighter 2px
    *                 away, set in button.astro
    *   --mb-snap     every state change: short and linear, a switch, not a drift
-   *   --mb-slide    the two slides that travel: a button's label and spinner
-   *                 swapping while it loads, a card's top rule drawing in and out
-   *   --mb-display  headlines in heavy Geist; Geist Mono stays for labels */
+   *   --mb-slide    the one slide that travels: a button's label and spinner
+   *                 swapping while it loads
+   *   --mb-display  headlines in heavy Geist; Geist Mono stays for labels
+   * The blueprint (the engineer's drawing the page is, global.css):
+   *   --mb-enter    the entrance's easing (ease-out: the travel is seen, the
+   *                 landing is soft): the first screen's parts come into
+   *                 place on page load, each over --mb-enter-rise
+   *   --mb-enter-pen  when, into the entrance, the pen starts on the hero
+   *   --mb-pen      how long the pen takes over the hero; the buttons rise
+   *                 in last and the entrance ends about 1.6s after it starts
+   *   --mb-note     the drawing's annotation type: small mono caps
+   *   --mb-grip     the side of a selected cell's corner grips */
   --mb-rule: var(--ink);
   --mb-hair: var(--v2-line);
   --mb-shift: 4px;
   --mb-snap: 0.12s linear;
   --mb-slide: 0.3s ease-out;
   --mb-display: var(--sans);
+  --mb-enter: cubic-bezier(0.33, 1, 0.68, 1);
+  --mb-enter-rise: 0.6s;
+  --mb-enter-pen: 0.4s;
+  --mb-pen: 1s;
+  --mb-note: 500 10px / 1 var(--mono);
+  --mb-grip: 7px;
   color-scheme: dark;
 }
 

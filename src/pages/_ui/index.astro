@@ -1,19 +1,18 @@
 ---
 /* /ui - the component catalogue (catalogue.astro): every component in
- * src/components/mb/ with its variants and states, and the link to the
- * design proposals (/ui/proposal). A dev tool: astro.config.mjs routes it
- * for `astro dev` only.
+ * src/components/mb/ with its variants and states. A dev tool:
+ * astro.config.mjs routes it for `astro dev` only.
  *
  * Its own document, not BaseLayout: BaseHead with noindex, the site's
- * tokens and global styles, the page frame. The only script is
- * mobile-sheet.ts - never contact-form.ts (which BaseLayout loads), which
- * would POST the forms here to /api/lead, saving leads and sending the
- * notification; the form states are forced instead.
+ * tokens and global styles, the page frame. The scripts are
+ * mobile-sheet.ts and blueprint-live.ts (so the cells draw as on the site)
+ * - never contact-form.ts (which BaseLayout loads), which would POST the
+ * forms here to /api/lead, saving leads and sending the notification; the
+ * form states are forced instead.
  *
  * Rendered on request (prerender = false), so Astro.url keeps its query:
  * the pagination jump sample in the catalogue reads ?strona=. */
 import BaseHead from "@/components/layout/base-head.astro";
-import Link from "@/components/mb/link.astro";
 import PageFrame from "@/components/mb/page-frame.astro";
 import { siteConfig } from "@/data/site-config";
 import "@/styles/tokens.css";
@@ -35,9 +34,6 @@ export const prerender = false;
   <body>
     <PageFrame>
       <main id="top">
-        <nav aria-label="Propozycje designu" class="container ui-proposals">
-          <Link href="/ui/proposal" variant="nav">Propozycje designu</Link>
-        </nav>
         <Catalogue />
       </main>
     </PageFrame>
@@ -45,16 +41,13 @@ export const prerender = false;
 </html>
 
 <script>
+  import "@/scripts/blueprint-live.ts";
   import "@/scripts/mobile-sheet.ts";
 </script>
 
 <style>
   main {
     padding: 0 0 96px;
-  }
-
-  .ui-proposals {
-    padding-top: var(--v2-space-md);
   }
 
   @media (max-width: 880px) {

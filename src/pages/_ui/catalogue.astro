@@ -1218,11 +1218,11 @@ const steps = [
       <h2 class="mb-ui-h2" id="mb-card">Karta i siatka</h2>
       <p class="mb-ui-note">
         <code>card.astro</code>
-        - komórka w linii tuszu; hover rozjaśnia ją od środka (jaśniejszy panel,
-        niebieska linia u góry) i nic nie przesuwa. Linia idzie za myszą:
-        wjeżdża od boku, z którego kursor wszedł, i wyjeżdża w stronę, w którą
-        wyszedł; bez myszy (dotyk, klawiatura, bez JS) wjeżdża z lewej i
-        wyjeżdża w prawo. Części to sloty:
+        - komórka w linii tuszu z numerem pozycji na górnej linii (numer sekcji
+        i komórki). Hover zaznacza ją jak w CAD: rozjaśnia od środka (jaśniejszy
+        panel), stawia niebieskie uchwyty w narożnikach, a numer wypełnia się na
+        niebiesko i podaje szerokość komórki w px; nic się nie przesuwa. Części
+        to sloty:
         <code>image</code>, <code>title</code>, <code>description</code>,
         <code>action</code>, treść, <code>footer</code>.
         <code>cell-grid.astro</code>
@@ -1246,13 +1246,13 @@ const steps = [
         </div>
       </div>
       <div class="mb-ui-row">
-        <p class="mb-ui-row-label">Kierunek</p>
+        <p class="mb-ui-row-label">Zaznaczenie w wierszu</p>
         <div class="mb-ui-stack-lg">
           <CellGrid columns={3}>
             {["Rozmowa", "Wycena", "Realizacja"].map((title) => (
               <Card size="sm" tag="div">
                 <span slot="title">{title}</span>
-                Przeciągnij kursor przez wiersz w jedną i w drugą stronę.
+                Przeciągnij kursor przez wiersz: uchwyty i numer idą za nim.
               </Card>
             ))}
           </CellGrid>
@@ -1340,9 +1340,10 @@ const steps = [
         - kwadratowy numer mono na szynie 1px przy karcie etapu (proces). Stoi
         pierwszy w wierszu i siedzi na środku wysokości wiersza; wiersze ułożone
         w listę łączą szyny w jedną linię od pierwszego znacznika do ostatniego.
-        Przy przewijaniu szynę wypełnia niebieska linia 2px (za linią w połowie
-        wysokości okna), a znacznik robi się niebieski, gdy linia dojdzie do
-        jego środka - animacje CSS sterowane przewijaniem, bez skryptu. Przy
+        Szyna to oś kreska-kropka. Przy przewijaniu szynę wypełnia niebieska
+        linia 2px (za linią w połowie wysokości okna), a znacznik robi się
+        niebieski, gdy linia dojdzie do jego środka - animacje CSS sterowane
+        przewijaniem, bez skryptu. Przy
         <code>prefers-reduced-motion</code>
         szyna i znaczniki są od razu wypełnione.
       </p>
@@ -1369,9 +1370,11 @@ const steps = [
       <h2 class="mb-ui-h2" id="mb-section-head">Nagłówek sekcji</h2>
       <p class="mb-ui-note">
         <code>section-head.astro</code>
-        - numerowana etykieta („01 /”, licznik <code>mb-section</code>),
+        - linia wymiarowa ze znacznikami na końcach i szerokością sekcji w px,
+        numerowana etykieta („§ 01 /”, licznik <code>mb-section</code>),
         nagłówek z lewej (<code>&lt;em&gt;</code>
-        podkreślone na niebiesko), lead z prawej; jedna kolumna od 880px w dół.
+        pod niebieską klamrą z odnośnikiem A, B), lead z prawej; jedna kolumna
+        od 880px w dół.
       </p>
       <div class="mb-ui-counter">
         <SectionHead as="h3" label="Proces">
@@ -1388,10 +1391,12 @@ const steps = [
       <h2 class="mb-ui-h2" id="mb-frame">Rama strony</h2>
       <p class="mb-ui-note">
         <code>page-frame.astro</code>
-        - ta strona stoi w niej: dwa włosy na krawędziach kontenera, skip link,
-        nagłówek (<code>header.astro</code>), stopka (<code>footer.astro</code>)
-        i menu mobilne (<code>mobile-sheet.astro</code>, poniżej 880px pod
-        przyciskiem menu). Tu marka i podgląd menu.
+        - ta strona stoi w niej: dwie linijki na krawędziach kontenera, skip
+        link, nagłówek (zjeżdża z góry przy wczytaniu strony) (<code
+          >header.astro</code
+        >), stopka (<code>footer.astro</code>) i menu mobilne (<code
+          >mobile-sheet.astro</code
+        >, poniżej 880px pod przyciskiem menu). Tu marka i podgląd menu.
       </p>
       <div class="mb-ui-row">
         <div class="mb-ui-grid mb-ui-grid-wide">
@@ -1587,8 +1592,7 @@ console.log(greeting);</code></pre>
 
 <script>
   // The live loading sample: the attributes contact-form.ts sets while a
-  // form sends, cleared again after 4 s. Document-delegated, so it also
-  // works on /ui/proposal/<id>, which renders this catalogue.
+  // form sends, cleared again after 4 s. Document-delegated.
   const LOADING_DEMO_MS = 4000;
 
   document.addEventListener("click", (event) => {

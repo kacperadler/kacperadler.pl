@@ -93,6 +93,11 @@ async function inkOnEdges(page: Page, locator: Locator) {
   };
 }
 
+// The layout is measured with the drawing standing complete (under reduced
+// motion nothing waits for the pen, blueprint.spec.ts covers the drawing);
+// the one test of motion here opens its own context.
+test.use({ contextOptions: { reducedMotion: "reduce" } });
+
 test.describe("home page", () => {
   test("the sections run in the brief's order between the header and the footer", async ({
     page,
@@ -405,9 +410,9 @@ test.describe("home page", () => {
       .poll(() =>
         cards
           .first()
-          .evaluate((el) => getComputedStyle(el, "::before").transform)
+          .evaluate((el) => getComputedStyle(el, "::after").visibility)
       )
-      .toBe("matrix(1, 0, 0, 1, 0, 0)");
+      .toBe("visible");
     await expect(cards.first()).toHaveCSS("background-color", ground);
   });
 
@@ -763,8 +768,12 @@ test.describe("home page", () => {
   });
 
   test("the process rail fills as the page scrolls through it", async ({
-    page,
+    browser,
   }) => {
+    const context = await browser.newContext({
+      reducedMotion: "no-preference",
+    });
+    const page = await context.newPage();
     // The 2px blue line over each segment (its scale), and which marks are
     // blue.
     const fill = () =>
@@ -825,6 +834,7 @@ test.describe("home page", () => {
       lines: [1, 1, 1, 1, 1],
       links: [true, true, true, true, true],
     });
+    await context.close();
   });
 
   test("with reduced motion the process rail shows filled, nothing moves", async ({
