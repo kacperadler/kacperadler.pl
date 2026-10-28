@@ -1054,9 +1054,9 @@
   {
     "id": "KA0128",
     "title": "After a long message the success card is a tall, mostly empty box",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0128-after-a-long-message-the-success-card-is-a-tall-mostly-empty-box/ticket.md",
-    "updated": "2026-10-28T20:35:56.735Z",
+    "updated": "2026-10-28T20:39:25.389Z",
     "after": [
       "KA0109"
     ]
@@ -1067,5 +1067,12 @@
     "status": "planning",
     "path": "spec/features/KA0129-two-tests-flaked-under-full-suite-load/ticket.md",
     "updated": "2026-10-28T20:13:13.451Z"
+  },
+  {
+    "id": "KA0130",
+    "title": "After sending, the \"Wiadomość wysłana.\" heading can land above the viewport",
+    "status": "planning",
+    "path": "spec/features/KA0130-after-sending-the-wiadomosc-wys-ana-heading-can-land-above-the-viewport/ticket.md",
+    "updated": "2026-10-28T20:39:25.387Z"
   }
 ]
