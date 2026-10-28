@@ -34,8 +34,10 @@ Evidence:
 
 In:
 - raise the two field sizes to `max(16px, 1rem)` (the visible change: field text 1px larger), add `-webkit-text-size-adjust: 100%` to the root, write `100svh` in `404.astro`. Cost: about 4 lines and a check on an iPhone; would rank second if the zoom is confirmed there. Out: `maximum-scale` / `user-scalable=no` in the viewport meta (good-css forbids it).
+- raise the pagination page-jump input (`src/components/mb/pagination.astro`, `.mb-page-jump-input`) to `max(16px, 1rem)` as well.
 
 ## Decisions
 
 - 2026-10-28: Source: F4 of KA0104
 - 2026-10-28: The human approved it; runs one at a time after KA0105 (shared CSS files).
+- 2026-10-28: The coordinator: the pagination page-jump input at 16px is in scope, since the Goal is that no form field zooms the page on iOS; the human was told and did not object.
