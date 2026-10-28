@@ -866,9 +866,9 @@
   {
     "id": "KA0108",
     "title": "iOS Safari: form fields at 15px, text inflation, 100vh on the 404",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0108-ios-safari-form-fields-at-15px-text-inflation-100vh-on-the-404/ticket.md",
-    "updated": "2026-10-28T17:54:35.394Z",
+    "updated": "2026-10-28T18:13:37.236Z",
     "after": [
       "KA0105"
     ]
