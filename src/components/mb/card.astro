@@ -9,13 +9,11 @@
  * is a link (`tag` "a") presses to the flat panel ([data-state="pressed"])
  * and its focus ring grows out of the edge.
  *
- * Drawn by the blueprint's pen (global.css) once the cell is whole on the
- * screen: the frame traces clockwise from the top-left corner (top, right,
- * bottom, left, 0-0.8 of the pen as one eased stage), then the number is
- * written (0.8-1). While the page is live the border gives way to the
- * frame drawn by the background, and a selected cell stands whole, drawn
- * or not; without the script or under reduced motion the cell stands
- * drawn on its border.
+ * It stands drawn from the start (global.css: only the hero enters on page
+ * load). Its frame and number still read --bl-p, at its initial 1, in
+ * stages (the frame clockwise from the top-left corner over 0-0.8, the
+ * number over 0.8-1), so a pen could trace a cell again without a new
+ * rule.
  *
  * shadcn's parts are named slots: "image" (full bleed on top), "title" (in
  * `titleAs`, h3 by default), "description", "action" (beside the title),
@@ -125,7 +123,7 @@ const hasHeader = has("title") || has("description") || has("action");
     outline-offset: 0;
   }
 
-  /* The item number on the top rule, written once the frame is traced. */
+  /* The item number on the top rule. */
   .mb-card::before {
     --bl-s: clamp(0, var(--bl-p) * 5 - 4, 1);
     position: absolute;
@@ -293,42 +291,6 @@ const hasHeader = has("title") || has("description") || has("action");
   @media (max-width: 880px) {
     .mb-card-default {
       --mb-card-pad: var(--v2-space-md);
-    }
-  }
-
-  /* With the page's script: the frame is drawn by the background, not the
-   * border; not on the screen yet, nothing of it; on the screen, the pen
-   * plays it through. A selected (or pressed) cell stands whole, drawn or
-   * not: the border brings all four rules back, the number is on at once. */
-  @media (prefers-reduced-motion: no-preference) {
-    :global(html[data-bl-live]) .mb-card {
-      border-color: transparent;
-    }
-
-    :global(html[data-bl-live])
-      .mb-card:is(
-        :hover,
-        [data-state="hover"],
-        :active,
-        [data-state="pressed"]
-      ) {
-      border-color: var(--mb-rule);
-    }
-
-    :global(html[data-bl-live]) .mb-card:not([data-bl-drawn]),
-    :global(html[data-bl-live]) .mb-card:not([data-bl-drawn])::before {
-      --bl-p: 0;
-    }
-
-    :global(html[data-bl-live]) .mb-card[data-bl-drawn],
-    :global(html[data-bl-live]) .mb-card[data-bl-drawn]::before {
-      animation: bl-draw var(--mb-pen) linear both;
-    }
-
-    :global(html[data-bl-live])
-      .mb-card:is(:hover, [data-state="hover"])::before {
-      --bl-p: 1;
-      animation: none;
     }
   }
 

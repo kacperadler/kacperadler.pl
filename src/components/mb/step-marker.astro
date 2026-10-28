@@ -5,9 +5,8 @@
  * tall the card is. The rows stack in a list, so the rails join into one
  * line that runs from the first mark to the last (the first row's rail
  * starts at its centre, the last one's ends there). The rail is a centre
- * line, dash-dot, and the blueprint's pen (global.css) runs each step's
- * segment down once the step is whole on the screen (the step is watched
- * by this marker: on the desktop it is display: contents).
+ * line, dash-dot, standing drawn from the start (global.css: only the
+ * hero enters on page load).
  *
  * The rail fills as the page scrolls: a 2px blue line over the ink one
  * follows a line across the middle of the viewport (each row's segment
@@ -63,19 +62,6 @@ const { num } = Astro.props;
     mask:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='16'%3E%3Cpath d='M0 0h1v9H0zM0 12h1v1H0z'/%3E%3C/svg%3E")
       0 0 / 1px 16px repeat-y;
-  }
-
-  /* With the page's script: a step not on the screen yet has no rail; on
-   * the screen, the pen runs it down. */
-  @media (prefers-reduced-motion: no-preference) {
-    :global(html[data-bl-live] :not([data-bl-drawn]))
-      > .mb-step-marker::before {
-      --bl-p: 0;
-    }
-
-    :global(html[data-bl-live] [data-bl-drawn]) > .mb-step-marker::before {
-      animation: bl-draw var(--mb-pen) linear both;
-    }
   }
 
   /* The rail runs from the first mark to the last. */

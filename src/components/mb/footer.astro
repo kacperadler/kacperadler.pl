@@ -6,10 +6,8 @@ import Link from "./link.astro";
 /* Footer: the solid substrate under an ink rule. The brand and tagline
  * left, two link columns right (one column at 880px and below), the
  * copyright under a hairline, with the sheet's legend ("Wymiary w px ·
- * Skala 1:1 · Rys. KA-001") at the row's right end. Drawn by the
- * blueprint's pen (global.css): the rule runs out once the footer is
- * whole on the screen; the hairline (0-0.6), then the legend (0.6-1),
- * once the bottom row is. */
+ * Skala 1:1 · Rys. KA-001") at the row's right end. It stands drawn from
+ * the start (global.css: only the hero enters on page load). */
 const year = new Date().getFullYear();
 ---
 
@@ -170,28 +168,6 @@ const year = new Date().getFullYear();
     text-transform: uppercase;
     content: "Wymiary w px · Skala 1:1 · Rys. KA-001" / "";
     clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
-  }
-
-  /* With the page's script: the rule and the hairline are drawn by the
-   * backgrounds, not the borders; not on the screen yet, nothing; on the
-   * screen, the pen plays them through. */
-  @media (prefers-reduced-motion: no-preference) {
-    :global(html[data-bl-live]) .mb-footer,
-    :global(html[data-bl-live]) .mb-footer-bottom {
-      border-top-color: transparent;
-    }
-
-    :global(html[data-bl-live]) .mb-footer:not([data-bl-drawn]),
-    :global(html[data-bl-live]) .mb-footer-bottom:not([data-bl-drawn]),
-    :global(html[data-bl-live]) .mb-footer-bottom:not([data-bl-drawn])::after {
-      --bl-p: 0;
-    }
-
-    :global(html[data-bl-live]) .mb-footer[data-bl-drawn],
-    :global(html[data-bl-live]) .mb-footer-bottom[data-bl-drawn],
-    :global(html[data-bl-live]) .mb-footer-bottom[data-bl-drawn]::after {
-      animation: bl-draw var(--mb-pen) linear both;
-    }
   }
 
   @media (max-width: 880px) {

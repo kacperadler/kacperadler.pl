@@ -7,8 +7,8 @@ import MobileSheet from "./mobile-sheet.astro";
 /* Page frame: what goes straight inside <body>. The solid substrate with
  * two rulers at the container's edges (fixed pseudo-elements, gone once
  * the viewport is narrower than the container: a hairline with a tick
- * every 16px, longer at 32 and 64, drawn down from the top on load and
- * standing still while the page scrolls), the skip link to #top
+ * every 16px, longer at 32 and 64, standing still while the page
+ * scrolls), the skip link to #top
  * (global.css's .skip-link), the header, the page in the slot, the footer,
  * the EU funding band, and the mobile sheet as a sibling of the frame, so
  * scripts/mobile-sheet.ts can make the frame inert while the sheet is open.
@@ -57,14 +57,6 @@ import MobileSheet from "./mobile-sheet.astro";
   .mb-frame::after {
     right: calc(50% - var(--container) / 2);
     transform: scaleX(-1);
-  }
-
-  /* On load, with the page's script: run down over the pen's time. */
-  @media (prefers-reduced-motion: no-preference) {
-    :global(html[data-bl-live]) .mb-frame::before,
-    :global(html[data-bl-live]) .mb-frame::after {
-      animation: bl-draw var(--mb-pen) linear both;
-    }
   }
 
   @media (max-width: 1160px) {

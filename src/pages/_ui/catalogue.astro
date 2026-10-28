@@ -1219,11 +1219,10 @@ const steps = [
       <p class="mb-ui-note">
         <code>card.astro</code>
         - komórka w linii tuszu z numerem pozycji na górnej linii (numer sekcji
-        i komórki); rysuje się, gdy cała wejdzie na ekran: obrys zgodnie z
-        ruchem wskazówek zegara, potem numer. Hover zaznacza ją jak w CAD:
-        rozjaśnia od środka (jaśniejszy panel), stawia niebieskie uchwyty w
-        narożnikach, a numer wypełnia się na niebiesko i podaje szerokość
-        komórki w px; nic się nie przesuwa. Części to sloty:
+        i komórki). Hover zaznacza ją jak w CAD: rozjaśnia od środka (jaśniejszy
+        panel), stawia niebieskie uchwyty w narożnikach, a numer wypełnia się na
+        niebiesko i podaje szerokość komórki w px; nic się nie przesuwa. Części
+        to sloty:
         <code>image</code>, <code>title</code>, <code>description</code>,
         <code>action</code>, treść, <code>footer</code>.
         <code>cell-grid.astro</code>
@@ -1341,11 +1340,10 @@ const steps = [
         - kwadratowy numer mono na szynie 1px przy karcie etapu (proces). Stoi
         pierwszy w wierszu i siedzi na środku wysokości wiersza; wiersze ułożone
         w listę łączą szyny w jedną linię od pierwszego znacznika do ostatniego.
-        Szyna to oś kreska-kropka, rysowana w dół, gdy etap cały wejdzie na
-        ekran. Przy przewijaniu szynę wypełnia niebieska linia 2px (za linią w
-        połowie wysokości okna), a znacznik robi się niebieski, gdy linia
-        dojdzie do jego środka - animacje CSS sterowane przewijaniem, bez
-        skryptu. Przy
+        Szyna to oś kreska-kropka. Przy przewijaniu szynę wypełnia niebieska
+        linia 2px (za linią w połowie wysokości okna), a znacznik robi się
+        niebieski, gdy linia dojdzie do jego środka - animacje CSS sterowane
+        przewijaniem, bez skryptu. Przy
         <code>prefers-reduced-motion</code>
         szyna i znaczniki są od razu wypełnione.
       </p>
@@ -1376,8 +1374,7 @@ const steps = [
         numerowana etykieta („§ 01 /”, licznik <code>mb-section</code>),
         nagłówek z lewej (<code>&lt;em&gt;</code>
         pod niebieską klamrą z odnośnikiem A, B), lead z prawej; jedna kolumna
-        od 880px w dół. Rysuje się, gdy cały wejdzie na ekran: linia, znaczniki,
-        wymiar z etykietą i klamrą, odnośnik.
+        od 880px w dół.
       </p>
       <div class="mb-ui-counter">
         <SectionHead as="h3" label="Proces">
@@ -1394,8 +1391,8 @@ const steps = [
       <h2 class="mb-ui-h2" id="mb-frame">Rama strony</h2>
       <p class="mb-ui-note">
         <code>page-frame.astro</code>
-        - ta strona stoi w niej: dwie linijki na krawędziach kontenera (rysowane
-        w dół przy wejściu, potem stoją w miejscu), skip link, nagłówek (<code
+        - ta strona stoi w niej: dwie linijki na krawędziach kontenera, skip
+        link, nagłówek (zjeżdża z góry przy wczytaniu strony) (<code
           >header.astro</code
         >), stopka (<code>footer.astro</code>) i menu mobilne (<code
           >mobile-sheet.astro</code

@@ -10,13 +10,10 @@
  *     typed trigonometry; a browser without it prints nothing) on its
  *     middle. <em> in the headline: ink, under a blue dimension brace with
  *     a callout letter (A, B, counted per headline) at its right end.
- *   - Drawn by the blueprint's pen (global.css) once the head is whole on
- *     the screen: the rule runs out left to right (0-0.6 of the pen), the
- *     ticks grow out of it (0.6-0.7), the dimension, the label and the
- *     brace are written (0.7-0.9), the callout last (0.9-1). While the
- *     page is live the border gives way to the rule drawn by the
- *     background; without the script or under reduced motion everything
- *     stands drawn on the border.
+ *   - It stands drawn from the start (global.css: only the hero enters on
+ *     page load). Its pieces still read --bl-p, at its initial 1, in stages
+ *     (the rule, the ticks, the dimension and label with the brace, the
+ *     callout), so a pen could draw a head again without a new rule.
  *   - `as` picks the heading level (h2 by default). */
 interface Props {
   as?: "h1" | "h2" | "h3";
@@ -174,49 +171,6 @@ const Heading = as;
     font-size: 16px;
     line-height: 1.55;
     color: var(--ink-2);
-  }
-
-  /* With the page's script: the rule is drawn by the background, not the
-   * border; not on the screen yet, nothing of it; on the screen, the pen
-   * plays it through. */
-  @media (prefers-reduced-motion: no-preference) {
-    :global(html[data-bl-live]) .mb-section-head {
-      border-top-color: transparent;
-    }
-
-    :global(html[data-bl-live]) .mb-section-head:not([data-bl-drawn]),
-    :global(html[data-bl-live]) .mb-section-head:not([data-bl-drawn])::before,
-    :global(html[data-bl-live]) .mb-section-head:not([data-bl-drawn])::after,
-    :global(html[data-bl-live])
-      .mb-section-head:not([data-bl-drawn])
-      .mb-section-label,
-    :global(html[data-bl-live])
-      .mb-section-head:not([data-bl-drawn])
-      .mb-section-title
-      :global(em::before),
-    :global(html[data-bl-live])
-      .mb-section-head:not([data-bl-drawn])
-      .mb-section-title
-      :global(em::after) {
-      --bl-p: 0;
-    }
-
-    :global(html[data-bl-live]) .mb-section-head[data-bl-drawn],
-    :global(html[data-bl-live]) .mb-section-head[data-bl-drawn]::before,
-    :global(html[data-bl-live]) .mb-section-head[data-bl-drawn]::after,
-    :global(html[data-bl-live])
-      .mb-section-head[data-bl-drawn]
-      .mb-section-label,
-    :global(html[data-bl-live])
-      .mb-section-head[data-bl-drawn]
-      .mb-section-title
-      :global(em::before),
-    :global(html[data-bl-live])
-      .mb-section-head[data-bl-drawn]
-      .mb-section-title
-      :global(em::after) {
-      animation: bl-draw var(--mb-pen) linear both;
-    }
   }
 
   @media (max-width: 880px) {

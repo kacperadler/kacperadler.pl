@@ -96,13 +96,16 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
   is:inline
   set:html={JSON.stringify(profServiceSchema)}
 />
-{/* The blueprint's pen (scripts/blueprint-live.ts, global.css): with
- * JavaScript the page is drawn as you scroll, so <html> is marked live
- * here, before the body is parsed, and nothing paints drawn and then
- * undraws. Without JavaScript the mark is never set and the drawing
- * stands complete. */}
+{/* The blueprint (global.css, scripts/blueprint-live.ts): with JavaScript
+ * <html> is marked live (the script runs) and enter (this document load
+ * plays the first screen's entrance) here, before the body is parsed, so
+ * nothing paints in place and then jumps back to start. A ClientRouter
+ * swap takes the new document's bare <html>: the script restores the
+ * live mark, not the entrance. Without JavaScript neither is set and
+ * everything shows at once. */}
 <script is:inline>
   document.documentElement.dataset.blLive = "";
+  document.documentElement.dataset.blEnter = "";
 </script>
 {/* Umami analytics, self-hosted at analytics.kacperadler.pl. PROD-only
  * so dev pageviews don't pollute the data.

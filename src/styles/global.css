@@ -103,29 +103,37 @@ button {
   }
 }
 
-/* The blueprint: the page is an engineer's drawing, made as you scroll. A
- * pen plots each part in order (section-head.astro: the rule, its ticks,
- * the dimension, the label, the brace under the <em> and its callout;
- * card.astro: the frame clockwise, then the item number; step-marker.astro:
- * the rail; footer.astro: the rule, the hairline, the legend; hero.astro:
- * the datum and the title block; page-frame.astro: the rulers).
+/* The blueprint: the page is an engineer's drawing (section-head.astro:
+ * a dimension line, ticks, the width, the § label, the brace under the
+ * <em> and its callout; card.astro: the numbered frame, the grips;
+ * step-marker.astro: the dash-dot rail; footer.astro: the legend;
+ * hero.astro: the datum and the title block; page-frame.astro: the
+ * rulers). The page stands drawn; only the first screen enters, once, on
+ * page load, in one choreographed sequence of about 1.5s (the entrance):
+ * the header slides down (header.astro) as the headline slides up into
+ * place, the subtitle rises in, the pen draws the hero - the datum, the brace and its callout,
+ * the title block's frame and header - while the title block's caption
+ * and rows cascade in, and its button and the hero buttons rise in last
+ * (hero.astro). Transform and opacity only (bl-enter, bl-enter-slide,
+ * bl-enter-down), no blur.
  *
- * Each drawn piece (an element or a pseudo-element) reads one number,
- * --bl-p (0 undrawn, 1 drawn), and draws its own stage of it: it sets
- * --bl-s, its stage's share of the pen run linearly from 0 to 1, and draws
- * by --bl-e, the same eased (a smoothstep: it starts and ends softly), so
- * every stage eases on its own rather than the run as a whole. --bl-e is
- * set here on every box, so it reads that box's own --bl-s.
+ * Each drawn piece of the hero (an element or a pseudo-element) reads one
+ * number, --bl-p (0 undrawn, 1 drawn), and draws its own stage of it: it
+ * sets --bl-s, its stage's share of the pen run linearly from 0 to 1, and
+ * draws by --bl-e, the same eased (a smoothstep: it starts and ends
+ * softly), so every stage eases on its own rather than the run as a
+ * whole. --bl-e is set here on every box, so it reads that box's own
+ * --bl-s. The pen runs bl-draw over --mb-pen, --mb-enter-pen into the
+ * entrance, after the header and the headline.
  *
- * scripts/blueprint-live.ts marks <html> data-bl-live before the first
- * paint, then marks a part data-bl-drawn once it is whole on the screen
- * (or, taller than the screen, fills it). Until then a component holds
- * its pieces at --bl-p 0; from then on they play bl-draw over --mb-pen,
- * on a clock, the same time however fast the page is scrolled, and stay.
- * The hero and the rulers play on load. Without the script, and under
- * prefers-reduced-motion (the components' motion blocks are inside
- * no-preference), --bl-p stays at its initial 1: the drawing stands
- * complete. */
+ * base-head.astro marks <html> data-bl-live (the page's script runs:
+ * scripts/blueprint-live.ts keeps it after a ClientRouter swap) and
+ * data-bl-enter (this document load gets the entrance; a swap drops it,
+ * so a page reached through the ClientRouter stands at once) inline,
+ * before the first paint. The motion blocks sit in the components under
+ * html[data-bl-enter] and inside prefers-reduced-motion: no-preference:
+ * without JavaScript, under reduced motion and after a swap nothing
+ * animates, --bl-p stays at its initial 1 and everything shows at once. */
 @property --bl-p {
   syntax: "<number>";
   inherits: false;
@@ -157,5 +165,42 @@ button {
 
   to {
     --bl-p: 1;
+  }
+}
+
+/* The entrance: a part rises into place. */
+@keyframes bl-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* The headline slides up into place without fading: it is painted from
+ * the first frame, so it stays the page's largest contentful paint (an
+ * element faded in from opacity 0 never counts). */
+@keyframes bl-enter-slide {
+  from {
+    transform: translateY(24px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* The header comes down from the top edge. */
+@keyframes bl-enter-down {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
   }
 }

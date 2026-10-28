@@ -1,26 +1,28 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Locator, type Page, test } from "@playwright/test";
 
-// The blueprint: every public page is an engineer's drawing made as you
-// scroll (src/styles/global.css, src/scripts/blueprint-live.ts). These run
-// on the production build.
+// The blueprint: every public page is an engineer's drawing, standing
+// complete; the first screen enters once on page load (src/styles/global.css,
+// header.astro, hero.astro). These run on the production build.
 
 const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
-const PAGES = [
-  "/",
+const OTHER_PAGES = [
   "/polityka-prywatnosci/",
   "/regulamin/",
   "/realizacje/",
   "/this-route-does-not-exist",
 ];
-const PARTS =
-  ".mb-section-head, .mb-card, .mb-step, .mb-footer, .mb-footer-bottom";
-const PEN_MS = 1800;
+// The entrance ends by 1.5s; the hero pen runs 1s from 0.3s.
+const ENTRANCE_MS = 1500;
+const PEN_MS = 1000;
+const PEN_FROM_MS = 300;
 // Chrome writes an inset of nothing as "inset(0px)", "inset(0px 0px 0%)"...
 const UNCLIPPED = /^inset\(0(?:px|%)?(?: 0(?:px|%)?){0,3}\)$/;
 const LEGAL_PAGE = /\/polityka-prywatnosci\/?$/;
+const HOME = /\/(?:#top)?$/;
+const KEYFRAME_META = ["offset", "computedOffset", "easing", "composite"];
 
-// The components paint their rules over borders they make transparent.
+// The components paint the hero's rules over borders they make transparent.
 const NO_COLOR = "rgba(0, 0, 0, 0)";
 
 interface HeadDrawing {
@@ -36,9 +38,7 @@ interface HeadDrawing {
 // How far each part of a section head is drawn, 0 to 1 (to three
 // places), read from what the browser paints: the rule's background
 // width, and the clip-path (inset(top right bottom left)) that hides the
-// rest of each mark. The ticks grow out of the rule (top inset 50% to 0);
-// the dimension, the label, the brace and the callout are written left to
-// right (right inset 100% to 0).
+// rest of each mark.
 const headDrawing = (head: Locator): Promise<HeadDrawing> =>
   head.evaluate((el) => {
     const em = el.querySelector("em");
@@ -70,48 +70,94 @@ const headDrawing = (head: Locator): Promise<HeadDrawing> =>
     };
   });
 
-const undrawn: HeadDrawing = {
-  border: NO_COLOR,
-  brace: 0,
-  callout: 0,
-  dimension: 0,
-  label: 0,
-  rule: 0,
-  ticks: 0,
-};
-const drawn: HeadDrawing = {
-  border: NO_COLOR,
-  brace: 1,
-  callout: 1,
-  dimension: 1,
-  label: 1,
-  rule: 1,
-  ticks: 1,
-};
+interface Motion {
+  /** delay + duration, ms */
+  endsMs: number;
+  iterations: number;
+  name: string;
+  onScroll: boolean;
+  piece: string;
+  /** --bl-p of the pen's pieces, opacity of the rising ones */
+  progress: number;
+  properties: string[];
+}
 
-// Puts the element's top edge `above` px over the viewport's bottom edge.
-const raise = (el: Locator, above: number) =>
-  el.evaluate((node, px) => {
-    window.scrollTo({
-      behavior: "instant",
-      top:
-        node.getBoundingClientRect().top +
-        window.scrollY -
-        window.innerHeight +
-        px,
-    });
-  }, above);
+// Every animation the blueprint runs (bl-*), named by its keyframes and
+// "<tag.classes> <pseudo>", with its timing, its animated properties and
+// how far it has got.
+const motions = (page: Page): Promise<Motion[]> =>
+  page.evaluate(
+    (meta) =>
+      document
+        .getAnimations()
+        .filter(
+          (a): a is CSSAnimation =>
+            a instanceof CSSAnimation && a.animationName.startsWith("bl-")
+        )
+        .map((a) => {
+          const effect = a.effect as KeyframeEffect;
+          const target = effect.target as Element;
+          const timing = effect.getComputedTiming();
+          const style = getComputedStyle(target, effect.pseudoElement);
+          return {
+            endsMs: Number(timing.delay) + Number(timing.duration),
+            iterations: timing.iterations ?? 1,
+            name: a.animationName,
+            onScroll: !(a.timeline instanceof DocumentTimeline),
+            piece: [
+              [target.localName, ...target.classList].join("."),
+              effect.pseudoElement ?? "",
+            ]
+              .join(" ")
+              .trim(),
+            progress:
+              a.animationName === "bl-draw"
+                ? Number(style.getPropertyValue("--bl-p"))
+                : Number(style.opacity),
+            properties: [
+              ...new Set(effect.getKeyframes().flatMap((k) => Object.keys(k))),
+            ]
+              .filter((k) => !meta.includes(k))
+              .sort(),
+          };
+        }),
+    KEYFRAME_META
+  );
 
-// Scrolls the window to `top` and waits two frames, by which the page's
-// IntersectionObserver has reported; returns where the window ended up.
-const settleAt = (page: Page, top: number) =>
-  page.evaluate(async (y) => {
-    window.scrollTo({ behavior: "instant", top: y });
-    const { promise, resolve } = Promise.withResolvers<void>();
-    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-    await promise;
-    return window.scrollY;
-  }, top);
+// Holds every blueprint animation at `ms` into the page load, or lets
+// them run on with `null`.
+const entranceAt = (page: Page, ms: number | null) =>
+  page.evaluate((at) => {
+    for (const a of document.getAnimations()) {
+      if (
+        a instanceof CSSAnimation &&
+        a.animationName.startsWith("bl-") &&
+        a.timeline instanceof DocumentTimeline
+      ) {
+        if (at === null) {
+          a.play();
+        } else {
+          a.pause();
+          a.currentTime = at;
+        }
+      }
+    }
+  }, ms);
+
+const entranceDone = (page: Page) =>
+  page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter(
+          (a) =>
+            a instanceof CSSAnimation &&
+            a.animationName.startsWith("bl-") &&
+            a.timeline instanceof DocumentTimeline
+        )
+        .map((a) => a.finished)
+    )
+  );
 
 // Down the page as a wheel does, 100px a frame, to the bottom.
 const scrollThrough = async (page: Page) => {
@@ -120,86 +166,14 @@ const scrollThrough = async (page: Page) => {
   );
   for (let top = 0; top < end + 100; top += 100) {
     // biome-ignore lint/performance/noAwaitInLoops: one frame at a time
-    await settleAt(page, top);
+    await page.evaluate(async (y) => {
+      window.scrollTo({ behavior: "instant", top: y });
+      const { promise, resolve } = Promise.withResolvers<void>();
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      await promise;
+    }, top);
   }
 };
-
-// Holds the pen over every piece inside `part` at `progress` of its
-// drawing (0 to 1), or lets it run on with `null`.
-const penAt = (part: Locator, progress: number | null) =>
-  part.evaluate((node, p) => {
-    for (const a of document.getAnimations()) {
-      const effect = a.effect as KeyframeEffect;
-      if (
-        a instanceof CSSAnimation &&
-        a.animationName === "bl-draw" &&
-        effect.target &&
-        node.contains(effect.target)
-      ) {
-        if (p === null) {
-          a.play();
-        } else {
-          a.pause();
-          a.currentTime = p * Number(effect.getComputedTiming().duration);
-        }
-      }
-    }
-  }, progress);
-
-interface Drawing {
-  durationMs: number;
-  iterations: number;
-  onScroll: boolean;
-  piece: string;
-  progress: number;
-}
-
-// Every piece the pen animates, named "<keyframes> <tag.classes> <pseudo>"
-// ("bl-draw article.mb-card.mb-card-default ::before"), with its timeline
-// and its --bl-p.
-const drawings = (page: Page): Promise<Drawing[]> =>
-  page.evaluate(() =>
-    document
-      .getAnimations()
-      .filter(
-        (a): a is CSSAnimation =>
-          a instanceof CSSAnimation && a.animationName.startsWith("bl-")
-      )
-      .map((a) => {
-        const effect = a.effect as KeyframeEffect;
-        const target = effect.target as Element;
-        const timing = effect.getComputedTiming();
-        return {
-          durationMs: Number(timing.duration),
-          iterations: timing.iterations ?? 1,
-          onScroll: !(a.timeline instanceof DocumentTimeline),
-          piece: [
-            a.animationName,
-            [target.localName, ...target.classList].join("."),
-            effect.pseudoElement ?? "",
-          ]
-            .join(" ")
-            .trim(),
-          progress: Number(
-            getComputedStyle(target, effect.pseudoElement).getPropertyValue(
-              "--bl-p"
-            )
-          ),
-        };
-      })
-  );
-
-// The parts on the page that are visible and not yet marked drawn.
-const unmarked = (page: Page) =>
-  page.evaluate(
-    (selector) =>
-      [...document.querySelectorAll(selector)]
-        .filter(
-          (el) => el.checkVisibility() && !el.hasAttribute("data-bl-drawn")
-        )
-        .map((el) => el.outerHTML.slice(0, 80)),
-    PARTS
-  );
 
 // How far the page scrolls sideways: 0 when nothing overflows the viewport.
 const sideways = (page: Page) =>
@@ -209,10 +183,11 @@ const sideways = (page: Page) =>
       document.documentElement.clientWidth
   );
 
-// Nothing animated: the whole drawing stands at once, down to a section
-// and cells far below the fold, on their own borders.
-const expectDrawnAtOnce = async (page: Page) => {
-  expect(await drawings(page)).toEqual([]);
+// The parts below the first screen, as they stand: a section head's
+// drawing on its own border, a cell's frame and number, the rail, the
+// footer's legend. All of it complete, whether or not the page has been
+// scrolled.
+const expectBelowDrawn = async (page: Page) => {
   const head = await headDrawing(page.locator("#contact .mb-section-head"));
   expect(head).toMatchObject({
     brace: 1,
@@ -223,179 +198,237 @@ const expectDrawnAtOnce = async (page: Page) => {
     ticks: 1,
   });
   expect(head.border).not.toBe(NO_COLOR);
-  await Promise.all(
-    [".mb-hero-status", "#cases .mb-card", ".mb-footer"].map((selector) =>
-      expect(page.locator(selector).first()).not.toHaveCSS(
-        "border-top-color",
-        NO_COLOR
+  const card = page.locator("#cases .mb-card").first();
+  await expect(card).not.toHaveCSS("border-top-color", NO_COLOR);
+  expect(
+    await card.evaluate((el) =>
+      ["", "::before"].map((pseudo) =>
+        getComputedStyle(el, pseudo || null).getPropertyValue("--bl-p")
       )
     )
-  );
+  ).toEqual(["1", "1"]);
   expect(
     await page
       .locator(".mb-step-marker")
       .first()
       .evaluate((el) => getComputedStyle(el, "::before").clipPath)
   ).toMatch(UNCLIPPED);
+  expect(
+    await page
+      .locator(".mb-footer-bottom")
+      .evaluate((el) => getComputedStyle(el, "::after").clipPath)
+  ).toMatch(UNCLIPPED);
+  await expect(page.locator(".mb-footer")).not.toHaveCSS(
+    "border-top-color",
+    NO_COLOR
+  );
 };
 
-test.describe("the drawing as you scroll", () => {
+// The first screen as it stands once the entrance is over, or when there
+// is none: the header and the hero's parts in place and opaque, the hero
+// drawn.
+const expectFirstScreenInPlace = async (page: Page) => {
+  const state = await page.evaluate(() => {
+    const style = (selector: string, pseudo?: string) =>
+      getComputedStyle(document.querySelector(selector) as Element, pseudo);
+    // A finished animation holds the identity matrix; untouched, "none".
+    const rising = (selector: string) => {
+      const s = style(selector);
+      const m = new DOMMatrix(s.transform);
+      return `${s.opacity} ${m.isIdentity ? "none" : s.transform}`;
+    };
+    const drawn = (selector: string, pseudo?: string) =>
+      style(selector, pseudo).getPropertyValue("--bl-p");
+    return {
+      drawn: {
+        brace: drawn(".mb-hero h1 em", "::after"),
+        callout: drawn(".mb-hero h1 em", "::before"),
+        datum: drawn(".mb-hero-grid", "::before"),
+        status: drawn(".mb-hero-status"),
+        statusHeader: drawn(".mb-hero-status", "::before"),
+      },
+      rising: {
+        caption: rising(".mb-status-caption"),
+        ctas: rising(".mb-hero-ctas"),
+        h1: rising(".mb-hero h1"),
+        header: rising(".mb-header"),
+        row: rising(".mb-status-row:last-child"),
+        statusCta: rising(".mb-status-cta"),
+        sub: rising(".mb-hero-sub"),
+      },
+    };
+  });
+  for (const [piece, value] of Object.entries(state.rising)) {
+    expect(value, piece).toBe("1 none");
+  }
+  for (const [piece, value] of Object.entries(state.drawn)) {
+    expect(value, piece).toBe("1");
+  }
+};
+
+test.describe("the first screen's entrance", () => {
   test.use({ contextOptions: { reducedMotion: "no-preference" } });
 
   for (const width of [1440, 360]) {
-    test(`a section draws in order once it is whole on the screen and stays drawn on the way back at ${width}px`, async ({
+    test(`on load the header, the headline, the hero drawing and the buttons come in as one sequence within 1.5s at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ height: 900, width });
-      await page.goto("/", { waitUntil: "networkidle" });
+      await page.goto("/", { waitUntil: "load" });
+      await expect(page.locator("html")).toHaveAttribute("data-bl-enter", "");
       await expect(page.locator("html")).toHaveAttribute("data-bl-live", "");
-      const head = page.locator("#contact .mb-section-head");
-      const height = (await head.boundingBox())?.height ?? 0;
 
-      // Below the fold: nothing of it, its border included.
-      await expect.poll(() => headDrawing(head)).toEqual(undrawn);
+      const all = await motions(page);
+      const byPiece = new Map(all.map((m) => [`${m.name} ${m.piece}`, m]));
+      // The cast: what enters, in what order.
+      const ends = (key: string) => byPiece.get(key)?.endsMs;
+      expect(ends("bl-enter-down div.mb-header")).toBe(500);
+      // The headline slides without fading: painted from the first frame,
+      // it stays the largest contentful paint.
+      expect(ends("bl-enter-slide h1")).toBe(500);
+      expect(byPiece.get("bl-enter-slide h1")?.properties).toEqual([
+        "transform",
+      ]);
+      expect(ends("bl-enter p.mb-hero-sub")).toBe(700);
+      expect(ends("bl-enter p.mb-status-caption")).toBe(1200);
+      // The rows cascade, 80ms apart.
+      expect(
+        all
+          .filter(
+            (m) => m.name === "bl-enter" && m.piece === "div.mb-status-row"
+          )
+          .map((m) => m.endsMs)
+      ).toEqual([1300, 1380, 1460]);
+      expect(ends("bl-enter div.mb-status-cta")).toBe(ENTRANCE_MS);
+      expect(ends("bl-enter div.mb-hero-ctas")).toBe(ENTRANCE_MS);
+      for (const piece of [
+        "div.container.mb-hero-grid ::before",
+        "div.container.mb-hero-grid ::after",
+        "em ::before",
+        "em ::after",
+        "aside.mb-hero-status",
+        "aside.mb-hero-status ::before",
+      ]) {
+        expect(ends(`bl-draw ${piece}`), piece).toBe(PEN_FROM_MS + PEN_MS);
+      }
+      // Nothing else of the blueprint moves: no piece below the first
+      // screen, no ruler, nothing on a scroll timeline, nothing past
+      // 1.5s, nothing but transform and opacity in the rising ones.
+      expect(all.length).toBe(15);
+      for (const m of all) {
+        expect(m.onScroll, m.piece).toBe(false);
+        expect(m.iterations, m.piece).toBe(1);
+        expect(m.endsMs, m.piece).toBeLessThanOrEqual(ENTRANCE_MS);
+        if (m.name !== "bl-draw") {
+          expect(
+            m.properties.every((p) => p === "opacity" || p === "transform"),
+            `${m.name} ${m.piece}: ${m.properties.join(",")}`
+          ).toBe(true);
+        }
+      }
 
-      // Half on the screen: still nothing, however long it stays there.
-      await raise(head, height / 2);
-      await page.waitForTimeout(1000);
-      expect(await headDrawing(head)).toEqual(undrawn);
+      // Held a tenth in: the header on its way down, the headline on its
+      // way up and opaque, the subtitle not yet in, the hero undrawn. At
+      // 0.6s: the headline in place, the subtitle on its last stretch,
+      // the pen some way in, the buttons still to come.
+      await entranceAt(page, 100);
+      const early = await motions(page);
+      const at = (list: Motion[], key: string) =>
+        list.find((m) => `${m.name} ${m.piece}` === key)?.progress;
+      const shift = (selector: string) =>
+        page
+          .locator(selector)
+          .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).f);
+      expect(at(early, "bl-enter-slide h1")).toBe(1);
+      expect(await shift(".mb-hero h1")).toBeGreaterThan(0);
+      expect(at(early, "bl-enter p.mb-hero-sub")).toBe(0);
+      expect(at(early, "bl-draw aside.mb-hero-status")).toBe(0);
+      expect(await shift(".mb-header")).toBeLessThan(0);
+      await entranceAt(page, 600);
+      const mid = await motions(page);
+      expect(await shift(".mb-hero h1")).toBe(0);
+      expect(at(mid, "bl-enter p.mb-hero-sub")).toBeGreaterThan(0);
+      expect(at(mid, "bl-enter p.mb-hero-sub")).toBeLessThan(1);
+      expect(at(mid, "bl-draw aside.mb-hero-status")).toBeCloseTo(
+        (600 - PEN_FROM_MS) / PEN_MS,
+        2
+      );
+      expect(at(mid, "bl-enter div.mb-hero-ctas")).toBe(0);
+      await expect(page.locator(".mb-hero-status")).toHaveCSS(
+        "border-top-color",
+        NO_COLOR
+      );
 
-      // Whole on the screen, the pen starts. Each stage eases on its own:
-      // a tenth into the rule's stage it has drawn less than a tenth (a
-      // smoothstep's 0.028), nine tenths in, more than nine (0.972).
-      await raise(head, height + 20);
-      await expect(head).toHaveAttribute("data-bl-drawn", "");
-      await penAt(head, 0.06);
-      expect((await headDrawing(head)).rule).toBeCloseTo(0.028, 2);
-      await penAt(head, 0.54);
-      expect((await headDrawing(head)).rule).toBeCloseTo(0.972, 2);
-
-      // Held at 0.3 of the drawing: only the rule, halfway out.
-      await penAt(head, 0.3);
-      const ruling = await headDrawing(head);
-      expect(ruling.rule).toBeCloseTo(0.5, 2);
-      expect(ruling).toMatchObject({
-        brace: 0,
-        callout: 0,
-        dimension: 0,
-        label: 0,
-        ticks: 0,
-      });
-
-      // At 0.8: rule and ticks drawn; the dimension, the label and the
-      // brace being written together; the callout not yet.
-      await penAt(head, 0.8);
-      const writing = await headDrawing(head);
-      expect(writing).toMatchObject({ callout: 0, rule: 1, ticks: 1 });
-      expect(writing.label).toBeCloseTo((0.8 - 0.7) * 5, 2);
-      expect(writing.dimension).toBeCloseTo(writing.label, 3);
-      expect(writing.brace).toBeCloseTo(writing.label, 3);
-
-      // Half drawn, the page still breaks no WCAG rule.
+      // Mid-entrance the page breaks no WCAG rule, and the rest of the
+      // page already stands drawn.
       const results = await new AxeBuilder({ page }).withTags(WCAG).analyze();
       expect(results.violations).toEqual([]);
+      await expectBelowDrawn(page);
 
-      // Let go, the pen finishes: all of it, on the painted rule.
-      await penAt(head, null);
-      await expect.poll(() => headDrawing(head)).toEqual(drawn);
-
-      // Back to the top, the section under the fold again: still drawn.
-      expect(await settleAt(page, 0)).toBe(0);
-      expect(await headDrawing(head)).toEqual(drawn);
+      // Let go: it finishes and stays.
+      await entranceAt(page, null);
+      await entranceDone(page);
+      await expectFirstScreenInPlace(page);
+      expect((await motions(page)).every((m) => m.progress === 1)).toBe(true);
     });
 
-    test(`scrolled through, every part of the home page is drawn on a clock, and nothing scrolls sideways, at ${width}px`, async ({
+    test(`scrolled through, nothing draws and nothing scrolls sideways at ${width}px`, async ({
       page,
     }) => {
       test.setTimeout(90_000);
       await page.setViewportSize({ height: 900, width });
-      await page.goto("/", { waitUntil: "networkidle" });
+      await page.goto("/", { waitUntil: "load" });
+      await entranceDone(page);
+      const before = (await motions(page)).length;
       expect(await sideways(page)).toBe(0);
       await scrollThrough(page);
       expect(await sideways(page)).toBe(0);
-
-      // Every part on the page has been seen, so marked.
-      expect(await unmarked(page)).toEqual([]);
-
-      const pieces = await drawings(page);
-      for (const [part, pseudo] of [
-        ["mb-section-head", "::before"],
-        ["mb-card", "::before"],
-        ["mb-step-marker", "::before"],
-        ["mb-footer-bottom", "::after"],
-      ] as const) {
-        expect(
-          pieces.some(
-            (d) => d.piece.includes(`.${part}`) && d.piece.endsWith(pseudo)
-          ),
-          `${part}${pseudo}`
-        ).toBe(true);
-      }
-      // No piece follows the scroll: each plays once, on the clock, over
-      // the same pen, however fast it was scrolled.
-      for (const d of pieces) {
-        expect(d.onScroll, d.piece).toBe(false);
-        expect(d.iterations, d.piece).toBe(1);
-        expect(d.durationMs, d.piece).toBe(PEN_MS);
-      }
-      await expect
-        .poll(async () =>
-          (await drawings(page))
-            .filter((d) => d.progress !== 1)
-            .map((d) => d.piece)
-        )
-        .toEqual([]);
-    });
-
-    test(`the hero draws once on load and nothing runs on a clock after, at ${width}px`, async ({
-      page,
-    }) => {
-      await page.setViewportSize({ height: 900, width });
-      await page.goto("/", { waitUntil: "networkidle" });
-      const all = await drawings(page);
-      for (const d of all) {
-        expect(d.iterations, d.piece).toBe(1);
-        expect(d.onScroll, d.piece).toBe(false);
-        expect(d.durationMs, d.piece).toBe(PEN_MS);
-      }
-      const onLoad = all.map((d) => d.piece);
-      expect(
-        onLoad.some(
-          (piece) =>
-            piece.includes(".mb-hero-grid") && piece.endsWith("::before")
-        )
-      ).toBe(true);
-      expect(onLoad.some((piece) => piece.startsWith("bl-draw em "))).toBe(
-        true
-      );
-      // Side by side the title block is on the screen and draws on load; in
-      // one column it is under the fold and draws once it is on the screen.
-      expect(onLoad.some((piece) => piece.includes(".mb-hero-status"))).toBe(
-        width > 880
-      );
-
-      await page.evaluate(() =>
-        Promise.all(
-          document
-            .getAnimations()
-            .filter(
-              (a) =>
-                a instanceof CSSAnimation && a.animationName.startsWith("bl-")
-            )
-            .map((a) => a.finished)
-        )
-      );
-      expect((await drawings(page)).map((d) => [d.piece, d.progress])).toEqual(
-        onLoad.map((piece) => [piece, 1])
-      );
+      // No animation started on the way down, none rides the scroll.
+      const after = await motions(page);
+      expect(after.length).toBe(before);
+      expect(after.every((m) => m.progress === 1)).toBe(true);
+      expect(after.filter((m) => m.onScroll).map((m) => m.piece)).toEqual([]);
+      await expectBelowDrawn(page);
+      const results = await new AxeBuilder({ page }).withTags(WCAG).analyze();
+      expect(results.violations).toEqual([]);
     });
   }
+
+  test("the rulers stand still from the start, before and after a scroll", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/", { waitUntil: "load" });
+    const [before, after, scrolled] = await page.evaluate(async () => {
+      const frame = document.querySelector(".mb-frame") as Element;
+      const ticks = () =>
+        ["::before", "::after"].map((pseudo) => {
+          const s = getComputedStyle(frame, pseudo);
+          return `${s.maskPosition} ${s.clipPath}`;
+        });
+      const atTop = ticks();
+      window.scrollTo({ behavior: "instant", top: 1234 });
+      const { promise, resolve } = Promise.withResolvers<void>();
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      await promise;
+      return [atTop, ticks(), window.scrollY];
+    });
+    expect(scrolled).toBe(1234);
+    expect(after).toEqual(before);
+    for (const clip of before) {
+      expect(clip.split(" ").slice(2).join(" ")).toMatch(UNCLIPPED);
+    }
+    expect(
+      (await motions(page)).filter((m) => m.piece.includes(".mb-frame"))
+    ).toEqual([]);
+  });
 
   test("the title block's header is level with the headline", async ({
     page,
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
-    await page.goto("/", { waitUntil: "networkidle" });
+    await page.goto("/", { waitUntil: "load" });
+    await entranceDone(page);
     const tops = await page.evaluate(() => {
       const top = (selector: string) =>
         Math.round(
@@ -415,64 +448,23 @@ test.describe("the drawing as you scroll", () => {
     ).toContain("Rys. KA-001");
   });
 
-  test("a cell scrolled whole into view draws to the end by itself", async ({
+  test("a cell under the cursor is selected whole: grips, and its number reads its width", async ({
     page,
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
-    await page.goto("/", { waitUntil: "networkidle" });
+    await page.goto("/", { waitUntil: "load" });
     const card = page.locator("#cases .mb-card").first();
-    const height = (await card.boundingBox())?.height ?? 0;
-    const frame = () =>
-      card.evaluate((el) =>
-        ["", "::before"].map((pseudo) =>
-          getComputedStyle(el, pseudo || null).getPropertyValue("--bl-p")
-        )
-      );
-    expect(await frame()).toEqual(["0", "0"]);
-
-    // Whole on the screen, and not a pixel further: the frame and the
-    // number play through within the pen's time.
-    await raise(card, height + 10);
-    await expect.poll(frame, { timeout: 3000 }).toEqual(["1", "1"]);
-    await expect(card).toHaveCSS("border-top-color", NO_COLOR);
-    expect(
-      (await drawings(page))
-        .filter((d) => d.piece.includes(".mb-card") && d.progress === 1)
-        .some((d) => d.durationMs === PEN_MS && !d.onScroll)
-    ).toBe(true);
-  });
-
-  test("a cell under the cursor is selected whole while it is still drawing", async ({
-    page,
-  }) => {
-    await page.setViewportSize({ height: 900, width: 1440 });
-    await page.goto("/", { waitUntil: "networkidle" });
-    const card = page.locator("#cases .mb-card").first();
-    const height = (await card.boundingBox())?.height ?? 0;
-    await raise(card, height + 10);
-    await expect(card).toHaveAttribute("data-bl-drawn", "");
-    await penAt(card, 0.5);
-    expect(
-      await card.evaluate((el) =>
-        getComputedStyle(el).getPropertyValue("--bl-p")
-      )
-    ).toBe("0.5");
-    await expect(card).toHaveCSS("border-top-color", NO_COLOR);
-
+    await card.scrollIntoViewIfNeeded();
     const box = await card.boundingBox();
     await page.mouse.move(
       (box?.x ?? 0) + (box?.width ?? 0) / 2,
       (box?.y ?? 0) + (box?.height ?? 0) / 2
     );
-    await expect(card).not.toHaveCSS("border-top-color", NO_COLOR);
-    // The number is on at once, reads the cell's outer width (the
-    // registered --bl-w the counter prints), and the grips show.
     const tag = await card.evaluate((el) => {
       const s = getComputedStyle(el, "::before");
       return {
         content: s.content,
         grips: getComputedStyle(el, "::after").visibility,
-        pen: s.getPropertyValue("--bl-p"),
         reads: Number(s.getPropertyValue("--bl-w")),
         width: Math.round(el.getBoundingClientRect().width),
       };
@@ -480,106 +472,98 @@ test.describe("the drawing as you scroll", () => {
     expect(tag.content).toContain("↔");
     expect(tag.reads).toBe(tag.width);
     expect(tag.grips).toBe("visible");
-    expect(tag.pen).toBe("1");
+    await page.mouse.move(0, 0);
+    await expect
+      .poll(() =>
+        card.evaluate((el) => getComputedStyle(el, "::after").visibility)
+      )
+      .toBe("hidden");
   });
 
-  test("the rulers draw down on load and stand still while the page scrolls", async ({
-    page,
-  }) => {
-    await page.setViewportSize({ height: 900, width: 1440 });
-    await page.goto("/", { waitUntil: "networkidle" });
-
-    // The ticks' place on screen, before and two frames after a scroll.
-    const [before, after, scrolled] = await page.evaluate(async () => {
-      const frame = document.querySelector(".mb-frame") as Element;
-      const ticks = () =>
-        ["::before", "::after"].map(
-          (pseudo) => getComputedStyle(frame, pseudo).maskPosition
-        );
-      const atTop = ticks();
-      window.scrollTo({ behavior: "instant", top: 1234 });
-      const { promise, resolve } = Promise.withResolvers<void>();
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-      await promise;
-      return [atTop, ticks(), window.scrollY];
-    });
-    expect(scrolled).toBe(1234);
-    expect(after).toEqual(before);
-
-    // Drawn down once, on load, on the clock.
-    const rulers = (await drawings(page)).filter((d) =>
-      d.piece.includes(".mb-frame")
-    );
-    expect(rulers.map((d) => [d.piece, d.onScroll, d.durationMs])).toEqual([
-      ["bl-draw div.mb-frame ::before", false, PEN_MS],
-      ["bl-draw div.mb-frame ::after", false, PEN_MS],
-    ]);
-  });
-
-  for (const path of PAGES.slice(1)) {
-    test(`${path} is live and drawn through`, async ({ page }) => {
+  for (const path of OTHER_PAGES) {
+    test(`${path} has no hero: nothing animates, the page stands drawn`, async ({
+      page,
+    }) => {
       await page.setViewportSize({ height: 900, width: 1440 });
-      await page.goto(path, { waitUntil: "networkidle" });
-      await expect(page.locator("html")).toHaveAttribute("data-bl-live", "");
-      await scrollThrough(page);
-      expect(await unmarked(page)).toEqual([]);
-      const pieces = await drawings(page);
-      expect(pieces.some((d) => d.piece.includes(".mb-footer"))).toBe(true);
-      for (const d of pieces) {
-        expect(d.onScroll, d.piece).toBe(false);
-        expect(d.durationMs, d.piece).toBe(PEN_MS);
+      await page.goto(path, { waitUntil: "load" });
+      await expect(page.locator("html")).toHaveAttribute("data-bl-enter", "");
+      expect(
+        (await motions(page)).filter((m) => m.name !== "bl-enter-down")
+      ).toEqual([]);
+      const head = page.locator("#top .mb-section-head").first();
+      if ((await head.count()) > 0) {
+        await expect(head).not.toHaveCSS("border-top-color", NO_COLOR);
+        await expect(head).toHaveCSS("background-size", "100% 1px");
       }
-      await expect
-        .poll(async () =>
-          (await drawings(page))
-            .filter((d) => d.progress !== 1)
-            .map((d) => d.piece)
-        )
-        .toEqual([]);
+      await expect(page.locator(".mb-footer")).not.toHaveCSS(
+        "border-top-color",
+        NO_COLOR
+      );
     });
   }
 
-  test("a page reached through the ClientRouter is live and draws", async ({
+  test("a page reached through the ClientRouter shows at once, no entrance", async ({
     page,
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
-    await page.goto("/", { waitUntil: "networkidle" });
+    await page.goto("/polityka-prywatnosci/", { waitUntil: "load" });
+    await entranceDone(page);
     await page
+      .getByRole("navigation", { name: "Główna nawigacja" })
+      .getByRole("link", { name: "Kacper Adler - Strona główna" })
+      .click();
+    await expect(page).toHaveURL(HOME);
+    await expect(page.locator(".mb-hero h1")).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("data-bl-live", "");
+    await expect(page.locator("html")).not.toHaveAttribute("data-bl-enter");
+    expect(await motions(page)).toEqual([]);
+    await expectFirstScreenInPlace(page);
+    await expectBelowDrawn(page);
+
+    // And back to the legal page: the same.
+    await page
+      .locator(".mb-footer")
       .getByRole("link", { name: "Polityka prywatności" })
-      .first()
       .click();
     await expect(page).toHaveURL(LEGAL_PAGE);
     await expect(page.locator("html")).toHaveAttribute("data-bl-live", "");
-    // The legal page's head (no <em>) is on the screen: its rule runs out
-    // over the transparent border.
-    const head = page.locator("#top .mb-section-head").first();
-    await expect(head).toHaveAttribute("data-bl-drawn", "");
-    await expect(head).toHaveCSS("border-top-color", NO_COLOR);
-    await expect(head).toHaveCSS("background-size", "100% 1px");
-    await scrollThrough(page);
-    expect(await unmarked(page)).toEqual([]);
+    expect(await motions(page)).toEqual([]);
   });
 });
 
-test.describe("the drawing stands complete", () => {
+test.describe("everything shows at once", () => {
   test.describe("under reduced motion", () => {
     test.use({ contextOptions: { reducedMotion: "reduce" } });
 
-    test("at once, on the components' own borders", async ({ page }) => {
+    test("the first screen in place, the page drawn", async ({ page }) => {
       await page.setViewportSize({ height: 900, width: 1440 });
-      await page.goto("/", { waitUntil: "networkidle" });
-      await expectDrawnAtOnce(page);
+      await page.goto("/", { waitUntil: "load" });
+      expect(await motions(page)).toEqual([]);
+      await expectFirstScreenInPlace(page);
+      await expect(page.locator(".mb-hero-status")).not.toHaveCSS(
+        "border-top-color",
+        NO_COLOR
+      );
+      await expectBelowDrawn(page);
     });
   });
 
   test.describe("without JavaScript", () => {
     test.use({ javaScriptEnabled: false });
 
-    test("at once, with no live mark on the page", async ({ page }) => {
+    test("no mark on the page, the first screen in place, the page drawn", async ({
+      page,
+    }) => {
       await page.setViewportSize({ height: 900, width: 1440 });
       await page.goto("/");
       await expect(page.locator("html")).not.toHaveAttribute("data-bl-live");
-      await expectDrawnAtOnce(page);
+      await expect(page.locator("html")).not.toHaveAttribute("data-bl-enter");
+      await expectFirstScreenInPlace(page);
+      await expect(page.locator(".mb-hero-status")).not.toHaveCSS(
+        "border-top-color",
+        NO_COLOR
+      );
+      await expectBelowDrawn(page);
     });
   });
 });

@@ -20,13 +20,26 @@ import Button from "../button.astro";
  * corner; the <em> is under a blue dimension brace with its callout; the
  * results card is the sheet's title block, with the sheet's header ("Rys.
  * KA-001 · Arkusz 1/1") as a strip across its top, which the text column
- * is padded for, so the headline stays level with the caption. The hero
- * is on the screen from the start, so it draws on load: the cross grows
- * from its centre (0-0.25 of the pen), the datum is written (0.25-0.5),
- * the brace runs out (0.3-0.7) and gets its callout (0.7-0.8); the title
- * block traces its frame clockwise (0-0.6), writes its header (0.5-0.8)
- * and rules its rows (0.6-1). At 880px and below the title block is
- * under the fold and draws like a cell once it is whole on the screen. */
+ * is padded for, so the headline stays level with the caption.
+ *
+ * The entrance (global.css, html[data-bl-enter]): on page load the first
+ * screen comes in as one sequence of about 1.5s, the stages overlapping
+ * so nothing waits. As the header comes down (header.astro, 0-0.5s) the
+ * headline slides up into place (from the first frame, painted all
+ * along: it is the page's largest contentful paint, and a fade from
+ * opacity 0 would take it out of that measure), then the subtitle rises
+ * in (0.2s), each over --mb-enter-rise (0.5s); the pen starts at
+ * --mb-enter-pen (0.3s) and
+ * runs --mb-pen (1s): the cross grows from its centre (0-0.25 of the
+ * pen), the datum is written (0.25-0.5), the brace runs out under the
+ * headline (0.3-0.7) and gets its callout (0.7-0.9); the title block
+ * traces its frame clockwise (0-0.6) and writes its header (0.5-0.8).
+ * While it is traced its caption (0.7s) and its rows (0.8s, 0.88s,
+ * 0.96s, a cascade) rise in, and its button and the hero buttons rise in
+ * last (1s). Everything ends by 1.5s and stays. At 880px and below the
+ * title block is under the fold and plays the same. Under reduced motion,
+ * without JavaScript, and on a page reached through the ClientRouter,
+ * everything shows at once. */
 const results = [
   {
     figure: "250+",
@@ -71,8 +84,8 @@ const results = [
       <p class="mb-status-caption">W liczbach</p>
 
       <dl class="mb-status-rows">
-        {results.map((result) => (
-          <div class="mb-status-row">
+        {results.map((result, i) => (
+          <div class="mb-status-row" style={`--mb-row: ${i + 1}`}>
             <dt class="mb-status-figure">{result.figure}</dt>
             <dd class="mb-status-text">{result.text}</dd>
           </div>
@@ -184,7 +197,7 @@ const results = [
 
   /* The callout hangs off the brace's right end. */
   h1 em::before {
-    --bl-s: clamp(0, (var(--bl-p) - 0.7) * 10, 1);
+    --bl-s: clamp(0, (var(--bl-p) - 0.7) * 5, 1);
     position: absolute;
     bottom: 0.02em;
     left: 100%;
@@ -269,35 +282,22 @@ const results = [
   }
 
   /* Equal rows: each as tall as the tallest, and together they take the
-   * height the card has between its caption and its button. Their
-   * hairlines (over each row, under the last) run out left to right. */
+   * height the card has between its caption and its button. */
   .mb-status-rows {
-    --bl-s: clamp(0, (var(--bl-p) - 0.6) / 0.4, 1);
     display: grid;
     flex: 1;
     grid-auto-rows: 1fr;
     padding: 0;
     margin: 0;
-    background-image: linear-gradient(var(--mb-hair) 0 0);
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-origin: border-box;
-    background-size: calc(var(--bl-e) * 100%) 1px;
     border-bottom: 1px solid var(--mb-hair);
   }
 
   .mb-status-row {
-    --bl-s: clamp(0, (var(--bl-p) - 0.6) / 0.4, 1);
     display: flex;
     flex-direction: column;
     gap: 6px;
     justify-content: center;
     padding: 14px 0;
-    background-image: linear-gradient(var(--mb-hair) 0 0);
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    background-origin: border-box;
-    background-size: calc(var(--bl-e) * 100%) 1px;
     border-top: 1px solid var(--mb-hair);
   }
 
@@ -321,27 +321,51 @@ const results = [
     display: flex;
   }
 
-  /* With the page's script: the rules are drawn by the backgrounds, not
-   * the borders, and the hero plays on load. */
+  /* The entrance, on this document's load: the title block's frame is
+   * drawn by its backgrounds, not its border, and the pen plays after the
+   * header and the headline; the text, the card's parts and the buttons
+   * rise into place in order. */
   @media (prefers-reduced-motion: no-preference) {
-    :global(html[data-bl-live]) .mb-hero-status {
+    :global(html[data-bl-enter]) .mb-hero-status {
       border-color: transparent;
     }
 
-    :global(html[data-bl-live]) .mb-status-rows,
-    :global(html[data-bl-live]) .mb-status-row {
-      border-color: transparent;
+    :global(html[data-bl-enter]) .mb-hero-grid::before,
+    :global(html[data-bl-enter]) .mb-hero-grid::after,
+    :global(html[data-bl-enter]) h1 em::before,
+    :global(html[data-bl-enter]) h1 em::after,
+    :global(html[data-bl-enter]) .mb-hero-status,
+    :global(html[data-bl-enter]) .mb-hero-status::before {
+      animation: bl-draw var(--mb-pen) linear var(--mb-enter-pen) both;
     }
 
-    :global(html[data-bl-live]) .mb-hero-grid::before,
-    :global(html[data-bl-live]) .mb-hero-grid::after,
-    :global(html[data-bl-live]) h1 em::before,
-    :global(html[data-bl-live]) h1 em::after,
-    :global(html[data-bl-live]) .mb-hero-status,
-    :global(html[data-bl-live]) .mb-hero-status::before,
-    :global(html[data-bl-live]) .mb-status-rows,
-    :global(html[data-bl-live]) .mb-status-row {
-      animation: bl-draw var(--mb-pen) linear both;
+    :global(html[data-bl-enter]) h1 {
+      animation: bl-enter-slide var(--mb-enter-rise) var(--mb-enter) both;
+    }
+
+    :global(html[data-bl-enter]) .mb-hero-sub,
+    :global(html[data-bl-enter]) .mb-hero-ctas,
+    :global(html[data-bl-enter]) .mb-status-caption,
+    :global(html[data-bl-enter]) .mb-status-row,
+    :global(html[data-bl-enter]) .mb-status-cta {
+      animation: bl-enter var(--mb-enter-rise) var(--mb-enter) both;
+    }
+
+    :global(html[data-bl-enter]) .mb-hero-sub {
+      animation-delay: 0.2s;
+    }
+
+    :global(html[data-bl-enter]) .mb-status-caption {
+      animation-delay: 0.7s;
+    }
+
+    :global(html[data-bl-enter]) .mb-status-row {
+      animation-delay: calc(0.72s + 0.08s * var(--mb-row));
+    }
+
+    :global(html[data-bl-enter]) .mb-hero-ctas,
+    :global(html[data-bl-enter]) .mb-status-cta {
+      animation-delay: 1s;
     }
   }
 
@@ -382,22 +406,6 @@ const results = [
 
     .mb-status-figure {
       font-size: 26px;
-    }
-
-    /* One column: the title block is under the fold, it draws like a cell
-     * once it is on the screen. */
-    @media (prefers-reduced-motion: no-preference) {
-      :global(html[data-bl-live]) .mb-hero-status:not([data-bl-drawn]),
-      :global(html[data-bl-live]) .mb-hero-status:not([data-bl-drawn])::before,
-      :global(html[data-bl-live])
-        .mb-hero-status:not([data-bl-drawn])
-        .mb-status-rows,
-      :global(html[data-bl-live])
-        .mb-hero-status:not([data-bl-drawn])
-        .mb-status-row {
-        --bl-p: 0;
-        animation: none;
-      }
     }
   }
 </style>
