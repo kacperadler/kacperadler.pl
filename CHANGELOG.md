@@ -12,6 +12,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0102 The 404 page's rule is the one line the pen does not draw (1399005)
 - KA0104 Audit the site CSS against good-css.com and propose what to adopt (6f0a0eb)
 - KA0108 iOS Safari: form fields at 15px, text inflation, 100vh on the 404 (a1ead45)
+- KA0114 One-letter Polish words end lines (e1c3a33)
 - KA0118 Audit the site design against Taste Skill and propose what to raise (35c837d)
 
 ### Fixed
