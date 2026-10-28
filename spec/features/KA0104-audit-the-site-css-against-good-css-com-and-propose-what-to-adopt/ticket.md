@@ -35,3 +35,4 @@ Out:
 ## Decisions
 
 - 2026-10-28: The human asked whether to use the good-css.com skill to see what more the designs can get; the coordinator proposed a report-only audit first.
+- 2026-10-28: The human approved the report-only audit, budget about $10.

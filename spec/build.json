@@ -832,8 +832,8 @@
   {
     "id": "KA0104",
     "title": "Audit the site CSS against good-css.com and propose what to adopt",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0104-audit-the-site-css-against-good-css-com-and-propose-what-to-adopt/ticket.md",
-    "updated": "2026-10-28T16:13:39.837Z"
+    "updated": "2026-10-28T16:14:41.125Z"
   }
 ]
