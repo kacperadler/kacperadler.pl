@@ -818,22 +818,119 @@
   {
     "id": "KA0102",
     "title": "The 404 page's rule is the one line the pen does not draw",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0102-the-404-page-s-rule-is-the-one-line-the-pen-does-not-draw/ticket.md",
-    "updated": "2026-10-28T16:20:56.871Z"
+    "updated": "2026-10-28T16:40:06.902Z"
   },
   {
     "id": "KA0103",
     "title": "The 360px entrance-after-paint test is flaky",
-    "status": "planned",
+    "status": "review",
     "path": "spec/features/KA0103-the-360px-entrance-after-paint-test-is-flaky/ticket.md",
-    "updated": "2026-10-28T16:20:56.441Z"
+    "updated": "2026-10-28T16:45:12.682Z"
   },
   {
     "id": "KA0104",
     "title": "Audit the site CSS against good-css.com and propose what to adopt",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0104-audit-the-site-css-against-good-css-com-and-propose-what-to-adopt/ticket.md",
-    "updated": "2026-10-28T16:14:53.326Z"
+    "updated": "2026-10-28T16:49:31.009Z"
+  },
+  {
+    "id": "KA0105",
+    "title": "In-page links park the section head under the sticky header",
+    "status": "planned",
+    "path": "spec/features/KA0105-in-page-links-park-the-section-head-under-the-sticky-header/ticket.md",
+    "updated": "2026-10-28T16:49:56.296Z"
+  },
+  {
+    "id": "KA0106",
+    "title": "One-word last lines in paragraphs (text-wrap: pretty)",
+    "status": "planned",
+    "path": "spec/features/KA0106-one-word-last-lines-in-paragraphs-text-wrap-pretty/ticket.md",
+    "updated": "2026-10-28T16:49:57.684Z",
+    "after": [
+      "KA0105"
+    ]
+  },
+  {
+    "id": "KA0107",
+    "title": "The mobile menu cannot reach FAQ and \"Umów rozmowę\" on a phone in landscape",
+    "status": "planned",
+    "path": "spec/features/KA0107-the-mobile-menu-cannot-reach-faq-and-umow-rozmowe-on-a-phone-in-landscape/ticket.md",
+    "updated": "2026-10-28T16:49:58.141Z",
+    "after": [
+      "KA0105"
+    ]
+  },
+  {
+    "id": "KA0108",
+    "title": "iOS Safari: form fields at 15px, text inflation, 100vh on the 404",
+    "status": "planning",
+    "path": "spec/features/KA0108-ios-safari-form-fields-at-15px-text-inflation-100vh-on-the-404/ticket.md",
+    "updated": "2026-10-28T16:49:30.982Z"
+  },
+  {
+    "id": "KA0109",
+    "title": "In forced-colors mode a focused field shows no focus at all",
+    "status": "planning",
+    "path": "spec/features/KA0109-in-forced-colors-mode-a-focused-field-shows-no-focus-at-all/ticket.md",
+    "updated": "2026-10-28T16:49:30.988Z"
+  },
+  {
+    "id": "KA0110",
+    "title": "Hover styles answer taps on touch screens",
+    "status": "planning",
+    "path": "spec/features/KA0110-hover-styles-answer-taps-on-touch-screens/ticket.md",
+    "updated": "2026-10-28T16:49:30.990Z"
+  },
+  {
+    "id": "KA0111",
+    "title": "Header menu button, header CTA and footer links are small tap targets",
+    "status": "planning",
+    "path": "spec/features/KA0111-header-menu-button-header-cta-and-footer-links-are-small-tap-targets/ticket.md",
+    "updated": "2026-10-28T16:49:30.992Z"
+  },
+  {
+    "id": "KA0112",
+    "title": "The message box scrolls inside itself instead of growing",
+    "status": "planning",
+    "path": "spec/features/KA0112-the-message-box-scrolls-inside-itself-instead-of-growing/ticket.md",
+    "updated": "2026-10-28T16:49:30.994Z"
+  },
+  {
+    "id": "KA0113",
+    "title": "Section rhythm jumps at 880px; headline sizes ignore the reader's font size",
+    "status": "planning",
+    "path": "spec/features/KA0113-section-rhythm-jumps-at-880px-headline-sizes-ignore-the-reader-s-font-size/ticket.md",
+    "updated": "2026-10-28T16:49:30.995Z"
+  },
+  {
+    "id": "KA0114",
+    "title": "One-letter Polish words end lines",
+    "status": "planning",
+    "path": "spec/features/KA0114-one-letter-polish-words-end-lines/ticket.md",
+    "updated": "2026-10-28T16:49:30.998Z"
+  },
+  {
+    "id": "KA0115",
+    "title": "The mobile sheet re-implements what `<dialog>` gives",
+    "status": "planning",
+    "path": "spec/features/KA0115-the-mobile-sheet-re-implements-what-dialog-gives/ticket.md",
+    "updated": "2026-10-28T16:49:31.000Z"
+  },
+  {
+    "id": "KA0116",
+    "title": "A global rule strips every transition under reduced motion",
+    "status": "planning",
+    "path": "spec/features/KA0116-a-global-rule-strips-every-transition-under-reduced-motion/ticket.md",
+    "updated": "2026-10-28T16:49:31.002Z"
+  },
+  {
+    "id": "KA0117",
+    "title": "Derived colours are hard-coded instead of mixed from the palette",
+    "status": "planning",
+    "path": "spec/features/KA0117-derived-colours-are-hard-coded-instead-of-mixed-from-the-palette/ticket.md",
+    "updated": "2026-10-28T16:49:31.004Z"
   }
 ]
