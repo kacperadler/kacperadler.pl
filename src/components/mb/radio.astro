@@ -1,43 +1,28 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 
-/* Radio, in two looks:
- *   default  a native input (appearance: none) drawn as an 18px circle in a
- *            muted frame, the label beside it; checked: a blue dot inset in
- *            the frame. The one round shape on the site: a radio reads as
- *            one.
- *   choice   the input is visually hidden and `label` is a square chip, 36px
- *            high like the `sm` button (the contact form's project type);
- *            hover: the lit cell in the ink frame; press: the flat panel;
- *            checked: a solid blue block, blue-2 on hover; keyboard focus:
- *            the ring around the chip. Every state keeps the 1px frame and
- *            the type weight, so checking a chip moves nothing.
- * Disabled: the flat panel, muted text; a checked choice stays a muted
- * block, so the chosen type still shows while the form sends. Invalid: a
- * coral frame, from [data-invalid] on the enclosing <Field> or aria-invalid
- * on the input. Native input attributes (name / value / checked /
- * disabled) pass through.
+/* Radio: a native input (appearance: none) drawn as an 18px circle in a
+ * muted frame, the label beside it; hover: the ink frame; checked: a blue
+ * dot inset in the frame. The one round shape on the site: a radio reads
+ * as one. (A square chip that can be chosen is <Choice>, a checkbox.)
+ * Disabled: the flat panel, muted text. Invalid: a coral frame, from
+ * [data-invalid] on the enclosing <Field> or aria-invalid on the input.
+ * Native input attributes (name / value / checked / disabled) pass
+ * through.
  *
- * `state` forces a look on the catalogue page (/ui): "hover" and "pressed"
- * on the label, "focus-visible" on the input. */
+ * `state` forces a look on the catalogue page (/ui): "hover" on the label,
+ * "focus-visible" on the input. */
 interface Props extends Omit<HTMLAttributes<"input">, "type"> {
   label: string;
-  state?: "hover" | "pressed" | "focus-visible";
-  variant?: "default" | "choice";
+  state?: "hover" | "focus-visible";
 }
 
-const {
-  label,
-  state,
-  variant = "default",
-  class: extraClass,
-  ...rest
-} = Astro.props;
+const { label, state, class: extraClass, ...rest } = Astro.props;
 ---
 
 <label
   data-state={state === "focus-visible" ? undefined : state}
-  class:list={["mb-radio", `mb-radio-${variant}`, extraClass]}
+  class:list={["mb-radio", extraClass]}
 >
   <input
     class="mb-radio-input"
@@ -64,32 +49,7 @@ const {
     cursor: not-allowed;
   }
 
-  /* Choice: the chip; the input is visually hidden. */
-  .mb-radio-choice .mb-radio-input {
-    position: absolute;
-    pointer-events: none;
-    opacity: 0;
-  }
-
-  .mb-radio-choice .mb-radio-label {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 36px;
-    padding: 0 14px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink-2);
-    letter-spacing: -0.01em;
-    border: 1px solid var(--muted);
-    transition:
-      background-color var(--mb-snap),
-      border-color var(--mb-snap),
-      color var(--mb-snap);
-  }
-
-  /* Default: the circle. */
-  .mb-radio-default .mb-radio-input {
+  .mb-radio .mb-radio-input {
     flex-shrink: 0;
     width: 18px;
     height: 18px;
@@ -105,86 +65,37 @@ const {
       box-shadow var(--mb-snap);
   }
 
-  .mb-radio-default:is(:hover, [data-state="hover"]) .mb-radio-input {
+  .mb-radio:is(:hover, [data-state="hover"]) .mb-radio-input {
     border-color: var(--ink);
   }
 
-  .mb-radio-default .mb-radio-input:checked {
+  .mb-radio .mb-radio-input:checked {
     background: var(--blue);
     border-color: var(--blue);
     box-shadow: inset 0 0 0 3px var(--v2-bg);
   }
 
-  .mb-radio-default .mb-radio-input[aria-invalid="true"],
-  :global([data-invalid]) .mb-radio-default .mb-radio-input {
+  .mb-radio .mb-radio-input[aria-invalid="true"],
+  :global([data-invalid]) .mb-radio .mb-radio-input {
     border-color: var(--error);
   }
 
-  .mb-radio-default .mb-radio-input:disabled {
+  .mb-radio .mb-radio-input:disabled {
     background: var(--v2-panel);
     border-color: var(--mb-hair);
   }
 
-  .mb-radio-default .mb-radio-input:checked:disabled {
+  .mb-radio .mb-radio-input:checked:disabled {
     background: var(--muted);
     box-shadow: inset 0 0 0 3px var(--v2-panel);
   }
 
-  .mb-radio-default:has(:disabled) .mb-radio-label {
+  .mb-radio:has(:disabled) .mb-radio-label {
     color: var(--muted);
-  }
-
-  /* Choice: the chip states. */
-  .mb-radio-choice:is(:hover, [data-state="hover"]) .mb-radio-label {
-    color: var(--ink);
-    background: var(--v2-panel-elevated);
-    border-color: var(--ink);
-  }
-
-  .mb-radio-choice:is(:active, [data-state="pressed"]) .mb-radio-label {
-    background: var(--v2-panel);
-  }
-
-  .mb-radio-choice .mb-radio-input:checked + .mb-radio-label {
-    color: var(--v2-bg);
-    background: var(--blue);
-    border-color: var(--blue);
-  }
-
-  .mb-radio-choice
-    .mb-radio-input:is(:focus-visible, [data-state="focus-visible"])
-    + .mb-radio-label {
-    outline: 2px solid var(--blue);
-    outline-offset: 2px;
-  }
-
-  .mb-radio-choice .mb-radio-input[aria-invalid="true"] + .mb-radio-label,
-  :global([data-invalid]) .mb-radio-choice .mb-radio-label {
-    border-color: var(--error);
-  }
-
-  .mb-radio-choice .mb-radio-input:disabled + .mb-radio-label {
-    color: var(--muted);
-    background: var(--v2-panel);
-    border-color: var(--mb-hair);
-  }
-
-  .mb-radio-choice:is(:hover, [data-state="hover"])
-    .mb-radio-input:checked
-    + .mb-radio-label {
-    background: var(--blue-2);
-    border-color: var(--blue-2);
-  }
-
-  .mb-radio-choice .mb-radio-input:checked:disabled + .mb-radio-label {
-    color: var(--v2-panel);
-    background: var(--muted);
-    border-color: var(--muted);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .mb-radio-default .mb-radio-input,
-    .mb-radio-choice .mb-radio-label {
+    .mb-radio-input {
       transition: none;
     }
   }

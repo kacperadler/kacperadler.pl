@@ -25,7 +25,7 @@ test.describe("minimal brutalism", () => {
     for (const path of [...PAGES, ...cases]) {
       // biome-ignore lint/performance/noAwaitInLoops: one page at a time
       await page.goto(path, { waitUntil: "domcontentloaded" });
-      // Elements that paint nothing (the hidden native radio under a choice
+      // Elements that paint nothing (the hidden native checkbox under a choice
       // chip, opacity 0) keep their UA corners; only what shows counts.
       const offenders = await page.evaluate(() =>
         [...document.querySelectorAll("body *")]

@@ -1,9 +1,19 @@
 /* llms-full.txt - extended machine-friendly content for AI agents that
- * want the full picture without parsing HTML. Includes service body
- * copy, process step descriptions, experience descriptions, and a
- * "how to engage" section. */
+ * want the full picture without parsing HTML: the offer, the problems
+ * and what automating them gives, the selected projects, the process, the about text, the
+ * experience, the case studies, the FAQ and how to get in touch. The copy
+ * shared with the home page comes from src/data/home.ts and
+ * src/data/process.ts. */
 
 import { getCollection } from "astro:content";
+import {
+  about,
+  caseHighlights,
+  customApps,
+  faq,
+  offerPricing,
+  problems,
+} from "@/data/home";
 import { processSteps } from "@/data/process";
 import { siteConfig } from "@/data/site-config";
 import { caseStudyPath, sortedCaseStudies } from "@/lib/case-studies";
@@ -11,24 +21,47 @@ import { caseStudyPath, sortedCaseStudies } from "@/lib/case-studies";
 export const prerender = true;
 
 export async function GET(): Promise<Response> {
-  const services = (await getCollection("services")).sort(
+  const offer = (await getCollection("services")).sort(
     (a, b) => a.data.order - b.data.order
   );
 
   const experience = (await getCollection("experience")).sort(
     (a, b) => a.data.order - b.data.order
   );
+  const companyById = new Map(
+    experience.map((entry) => [entry.id, entry.data.company])
+  );
 
   const caseStudies = await sortedCaseStudies();
 
-  const servicesBlock = services
+  const offerBlock = offer
     .map(
       (s, idx) =>
         `### ${String(idx + 1).padStart(2, "0")}. ${s.data.title}
 
-${s.data.description}
+**Dla kogo**: ${s.data.audience}
 
-**Stack**: ${s.data.tags.join(", ")}`
+**Co dostajesz**: ${s.data.description}
+
+**Czas**: ${s.data.duration}${s.data.note ? ` ${s.data.note}` : ""}`
+    )
+    .join("\n\n");
+
+  const automationBlock = problems
+    .map((p) => `- **${p.title}**: ${p.text} → ${p.effect}`)
+    .join("\n");
+
+  const highlightBlock = caseHighlights
+    .map(
+      (
+        h
+      ) => `### ${h.experiences.map((id) => companyById.get(id) ?? id).join(" i ")} (${h.kind})
+
+**Problem**: ${h.problem}
+
+**Rozwiązanie**: ${h.solution}
+
+**Efekt**: ${h.effect}`
     )
     .join("\n\n");
 
@@ -92,43 +125,73 @@ ${caseStudyEntries}
 `
       : "";
 
+  const faqBlock = faq
+    .map((item) => `### ${item.question}\n\n${item.answer}`)
+    .join("\n\n");
+
   const body = `# ${siteConfig.name} - ${siteConfig.role}
 
 > ${siteConfig.tagline}
 
 ${siteConfig.description}
 
-Pracuję async, w sprintach, z zespołami produktowymi w Polsce i Unii Europejskiej. Single-source pracy: ${siteConfig.url}
+Dla firm w Polsce i Unii Europejskiej, które chcą mniej ręcznej roboty bez zatrudniania działu IT. Strona: ${siteConfig.url}
 
 ---
 
-## Usługi
+## Oferta
 
-Najpierw agenci AI i automatyzacje w firmach, potem aplikacje i strony. Każdy obszar ma własny stack dobrany pod kontekst projektu; w aplikacjach React i TypeScript jako fundament.
+Trzy kroki. Zacznij od tego, który pasuje.
 
-${servicesBlock}
+${offerBlock}
+
+### ${customApps.title}
+
+${customApps.description}
+
+${offerPricing}
+
+---
+
+## Co mogę zautomatyzować
+
+${automationBlock}
+
+---
+
+## Wybrane projekty
+
+${highlightBlock}
 
 ---
 
 ## Proces współpracy
 
-Pięć etapów od pierwszej rozmowy do wdrożenia. Bez ceremonii, dużo komunikacji, miejsce na feedback na każdym etapie.
-
 ${processBlock}
 
 ---
 
-## Współprace
+## O mnie
 
-Frontend dla firm z różnych branż - od korporacji (PwC, Apptension) po Web3 side-projekty (Payloo) i mobile zlecenia (Energia Direct). Łącznie 5+ lat w branży.
+${about.join("\n\n")}
+
+---
+
+## Doświadczenie
 
 ${experienceBlock}
 
 ---
 
-${caseStudiesBlock}## Kontakt
+${caseStudiesBlock}## FAQ
 
-Najszybciej przez formularz na ${siteConfig.url}#contact (odpowiadam w ciągu 24h) albo bezpośrednio:
+${faqBlock}
+
+---
+
+## Kontakt
+
+Najszybciej przez formularz na ${siteConfig.url}/#contact (odpowiadam w ciągu 24h) albo bezpośrednio:
 
 - **Email**: ${siteConfig.email}
 - **LinkedIn**: ${siteConfig.social.linkedin}
@@ -136,13 +199,11 @@ Najszybciej przez formularz na ${siteConfig.url}#contact (odpowiadam w ciągu 24
 
 ## Co napisać w pierwszej wiadomości
 
-Trzy rzeczy które przyspieszają rozmowę:
+1. **Co robicie ręcznie**
+2. **Ile czasu to zajmuje**
+3. **Czego szukasz** - audyt, wdrożenie czy stała współpraca
 
-1. **Co budujesz** - kontekst produktu, problem który rozwiązuje, gdzie obecnie jesteś (pomysł / MVP / produkcja).
-2. **W jakim terminie** - kiedy chcesz wystartować i ile czasu masz na realizację. Pomaga oszacować dostępność i scope.
-3. **Co Cię blokuje** - najtrudniejszy element, niepewność techniczna, brak rąk do roboty. Mów wprost - łatwiej wycenić rzeczywiste potrzeby.
-
-2-3 zdania wystarczą żeby zacząć rozmowę. Reszta przychodzi w pytaniach z mojej strony.
+2–3 zdania wystarczą, żeby zacząć rozmowę.
 `;
 
   return new Response(body, {

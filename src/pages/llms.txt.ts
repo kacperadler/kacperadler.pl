@@ -1,19 +1,20 @@
 /* llms.txt - machine-friendly site summary for AI agents (proposed
  * standard: https://llmstxt.org/). Markdown file at /llms.txt that
  * crawlers fetch instead of parsing HTML, gives them a structured
- * overview of the portfolio in ~80 lines.
+ * overview of the site.
  *
  * Concise version - just the headlines. /llms-full.txt carries the
- * full body copy (process step descriptions, service body text). */
+ * full body copy (the offer, the projects, the process, the FAQ). */
 
 import { getCollection } from "astro:content";
+import { customApps, problems } from "@/data/home";
 import { siteConfig } from "@/data/site-config";
 import { caseStudyPath, sortedCaseStudies } from "@/lib/case-studies";
 
 export const prerender = true;
 
 export async function GET(): Promise<Response> {
-  const services = (await getCollection("services")).sort(
+  const offer = (await getCollection("services")).sort(
     (a, b) => a.data.order - b.data.order
   );
 
@@ -23,11 +24,15 @@ export async function GET(): Promise<Response> {
 
   const caseStudies = await sortedCaseStudies();
 
-  const servicesList = services
+  const offerList = offer
     .map(
       (s) =>
-        `- **${s.data.title}** (${s.data.tags.join(", ")}): ${s.data.description}`
+        `- **${s.data.title}** (${s.data.duration}). Co dostajesz: ${s.data.description}`
     )
+    .join("\n");
+
+  const automationList = problems
+    .map((p) => `- **${p.title}**: ${p.text} → ${p.effect}`)
     .join("\n");
 
   const experienceList = experience
@@ -62,11 +67,16 @@ export async function GET(): Promise<Response> {
 
 > ${siteConfig.tagline} ${siteConfig.description}
 
-## Usługi
+## Oferta
 
-${servicesList}
+${offerList}
+- **${customApps.title}**: ${customApps.description}
 
-## Współprace
+## Co mogę zautomatyzować
+
+${automationList}
+
+## Doświadczenie
 
 ${experienceList}
 
@@ -79,7 +89,7 @@ ${caseStudiesBlock}## Kontakt
 
 ## Pełna treść
 
-Pełny opis usług, procesu współpracy i opisy poszczególnych projektów: ${siteConfig.url}/llms-full.txt
+Pełny opis oferty, wybranych projektów, procesu współpracy i odpowiedzi na częste pytania: ${siteConfig.url}/llms-full.txt
 `;
 
   return new Response(body, {

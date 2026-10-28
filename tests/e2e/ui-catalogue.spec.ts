@@ -347,23 +347,6 @@ test.describe("component catalogue (astro dev)", () => {
     );
   });
 
-  test("a forced step hover fills the marker like a real one", async ({
-    page,
-  }) => {
-    const props = ["background-color", "border-color", "color"];
-    const forced = sample(page, "mb-step-marker", "hover").locator(
-      ".mb-step-dot"
-    );
-    const idle = sample(page, "mb-step-marker", "idle");
-    const idleDot = idle.locator(".mb-step-dot");
-
-    const forcedPaint = await paint(forced, props);
-    expect(forcedPaint["background-color"]).toBe("rgb(142, 174, 216)");
-    expect(forcedPaint).not.toEqual(await paint(idleDot, props));
-    await idle.locator(".mb-card").hover();
-    expect(await paint(idleDot, props)).toEqual(forcedPaint);
-  });
-
   for (const width of [1440, 390, 360]) {
     test(`the step rail runs from the first mark to the last at ${width}px`, async ({
       page,
@@ -424,15 +407,15 @@ test.describe("component catalogue (astro dev)", () => {
     });
   });
 
-  test("the default radio is round, the choice chip square", async ({
-    page,
-  }) => {
-    await expect(
-      page.locator(".mb-radio-default .mb-radio-input").first()
-    ).toHaveCSS("border-radius", "50%");
-    await expect(
-      page.locator(".mb-radio-choice .mb-radio-label").first()
-    ).toHaveCSS("border-radius", "0px");
+  test("the radio is round, the choice chip square", async ({ page }) => {
+    await expect(page.locator(".mb-radio .mb-radio-input").first()).toHaveCSS(
+      "border-radius",
+      "50%"
+    );
+    await expect(page.locator(".mb-choice-label").first()).toHaveCSS(
+      "border-radius",
+      "0px"
+    );
   });
 
   test("a forced card hover lights the card and its fillOnCellHover badge", async ({
@@ -566,10 +549,12 @@ test.describe("component catalogue (astro dev)", () => {
     await expect(mark("checked")).toHaveCSS("opacity", "1");
   });
 
-  test("checking a choice chip moves nothing", async ({ page }) => {
+  test("checking a choice chip moves nothing, and a second one keeps the first", async ({
+    page,
+  }) => {
     // Across every sample state (checked, hover, focus, disabled, invalid)
     // the chips keep one frame width and one type weight.
-    const chips = page.locator(".mb-radio-choice .mb-radio-label");
+    const chips = page.locator(".mb-choice-label");
     const looks = await chips.evaluateAll((labels) => [
       ...new Set(
         labels.map((label) => {
@@ -580,16 +565,20 @@ test.describe("component catalogue (astro dev)", () => {
     ]);
     expect(looks).toEqual(["1px 1px 500"]);
 
-    const group = page.getByRole("radiogroup", {
-      name: "Typ projektu (choice, checked)",
+    const group = page.getByRole("group", {
+      name: "Typ projektu (choice, hover)",
     });
-    const chip = group.locator(".mb-radio-label", { hasText: "Landing page" });
+    const chip = group.locator(".mb-choice-label", { hasText: "Inne" });
     await chip.scrollIntoViewIfNeeded();
     const before = await chip.boundingBox();
+    await group
+      .locator(".mb-choice-label", { hasText: "Landing page" })
+      .click();
     await chip.click();
     await expect(
-      group.getByRole("radio", { name: "Landing page" })
+      group.getByRole("checkbox", { name: "Landing page" })
     ).toBeChecked();
+    await expect(group.getByRole("checkbox", { name: "Inne" })).toBeChecked();
     expect(await chip.boundingBox()).toEqual(before);
   });
 
@@ -1451,20 +1440,25 @@ test.describe("production build", () => {
     ).toBe(1);
   });
 
-  // Tag and status pill are badge variants now: the service tags keep their
-  // own case in the muted frame, the availability keeps its blue frame and
-  // square dot.
-  test("service tags and the availability are badge variants", async ({
+  // Tag and status pill are badge variants now: a case study's stack tags
+  // keep their own case in the muted frame, the availability (in the mobile
+  // menu) keeps its blue frame and square dot.
+  test("stack tags and the availability are badge variants", async ({
     page,
   }) => {
-    await page.goto("/");
-    const tags = page.locator("#services .mb-service-tags li > .mb-badge-tag");
+    await page.goto("/realizacje/");
+    const caseStudy = await page
+      .locator("a.mb-link-case")
+      .first()
+      .getAttribute("href");
+    await page.goto(caseStudy ?? "/realizacje/");
+    const tags = page.locator(".mb-case-stack li > .mb-badge-tag");
     expect(await tags.count()).toBeGreaterThan(0);
     await expect(tags.first()).toHaveCSS("text-transform", "none");
     await expect(tags.first()).toHaveCSS("border-color", "rgb(157, 156, 149)");
 
-    const status = page.locator(".mb-hero-status .mb-badge-status");
-    await expect(status).toHaveText("Otwarty na nowe współprace");
+    const status = page.locator("#mobile-sheet .mb-badge-status");
+    await expect(status).toHaveText("Przyjmuję nowe projekty");
     await expect(status).toHaveCSS("border-color", "rgb(142, 174, 216)");
     expect(
       await status.evaluate((el) => {
@@ -1473,25 +1467,6 @@ test.describe("production build", () => {
       })
     ).toBe("7px 7px rgb(142, 174, 216)");
     await expect(page.locator(".mb-tag, .mb-status-pill")).toHaveCount(0);
-  });
-
-  // The process steps are the catalogue's step marker: a mark that fills
-  // with its step and no other.
-  test("a process step mark fills with its step", async ({ page }) => {
-    await page.goto("/");
-    await expect(page.locator("#how .mb-step > .mb-step-marker")).toHaveCount(
-      5
-    );
-
-    const step = page.locator("#how .mb-step").nth(2);
-    await step.locator(".mb-card").hover();
-    await expect(step.locator(".mb-step-dot")).toHaveCSS(
-      "background-color",
-      "rgb(142, 174, 216)"
-    );
-    await expect(
-      page.locator("#how .mb-step").nth(1).locator(".mb-step-dot")
-    ).toHaveCSS("background-color", "rgb(10, 12, 16)");
   });
 
   for (const width of [1440, 390]) {

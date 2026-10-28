@@ -1,52 +1,95 @@
 ---
 import { getCollection } from "astro:content";
-import Badge from "../badge.astro";
+import { customApps, offerPricing } from "@/data/home";
+import Button from "../button.astro";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
 import SectionHead from "../section-head.astro";
 
-/* Services (#services): the services collection as a two-column cell
- * table (one column at 880px and below, an odd last cell spans the row).
- * The index is a mono figure that turns blue with its cell. */
-const services = (await getCollection("services")).sort(
+/* Offer (#services): the services collection's three steps as a
+ * three-column cell table (one column at 880px and below), the pricing
+ * answer as the head's lede. Each step: its mono index (blue with its
+ * cell), title, a ruled list of who it is for, what the client gets and
+ * how long it takes (with the step's own note under the time), and a
+ * button to the contact form - default on the first step, the one to
+ * start from, outline on the others. The cells share their rows (CSS
+ * subgrid), so each label runs in one straight line through the table.
+ * Under the three steps, sharing the table's bottom rule, one full-width
+ * cell for custom apps: built in the implementation step, but not a step
+ * of its own. */
+const steps = (await getCollection("services")).sort(
   (a, b) => a.data.order - b.data.order
 );
 ---
 
 <section class="mb-services" id="services">
   <div class="container">
-    <SectionHead label="Usługi">
-      Obszary w&nbsp;których <em>działam</em>.
-      <Fragment slot="lede">
-        Moje doświadczenie pozwala mi na pracę w wielu technologiach<br>i
-        projektach.
-      </Fragment>
+    <SectionHead label="Oferta">
+      Trzy kroki. Zacznij od tego, który <em>pasuje</em>.
+      <Fragment slot="lede">{offerPricing}</Fragment>
     </SectionHead>
 
-    <CellGrid columns={2}>
-      {services.map((service, idx) => (
+    <CellGrid class="mb-services-grid" columns={3}>
+      {steps.map((step, idx) => (
         <Card>
-          <span slot="title">{service.data.title}</span>
+          <span slot="title">{step.data.title}</span>
           <span aria-hidden="true" class="mb-service-num" slot="action">
             {String(idx + 1).padStart(2, "0")}
           </span>
-          <p class="mb-service-desc">{service.data.description}</p>
-          <ul class="mb-service-tags" slot="footer">
-            {service.data.tags.map((tag) => (
-              <li>
-                <Badge variant="tag">{tag}</Badge>
-              </li>
-            ))}
-          </ul>
+          <dl class="mb-service-facts">
+            <div class="mb-service-fact">
+              <dt>Dla kogo</dt>
+              <dd>{step.data.audience}</dd>
+            </div>
+            <div class="mb-service-fact">
+              <dt>Co dostajesz</dt>
+              <dd>{step.data.description}</dd>
+            </div>
+            <div class="mb-service-fact">
+              <dt>Czas</dt>
+              <dd>{step.data.duration}</dd>
+              {step.data.note && (
+                <dd class="mb-service-note">{step.data.note}</dd>
+              )}
+            </div>
+          </dl>
+          <Button
+            href="#contact"
+            iconEnd="lucide:arrow-right"
+            slot="footer"
+            variant={idx === 0 ? "default" : "outline"}
+          >
+            {step.data.cta}
+          </Button>
         </Card>
       ))}
     </CellGrid>
+
+    <div class="mb-services-apps">
+      <Card>
+        <span slot="title">{customApps.title}</span>
+        <p class="mb-services-apps-text">{customApps.description}</p>
+      </Card>
+    </div>
   </div>
 </section>
 
 <style>
   .mb-services {
-    margin-top: var(--v2-space-2xl);
+    margin-top: var(--mb-section-gap);
+  }
+
+  /* One more row of the table: -1px puts its top rule on the table's
+   * bottom one. The text keeps the prose measure. */
+  .mb-services-apps {
+    display: flex;
+    flex-direction: column;
+    margin-top: -1px;
+  }
+
+  .mb-services-apps-text {
+    max-width: 65ch;
+    margin: 0;
   }
 
   .mb-service-num {
@@ -63,23 +106,62 @@ const services = (await getCollection("services")).sort(
     color: var(--blue);
   }
 
-  .mb-service-desc {
+  /* The cell's five rows (head, three facts, button) are the grid row's
+   * tracks, shared by the three cells: card, content and list are nested
+   * subgrids, so a long fact in one cell moves the same row in the others. */
+  .mb-services :global(.mb-services-grid > .mb-card) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 5;
+  }
+
+  .mb-services :global(.mb-services-grid .mb-card-content) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    row-gap: 0;
+  }
+
+  .mb-service-facts {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    row-gap: 0;
     margin: 0;
   }
 
-  .mb-service-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
+  .mb-service-fact {
+    padding: 12px 0;
+    border-top: 1px solid var(--mb-hair);
   }
 
-  @media (max-width: 880px) {
-    .mb-services {
-      margin-top: var(--v2-space-xl);
-    }
+  .mb-service-fact:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .mb-service-fact:last-child {
+    padding-bottom: 0;
+  }
+
+  .mb-service-fact dt {
+    margin: 0 0 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .mb-service-fact dd {
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .mb-service-fact .mb-service-note {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--ink-2);
   }
 
   @media (prefers-reduced-motion: reduce) {

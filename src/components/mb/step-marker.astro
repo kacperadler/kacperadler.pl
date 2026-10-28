@@ -1,13 +1,19 @@
 ---
 /* Step marker: a square mono number on a 1px ink rail, beside a process
- * step's <Card> (how-i-work). It goes first in its row, the card right
- * after it, and stretches to the row's height, so the mark sits on the
- * card's vertical centre however tall the card is. The rows stack in a
- * list, so the rails join into one line that runs from the first mark to
- * the last (the first row's rail starts at its centre, the last one's ends
- * there). The mark fills blue while the card next to it is hovered - or
- * forced with [data-state="hover"] on the card (/ui). Decorative: the
- * step's title carries the meaning. */
+ * step's <Card> (how-i-work). It goes first in its row and stretches to
+ * the row's height, so the mark sits on the row's vertical centre however
+ * tall the card is. The rows stack in a list, so the rails join into one
+ * line that runs from the first mark to the last (the first row's rail
+ * starts at its centre, the last one's ends there).
+ *
+ * The rail fills as the page scrolls: a 2px blue line over the ink one
+ * follows a line across the middle of the viewport (each row's segment
+ * fills while that line crosses it, so the segments read as one fill),
+ * and a mark turns blue when the line reaches its centre. CSS
+ * scroll-driven animations (a view timeline per segment and per mark), no
+ * script. Under prefers-reduced-motion, or where the browser has no view
+ * timelines, rail and marks show fully filled. Decorative: the step's
+ * title carries the meaning. */
 interface Props {
   num: string;
 }
@@ -16,34 +22,61 @@ const { num } = Astro.props;
 ---
 
 <div aria-hidden="true" class="mb-step-marker">
+  <span class="mb-step-fill"></span>
   <span class="mb-step-dot">{num}</span>
 </div>
 
 <style>
   .mb-step-marker {
+    --mb-step-dot: 48px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .mb-step-marker::before {
+  /* The ink rail, and the box the blue fill runs in: the same segment. */
+  .mb-step-marker::before,
+  .mb-step-fill {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 50%;
+  }
+
+  /* The segment is the fill's view timeline; the line itself scales, so
+   * the timeline sits on a box that never transforms. */
+  .mb-step-fill {
+    width: 0;
+    view-timeline: --mb-step-fill block;
+  }
+
+  .mb-step-marker::before {
     width: 1px;
     content: "";
     background: var(--mb-rule);
   }
 
   /* The rail runs from the first mark to the last. */
-  :global(:first-child) > .mb-step-marker::before {
+  :global(:first-child) > .mb-step-marker::before,
+  :global(:first-child) > .mb-step-marker > .mb-step-fill {
     top: 50%;
   }
 
-  :global(:last-child) > .mb-step-marker::before {
+  :global(:last-child) > .mb-step-marker::before,
+  :global(:last-child) > .mb-step-marker > .mb-step-fill {
     bottom: 50%;
+  }
+
+  .mb-step-fill::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -0.5px;
+    width: 2px;
+    content: "";
+    background: var(--blue);
+    transform-origin: top center;
   }
 
   .mb-step-dot {
@@ -51,38 +84,75 @@ const { num } = Astro.props;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: var(--mb-step-dot);
+    height: var(--mb-step-dot);
     font-family: var(--mono);
     font-size: 14px;
     font-weight: 500;
-    color: var(--ink);
-    background: var(--v2-bg);
-    border: 1px solid var(--mb-rule);
-    transition:
-      background-color var(--mb-snap),
-      border-color var(--mb-snap),
-      color var(--mb-snap);
-  }
-
-  .mb-step-marker:has(~ :global(.mb-card:is(:hover, [data-state="hover"])))
-    .mb-step-dot {
     color: var(--v2-bg);
     background: var(--blue);
-    border-color: var(--blue);
+    border: 1px solid var(--blue);
   }
 
-  @media (max-width: 880px) {
-    .mb-step-dot {
-      width: 36px;
-      height: 36px;
-      font-size: 13px;
+  /* With motion: the fill follows the viewport's middle line. A segment's
+   * fill runs from its top on that line (cover range: the box entering at
+   * the bottom of the viewport is 0, so the top is at the line after half
+   * the viewport) to its bottom on it (the end of the cover range less
+   * half the viewport). A mark switches when its centre is on the line. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .mb-step-fill::before {
+        animation: mb-step-fill linear both;
+        animation-range: cover 50vh cover calc(100% - 50vh);
+      }
+
+      /* Its own rule, a step more specific: the build's minifier folds an
+       * animation-timeline that names a timeline into the animation
+       * shorthand, which browsers do not accept there. */
+      .mb-step-marker > .mb-step-fill::before {
+        animation-timeline: --mb-step-fill;
+      }
+
+      .mb-step-dot {
+        animation: mb-step-dot linear both;
+        animation-range: cover calc(50vh + var(--mb-step-dot) / 2) cover
+          calc(50vh + var(--mb-step-dot) / 2 + 1px);
+        animation-timeline: view();
+      }
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  @keyframes mb-step-fill {
+    from {
+      transform: scaleY(0);
+    }
+
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes mb-step-dot {
+    from {
+      color: var(--ink);
+      background: var(--v2-bg);
+      border-color: var(--mb-rule);
+    }
+
+    to {
+      color: var(--v2-bg);
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+  }
+
+  @media (max-width: 880px) {
+    .mb-step-marker {
+      --mb-step-dot: 36px;
+    }
+
     .mb-step-dot {
-      transition: none;
+      font-size: 13px;
     }
   }
 </style>

@@ -1,11 +1,12 @@
 /* POST /api/lead - the contact form's lead store, the one route rendered on
  * demand (Node adapter); every page stays prerendered.
  *
- * It takes JSON { email, type, message, website }. A filled honeypot
+ * It takes JSON { email, types, message, website }, `types` an array of one
+ * or more project types (lib/lead.ts). A filled honeypot
  * (website) gets 200 and saves nothing; a lead that fails lib/lead.ts's
  * checks gets 400; a valid one is saved in SQLite (lib/leads-db.ts) and gets
  * 200, or 500 when it cannot be saved. After the save an e-mail with the lead
- * number and project type (no visitor data) goes out through Resend
+ * number and project types (no visitor data) goes out through Resend
  * (lib/send-email.ts); a send that fails or is not configured is only logged.
  *
  * Settings come from process.env on each request, not import.meta.env,
@@ -15,7 +16,7 @@
  * Logs carry the lead number only, never what the visitor wrote. */
 
 import type { APIRoute } from "astro";
-import { checkLead, projectTypes } from "@/lib/lead";
+import { checkLead, orderedTypes, projectTypes } from "@/lib/lead";
 import { saveLead } from "@/lib/leads-db";
 import { sendEmail } from "@/lib/send-email";
 
@@ -45,10 +46,13 @@ export const POST: APIRoute = async ({ request }) => {
     return json(200, { ok: true });
   }
 
+  const types = Array.isArray(body.types)
+    ? body.types.map((type) => (typeof type === "string" ? type.trim() : ""))
+    : [];
   const lead = {
     email: field("email"),
     message: field("message"),
-    type: field("type"),
+    types,
   };
   const check = checkLead(lead);
   if (!check.ok) {
@@ -57,7 +61,7 @@ export const POST: APIRoute = async ({ request }) => {
       fields: Object.entries({
         email: check.email,
         message: check.message,
-        type: check.type,
+        types: check.types,
       })
         .filter(([, ok]) => !ok)
         .map(([name]) => name),
@@ -71,7 +75,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
   let id: number;
   try {
-    id = saveLead(dbPath, lead);
+    id = saveLead(dbPath, { ...lead, types: orderedTypes(lead.types) });
   } catch (error) {
     console.error("[lead] could not save the lead", error);
     return json(500, { error: "store" });
@@ -85,9 +89,10 @@ export const POST: APIRoute = async ({ request }) => {
     );
     return json(200, { ok: true });
   }
-  const label =
-    projectTypes.find((option) => option.value === lead.type)?.label ??
-    lead.type;
+  const label = projectTypes
+    .filter((option) => lead.types.includes(option.value))
+    .map((option) => option.label)
+    .join(", ");
   try {
     await sendEmail({
       apiKey: RESEND_API_KEY,

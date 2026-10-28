@@ -3,9 +3,9 @@ import { Icon } from "astro-icon/components";
 import { projectTypes } from "@/lib/lead";
 import Alert from "./alert.astro";
 import Button from "./button.astro";
+import Choice from "./choice.astro";
 import Field from "./field.astro";
 import Input from "./input.astro";
-import Radio from "./radio.astro";
 import Textarea from "./textarea.astro";
 
 /* Contact form: one ruled sheet holding the form or, once sent, the success
@@ -19,8 +19,12 @@ import Textarea from "./textarea.astro";
  * shadow, like the default button's layer. Focusing a field lights only
  * that field. While it is sending, contact-form.ts disables every field
  * and the submit button; `state` "submitting" renders them disabled too.
- * min-height keeps the page from jumping when the success card replaces
- * the form.
+ * The form and the success card stack in one cell, so the page does not
+ * jump when one replaces the other. The project types are <Choice>
+ * checkboxes, so a visitor can tick several. Once the sheet is at least
+ * 720px wide (a container query), the email and the project types sit
+ * side by side above the message, the chips as high as the email field
+ * and level with it.
  *
  * For the catalogue (/ui), which shows every state at once:
  *   state       the wrapper's starting data-state, with the fields, the
@@ -55,43 +59,44 @@ const id = (name: string) => `${idPrefix}-${name}`;
 
 <div class="mb-contact-form" data-contact-wrap data-state={state}>
   <form class="mb-form" data-contact-form novalidate>
-    <Field
-      errorMessage="Podaj prawidłowy adres email."
-      for={id("email")}
-      invalid={invalid}
-      label="Twój email"
-      name="email"
-    >
-      <Input
-        autocomplete="email"
-        data-state={forceFocus ? "focus" : undefined}
-        disabled={submitting}
-        id={id("email")}
+    <div class="mb-form-row">
+      <Field
+        errorMessage="Podaj prawidłowy adres email."
+        for={id("email")}
+        invalid={invalid}
+        label="Email"
         name="email"
-        placeholder="twoj@email.pl"
-        required
-        type="email"
-      />
-    </Field>
+      >
+        <Input
+          autocomplete="email"
+          data-state={forceFocus ? "focus" : undefined}
+          disabled={submitting}
+          id={id("email")}
+          name="email"
+          placeholder="twoj@email.pl"
+          required
+          type="email"
+        />
+      </Field>
 
-    <Field
-      errorMessage="Wybierz typ projektu."
-      invalid={invalid}
-      label="Typ projektu"
-      name="type"
-    >
-      <div aria-label="Typ projektu" class="mb-radios" role="radiogroup">
-        {projectTypes.map((option) => (
-          <Radio
-            disabled={submitting}
-            label={option.label}
-            name="type"
-            value={option.value}
-            variant="choice"
-          />
-        ))}
-      </div>
-    </Field>
+      <Field
+        errorMessage="Wybierz co najmniej jedną opcję."
+        invalid={invalid}
+        label="Czego potrzebujesz"
+        name="type"
+      >
+        <fieldset aria-label="Czego potrzebujesz" class="mb-choices">
+          {projectTypes.map((option) => (
+            <Choice
+              disabled={submitting}
+              label={option.label}
+              name="type"
+              value={option.value}
+            />
+          ))}
+        </fieldset>
+      </Field>
+    </div>
 
     <Field
       errorMessage="Dodaj krótki opis projektu."
@@ -104,7 +109,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
         disabled={submitting}
         id={id("message")}
         name="message"
-        placeholder="Opisz krótko, o co chodzi - zakres, deadline, jeśli znane. 2–3 zdania wystarczą, żeby zacząć rozmowę."
+        placeholder="Np. co tydzień ręcznie przepisujemy zamówienia z maili do Excela…"
         required
       />
     </Field>
@@ -127,7 +132,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
     </div>
 
     <Alert data-form-error variant="destructive">
-      Coś poszło nie tak. Spróbuj ponownie za chwilę albo napisz mailem na
+      Coś poszło nie tak. Spróbuj ponownie za chwilę albo napisz na
       <a href="mailto:kontakt@kacperadler.pl">kontakt@kacperadler.pl</a>.
     </Alert>
 
@@ -154,7 +159,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
     <div aria-hidden="true" class="mb-success-mark">
       <Icon name="lucide:check" />
     </div>
-    <h3>Wiadomość wysłana</h3>
+    <h3>Wiadomość wysłana.</h3>
     <p>Dzięki! Odezwę się tego samego dnia, najpóźniej w ciągu 24h.</p>
     <Button data-form-reset size="sm" variant="outline">
       Wyślij kolejną wiadomość
@@ -163,11 +168,13 @@ const id = (name: string) => `${idPrefix}-${name}`;
 </div>
 
 <style>
+  /* The form and the success card share one grid cell, the one not shown
+   * kept in layout but invisible, so the sheet is always as tall as the
+   * taller of the two and nothing jumps when one replaces the other. */
   .mb-contact-form {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     width: 100%;
-    min-height: 490px;
+    container-type: inline-size;
     background: var(--v2-bg);
     border: 1px solid var(--mb-rule);
     transition:
@@ -184,16 +191,21 @@ const id = (name: string) => `${idPrefix}-${name}`;
     box-shadow: var(--mb-shift) var(--mb-shift) 0 var(--blue);
   }
 
+  .mb-form,
+  .mb-form-success {
+    grid-area: 1 / 1;
+    min-width: 0;
+  }
+
   .mb-form {
     display: flex;
-    flex: 1;
     flex-direction: column;
-    gap: 18px;
-    padding: 28px;
+    gap: 24px;
+    padding: var(--v2-space-lg);
   }
 
   .mb-contact-form[data-state="success"] .mb-form {
-    display: none;
+    visibility: hidden;
   }
 
   .mb-hp {
@@ -204,10 +216,26 @@ const id = (name: string) => `${idPrefix}-${name}`;
     overflow: hidden;
   }
 
-  .mb-radios {
+  .mb-form-row {
+    display: grid;
+    gap: 24px;
+  }
+
+  @container (min-width: 720px) {
+    .mb-form-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--v2-space-lg);
+    }
+  }
+
+  .mb-choices {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
   }
 
   .mb-form :global([data-form-error]) {
@@ -228,8 +256,8 @@ const id = (name: string) => `${idPrefix}-${name}`;
   }
 
   .mb-form-success {
-    display: none;
-    flex: 1;
+    display: flex;
+    visibility: hidden;
     flex-direction: column;
     gap: 12px;
     align-items: center;
@@ -239,7 +267,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
   }
 
   .mb-contact-form[data-state="success"] .mb-form-success {
-    display: flex;
+    visibility: visible;
   }
 
   .mb-success-mark {
@@ -277,7 +305,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
 
   @media (max-width: 480px) {
     .mb-form {
-      padding: 20px 16px;
+      padding: 24px 16px;
     }
   }
 

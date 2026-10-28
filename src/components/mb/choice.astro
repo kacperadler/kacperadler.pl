@@ -1,0 +1,132 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+/* Choice: a checkbox drawn as a square chip (the contact form's project
+ * types, several at once). The native input is visually hidden but stays
+ * in the tab order: Tab reaches each chip, Space checks it, and a checked
+ * chip goes into the form's data like any checkbox. The chip is 44px
+ * high, the height of <Input>, so a row of chips lines up with a field
+ * beside it.
+ *   hover    the lit cell in the ink frame; press: the flat panel
+ *   checked  a solid blue block, blue-2 on hover
+ *   focus    keyboard focus: the ring around the chip
+ * Every state keeps the 1px frame and the type weight, so checking a chip
+ * moves nothing. Disabled: the flat panel, muted text; a checked chip
+ * stays a muted block, so the chosen types still show while the form
+ * sends. Invalid: a coral frame, from [data-invalid] on the enclosing
+ * <Field> or aria-invalid on the input. Native input attributes (name /
+ * value / checked / disabled) pass through.
+ *
+ * `state` forces a look on the catalogue page (/ui): "hover" and "pressed"
+ * on the label, "focus-visible" on the input. */
+interface Props extends Omit<HTMLAttributes<"input">, "type"> {
+  label: string;
+  state?: "hover" | "pressed" | "focus-visible";
+}
+
+const { label, state, class: extraClass, ...rest } = Astro.props;
+---
+
+<label
+  data-state={state === "focus-visible" ? undefined : state}
+  class:list={["mb-choice", extraClass]}
+>
+  <input
+    class="mb-choice-input"
+    data-state={state === "focus-visible" ? state : undefined}
+    type="checkbox"
+    {...rest}
+  >
+  <span class="mb-choice-label">{label}</span>
+</label>
+
+<style>
+  .mb-choice {
+    position: relative;
+    display: inline-flex;
+    cursor: pointer;
+  }
+
+  .mb-choice:has(:disabled) {
+    cursor: not-allowed;
+  }
+
+  .mb-choice-input {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .mb-choice-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--ink-2);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    border: 1px solid var(--muted);
+    transition:
+      background-color var(--mb-snap),
+      border-color var(--mb-snap),
+      color var(--mb-snap);
+  }
+
+  .mb-choice:is(:hover, [data-state="hover"]) .mb-choice-label {
+    color: var(--ink);
+    background: var(--v2-panel-elevated);
+    border-color: var(--ink);
+  }
+
+  .mb-choice:is(:active, [data-state="pressed"]) .mb-choice-label {
+    background: var(--v2-panel);
+  }
+
+  .mb-choice-input:checked + .mb-choice-label {
+    color: var(--v2-bg);
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .mb-choice-input:is(:focus-visible, [data-state="focus-visible"])
+    + .mb-choice-label {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .mb-choice-input[aria-invalid="true"] + .mb-choice-label,
+  :global([data-invalid]) .mb-choice-label {
+    border-color: var(--error);
+  }
+
+  .mb-choice-input:disabled + .mb-choice-label {
+    color: var(--muted);
+    background: var(--v2-panel);
+    border-color: var(--mb-hair);
+  }
+
+  .mb-choice:is(:hover, [data-state="hover"])
+    .mb-choice-input:checked
+    + .mb-choice-label {
+    background: var(--blue-2);
+    border-color: var(--blue-2);
+  }
+
+  /* Under the hover rule's weight, so a pointer over a sending form does
+   * not light the chosen chip. */
+  .mb-choice .mb-choice-input:checked:disabled + .mb-choice-label {
+    color: var(--v2-panel);
+    background: var(--muted);
+    border-color: var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-choice-label {
+      transition: none;
+    }
+  }
+</style>

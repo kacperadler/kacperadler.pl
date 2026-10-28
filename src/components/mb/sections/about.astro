@@ -1,0 +1,302 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import type { ImageMetadata } from "astro";
+import meImage from "@/assets/me.jpg";
+import { logoBySlug } from "@/data/experience-logos";
+import { about } from "@/data/home";
+import { siteConfig } from "@/data/site-config";
+import { caseStudiesByExperience, caseStudyPath } from "@/lib/case-studies";
+import Accordion from "../accordion.astro";
+import AccordionItem from "../accordion-item.astro";
+import Badge from "../badge.astro";
+import Card from "../card.astro";
+import CellGrid from "../cell-grid.astro";
+import ContactLink from "../contact-link.astro";
+import Link from "../link.astro";
+import SectionHead from "../section-head.astro";
+
+/* About (#about): the photo in a 1px ink frame beside the text and the
+ * LinkedIn / GitHub link cells; under them a closed accordion with the
+ * full experience list, a cell table three a row on the desktop. The table
+ * has no frame of its own: its cells are ruled only between each other,
+ * and a hovered cell lights no panel, only the blue top rule slides in.
+ * Logos stay grey until their cell is hovered. The badge is "teraz" for
+ * the current role, the entry's own `badge` field (e.g. "Zlecenie"), or
+ * the year range; an entry with a case study links to it. The list is in
+ * the HTML while closed (native <details>), so it reads without
+ * JavaScript. */
+const experience = (await getCollection("experience"))
+  .filter((item) => Boolean(logoBySlug[item.id]))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const caseStudies = await caseStudiesByExperience();
+---
+
+<section class="mb-about" id="about">
+  <div class="container">
+    <SectionHead label="O mnie">
+      Jedna osoba. <em>Cały</em> system.
+      <Fragment slot="lede">
+        AI Engineer i partner technologiczny. Dowożę całość sam: od analizy
+        procesu po wdrożenie i opiekę.
+      </Fragment>
+    </SectionHead>
+
+    <div class="mb-about-grid">
+      <div class="mb-about-frame">
+        <Image
+          alt={`${siteConfig.name} - ${siteConfig.role}`}
+          class="mb-about-photo"
+          loading="lazy"
+          src={meImage}
+          width={440}
+        />
+      </div>
+      <div class="mb-about-text">
+        {about.map((paragraph) => <p>{paragraph}</p>)}
+        <CellGrid min="280px">
+          <ContactLink
+            href={siteConfig.social.linkedin}
+            icon="lucide:linkedin"
+            label="LinkedIn"
+            newTab
+          >
+            /in/kacperadler
+          </ContactLink>
+          <ContactLink
+            href={siteConfig.social.github}
+            icon="lucide:github"
+            label="GitHub"
+            newTab
+          >
+            /kacperadler
+          </ContactLink>
+        </CellGrid>
+      </div>
+    </div>
+
+    <div class="mb-about-experience">
+      <Accordion bordered type="multiple">
+        <AccordionItem title="Pełne doświadczenie">
+          <CellGrid min="300px" tag="ul">
+            {experience.map((item) => {
+              const logo = logoBySlug[item.id] as ImageMetadata;
+              const startYear = item.data.startDate.slice(0, 4);
+              const endYear = item.data.endDate?.slice(0, 4);
+              let metaLabel: string;
+              let metaFilled: boolean;
+              if (item.data.current) {
+                metaLabel = "teraz";
+                metaFilled = true;
+              } else if (item.data.badge) {
+                metaLabel = item.data.badge;
+                metaFilled = true;
+              } else {
+                metaLabel = `${startYear}–${endYear}`;
+                metaFilled = false;
+              }
+              const caseStudy = caseStudies.get(item.id);
+              return (
+                <Card size="sm" tag="li">
+                  <div class="mb-exp-head">
+                    <img
+                      alt={item.data.company}
+                      class="mb-exp-logo"
+                      height={logo.height}
+                      loading="lazy"
+                      src={logo.src}
+                      width={logo.width}
+                    >
+                    <Badge variant={metaFilled ? "default" : "outline"}>
+                      {metaLabel}
+                    </Badge>
+                  </div>
+                  <h3>{item.data.company}</h3>
+                  <p class="mb-exp-role">{item.data.role}</p>
+                  <p class="mb-exp-desc">{item.data.description}</p>
+                  {caseStudy && (
+                    <p class="mb-exp-case">
+                      <Link href={caseStudyPath(caseStudy)} variant="case">
+                        Zobacz realizację
+                        <span class="sr-only"> - {item.data.company}</span>
+                      </Link>
+                    </p>
+                  )}
+                </Card>
+              );
+            })}
+          </CellGrid>
+        </AccordionItem>
+      </Accordion>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mb-about {
+    margin-top: var(--mb-section-gap);
+  }
+
+  /* Photo and text on one band: the text column sets the height, and the
+   * photo (out of the flow, so it adds no height of its own) fills its
+   * frame, cropped to fit with the face kept in view, so it ends where the
+   * link cells under the text end, at any desktop width. */
+  .mb-about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    gap: var(--v2-space-xl);
+    align-items: stretch;
+  }
+
+  .mb-about-frame {
+    position: relative;
+    min-height: 240px;
+  }
+
+  .mb-about-grid :global(.mb-about-photo) {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    border: 1px solid var(--mb-rule);
+  }
+
+  .mb-about-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--v2-space-md);
+    min-width: 0;
+  }
+
+  .mb-about-text > p {
+    max-width: 62ch;
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  /* The first line's text starts on the photo's top edge: the line box's
+   * extra leading over the text (about 0.16em here) sits above it. */
+  .mb-about-text > p:first-child {
+    margin-top: -0.16em;
+  }
+
+  /* Smaller link cells than the default sm card, so the column is not
+   * taller than the photo needs. */
+  .mb-about-text :global(.mb-card) {
+    --mb-card-pad: 20px;
+  }
+
+  .mb-about-experience {
+    margin-top: var(--mb-block-gap);
+  }
+
+  /* The table's outer rules are clipped off, so its cells are ruled only
+   * between each other: the grid reaches 1px past the content box on every
+   * side, and the content (its own block formatting context, so the -1px
+   * margins do not collapse through it) clips at its edge. */
+  .mb-about-experience :global(.mb-accordion-content) {
+    display: flow-root;
+    padding: 0;
+    margin: 8px 0 24px;
+    overflow: clip;
+  }
+
+  .mb-about-experience :global(.mb-cell-grid) {
+    margin: -1px;
+  }
+
+  /* A lit panel would end in mid-air at the table's open edges, so here
+   * the hover keeps the cell's ground and shows only the card's blue top
+   * rule sliding in and the logo taking its colour. */
+  .mb-about-experience :global(.mb-card:is(:hover, [data-state="hover"])) {
+    background: var(--v2-bg);
+  }
+
+  .mb-exp-head {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    margin-bottom: 12px;
+  }
+
+  .mb-exp-logo {
+    width: auto;
+    max-width: 140px;
+    max-height: 32px;
+    opacity: 0.6;
+    filter: grayscale(100%);
+    transition:
+      filter var(--mb-snap),
+      opacity var(--mb-snap);
+  }
+
+  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-exp-logo {
+    opacity: 1;
+    filter: grayscale(0%);
+  }
+
+  h3 {
+    margin: 0 0 4px;
+    font-family: var(--mb-display);
+    font-size: 18px;
+    font-weight: 750;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.035em;
+  }
+
+  .mb-exp-role {
+    margin: 0 0 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--blue);
+    letter-spacing: 0.02em;
+  }
+
+  .mb-exp-desc {
+    flex: 1;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .mb-exp-case {
+    margin: 16px 0 0;
+  }
+
+  @media (max-width: 880px) {
+    .mb-about-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--v2-space-lg);
+    }
+
+    .mb-about-frame {
+      min-height: 0;
+    }
+
+    .mb-about-grid :global(.mb-about-photo) {
+      position: static;
+      max-width: 240px;
+      height: auto;
+    }
+
+    .mb-about-text > p:first-child {
+      margin-top: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-exp-logo {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,136 @@
+---
+import { getCollection } from "astro:content";
+import { logoBySlug, logoFitBySlug } from "@/data/experience-logos";
+import Card from "../card.astro";
+import CellGrid from "../cell-grid.astro";
+
+/* Trust bar (#trust): no section head, so it takes no number. A mono
+ * caption over one ruled row of logo cells (five a row on the desktop, two
+ * at 880px and below in low cells, the lone last one spanning the row).
+ * Each logo is sized by its optical weight (logoFitBySlug); a mark without
+ * a name gets the company in text beside it, and then the image is
+ * decorative. Otherwise the alt text is the entry's company. The logos
+ * stay grey until their cell is hovered. */
+const ORDER = ["pwc", "apptension", "helpfind", "energiadirect", "rex"];
+
+const experience = new Map(
+  (await getCollection("experience")).map((entry) => [entry.id, entry.data])
+);
+const logos = ORDER.map((id) => {
+  const entry = experience.get(id);
+  const logo = logoBySlug[id];
+  const fit = logoFitBySlug[id];
+  if (!(entry && logo && fit)) {
+    throw new Error(
+      `Trust bar: experience "${id}", its logo or its logo fit is missing.`
+    );
+  }
+  return { company: entry.company, fit, logo };
+});
+---
+
+<section class="mb-trust" id="trust">
+  <div class="container">
+    <p class="mb-trust-caption">Od korporacji po startupy.</p>
+    <CellGrid class="mb-trust-logos" tag="ul">
+      {logos.map(({ company, fit, logo }) => (
+        <Card size="sm" tag="li">
+          <span class="mb-trust-logo">
+            <img
+              alt={fit.markOnly ? "" : company}
+              height={logo.height}
+              loading="lazy"
+              src={logo.src}
+              style={`max-height: ${fit.height}px`}
+              width={logo.width}
+            >
+            {fit.markOnly && <span class="mb-trust-name">{company}</span>}
+          </span>
+        </Card>
+      ))}
+    </CellGrid>
+  </div>
+</section>
+
+<style>
+  .mb-trust {
+    margin-top: var(--mb-block-gap);
+  }
+
+  .mb-trust-caption {
+    margin: 0 0 var(--v2-space-md);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .mb-trust :global(.mb-trust-logos) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .mb-trust :global(.mb-trust-logos .mb-card-content) {
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+  }
+
+  .mb-trust-logo {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    max-width: 100%;
+    opacity: 0.6;
+    filter: grayscale(100%);
+    transition:
+      filter var(--mb-snap),
+      opacity var(--mb-snap);
+  }
+
+  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-trust-logo {
+    opacity: 1;
+    filter: grayscale(0%);
+  }
+
+  .mb-trust-logo img {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .mb-trust-name {
+    font-family: var(--mb-display);
+    font-size: 20px;
+    font-weight: 750;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.035em;
+  }
+
+  @media (max-width: 880px) {
+    .mb-trust :global(.mb-trust-logos) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mb-trust :global(.mb-trust-logos > :last-child:nth-child(odd)) {
+      grid-column: 1 / -1;
+    }
+
+    /* Low cells, so the strip is a short band, not half a screen. */
+    .mb-trust :global(.mb-trust-logos > .mb-card) {
+      --mb-card-pad: var(--v2-space-md);
+    }
+
+    .mb-trust :global(.mb-trust-logos .mb-card-content) {
+      min-height: 44px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mb-trust-logo {
+      transition: none;
+    }
+  }
+</style>

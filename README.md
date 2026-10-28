@@ -1,6 +1,6 @@
 # kacperadler.pl
 
-Portfolio Kacpra Adlera, Inżyniera oprogramowania (~5 lat, React/TS): kim jest i czym się zajmuje. Oferta to agenci AI i automatyzacje, aplikacje webowe, narzędzia wewnętrzne, landing page'e, strony wizytówki i aplikacje mobilne. Strona jest dla osób, które mogą go zatrudnić, a spełnia swoje zadanie, gdy wyślą formularz kontaktowy.
+Strona Kacpra Adlera, AI Engineera i partnera technologicznego dla małych i średnich firm: wdrożenia AI, automatyzacje i aplikacje szyte na miarę. Oferta to trzy kroki - audyt AI, wdrożenie (agenci AI, automatyzacje, integracje, aplikacje szyte na miarę - web i mobile) i stała współpraca. Strona jest dla właścicieli i managerów firm, a spełnia swoje zadanie, gdy umówią rozmowę przez formularz kontaktowy.
 
 Produkcja: [kacperadler.pl](https://kacperadler.pl) - statyczny build Astro serwowany przez nginx na Dokploy, plus jedna trasa API na Node (`/api/lead`), która zapisuje formularz kontaktowy w SQLite.
 
@@ -12,7 +12,7 @@ Produkcja: [kacperadler.pl](https://kacperadler.pl) - statyczny build Astro serw
 ## Stack
 
 - **[Astro 7](https://docs.astro.build)** - TypeScript strict, output static, content collections, `<ClientRouter />`; adapter `@astrojs/node` tylko dla `src/pages/api/lead.ts` (`prerender = false`)
-- **Case studies w MDX** (`@astrojs/mdx`): `src/content/case-studies/<id>.mdx` → `/realizacje/<slug>/`, link z wpisu w "Z kim pracowałem"; lista `/realizacje/` i pozycja "Realizacje" w menu budują się tylko, gdy istnieje choć jeden case study
+- **Case studies w MDX** (`@astrojs/mdx`): `src/content/case-studies/<id>.mdx` → `/realizacje/<slug>/`, link z wpisu w akordeonie "Pełne doświadczenie" i z karty w sekcji `#cases`; lista `/realizacje/` buduje się tylko, gdy istnieje choć jeden case study (link `Wszystkie realizacje` w `#cases`), a pozycja "Realizacje" w menu zawsze prowadzi do `/#cases`
 - **Vanilla CSS** + scoped `<style>` w `.astro`, tokeny w `src/styles/tokens.css`; dark-only, jeden akcent (navy), bez Tailwinda
 - **[Ultracite](https://www.ultracite.ai/)** (Biome) - lint i format dla TS/JS/JSON/CSS i `.astro`
 - **[Husky](https://typicode.github.io/husky/)** + **lint-staged** - pre-commit
@@ -67,8 +67,9 @@ Dependabot (`.github/dependabot.yml`) co tydzień otwiera PR-y dla bun i GitHub 
 
 ## Leady i powiadomienia
 
-Formularz kontaktowy (`src/scripts/contact-form.ts`) wysyła JSON `{ email, type, message, website }` na `POST /api/lead` (`src/pages/api/lead.ts`, jedyna trasa renderowana na żądanie). Trasa sprawdza pola tymi samymi regułami co przeglądarka (`src/lib/lead.ts`), zapisuje lead w SQLite (`src/lib/leads-db.ts`, tabela `leads(id, created_at, email, type, message)`, tworzona przy pierwszym zapisie) i wysyła powiadomienie przez API Resend (`src/lib/send-email.ts`, sam `fetch`, limit 5 s).
+Formularz kontaktowy (`src/scripts/contact-form.ts`) wysyła JSON `{ email, types, message, website }` (`types`: jeden lub kilka typów projektu) na `POST /api/lead` (`src/pages/api/lead.ts`, jedyna trasa renderowana na żądanie). Trasa sprawdza pola tymi samymi regułami co przeglądarka (`src/lib/lead.ts`), zapisuje lead w SQLite (`src/lib/leads-db.ts`, tabela `leads(id, created_at, email, type, message)`, tworzona przy pierwszym zapisie; `type` to wybrane typy po przecinku, np. `audit,implementation`) i wysyła powiadomienie przez API Resend (`src/lib/send-email.ts`, sam `fetch`, limit 5 s).
 
+- `type` to `audit | implementation | partner | other` (`projectTypes`); wiersze zapisane wcześniej zostają z `ai | webapp | landing | mobile | tool`, ale nowy lead z takim typem dostaje 400.
 - Wypełniony honeypot (`website`) → 200, nic nie zapisane.
 - Złe pola → 400; lead nie da się zapisać → 500 (formularz pokazuje błąd).
 - Więcej niż 5 postów na minutę z jednego IP (wszystkie 5 mogą przyjść naraz, szósty od razu dostaje 429) → 429 od nginx (`limit_req` w `nginx.conf`), zanim żądanie dotrze do Node; formularz pokazuje błąd wysyłki. IP klienta nginx bierze z ostatniego adresu w `X-Forwarded-For`, który dopisuje Traefik, ale tylko gdy żądanie przyszło z `10.0.0.0/8` (sieć `dokploy-network`); z innego adresu nagłówek jest ignorowany, więc skrypt nie podszyje się pod nowy adres przy każdym poście.
@@ -134,7 +135,7 @@ Nazwy menu za dokumentacją Dokploy (Applications → Advanced); jeśli w Twojej
 4. **Deploy**: przycisk **Deploy** (albo **Redeploy**) w zakładce **General**; poczekaj, aż deployment w **Deployments** będzie zielony.
 5. **Sprawdź, czy lead doszedł**:
    - wyślij formularz na [kacperadler.pl/#contact](https://kacperadler.pl/#contact) - po wysłaniu widać kartę sukcesu;
-   - na `LEAD_NOTIFY_TO` przychodzi mail "Nowy lead #<numer> - <typ projektu>";
+   - na `LEAD_NOTIFY_TO` przychodzi mail "Nowy lead #<numer> - <typy projektu>";
    - zakładka **Logs**: linia `[lead] saved #<numer>` (ostrzeżenie `no e-mail` znaczy, że brakuje zmiennej z kroku 3; `the e-mail was not sent` - Resend odrzucił wysyłkę, powód jest w tej samej linii);
    - terminal kontenera (w Dokploy **Docker Terminal** / **Terminal** aplikacji, albo na serwerze `docker exec -it <kontener> sh`) - pięć ostatnich leadów:
 

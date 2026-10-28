@@ -7,12 +7,19 @@ import { z } from "astro/zod";
  * or MDX. Blog directory is empty: schema is defined so posts can land
  * without touching this file. */
 
+/* Services are the offer's steps, in `order`: who a step is for
+ * (`audience`), what the client gets (`description`), how long it takes
+ * (`duration`) and the label of its button to the contact form (`cta`). */
 const services = defineCollection({
   loader: glob({ base: "./src/content/services", pattern: "**/*.json" }),
   schema: z.object({
+    audience: z.string(),
+    cta: z.string(),
     description: z.string(),
+    duration: z.string(),
+    // A line under the duration, a fact about this step alone.
+    note: z.string().optional(),
     order: z.number().int().nonnegative(),
-    tags: z.array(z.string()).min(1),
     title: z.string(),
   }),
 });
@@ -61,8 +68,9 @@ const caseStudies = defineCollection({
   loader: glob({ base: caseStudiesBase, pattern: "**/*.mdx" }),
   schema: z.object({
     company: z.string(),
-    // Entry in "Z kim pracowałem" that links here; at most one case study
-    // per entry (src/lib/case-studies.ts refuses a second).
+    // Experience entry (the full list in #about, a card in #cases) that
+    // links here; at most one case study per entry (src/lib/case-studies.ts
+    // refuses a second).
     experience: reference("experience").optional(),
     period: z.string(),
     role: z.string(),

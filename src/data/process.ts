@@ -12,9 +12,9 @@ export interface ProcessStep {
 
 export const processSteps: readonly ProcessStep[] = [
   {
-    badge: "~ 30 min",
+    badge: "~30 min",
     description:
-      "Krótkie spotkanie albo wymiana maili - co Ci wygodniej. Opowiadasz, co chcesz zbudować i po co; ja zadaję pytania, czasem niewygodne.",
+      "Opowiadasz, jak dziś pracujecie i co Was spowalnia. Ja zadaję pytania i szukam tego, co da się zautomatyzować.",
     icon: "lucide:messages-square",
     num: "01",
     title: "Rozmowa",
@@ -22,33 +22,33 @@ export const processSteps: readonly ProcessStep[] = [
   {
     badge: "2–3 dni",
     description:
-      "Po rozmowie dostajesz krótki dokument: co robimy, w jakiej kolejności, ile to zajmie i ile kosztuje. Bez ukrytych kosztów, bez niespodzianek w trakcie.",
+      "Dostajesz krótki dokument: co robimy, w jakiej kolejności, ile to potrwa, ile kosztuje i ile czasu zaoszczędzisz. Bez ukrytych kosztów.",
     icon: "lucide:clipboard-list",
     num: "02",
     title: "Plan i wycena",
   },
   {
-    badge: "podział na etapy",
+    badge: "co tydzień",
     description:
-      "Pracuję małymi etapami - co tydzień widzisz coś, co działa, nie obrazek. Gdy coś idzie nie tak, łatwiej to zauważyć i poprawić.",
-    icon: "lucide:code",
+      "Widzisz działające kawałki systemu, a nie prezentacje. Problemy łapiemy wcześnie.",
+    icon: "lucide:layers",
     num: "03",
-    title: "Realizacja",
+    title: "Wdrożenie etapami",
   },
   {
     badge: "na bieżąco",
     description:
-      "Nie musisz znać się na technologii. Mówisz „to powinno być szybsze”, „tu brakuje jasności”, „zmieńmy kolejność” - ja tłumaczę to na konkretne zmiany i pokazuję efekt.",
+      "Nie musisz znać się na technologii. Mówisz, co nie gra, a ja zamieniam to na konkretne zmiany.",
     icon: "lucide:message-circle",
     num: "04",
-    title: "Feedback i iteracje",
+    title: "Feedback",
   },
   {
-    badge: "+ nadzór",
+    badge: "po wdrożeniu",
     description:
-      "Po wdrożeniu zostaje monitoring. Łapię błędy zanim staną się problemem, mierzę performance, przygotowuję poprawki. Twój produkt nie jest sam.",
-    icon: "lucide:rocket",
+      "Monitoruję system, poprawiam błędy, zanim staną się problemem, i rozwijam go razem z firmą.",
+    icon: "lucide:shield-check",
     num: "05",
-    title: "Wdrożenie i opieka",
+    title: "Opieka",
   },
 ];

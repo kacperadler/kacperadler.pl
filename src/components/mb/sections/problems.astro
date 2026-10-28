@@ -1,0 +1,128 @@
+---
+import { problems } from "@/data/home";
+import Button from "../button.astro";
+import Card from "../card.astro";
+import CellGrid from "../cell-grid.astro";
+import SectionHead from "../section-head.astro";
+
+/* Problems (#problems): the situations a visitor should recognise, six
+ * cells of a ruled table across the container - three a row on the
+ * desktop, two between 560px and 880px, one below. Each cell: a bold short
+ * heading (h3), one sentence, and under a hairline the effect an
+ * automation gives, after an arrow (the copy in data/home.ts, which the
+ * llms files read too). The cells of a row share their row tracks (CSS
+ * subgrid: heading, sentence, effect), so the cells are equally tall and
+ * the effects' hairlines run on one line across the row. Then the closing
+ * line and the button to the contact form. */
+---
+
+<section class="mb-problems" id="problems">
+  <div class="container">
+    <SectionHead label="Problem">
+      Brzmi <em>znajomo</em>?
+      <Fragment slot="lede">
+        Jeśli rozpoznajesz swoją firmę choć w jednym punkcie, jesteś we
+        właściwym miejscu.
+      </Fragment>
+    </SectionHead>
+
+    <CellGrid class="mb-problems-grid" columns={3} tag="ul">
+      {problems.map((problem) => (
+        <Card tag="li">
+          <span slot="title">{problem.title}</span>
+          <p class="mb-problem">{problem.text}</p>
+          <p class="mb-problem-effect">
+            <span aria-hidden="true" class="mb-problem-arrow">
+              →
+            </span>
+            {problem.effect}
+          </p>
+        </Card>
+      ))}
+    </CellGrid>
+
+    <div class="mb-problems-close">
+      <p>To da się zautomatyzować. Zwykle szybciej i taniej, niż myślisz.</p>
+      <Button href="#contact" iconEnd="lucide:arrow-right"
+        >Umów bezpłatną rozmowę</Button
+      >
+    </div>
+  </div>
+</section>
+
+<style>
+  .mb-problems {
+    margin-top: var(--mb-section-gap);
+  }
+
+  /* A cell spans three row tracks of the table (heading, sentence,
+   * effect) and its content two, all subgrids, so a longer sentence in one
+   * cell moves the effect line of the whole row. */
+  .mb-problems :global(.mb-problems-grid > .mb-card) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+  }
+
+  .mb-problems :global(.mb-problems-grid .mb-card-content) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    row-gap: var(--v2-space-md);
+  }
+
+  .mb-problem {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .mb-problem-effect {
+    display: flex;
+    gap: 10px;
+    padding-top: var(--v2-space-md);
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--ink);
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-problem-arrow {
+    flex-shrink: 0;
+    color: var(--blue);
+  }
+
+  .mb-problems-close {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--v2-space-md);
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--mb-block-gap);
+  }
+
+  .mb-problems-close p {
+    max-width: 48ch;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  /* Stacked like the hero's: the button takes the full width. */
+  @media (max-width: 880px) {
+    .mb-problems :global(.mb-problems-close .mb-btn) {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 560px) and (max-width: 880px) {
+    .mb-problems :global(.mb-problems-grid) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

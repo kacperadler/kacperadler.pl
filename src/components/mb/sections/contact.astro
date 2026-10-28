@@ -5,23 +5,30 @@ import ContactForm from "../contact-form.astro";
 import ContactLink from "../contact-link.astro";
 import SectionHead from "../section-head.astro";
 
-/* Contact (#contact): the two links and the form close into one sheet,
- * left-aligned under the section head - the links a ruled row of cells,
- * the form right under them sharing the rule. */
+/* Contact (#contact): the form and the two direct links close into one
+ * sheet across the container under the section head - the form first,
+ * the main action, then the links as its last ruled row, sharing the
+ * form's bottom rule. The sheet is one element, so a layout that
+ * places the section's content as one block (a design proposal) keeps its
+ * rows together. */
 ---
 
 <section class="mb-contact" id="contact">
   <div class="container">
     <SectionHead label="Kontakt">
-      Porozmawiajmy o&nbsp;Twoim <em>pomyśle</em>.
+      Pokaż mi proces, który zjada <em>Twój czas</em>.
       <Fragment slot="lede">
-        Napisz krótko: co budujesz, w jakim terminie i co Cię blokuje. Odpowiem
-        w ciągu 24 godzin.
+        Napisz w 2–3 zdaniach, co robicie ręcznie. Odpowiem w 24h z pierwszym
+        pomysłem i terminem 30-minutowej rozmowy.
       </Fragment>
     </SectionHead>
 
     <div class="mb-contact-sheet">
-      <CellGrid min="280px">
+      <div class="mb-contact-form-host">
+        <ContactForm />
+      </div>
+
+      <CellGrid class="mb-contact-links" columns={2}>
         <ContactLink
           href={`mailto:${siteConfig.email}`}
           icon="lucide:mail"
@@ -38,31 +45,20 @@ import SectionHead from "../section-head.astro";
           /in/kacperadler
         </ContactLink>
       </CellGrid>
-
-      <div class="mb-contact-form-host">
-        <ContactForm />
-      </div>
     </div>
   </div>
 </section>
 
 <style>
   .mb-contact {
-    margin-top: var(--v2-space-2xl);
-  }
-
-  .mb-contact-sheet {
-    max-width: 720px;
+    margin-top: var(--mb-section-gap);
   }
 
   .mb-contact-form-host {
     display: flex;
-    margin-top: -1px;
   }
 
-  @media (max-width: 880px) {
-    .mb-contact {
-      margin-top: var(--v2-space-xl);
-    }
+  .mb-contact :global(.mb-contact-links) {
+    margin-top: -1px;
   }
 </style>

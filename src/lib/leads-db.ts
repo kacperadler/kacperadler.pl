@@ -32,8 +32,15 @@ function insertInto(path: string): StatementSync {
 }
 
 // Returns the new lead's id. Throws when the file cannot be opened or
-// written.
-export function saveLead(path: string, { email, message, type }: Lead): number {
-  const { lastInsertRowid } = insertInto(path).run(email, type, message);
+// written. The types go into the `type` column comma-joined, as given.
+export function saveLead(
+  path: string,
+  { email, message, types }: Lead
+): number {
+  const { lastInsertRowid } = insertInto(path).run(
+    email,
+    types.join(","),
+    message
+  );
   return Number(lastInsertRowid);
 }

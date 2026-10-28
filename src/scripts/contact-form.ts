@@ -13,13 +13,14 @@
  * Submit flow: validate client-side with lib/lead.ts's checkLead (the
  * same rules the server applies), drop silently if the honeypot is
  * filled, then POST the payload as JSON to /api/lead, which saves it in
- * SQLite. Any answer other than 2xx, or no answer, is "error-submit".
+ * SQLite. The project types are checkboxes: every checked one goes in
+ * `types`. Any answer other than 2xx, or no answer, is "error-submit".
  *
  * Listeners are document-delegated so they survive ClientRouter
  * swaps. astro:page-load resets the wrapper to "idle" so navigating
  * back to the page never lands on a stale success/error view. */
 
-import { checkLead, type Lead } from "@/lib/lead";
+import { checkLead, type Lead, orderedTypes } from "@/lib/lead";
 
 declare global {
   interface Window {
@@ -89,14 +90,14 @@ function readPayload(form: HTMLFormElement): Lead {
   return {
     email: String(data.get("email") ?? "").trim(),
     message: String(data.get("message") ?? "").trim(),
-    type: String(data.get("type") ?? "").trim(),
+    types: data.getAll("type").map((type) => String(type).trim()),
   };
 }
 
 function validate(form: HTMLFormElement, payload: Lead): boolean {
   const check = checkLead(payload);
   setFieldInvalid(form, "email", !check.email);
-  setFieldInvalid(form, "type", !check.type);
+  setFieldInvalid(form, "type", !check.types);
   setFieldInvalid(form, "message", !check.message);
   return check.ok;
 }
@@ -167,9 +168,12 @@ document.addEventListener(
 
     submitLead(payload).then((ok) => {
       setState(form, ok ? "success" : "error-submit");
-      // Type goes to Umami so the dashboard can break submissions down
-      // by project category. The lead store has the full record.
-      trackEvent(ok ? "form-submit" : "form-error", { type: payload.type });
+      // The types go to Umami (comma-joined, in projectTypes' order) so the
+      // dashboard can break submissions down by project category. The lead
+      // store has the full record.
+      trackEvent(ok ? "form-submit" : "form-error", {
+        type: orderedTypes(payload.types).join(","),
+      });
     });
   },
   true
@@ -210,7 +214,7 @@ document.addEventListener("input", (event) => {
 document.addEventListener("change", (event) => {
   if (
     !(event.target instanceof HTMLInputElement) ||
-    event.target.type !== "radio"
+    event.target.type !== "checkbox"
   ) {
     return;
   }
