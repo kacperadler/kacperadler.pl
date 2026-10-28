@@ -1,11 +1,22 @@
 ---
 /* Section head: a two-column row under an ink rule - the headline (default
  * slot) left, the lede (slot "lede") right, bottom-aligned - under a
- * numbered mono label ("01 / Usługi"). One column at 880px and below.
+ * numbered mono label ("§ 01 / Usługi"). One column at 880px and below.
  *   - The number is the `mb-section` counter: <PageFrame> resets it, every
  *     head counts one up. It is generated content with empty alt text, so
  *     screen readers read the label alone.
- *   - <em> in the headline: ink, struck under with a thick blue rule.
+ *   - The rule is a dimension line: extension ticks at both ends and the
+ *     section's own width in px (its container size, as a number, through
+ *     typed trigonometry; a browser without it prints nothing) on its
+ *     middle. <em> in the headline: ink, under a blue dimension brace with
+ *     a callout letter (A, B, counted per headline) at its right end.
+ *   - Drawn by the blueprint's pen (global.css) once the head is whole on
+ *     the screen: the rule runs out left to right (0-0.6 of the pen), the
+ *     ticks grow out of it (0.6-0.7), the dimension, the label and the
+ *     brace are written (0.7-0.9), the callout last (0.9-1). While the
+ *     page is live the border gives way to the rule drawn by the
+ *     background; without the script or under reduced motion everything
+ *     stands drawn on the border.
  *   - `as` picks the heading level (h2 by default). */
 interface Props {
   as?: "h1" | "h2" | "h3";
@@ -28,20 +39,68 @@ const Heading = as;
 
 <style>
   .mb-section-head {
+    --bl-s: clamp(0, var(--bl-p) / 0.6, 1);
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     column-gap: var(--v2-space-xl);
     align-items: end;
     padding-top: 24px;
     margin: 0 0 var(--mb-block-gap);
+    container-type: inline-size;
+    counter-reset: bl-cell;
     counter-increment: mb-section;
+    background-image: linear-gradient(var(--mb-rule) 0 0);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-origin: border-box;
+    background-size: calc(var(--bl-e) * 100%) 1px;
     border-top: 1px solid var(--mb-rule);
   }
 
+  /* Extension ticks at both ends of the rule, grown out of it. */
+  .mb-section-head::before {
+    --bl-s: clamp(0, (var(--bl-p) - 0.6) * 10, 1);
+    position: absolute;
+    top: -6px;
+    right: 0;
+    left: 0;
+    height: 11px;
+    pointer-events: none;
+    content: "";
+    border-inline: 1px solid var(--mb-rule);
+    clip-path: inset(calc((1 - var(--bl-e)) * 50%) 0);
+  }
+
+  /* The dimension: the head's own width (100cqw as a number of px),
+   * written on the rule after the ticks. */
+  @supports (width: calc(1px * tan(atan2(1px, 1px)))) {
+    .mb-section-head::after {
+      --bl-w: tan(atan2(100cqw, 1px));
+      --bl-s: clamp(0, (var(--bl-p) - 0.7) * 5, 1);
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      padding: 0 10px;
+      font: var(--mb-note);
+      color: var(--blue);
+      letter-spacing: 0.08em;
+      content: counter(bl-w) / "";
+      counter-reset: bl-w var(--bl-w);
+      background: var(--v2-bg);
+      clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  /* Written left to right with the dimension. Its box hugs the text, so
+   * the pen writes the words, not the empty row. */
   .mb-section-label {
+    --bl-s: clamp(0, (var(--bl-p) - 0.7) * 5, 1);
     display: flex;
     grid-column: 1 / -1;
     gap: 10px;
+    justify-self: start;
     margin: 0 0 var(--v2-space-lg);
     font-family: var(--mono);
     font-size: 12px;
@@ -49,11 +108,12 @@ const Heading = as;
     color: var(--ink-2);
     text-transform: uppercase;
     letter-spacing: 0.14em;
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
   }
 
   .mb-section-label::before {
     color: var(--blue);
-    content: counter(mb-section, decimal-leading-zero) " /" / "";
+    content: "§ " counter(mb-section, decimal-leading-zero) " /" / "";
   }
 
   .mb-section-title {
@@ -65,16 +125,47 @@ const Heading = as;
     color: var(--ink);
     letter-spacing: -0.045em;
     text-wrap: balance;
+    counter-reset: bl-callout;
   }
 
   .mb-section-title :global(em) {
+    position: relative;
     font-style: normal;
     color: var(--ink);
-    text-decoration: underline;
-    text-decoration-thickness: 0.1em;
-    text-decoration-color: var(--blue);
-    text-decoration-skip-ink: none;
-    text-underline-offset: 0.08em;
+    white-space: nowrap;
+    counter-increment: bl-callout;
+  }
+
+  /* The brace runs out left to right under the <em>. */
+  .mb-section-title :global(em::after) {
+    --bl-s: clamp(0, (var(--bl-p) - 0.7) * 5, 1);
+    position: absolute;
+    right: 0.02em;
+    bottom: 0.02em;
+    left: 0.02em;
+    height: 0.14em;
+    pointer-events: none;
+    content: "";
+    border: max(2px, 0.05em) solid var(--blue);
+    border-top: 0;
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
+  }
+
+  /* The callout hangs off the brace's right end, written last. */
+  .mb-section-title :global(em::before) {
+    --bl-s: clamp(0, (var(--bl-p) - 0.9) * 10, 1);
+    position: absolute;
+    bottom: 0.02em;
+    left: 100%;
+    padding: 2px 3px;
+    margin-left: 0.12em;
+    font: var(--mb-note);
+    color: var(--v2-bg);
+    letter-spacing: 0;
+    content: counter(bl-callout, upper-alpha) / "";
+    background: var(--blue);
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
+    transform: translateY(50%);
   }
 
   .mb-section-lede {
@@ -83,6 +174,49 @@ const Heading = as;
     font-size: 16px;
     line-height: 1.55;
     color: var(--ink-2);
+  }
+
+  /* With the page's script: the rule is drawn by the background, not the
+   * border; not on the screen yet, nothing of it; on the screen, the pen
+   * plays it through. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-bl-live]) .mb-section-head {
+      border-top-color: transparent;
+    }
+
+    :global(html[data-bl-live]) .mb-section-head:not([data-bl-drawn]),
+    :global(html[data-bl-live]) .mb-section-head:not([data-bl-drawn])::before,
+    :global(html[data-bl-live]) .mb-section-head:not([data-bl-drawn])::after,
+    :global(html[data-bl-live])
+      .mb-section-head:not([data-bl-drawn])
+      .mb-section-label,
+    :global(html[data-bl-live])
+      .mb-section-head:not([data-bl-drawn])
+      .mb-section-title
+      :global(em::before),
+    :global(html[data-bl-live])
+      .mb-section-head:not([data-bl-drawn])
+      .mb-section-title
+      :global(em::after) {
+      --bl-p: 0;
+    }
+
+    :global(html[data-bl-live]) .mb-section-head[data-bl-drawn],
+    :global(html[data-bl-live]) .mb-section-head[data-bl-drawn]::before,
+    :global(html[data-bl-live]) .mb-section-head[data-bl-drawn]::after,
+    :global(html[data-bl-live])
+      .mb-section-head[data-bl-drawn]
+      .mb-section-label,
+    :global(html[data-bl-live])
+      .mb-section-head[data-bl-drawn]
+      .mb-section-title
+      :global(em::before),
+    :global(html[data-bl-live])
+      .mb-section-head[data-bl-drawn]
+      .mb-section-title
+      :global(em::after) {
+      animation: bl-draw var(--mb-pen) linear both;
+    }
   }
 
   @media (max-width: 880px) {

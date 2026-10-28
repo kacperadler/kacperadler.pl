@@ -96,6 +96,11 @@ import StepMarker from "../step-marker.astro";
     grid-column: 3;
   }
 
+  /* The steps carry their numbers on the rail already. */
+  .mb-step > :global(.mb-card::before) {
+    content: none;
+  }
+
   /* The connector: from the mark's edge to the card's, on the mark's
    * centre. A 2px box drawing a 1px ink line until the fill reaches the
    * mark, then a 2px blue one; filled from the start under reduced motion

@@ -13,7 +13,20 @@ import Button from "../button.astro";
  * at the foot of both. The card's rows split the height left between its
  * head and its button evenly (equal rows at every width), and every
  * figure starts at the same x. At 880px and below the columns stack and
- * every button takes the full width. */
+ * every button takes the full width.
+ *
+ * The blueprint's marks (global.css): the drawing's datum - a blue cross
+ * with "X 0  Y 0" - sits in the hero's top padding over the headline's
+ * corner; the <em> is under a blue dimension brace with its callout; the
+ * results card is the sheet's title block, with the sheet's header ("Rys.
+ * KA-001 · Arkusz 1/1") as a strip across its top, which the text column
+ * is padded for, so the headline stays level with the caption. The hero
+ * is on the screen from the start, so it draws on load: the cross grows
+ * from its centre (0-0.25 of the pen), the datum is written (0.25-0.5),
+ * the brace runs out (0.3-0.7) and gets its callout (0.7-0.8); the title
+ * block traces its frame clockwise (0-0.6), writes its header (0.5-0.8)
+ * and rules its rows (0.6-1). At 880px and below the title block is
+ * under the fold and draws like a cell once it is whole on the screen. */
 const results = [
   {
     figure: "250+",
@@ -78,23 +91,60 @@ const results = [
 <style>
   .mb-hero {
     --mb-hero-pad: var(--v2-space-lg);
+    /* The title block's header strip: its type, padding and rule. */
+    --mb-hero-head: 31px;
     padding: var(--v2-space-2xl) 0 var(--v2-space-xl);
   }
 
   .mb-hero-grid {
+    --bl-datum: calc(-1 * var(--v2-space-lg));
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     gap: var(--v2-space-xl);
     align-items: stretch;
   }
 
-  /* Padded like the card (its padding plus its 1px rule), so the headline
-   * and the card's caption share a top line and the buttons a bottom one. */
+  /* The datum's cross: two 1px arms on a 17px square, grown from the
+   * centre. */
+  .mb-hero-grid::before {
+    --bl-s: clamp(0, var(--bl-p) * 4, 1);
+    position: absolute;
+    top: var(--bl-datum);
+    left: calc(var(--v2-space-md) - 8px);
+    width: 17px;
+    height: 17px;
+    content: "";
+    background:
+      linear-gradient(var(--blue) 0 0) 50% 50% / calc(var(--bl-e) * 100%) 1px
+      no-repeat,
+      linear-gradient(var(--blue) 0 0) 50% 50% / 1px calc(var(--bl-e) * 100%)
+      no-repeat;
+  }
+
+  /* Written next to it. */
+  .mb-hero-grid::after {
+    --bl-s: clamp(0, (var(--bl-p) - 0.25) * 4, 1);
+    position: absolute;
+    top: calc(var(--bl-datum) + 4px);
+    left: calc(var(--v2-space-md) + 14px);
+    font: var(--mb-note);
+    color: var(--ink-2);
+    letter-spacing: 0.08em;
+    white-space: pre;
+    content: "X 0  Y 0" / "";
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
+  }
+
+  /* Padded like the card - its rule, its header strip and the gap under
+   * it - so the headline and the card's caption share a top line, and
+   * the buttons a bottom one. */
   .mb-hero-text {
     display: flex;
     flex-direction: column;
     min-width: 0;
-    padding: calc(var(--mb-hero-pad) + 1px) 0;
+    padding: calc(1px + var(--mb-hero-head) + 24px) 0
+      calc(var(--mb-hero-pad) + 1px);
   }
 
   h1 {
@@ -107,15 +157,46 @@ const results = [
     color: var(--ink);
     letter-spacing: -0.05em;
     text-wrap: balance;
+    counter-reset: bl-callout;
   }
 
   h1 em {
+    position: relative;
     font-style: normal;
-    text-decoration: underline;
-    text-decoration-thickness: 0.1em;
-    text-decoration-color: var(--blue);
-    text-decoration-skip-ink: none;
-    text-underline-offset: 0.08em;
+    white-space: nowrap;
+    counter-increment: bl-callout;
+  }
+
+  /* The brace runs out left to right under the <em>. */
+  h1 em::after {
+    --bl-s: clamp(0, (var(--bl-p) - 0.3) * 2.5, 1);
+    position: absolute;
+    right: 0.02em;
+    bottom: 0.02em;
+    left: 0.02em;
+    height: 0.14em;
+    pointer-events: none;
+    content: "";
+    border: max(2px, 0.05em) solid var(--blue);
+    border-top: 0;
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
+  }
+
+  /* The callout hangs off the brace's right end. */
+  h1 em::before {
+    --bl-s: clamp(0, (var(--bl-p) - 0.7) * 10, 1);
+    position: absolute;
+    bottom: 0.02em;
+    left: 100%;
+    padding: 2px 3px;
+    margin-left: 0.12em;
+    font: var(--mb-note);
+    color: var(--v2-bg);
+    letter-spacing: 0;
+    content: counter(bl-callout, upper-alpha) / "";
+    background: var(--blue);
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
+    transform: translateY(50%);
   }
 
   .mb-hero-sub {
@@ -134,14 +215,47 @@ const results = [
     margin-top: auto;
   }
 
+  /* The title block: its frame traced like a cell's, top, right, bottom,
+   * left, as one eased stage, each rule a quarter of it. */
   .mb-hero-status {
+    --bl-s: clamp(0, var(--bl-p) / 0.6, 1);
     display: flex;
     flex-direction: column;
     gap: 24px;
     min-width: 0;
     padding: var(--mb-hero-pad);
     background: var(--v2-bg);
+    background-image:
+      linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0),
+      linear-gradient(var(--mb-rule) 0 0), linear-gradient(var(--mb-rule) 0 0);
+    background-repeat: no-repeat;
+    background-position:
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%;
+    background-origin: border-box;
+    background-size:
+      calc(clamp(0, var(--bl-e) * 4, 1) * 100%) 1px,
+      1px calc(clamp(0, var(--bl-e) * 4 - 1, 1) * 100%),
+      calc(clamp(0, var(--bl-e) * 4 - 2, 1) * 100%) 1px,
+      1px calc(clamp(0, var(--bl-e) * 4 - 3, 1) * 100%);
     border: 1px solid var(--mb-rule);
+  }
+
+  /* The sheet's header, a strip across the block's top, written left to
+   * right. */
+  .mb-hero-status::before {
+    --bl-s: clamp(0, (var(--bl-p) - 0.5) / 0.3, 1);
+    padding: 10px var(--mb-hero-pad);
+    margin: calc(-1 * var(--mb-hero-pad)) calc(-1 * var(--mb-hero-pad)) 0;
+    font: var(--mb-note);
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    content: "Rys. KA-001 · Arkusz 1/1" / "";
+    border-bottom: 1px solid var(--mb-rule);
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
   }
 
   .mb-status-caption {
@@ -155,22 +269,35 @@ const results = [
   }
 
   /* Equal rows: each as tall as the tallest, and together they take the
-   * height the card has between its caption and its button. */
+   * height the card has between its caption and its button. Their
+   * hairlines (over each row, under the last) run out left to right. */
   .mb-status-rows {
+    --bl-s: clamp(0, (var(--bl-p) - 0.6) / 0.4, 1);
     display: grid;
     flex: 1;
     grid-auto-rows: 1fr;
     padding: 0;
     margin: 0;
+    background-image: linear-gradient(var(--mb-hair) 0 0);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-origin: border-box;
+    background-size: calc(var(--bl-e) * 100%) 1px;
     border-bottom: 1px solid var(--mb-hair);
   }
 
   .mb-status-row {
+    --bl-s: clamp(0, (var(--bl-p) - 0.6) / 0.4, 1);
     display: flex;
     flex-direction: column;
     gap: 6px;
     justify-content: center;
     padding: 14px 0;
+    background-image: linear-gradient(var(--mb-hair) 0 0);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-origin: border-box;
+    background-size: calc(var(--bl-e) * 100%) 1px;
     border-top: 1px solid var(--mb-hair);
   }
 
@@ -194,6 +321,30 @@ const results = [
     display: flex;
   }
 
+  /* With the page's script: the rules are drawn by the backgrounds, not
+   * the borders, and the hero plays on load. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-bl-live]) .mb-hero-status {
+      border-color: transparent;
+    }
+
+    :global(html[data-bl-live]) .mb-status-rows,
+    :global(html[data-bl-live]) .mb-status-row {
+      border-color: transparent;
+    }
+
+    :global(html[data-bl-live]) .mb-hero-grid::before,
+    :global(html[data-bl-live]) .mb-hero-grid::after,
+    :global(html[data-bl-live]) h1 em::before,
+    :global(html[data-bl-live]) h1 em::after,
+    :global(html[data-bl-live]) .mb-hero-status,
+    :global(html[data-bl-live]) .mb-hero-status::before,
+    :global(html[data-bl-live]) .mb-status-rows,
+    :global(html[data-bl-live]) .mb-status-row {
+      animation: bl-draw var(--mb-pen) linear both;
+    }
+  }
+
   @media (max-width: 880px) {
     .mb-hero {
       --mb-hero-pad: var(--v2-space-md);
@@ -201,6 +352,7 @@ const results = [
     }
 
     .mb-hero-grid {
+      --bl-datum: -22px;
       grid-template-columns: minmax(0, 1fr);
       gap: var(--v2-space-lg);
     }
@@ -230,6 +382,22 @@ const results = [
 
     .mb-status-figure {
       font-size: 26px;
+    }
+
+    /* One column: the title block is under the fold, it draws like a cell
+     * once it is on the screen. */
+    @media (prefers-reduced-motion: no-preference) {
+      :global(html[data-bl-live]) .mb-hero-status:not([data-bl-drawn]),
+      :global(html[data-bl-live]) .mb-hero-status:not([data-bl-drawn])::before,
+      :global(html[data-bl-live])
+        .mb-hero-status:not([data-bl-drawn])
+        .mb-status-rows,
+      :global(html[data-bl-live])
+        .mb-hero-status:not([data-bl-drawn])
+        .mb-status-row {
+        --bl-p: 0;
+        animation: none;
+      }
     }
   }
 </style>

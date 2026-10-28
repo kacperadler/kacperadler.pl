@@ -5,13 +5,16 @@ import Header from "./header.astro";
 import MobileSheet from "./mobile-sheet.astro";
 
 /* Page frame: what goes straight inside <body>. The solid substrate with
- * two hairlines at the container's edges (fixed pseudo-elements, gone once
- * the viewport is narrower than the container), the skip link to #top
+ * two rulers at the container's edges (fixed pseudo-elements, gone once
+ * the viewport is narrower than the container: a hairline with a tick
+ * every 16px, longer at 32 and 64, drawn down from the top on load and
+ * standing still while the page scrolls), the skip link to #top
  * (global.css's .skip-link), the header, the page in the slot, the footer,
  * the EU funding band, and the mobile sheet as a sibling of the frame, so
  * scripts/mobile-sheet.ts can make the frame inert while the sheet is open.
  * The frame resets the `mb-section` counter <SectionHead> numbers from.
- * The page loads scripts/mobile-sheet.ts itself. */
+ * The page loads scripts/mobile-sheet.ts and scripts/blueprint-live.ts
+ * itself. */
 ---
 
 <div class="mb-frame">
@@ -31,14 +34,20 @@ import MobileSheet from "./mobile-sheet.astro";
 
   .mb-frame::before,
   .mb-frame::after {
+    --bl-s: var(--bl-p);
     position: fixed;
     top: 0;
     bottom: 0;
     z-index: -1;
-    width: 1px;
+    width: 9px;
     pointer-events: none;
     content: "";
-    background: var(--mb-hair);
+    background: var(--muted);
+    opacity: 0.45;
+    clip-path: inset(0 0 calc((1 - var(--bl-e)) * 100%) 0);
+    mask:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='64'%3E%3Cpath d='M0 0h1v64H0zM1 0h8v1H1zM1 16h3v1H1zM1 32h5v1H1zM1 48h3v1H1z'/%3E%3C/svg%3E")
+      0 0 / 9px 64px repeat-y;
   }
 
   .mb-frame::before {
@@ -47,6 +56,15 @@ import MobileSheet from "./mobile-sheet.astro";
 
   .mb-frame::after {
     right: calc(50% - var(--container) / 2);
+    transform: scaleX(-1);
+  }
+
+  /* On load, with the page's script: run down over the pen's time. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-bl-live]) .mb-frame::before,
+    :global(html[data-bl-live]) .mb-frame::after {
+      animation: bl-draw var(--mb-pen) linear both;
+    }
   }
 
   @media (max-width: 1160px) {

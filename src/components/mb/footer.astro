@@ -5,7 +5,11 @@ import Link from "./link.astro";
 
 /* Footer: the solid substrate under an ink rule. The brand and tagline
  * left, two link columns right (one column at 880px and below), the
- * copyright under a hairline. */
+ * copyright under a hairline, with the sheet's legend ("Wymiary w px ·
+ * Skala 1:1 · Rys. KA-001") at the row's right end. Drawn by the
+ * blueprint's pen (global.css): the rule runs out once the footer is
+ * whole on the screen; the hairline (0-0.6), then the legend (0.6-1),
+ * once the bottom row is. */
 const year = new Date().getFullYear();
 ---
 
@@ -82,9 +86,15 @@ const year = new Date().getFullYear();
 
 <style>
   .mb-footer {
+    --bl-s: var(--bl-p);
     padding: 56px 0 28px;
     margin-top: 24px;
     background: var(--v2-bg);
+    background-image: linear-gradient(var(--mb-rule) 0 0);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-origin: border-box;
+    background-size: calc(var(--bl-e) * 100%) 1px;
     border-top: 1px solid var(--mb-rule);
   }
 
@@ -136,6 +146,7 @@ const year = new Date().getFullYear();
   }
 
   .mb-footer-bottom {
+    --bl-s: clamp(0, var(--bl-p) / 0.6, 1);
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -145,7 +156,42 @@ const year = new Date().getFullYear();
     font-size: 12px;
     color: var(--ink-2);
     letter-spacing: 0.04em;
+    background-image: linear-gradient(var(--mb-hair) 0 0);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-origin: border-box;
+    background-size: calc(var(--bl-e) * 100%) 1px;
     border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-footer-bottom::after {
+    --bl-s: clamp(0, (var(--bl-p) - 0.6) / 0.4, 1);
+    margin-left: auto;
+    text-transform: uppercase;
+    content: "Wymiary w px · Skala 1:1 · Rys. KA-001" / "";
+    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
+  }
+
+  /* With the page's script: the rule and the hairline are drawn by the
+   * backgrounds, not the borders; not on the screen yet, nothing; on the
+   * screen, the pen plays them through. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-bl-live]) .mb-footer,
+    :global(html[data-bl-live]) .mb-footer-bottom {
+      border-top-color: transparent;
+    }
+
+    :global(html[data-bl-live]) .mb-footer:not([data-bl-drawn]),
+    :global(html[data-bl-live]) .mb-footer-bottom:not([data-bl-drawn]),
+    :global(html[data-bl-live]) .mb-footer-bottom:not([data-bl-drawn])::after {
+      --bl-p: 0;
+    }
+
+    :global(html[data-bl-live]) .mb-footer[data-bl-drawn],
+    :global(html[data-bl-live]) .mb-footer-bottom[data-bl-drawn],
+    :global(html[data-bl-live]) .mb-footer-bottom[data-bl-drawn]::after {
+      animation: bl-draw var(--mb-pen) linear both;
+    }
   }
 
   @media (max-width: 880px) {

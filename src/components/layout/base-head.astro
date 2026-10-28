@@ -96,6 +96,14 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
   is:inline
   set:html={JSON.stringify(profServiceSchema)}
 />
+{/* The blueprint's pen (scripts/blueprint-live.ts, global.css): with
+ * JavaScript the page is drawn as you scroll, so <html> is marked live
+ * here, before the body is parsed, and nothing paints drawn and then
+ * undraws. Without JavaScript the mark is never set and the drawing
+ * stands complete. */}
+<script is:inline>
+  document.documentElement.dataset.blLive = "";
+</script>
 {/* Umami analytics, self-hosted at analytics.kacperadler.pl. PROD-only
  * so dev pageviews don't pollute the data.
  *
