@@ -23,6 +23,7 @@ A visitor can say which company they write from, so Kacper knows the context bef
 
 ## Done means
 
+- The label reads "Firma" with "(opcjonalnie)" after it in a smaller size and a dimmer colour than the label, still readable (contrast at least 4.5:1); a 390px screenshot shows it.
 - The form has an optional `Firma` field; `/api/lead` accepts it empty or up to a length limit; the leads table stores it (existing rows keep working); the e-mail still carries no visitor data; the privacy policy names the field. e2e covers empty, filled and too long.
 - `bun run check` and `bun run test` pass.
 
@@ -38,3 +39,4 @@ Out:
 
 - 2026-10-14: From the redesign brief (KA0075 `brief.md` 4.11); the human: the field may be there but is not required.
 - 2026-10-28: The human approved it.
+- 2026-10-28: The human asked for "(opcjonalnie)" in a smaller and slightly less visible type.

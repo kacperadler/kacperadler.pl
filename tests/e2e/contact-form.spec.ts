@@ -92,7 +92,56 @@ async function pickType(page: Page, value: string): Promise<void> {
   await expect(page.locator(`[data-contact-form] ${box}`)).toBeChecked();
 }
 
+// WCAG contrast ratio of two "rgb(r, g, b)" colours.
+function contrast(a: string, b: string): number {
+  const luminance = (color: string): number => {
+    const [r, g, bl] = (color.match(/\d+(\.\d+)?/g) ?? []).map((part) => {
+      const c = Number(part) / 255;
+      return c <= 0.039_28 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (bl ?? 0);
+  };
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return ((hi ?? 0) + 0.05) / ((lo ?? 0) + 0.05);
+}
+
 test.describe("contact form", () => {
+  test('the company label reads "Firma", then a smaller, dimmer "(opcjonalnie)" still at 4.5:1', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 844, width: 390 });
+    await page.goto("/#contact");
+
+    const input = page.locator('[data-contact-form] input[name="company"]');
+    await expect(input).toHaveAccessibleName("Firma (opcjonalnie)");
+    const label = page.locator(
+      '[data-contact-form] label[for="contact-company"]'
+    );
+    const hint = label.locator(".mb-field-optional");
+    await expect(hint).toHaveText("(opcjonalnie)");
+
+    // The sheet lights up under the pointer, so the hint is read on the
+    // lit panel too, the lighter of its two grounds.
+    await page.locator("[data-contact-wrap]").hover();
+    const look = await label.evaluate((el) => {
+      const hintEl = el.querySelector(".mb-field-optional") as HTMLElement;
+      const sheet = el.closest("[data-contact-wrap]") as HTMLElement;
+      const style = (node: Element) => getComputedStyle(node);
+      return {
+        ground: style(sheet).backgroundColor,
+        hintColor: style(hintEl).color,
+        hintSize: Number.parseFloat(style(hintEl).fontSize),
+        labelColor: style(el).color,
+        labelSize: Number.parseFloat(style(el).fontSize),
+      };
+    });
+    expect(look.hintSize).toBeLessThan(look.labelSize);
+    expect(contrast(look.hintColor, look.ground)).toBeLessThan(
+      contrast(look.labelColor, look.ground)
+    );
+    expect(contrast(look.hintColor, look.ground)).toBeGreaterThanOrEqual(4.5);
+  });
+
   test("empty submit marks all fields invalid", async ({ page }) => {
     await stubUmami(page);
     await page.goto("/#contact");
