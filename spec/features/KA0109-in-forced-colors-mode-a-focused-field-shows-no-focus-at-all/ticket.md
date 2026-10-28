@@ -4,7 +4,10 @@
 {
   "id": "KA0109",
   "title": "In forced-colors mode a focused field shows no focus at all",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0112"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F5 of KA0104
+- 2026-10-28: The human approved it; runs one at a time after KA0112 (shared CSS files).

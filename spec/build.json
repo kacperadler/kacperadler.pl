@@ -839,9 +839,9 @@
   {
     "id": "KA0105",
     "title": "In-page links park the section head under the sticky header",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0105-in-page-links-park-the-section-head-under-the-sticky-header/ticket.md",
-    "updated": "2026-10-28T16:49:56.296Z"
+    "updated": "2026-10-28T16:50:21.665Z"
   },
   {
     "id": "KA0106",
@@ -866,23 +866,32 @@
   {
     "id": "KA0108",
     "title": "iOS Safari: form fields at 15px, text inflation, 100vh on the 404",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0108-ios-safari-form-fields-at-15px-text-inflation-100vh-on-the-404/ticket.md",
-    "updated": "2026-10-28T16:49:30.982Z"
+    "updated": "2026-10-28T16:52:20.984Z",
+    "after": [
+      "KA0105"
+    ]
   },
   {
     "id": "KA0109",
     "title": "In forced-colors mode a focused field shows no focus at all",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0109-in-forced-colors-mode-a-focused-field-shows-no-focus-at-all/ticket.md",
-    "updated": "2026-10-28T16:49:30.988Z"
+    "updated": "2026-10-28T16:52:24.375Z",
+    "after": [
+      "KA0112"
+    ]
   },
   {
     "id": "KA0110",
     "title": "Hover styles answer taps on touch screens",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0110-hover-styles-answer-taps-on-touch-screens/ticket.md",
-    "updated": "2026-10-28T16:49:30.990Z"
+    "updated": "2026-10-28T16:52:22.711Z",
+    "after": [
+      "KA0114"
+    ]
   },
   {
     "id": "KA0111",
@@ -894,43 +903,68 @@
   {
     "id": "KA0112",
     "title": "The message box scrolls inside itself instead of growing",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0112-the-message-box-scrolls-inside-itself-instead-of-growing/ticket.md",
-    "updated": "2026-10-28T16:49:30.994Z"
+    "updated": "2026-10-28T16:52:23.526Z",
+    "after": [
+      "KA0110"
+    ]
   },
   {
     "id": "KA0113",
     "title": "Section rhythm jumps at 880px; headline sizes ignore the reader's font size",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0113-section-rhythm-jumps-at-880px-headline-sizes-ignore-the-reader-s-font-size/ticket.md",
-    "updated": "2026-10-28T16:49:30.995Z"
+    "updated": "2026-10-28T16:52:25.189Z",
+    "after": [
+      "KA0109"
+    ]
   },
   {
     "id": "KA0114",
     "title": "One-letter Polish words end lines",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0114-one-letter-polish-words-end-lines/ticket.md",
-    "updated": "2026-10-28T16:49:30.998Z"
+    "updated": "2026-10-28T16:52:21.837Z",
+    "after": [
+      "KA0108"
+    ]
   },
   {
     "id": "KA0115",
     "title": "The mobile sheet re-implements what `<dialog>` gives",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0115-the-mobile-sheet-re-implements-what-dialog-gives/ticket.md",
-    "updated": "2026-10-28T16:49:31.000Z"
+    "updated": "2026-10-28T16:52:27.891Z",
+    "after": [
+      "KA0117"
+    ]
   },
   {
     "id": "KA0116",
     "title": "A global rule strips every transition under reduced motion",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0116-a-global-rule-strips-every-transition-under-reduced-motion/ticket.md",
-    "updated": "2026-10-28T16:49:31.002Z"
+    "updated": "2026-10-28T16:52:26.108Z",
+    "after": [
+      "KA0113"
+    ]
   },
   {
     "id": "KA0117",
     "title": "Derived colours are hard-coded instead of mixed from the palette",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0117-derived-colours-are-hard-coded-instead-of-mixed-from-the-palette/ticket.md",
-    "updated": "2026-10-28T16:49:31.004Z"
+    "updated": "2026-10-28T16:52:26.985Z",
+    "after": [
+      "KA0116"
+    ]
+  },
+  {
+    "id": "KA0118",
+    "title": "Audit the site design against Taste Skill and propose what to raise",
+    "status": "planned",
+    "path": "spec/features/KA0118-audit-the-site-design-against-taste-skill-and-propose-what-to-raise/ticket.md",
+    "updated": "2026-10-28T16:52:41.217Z"
   }
 ]

@@ -4,7 +4,10 @@
 {
   "id": "KA0110",
   "title": "Hover styles answer taps on touch screens",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0114"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F6 of KA0104
+- 2026-10-28: The human approved it; runs one at a time after KA0114 (shared CSS files).

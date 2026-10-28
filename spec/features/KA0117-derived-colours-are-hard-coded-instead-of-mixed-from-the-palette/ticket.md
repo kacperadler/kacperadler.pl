@@ -4,7 +4,10 @@
 {
   "id": "KA0117",
   "title": "Derived colours are hard-coded instead of mixed from the palette",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0116"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F13 of KA0104
+- 2026-10-28: The human approved it; runs one at a time after KA0116 (shared CSS files).

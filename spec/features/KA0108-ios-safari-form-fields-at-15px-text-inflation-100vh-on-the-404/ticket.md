@@ -4,7 +4,10 @@
 {
   "id": "KA0108",
   "title": "iOS Safari: form fields at 15px, text inflation, 100vh on the 404",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0105"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F4 of KA0104
+- 2026-10-28: The human approved it; runs one at a time after KA0105 (shared CSS files).

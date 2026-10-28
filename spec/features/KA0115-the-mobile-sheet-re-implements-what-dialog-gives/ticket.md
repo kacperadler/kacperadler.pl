@@ -4,7 +4,10 @@
 {
   "id": "KA0115",
   "title": "The mobile sheet re-implements what `<dialog>` gives",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0117"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F11 of KA0104
+- 2026-10-28: The human approved it; runs one at a time after KA0117 (shared CSS files).

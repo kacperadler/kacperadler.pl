@@ -4,7 +4,10 @@
 {
   "id": "KA0112",
   "title": "The message box scrolls inside itself instead of growing",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0110"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F8 of KA0104
+- 2026-10-28: The human approved it; runs one at a time after KA0110 (shared CSS files).

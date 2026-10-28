@@ -4,7 +4,10 @@
 {
   "id": "KA0116",
   "title": "A global rule strips every transition under reduced motion",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0113"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F12 of KA0104
+- 2026-10-28: The human approved it; runs one at a time after KA0113 (shared CSS files).
