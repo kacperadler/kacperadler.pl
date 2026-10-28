@@ -16,10 +16,10 @@ colors:
 typography:
   display-xl:
     fontFamily: Geist
-    fontSize: 70px
+    fontSize: "min(clamp(2.5rem, 1.7403rem + 3.1169vw, 4rem), 12vw)"
     fontWeight: 800
-    lineHeight: 0.98
-    letterSpacing: -0.055em
+    lineHeight: 1
+    letterSpacing: -0.05em
   display-lg:
     fontFamily: Geist
     fontSize: "min(clamp(2rem, 1.3036rem + 2.8571vw, 3.375rem), 13vw)"
@@ -143,7 +143,7 @@ Two faces, both self-hosted variable woff2:
 
 `text-wrap: balance` on headlines; every other text takes `text-wrap: pretty` from `html`, so a paragraph does not end on a lone word (Chrome and Safari; Firefox wraps as before). `<em>` in a headline stays `ink`, on one line, under a `blue` dimension brace (a 0.14em-high bracket, open at the top, `max(2px, 0.05em)` thick) with a callout letter (A, B, counted per headline) on a `blue` box at its right end.
 
-Fluid sizes, one `clamp()` each, bounds in `rem` and a `rem + vw` slope worked out from a 390px phone and the 1160px container, held at both ends, so they follow the reader's font size as well as the width: the hero headline 40px → 64px, a section headline (`display-lg`) 32px → 54px, `--mb-section-gap` and `--mb-block-gap` (Layout). A headline is also capped at a share of the viewport (12vw in the hero, 13vw in a section) so a large font on a narrow screen never pushes its longest unbreakable word (`automatyzacje,` about 7em, `działającego` with its callout about 6.2em) past the edge. Every other size is in px (KA0104 F16).
+Fluid sizes, one `clamp()` each, bounds in `rem` and a `rem + vw` slope worked out from a 390px phone and the 1160px container, held at both ends, so they follow the reader's font size as well as the width: the hero headline (`display-xl`) 40px → 64px, a section headline (`display-lg`) 32px → 54px, `--mb-section-gap` and `--mb-block-gap` (Layout). A headline is also capped at a share of the viewport (12vw in the hero, 13vw in a section) so a large font on a narrow screen never pushes its longest unbreakable word (`automatyzacje,` about 7em, `działającego` with its callout about 6.2em) past the edge. The rest of the type is fixed px (KA0104 F16), apart from the fields (`max(16px, 1rem)`) and prose (`1rem`).
 
 The drawing's annotations (`--mb-note`: 500 10px/1 Geist Mono, uppercase or figures, 0.08em tracking) are the dimension on a section's line (`blue`), a cell's item number (`ink-2` on `base`, `base` on `blue` when selected), the callout letters, the datum (`X 0  Y 0`), the title block's header and the footer's legend.
 
