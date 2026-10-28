@@ -126,7 +126,7 @@ The minimal brutalism vocabulary, in the same file:
 
 - **`base` (`#0a0c10`):** the substrate and the idle fill of every cell. Solid: no dot grid, no gradient.
 - **`panel` (`#14171c`):** the flat surface: disabled and loading controls.
-- **`panel-elevated` (`#1a1e26`):** the raised surface - the secondary button and badge - and a lit cell: the fill of a hovered card, under a 3px `blue` top rule.
+- **`panel-elevated` (`#1a1e26`):** the raised surface - the secondary button and badge - and a lit cell: the fill of a hovered card, under its `blue` grips and item number.
 - **`ink` / `ink-2` / `muted`:** `ink` draws the rules and sets headlines and primary text, `ink-2` body copy and labels, `muted` idle form frames, tags and disabled text (6.5:1 on `panel`, never lowered opacity).
 - **`blue` (`#8eaed8`):** the **only** chromatic accent: the default button and badge, the dimension brace and callout under `<em>` in a headline, the `§` section counter and the dimension on its line, the datum cross, a selected cell's grips and filled item number, active nav links, focus rings. `blue-2` is the default button's hover.
 - **`error` (`#e07a70`):** form errors, the required `*` after a field label and the destructive variants only (the invalid frame, the error line, the send-error banner). Not an accent: it never decorates. 6.15:1 on `panel`, 6.7:1 on `base`.
