@@ -135,9 +135,10 @@ button {
  * before the first paint. Under data-bl-enter the entrance's animations
  * are declared paused, so the first painted frame is their first frame
  * (the header above the top edge, the hero's parts below their places
- * or unwritten); once that frame is on the screen (DOMContentLoaded and
- * two animation frames later) the same script sets data-bl-enter="go"
- * and they run, so the whole travel is seen. The motion blocks sit in
+ * or unwritten); once the browser reports that frame painted (the
+ * first-contentful-paint entry; where none can come, two animation
+ * frames) the same script sets data-bl-enter="go" and they run, so the
+ * whole travel is seen. The motion blocks sit in
  * the components under html[data-bl-enter] and inside
  * prefers-reduced-motion: no-preference: without JavaScript, under
  * reduced motion and after a swap nothing animates, --bl-p stays at its

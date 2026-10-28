@@ -282,25 +282,34 @@ test.describe("the first screen's entrance", () => {
 
       // Held at its first frame until that frame paints: every animation
       // of the entrance started no earlier than the first contentful
-      // paint, and runs.
-      const started = await page.evaluate(() => {
-        const paint =
-          performance.getEntriesByName("first-contentful-paint")[0]
-            ?.startTime ?? Number.NaN;
-        return document
+      // paint, and runs. The paint entry and an animation's start time
+      // both arrive a frame or more after the fact, so this waits for
+      // them rather than reading what is there at "go".
+      const started = await page.evaluate(async () => {
+        const { promise, resolve } = Promise.withResolvers<number>();
+        new PerformanceObserver((list, observer) => {
+          const [entry] = list.getEntriesByName("first-contentful-paint");
+          if (entry) {
+            observer.disconnect();
+            resolve(entry.startTime);
+          }
+        }).observe({ buffered: true, type: "paint" });
+        const paint = await promise;
+        const entrance = document
           .getAnimations()
           .filter(
             (a) =>
               a instanceof CSSAnimation && a.animationName.startsWith("bl-")
-          )
-          .map((a) => ({
-            afterPaint: Number(a.startTime) >= paint - 20,
-            state: a.playState,
-          }));
+          );
+        await Promise.all(entrance.map((a) => a.ready));
+        return entrance.map((a) => ({
+          sincePaint: Number(a.startTime) - paint,
+          state: a.playState,
+        }));
       });
       expect(started.length).toBeGreaterThan(0);
       for (const a of started) {
-        expect(a.afterPaint).toBe(true);
+        expect(a.sincePaint).toBeGreaterThanOrEqual(0);
         expect(a.state).not.toBe("paused");
       }
 
@@ -447,6 +456,94 @@ test.describe("the first screen's entrance", () => {
       expect(results.violations).toEqual([]);
     });
   }
+
+  // Where no first paint is reported (a browser without paint timing, a
+  // page hidden before it painted), "go" waits two animation frames
+  // instead. Each case plays a browser whose paint observers never hear
+  // of a paint, so the entrance has no other way to start.
+  const withoutPaintReport = (
+    page: Page,
+    { hidden, paintTiming }: { hidden: boolean; paintTiming: boolean }
+  ) =>
+    page.addInitScript(
+      (stub) => {
+        const { observe } = PerformanceObserver.prototype;
+        PerformanceObserver.prototype.observe = function (options) {
+          if (
+            options?.type !== "paint" &&
+            !options?.entryTypes?.includes("paint")
+          ) {
+            observe.call(this, options);
+          }
+        };
+        if (!stub.paintTiming) {
+          const types = PerformanceObserver.supportedEntryTypes.filter(
+            (type) => type !== "paint"
+          );
+          Object.defineProperty(PerformanceObserver, "supportedEntryTypes", {
+            get: () => types,
+          });
+        }
+        // The page goes to the background on an "e2e-hide" event.
+        let hiddenNow = stub.hidden;
+        Object.defineProperty(Document.prototype, "visibilityState", {
+          get: () => (hiddenNow ? "hidden" : "visible"),
+        });
+        document.addEventListener("e2e-hide", () => {
+          hiddenNow = true;
+          document.dispatchEvent(new Event("visibilitychange"));
+        });
+      },
+      { hidden, paintTiming }
+    );
+
+  const expectEntranceRuns = async (page: Page) => {
+    await expect(page.locator("html")).toHaveAttribute("data-bl-enter", "go");
+    const states = await page.evaluate(() =>
+      document
+        .getAnimations()
+        .filter(
+          (a) => a instanceof CSSAnimation && a.animationName.startsWith("bl-")
+        )
+        .map((a) => a.playState)
+    );
+    expect(states.length).toBeGreaterThan(0);
+    expect(states).not.toContain("paused");
+    await entranceDone(page);
+    await expectFirstScreenInPlace(page);
+  };
+
+  for (const { hidden, label, paintTiming } of [
+    { hidden: false, label: "without paint timing", paintTiming: false },
+    { hidden: true, label: "on a page loaded hidden", paintTiming: true },
+  ]) {
+    test(`${label}, the entrance still runs`, async ({ page }) => {
+      await withoutPaintReport(page, { hidden, paintTiming });
+      await page.setViewportSize({ height: 900, width: 1440 });
+      await page.goto("/", { waitUntil: "load" });
+      await expectEntranceRuns(page);
+    });
+  }
+
+  test("on a page hidden before its first paint is reported, the entrance still runs", async ({
+    page,
+  }) => {
+    await withoutPaintReport(page, { hidden: false, paintTiming: true });
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/", { waitUntil: "load" });
+    // No report: held at its first frame, frame after frame.
+    await page.evaluate(async () => {
+      for (let i = 0; i < 10; i += 1) {
+        const { promise, resolve } = Promise.withResolvers<void>();
+        requestAnimationFrame(() => resolve());
+        // biome-ignore lint/performance/noAwaitInLoops: one frame at a time
+        await promise;
+      }
+    });
+    await expect(page.locator("html")).toHaveAttribute("data-bl-enter", "");
+    await page.evaluate(() => document.dispatchEvent(new Event("e2e-hide")));
+    await expectEntranceRuns(page);
+  });
 
   test("the rulers stand still from the start, before and after a scroll", async ({
     page,
