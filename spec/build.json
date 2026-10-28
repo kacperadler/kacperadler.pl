@@ -825,9 +825,9 @@
   {
     "id": "KA0103",
     "title": "The 360px entrance-after-paint test is flaky",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0103-the-360px-entrance-after-paint-test-is-flaky/ticket.md",
-    "updated": "2026-10-28T16:57:18.841Z"
+    "updated": "2026-10-28T17:03:36.340Z"
   },
   {
     "id": "KA0104",

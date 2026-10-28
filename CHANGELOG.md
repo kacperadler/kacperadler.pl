@@ -11,6 +11,10 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0102 The 404 page's rule is the one line the pen does not draw (1399005)
 - KA0104 Audit the site CSS against good-css.com and propose what to adopt (6f0a0eb)
 
+### Fixed
+
+- KA0103 The 360px entrance-after-paint test is flaky (545af2d)
+
 ## 2026-10-14
 
 ### Added
