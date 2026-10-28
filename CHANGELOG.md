@@ -2,6 +2,12 @@
 
 Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at the next merge.
 
+## 2026-10-29
+
+### Changed
+
+- KA0116 A global rule strips every transition under reduced motion (34f7f6f)
+
 ## 2026-10-28
 
 ### Added
