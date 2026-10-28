@@ -818,16 +818,16 @@
   {
     "id": "KA0102",
     "title": "The 404 page's rule is the one line the pen does not draw",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0102-the-404-page-s-rule-is-the-one-line-the-pen-does-not-draw/ticket.md",
-    "updated": "2026-10-28T16:40:06.902Z"
+    "updated": "2026-10-28T16:58:55.782Z"
   },
   {
     "id": "KA0103",
     "title": "The 360px entrance-after-paint test is flaky",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0103-the-360px-entrance-after-paint-test-is-flaky/ticket.md",
-    "updated": "2026-10-28T16:45:12.682Z"
+    "updated": "2026-10-28T16:57:18.841Z"
   },
   {
     "id": "KA0104",
@@ -969,5 +969,12 @@
     "status": "in-progress",
     "path": "spec/features/KA0118-audit-the-site-design-against-taste-skill-and-propose-what-to-raise/ticket.md",
     "updated": "2026-10-28T16:52:56.716Z"
+  },
+  {
+    "id": "KA0119",
+    "title": "The hero entrance timing test is flaky under load",
+    "status": "dropped",
+    "path": "spec/features/KA0119-the-hero-entrance-timing-test-is-flaky-under-load/ticket.md",
+    "updated": "2026-10-28T16:59:12.378Z"
   }
 ]

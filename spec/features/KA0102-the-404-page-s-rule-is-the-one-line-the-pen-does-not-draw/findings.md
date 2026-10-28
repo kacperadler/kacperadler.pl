@@ -11,4 +11,12 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `tests/e2e/blueprint.spec.ts:275`
 - What: in a full `bun run test` (177 passed, 1 flaky) the test "on load the header, the headline, the hero drawing, the buttons and the trust bar come in as one sequence of about 1.7s at 1440px" failed once and passed on retry; run alone with `--repeat-each 5 --retries 0` it passed 10 of 10. Which assertion failed was not kept (the run's output was filtered to the summary). The test reads the live animations of the home page right after load (start against first contentful paint, `playState`), and this ticket does not touch the home page, so the failure is timing under parallel load (other worktrees' e2e runs on the same machine) [INFERENCE].
 - Suggestion: reproduce with `--repeat-each 20` under load, name the assertion that fails, and make it independent of how fast the machine paints. The entrance itself stays as it is.
-- Status: open
+- Status: dropped (duplicate of KA0103, which fixes the same test)
+
+## F2. dev-no-reload.spec.ts flaked once in the review's full run
+
+- Kind: note
+- Found by: 2026-10-28-review-ka0102-f324e853 (review), 2026-10-28
+- Where: `tests/e2e/dev-no-reload.spec.ts`
+- What: passed on retry; unrelated to this diff.
+- Status: dropped (KA0099 already carries this flake)
