@@ -55,3 +55,4 @@ Out:
 - 2026-10-28: The human: the proposal pages and the other proposals are removed (Done means #2: removed); the card keeps only the CAD selection (grips and item number), the sliding blue top rule from KA0083 point 13 stays gone.
 - 2026-10-28: The human: the entrance animation must feel pleasant and clearly felt, leaving a positive first impression; the recording is judged frame by frame (by the worker, then the coordinator) before it reaches the human.
 - 2026-10-28: The human (photo trust-bar-entrance.jpg): in the entrance, the trust bar's company logos (Od korporacji po startupy) rise in one by one from below, in order; the headline "Wdrożenia AI i automatyzacje, które przejmują nudną pracę" rises in the same way as the subtitle, title first, then the subtitle.
+- 2026-10-28: The human approved the entrance v2 (a483399) and the merge: "jest dużo lepiej, daję ok".
