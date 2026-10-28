@@ -52,3 +52,4 @@ Out:
 - 2026-10-28: The human lifted the worker's budget limit (resume with no limit) after two runs spent $10 with no commits.
 - 2026-10-28: The human finds too many lines drawing while scrolling and asked to see option 2: only the hero draws, on page load; every other part of every page stands drawn from the start (no drawing on scroll). Built as one revertable commit to judge on the preview.
 - 2026-10-28: The human: the first screen gets one unified entrance animation on load: the hero's drawing plus the nav menu sliding down from the top, the headline text, the figures/graphics and the buttons appearing in sequence; everything below the first screen stands still (no scroll animation). Reduced motion and no-JS show it all at once.
+- 2026-10-28: The human: the proposal pages and the other proposals are removed (Done means #2: removed); the card keeps only the CAD selection (grips and item number), the sliding blue top rule from KA0083 point 13 stays gone.
