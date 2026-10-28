@@ -100,20 +100,43 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
  * <html> is marked live (the script runs) and enter (this document load
  * plays the first screen's entrance) here, before the body is parsed, so
  * nothing paints in place and then jumps back to start. The entrance
- * holds at its first frame until that frame has been painted (the
- * document parsed, then two animation frames), then "go" runs it, so
- * the header's drop and the headline's slide are seen from their start.
- * A ClientRouter swap takes the new document's bare <html>: the script
- * restores the live mark, not the entrance. Without JavaScript neither
- * is set and everything shows at once. */}
+ * holds at its first frame until the browser reports that frame painted
+ * (the first-contentful-paint entry), then "go" runs it, so the header's
+ * drop and the headline's slide are seen from their start. A count of
+ * animation frames is no such signal: Chrome runs animation frames
+ * before it paints the first one (KA0103). Where no report may
+ * come (no paint timing, or a page hidden before it painted) "go" waits
+ * two animation frames instead, which run only while the page is
+ * visible. A ClientRouter swap takes the new document's bare <html>: the
+ * script restores the live mark, not the entrance. Without JavaScript
+ * neither is set and everything shows at once. */}
 <script is:inline>
-  document.documentElement.dataset.blLive = "";
-  document.documentElement.dataset.blEnter = "";
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      document.documentElement.dataset.blEnter = "go";
-    });
-  });
+  (() => {
+    const root = document.documentElement;
+    root.dataset.blLive = "";
+    root.dataset.blEnter = "";
+    const go = () => {
+      root.dataset.blEnter = "go";
+    };
+    const afterFrames = () =>
+      requestAnimationFrame(() => requestAnimationFrame(go));
+    if (
+      document.visibilityState === "visible" &&
+      globalThis.PerformanceObserver?.supportedEntryTypes?.includes("paint")
+    ) {
+      new PerformanceObserver((list, observer) => {
+        if (list.getEntriesByName("first-contentful-paint").length > 0) {
+          observer.disconnect();
+          go();
+        }
+      }).observe({ buffered: true, type: "paint" });
+      document.addEventListener("visibilitychange", afterFrames, {
+        once: true,
+      });
+    } else {
+      afterFrames();
+    }
+  })();
 </script>
 {/* Umami analytics, self-hosted at analytics.kacperadler.pl. PROD-only
  * so dev pageviews don't pollute the data.
