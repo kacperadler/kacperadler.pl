@@ -916,9 +916,9 @@
   {
     "id": "KA0113",
     "title": "Section rhythm jumps at 880px; headline sizes ignore the reader's font size",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0113-section-rhythm-jumps-at-880px-headline-sizes-ignore-the-reader-s-font-size/ticket.md",
-    "updated": "2026-10-28T20:04:18.151Z",
+    "updated": "2026-10-28T20:39:48.285Z",
     "after": [
       "KA0128"
     ]
@@ -948,9 +948,9 @@
     "title": "A global rule strips every transition under reduced motion",
     "status": "planned",
     "path": "spec/features/KA0116-a-global-rule-strips-every-transition-under-reduced-motion/ticket.md",
-    "updated": "2026-10-28T16:52:26.108Z",
+    "updated": "2026-10-28T20:40:45.275Z",
     "after": [
-      "KA0113"
+      "KA0130"
     ]
   },
   {
@@ -1064,15 +1064,18 @@
   {
     "id": "KA0129",
     "title": "Two tests flaked under full-suite load",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0129-two-tests-flaked-under-full-suite-load/ticket.md",
-    "updated": "2026-10-28T20:13:13.451Z"
+    "updated": "2026-10-28T20:40:44.876Z"
   },
   {
     "id": "KA0130",
     "title": "After sending, the \"Wiadomość wysłana.\" heading can land above the viewport",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0130-after-sending-the-wiadomosc-wys-ana-heading-can-land-above-the-viewport/ticket.md",
-    "updated": "2026-10-28T20:39:25.387Z"
+    "updated": "2026-10-28T20:40:45.075Z",
+    "after": [
+      "KA0113"
+    ]
   }
 ]

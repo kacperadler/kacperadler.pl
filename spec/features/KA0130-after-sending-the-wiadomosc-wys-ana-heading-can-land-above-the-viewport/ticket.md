@@ -4,7 +4,10 @@
 {
   "id": "KA0130",
   "title": "After sending, the \"Wiadomość wysłana.\" heading can land above the viewport",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0113"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F1 of KA0128
+- 2026-10-28: The human approved it.

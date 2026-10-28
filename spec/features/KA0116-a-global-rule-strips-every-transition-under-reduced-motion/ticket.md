@@ -6,7 +6,7 @@
   "title": "A global rule strips every transition under reduced motion",
   "date": "2026-10-28",
   "after": [
-    "KA0113"
+    "KA0130"
   ]
 }
 ```
