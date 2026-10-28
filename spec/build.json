@@ -876,9 +876,9 @@
   {
     "id": "KA0109",
     "title": "In forced-colors mode a focused field shows no focus at all",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0109-in-forced-colors-mode-a-focused-field-shows-no-focus-at-all/ticket.md",
-    "updated": "2026-10-28T19:50:03.316Z",
+    "updated": "2026-10-28T20:03:12.822Z",
     "after": [
       "KA0112"
     ]
@@ -918,9 +918,9 @@
     "title": "Section rhythm jumps at 880px; headline sizes ignore the reader's font size",
     "status": "planned",
     "path": "spec/features/KA0113-section-rhythm-jumps-at-880px-headline-sizes-ignore-the-reader-s-font-size/ticket.md",
-    "updated": "2026-10-28T16:52:25.189Z",
+    "updated": "2026-10-28T20:04:18.151Z",
     "after": [
-      "KA0109"
+      "KA0128"
     ]
   },
   {
@@ -1054,8 +1054,11 @@
   {
     "id": "KA0128",
     "title": "After a long message the success card is a tall, mostly empty box",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0128-after-a-long-message-the-success-card-is-a-tall-mostly-empty-box/ticket.md",
-    "updated": "2026-10-28T19:49:40.301Z"
+    "updated": "2026-10-28T20:04:17.714Z",
+    "after": [
+      "KA0109"
+    ]
   }
 ]

@@ -6,7 +6,7 @@
   "title": "Section rhythm jumps at 880px; headline sizes ignore the reader's font size",
   "date": "2026-10-28",
   "after": [
-    "KA0109"
+    "KA0128"
   ]
 }
 ```

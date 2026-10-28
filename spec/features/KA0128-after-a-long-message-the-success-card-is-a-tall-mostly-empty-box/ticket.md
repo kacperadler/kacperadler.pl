@@ -4,7 +4,10 @@
 {
   "id": "KA0128",
   "title": "After a long message the success card is a tall, mostly empty box",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0109"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F1 of KA0112
+- 2026-10-28: The human approved it.
