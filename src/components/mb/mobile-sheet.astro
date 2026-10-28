@@ -75,8 +75,10 @@ const closeHook = preview ? {} : { "data-menu-close": true };
    * scrolls its own overflow (a phone held sideways) and never hands it to
    * the page. The close button scrolls away with it; Esc and the links
    * still close. The open dialog fills the viewport, over the dialog's own
-   * box (centred, framed, capped short of the edges); a closed one keeps
-   * the browser's display: none. */
+   * box (centred, framed, capped short of the edges); the browser's
+   * `dialog:modal` rules end at close(), so the fixed box and its scroller
+   * are set here to hold through the fade out. A closed one keeps the
+   * browser's display: none. */
   .mb-sheet {
     flex-direction: column;
     padding: 80px var(--v2-space-md) 32px;
@@ -96,7 +98,6 @@ const closeHook = preview ? {} : { "data-menu-close": true };
     max-width: none;
     height: auto;
     max-height: none;
-    margin: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
     border: 0;

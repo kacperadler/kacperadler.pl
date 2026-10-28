@@ -35,6 +35,13 @@ test.describe("mobile sheet", () => {
     await expect(sheet).toBeVisible();
     expect(await sheet.evaluate((el) => el.matches(":modal"))).toBe(true);
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    // It covers the whole screen edge to edge, with no frame of its own.
+    expect(
+      await sheet.evaluate((el) => {
+        const { x, y, width, height } = el.getBoundingClientRect();
+        return [x, y, width, height, el.clientLeft, el.clientTop];
+      })
+    ).toEqual([0, 0, 375, 812, 0, 0]);
 
     await page.click("[data-menu-close]");
 
@@ -47,30 +54,44 @@ test.describe("mobile sheet", () => {
     page,
   }) => {
     await page.goto("/");
+    // Down the page, where a sheet that lost its fixed box would slide off.
+    await page.evaluate(() =>
+      window.scrollTo({ behavior: "instant", top: 1000 })
+    );
 
-    // Read in the task of the click: the transitions it starts, sorted.
+    // Read in the task of the click: the transitions it starts, sorted, and
+    // where the sheet then stands.
     const fadeOf = (selector: string) =>
       page.evaluate((hook) => {
         document.querySelector<HTMLElement>(hook)?.click();
-        return (
-          document
-            .querySelector("#mobile-sheet")
-            ?.getAnimations()
-            .map((a) =>
-              a instanceof CSSTransition ? a.transitionProperty : ""
-            )
-            .sort() ?? []
-        );
+        const sheet = document.querySelector("#mobile-sheet");
+        const box = sheet?.getBoundingClientRect();
+        return {
+          box: [box?.x, box?.y, box?.width, box?.height],
+          fades:
+            sheet
+              ?.getAnimations()
+              .map((a) =>
+                a instanceof CSSTransition ? a.transitionProperty : ""
+              )
+              .sort() ?? [],
+        };
       }, selector);
 
-    expect(await fadeOf("[data-menu-open]")).toContain("opacity");
+    expect((await fadeOf("[data-menu-open]")).fades).toContain("opacity");
     await expect(page.locator("#mobile-sheet")).toBeVisible();
-    // Closing keeps it shown and in the top layer until the fade ends.
-    expect(await fadeOf("[data-menu-close]")).toEqual([
-      "display",
-      "opacity",
-      "overlay",
-    ]);
+    // While it fades, the page shows through it as it is, not dimmed.
+    expect(
+      await page
+        .locator("#mobile-sheet")
+        .evaluate((el) => getComputedStyle(el, "::backdrop").backgroundColor)
+    ).toBe("rgba(0, 0, 0, 0)");
+    // Closing keeps it shown over the whole screen and in the top layer
+    // until the fade ends.
+    expect(await fadeOf("[data-menu-close]")).toEqual({
+      box: [0, 0, 375, 812],
+      fades: ["display", "opacity", "overlay"],
+    });
   });
 
   test("another dialog closing leaves focus where it is", async ({ page }) => {
@@ -152,6 +173,9 @@ test.describe("mobile sheet", () => {
     // focus a clicked button: the dialog would hand focus back to the page.
     await trigger.dispatchEvent("click");
     await expect(sheet).toBeVisible();
+    // From any control: Shift+Tab wraps to the last one, the CTA.
+    await page.keyboard.press("Shift+Tab");
+    await expect(sheet.locator(".mb-sheet-cta a")).toBeFocused();
 
     await page.keyboard.press("Escape");
 
