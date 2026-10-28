@@ -102,8 +102,14 @@ const steps = (await getCollection("services")).sort(
     transition: color var(--mb-snap);
   }
 
-  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-service-num {
+  :global(.mb-card[data-state="hover"]) .mb-service-num {
     color: var(--blue);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global(.mb-card:hover) .mb-service-num {
+      color: var(--blue);
+    }
   }
 
   /* The cell's five rows (head, three facts, button) are the grid row's

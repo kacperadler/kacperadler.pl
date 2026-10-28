@@ -215,9 +215,16 @@ const [previousEnd, nextEnd] = ends;
     letter-spacing: -0.015em;
   }
 
-  a.mb-page:is(:hover, [data-state="hover"]) {
+  a.mb-page[data-state="hover"] {
     color: var(--ink);
     background: var(--v2-panel-elevated);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.mb-page:hover {
+      color: var(--ink);
+      background: var(--v2-panel-elevated);
+    }
   }
 
   a.mb-page:is(:active, [data-state="pressed"]) {
@@ -275,8 +282,10 @@ const [previousEnd, nextEnd] = ends;
       box-shadow var(--mb-snap);
   }
 
-  .mb-page-jump-input:hover {
-    border-color: var(--ink-2);
+  @media (hover: hover) and (pointer: fine) {
+    .mb-page-jump-input:hover {
+      border-color: var(--ink-2);
+    }
   }
 
   .mb-page-jump-input:focus {

@@ -100,10 +100,18 @@ const Tag = href ? "a" : "span";
   }
 
   .mb-badge-default,
-  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-badge-fill-on-hover {
+  :global(.mb-card[data-state="hover"]) .mb-badge-fill-on-hover {
     color: var(--v2-bg);
     background: var(--blue);
     border-color: var(--blue);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global(.mb-card:hover) .mb-badge-fill-on-hover {
+      color: var(--v2-bg);
+      background: var(--blue);
+      border-color: var(--blue);
+    }
   }
 
   .mb-badge-secondary {
@@ -160,12 +168,12 @@ const Tag = href ? "a" : "span";
   }
 
   /* As a link: the same switch as the button it stands for. */
-  a.mb-badge-default:is(:hover, [data-state="hover"]) {
+  a.mb-badge-default[data-state="hover"] {
     background: var(--blue-2);
     border-color: var(--blue-2);
   }
 
-  a.mb-badge-destructive:is(:hover, [data-state="hover"]) {
+  a.mb-badge-destructive[data-state="hover"] {
     background: color-mix(in srgb, var(--error) 80%, var(--ink));
   }
 
@@ -174,18 +182,48 @@ const Tag = href ? "a" : "span";
     .mb-badge-outline,
     .mb-badge-tag,
     .mb-badge-status
-  ):is(:hover, [data-state="hover"]) {
+  )[data-state="hover"] {
     color: var(--ink);
     border-color: var(--mb-rule);
   }
 
-  a.mb-badge-ghost:is(:hover, [data-state="hover"]) {
+  a.mb-badge-ghost[data-state="hover"] {
     color: var(--ink);
     background: var(--v2-panel-elevated);
   }
 
-  a.mb-badge-link:is(:hover, [data-state="hover"]) {
+  a.mb-badge-link[data-state="hover"] {
     color: var(--blue);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.mb-badge-default:hover {
+      background: var(--blue-2);
+      border-color: var(--blue-2);
+    }
+
+    a.mb-badge-destructive:hover {
+      background: color-mix(in srgb, var(--error) 80%, var(--ink));
+    }
+
+    a:is(
+      .mb-badge-secondary,
+      .mb-badge-outline,
+      .mb-badge-tag,
+      .mb-badge-status
+    ):hover {
+      color: var(--ink);
+      border-color: var(--mb-rule);
+    }
+
+    a.mb-badge-ghost:hover {
+      color: var(--ink);
+      background: var(--v2-panel-elevated);
+    }
+
+    a.mb-badge-link:hover {
+      color: var(--blue);
+    }
   }
 
   /* Pressed: the inverted ink block, as the button at its target. */

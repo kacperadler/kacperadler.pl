@@ -99,8 +99,10 @@ const { class: extraClass } = Astro.props;
     transition: color var(--mb-snap);
   }
 
-  .mb-prose :global(a:hover) {
-    color: var(--blue);
+  @media (hover: hover) and (pointer: fine) {
+    .mb-prose :global(a:hover) {
+      color: var(--blue);
+    }
   }
 
   .mb-prose :global(strong) {

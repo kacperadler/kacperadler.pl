@@ -161,9 +161,16 @@ const menuId = `mb-crumbs-${hash.toString(36)}`;
     outline-offset: 0;
   }
 
-  .mb-crumb-link:is(:hover, [data-state="hover"]) {
+  .mb-crumb-link[data-state="hover"] {
     color: var(--ink);
     text-decoration-color: var(--blue);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-crumb-link:hover {
+      color: var(--ink);
+      text-decoration-color: var(--blue);
+    }
   }
 
   .mb-crumb-link:is(:active, [data-state="pressed"]) {
@@ -203,9 +210,16 @@ const menuId = `mb-crumbs-${hash.toString(36)}`;
     height: 16px;
   }
 
-  .mb-crumb-more-trigger:is(:hover, [data-state="hover"]) {
+  .mb-crumb-more-trigger[data-state="hover"] {
     color: var(--ink);
     border-color: var(--mb-hair);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-crumb-more-trigger:hover {
+      color: var(--ink);
+      border-color: var(--mb-hair);
+    }
   }
 
   .mb-crumb-more:has(:popover-open) .mb-crumb-more-trigger {
@@ -277,9 +291,16 @@ const menuId = `mb-crumbs-${hash.toString(36)}`;
     outline-offset: -4px;
   }
 
-  a.mb-crumb-menu-item:is(:hover, [data-state="hover"]) {
+  a.mb-crumb-menu-item[data-state="hover"] {
     color: var(--ink);
     background: var(--v2-panel-elevated);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.mb-crumb-menu-item:hover {
+      color: var(--ink);
+      background: var(--v2-panel-elevated);
+    }
   }
 
   a.mb-crumb-menu-item:is(:active, [data-state="pressed"]) {

@@ -65,8 +65,14 @@ const { label, state, class: extraClass, ...rest } = Astro.props;
       box-shadow var(--mb-snap);
   }
 
-  .mb-radio:is(:hover, [data-state="hover"]) .mb-radio-input {
+  .mb-radio[data-state="hover"] .mb-radio-input {
     border-color: var(--ink);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-radio:hover .mb-radio-input {
+      border-color: var(--ink);
+    }
   }
 
   .mb-radio .mb-radio-input:checked {

@@ -11,12 +11,15 @@
  * ticks (6px above its dimension line) clear the header's rule.
  * text-wrap: pretty keeps a lone word off a paragraph's last line;
  * headlines set balance over it. text-size-adjust stops iOS Safari from
- * inflating text after a turn to landscape. */
+ * inflating text after a turn to landscape. The tap highlight goes: iOS
+ * and Android would flash a grey box over the square cells; the press
+ * states (:active) answer a tap instead. */
 html {
   scroll-behavior: smooth;
   scroll-padding-block-start: calc(var(--mb-header) + 8px);
   text-wrap: pretty;
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -47,6 +50,17 @@ button {
   cursor: pointer;
   background: none;
   border: 0;
+}
+
+/* No double-tap zoom on what is pressed, so a tap clicks without the wait.
+ * Hover styles sit in each component under
+ * `@media (hover: hover) and (pointer: fine)`: a touch screen would keep
+ * them on after a tap; the [data-state="hover"] that forces them on /ui
+ * stays outside the query. */
+button,
+a,
+[role="button"] {
+  touch-action: manipulation;
 }
 
 /* [data-state="focus-visible"] forces the ring on the catalogue page (/ui). */

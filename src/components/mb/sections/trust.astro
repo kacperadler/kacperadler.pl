@@ -96,9 +96,16 @@ const logos = ORDER.map((id) => {
       opacity var(--mb-snap);
   }
 
-  :global(.mb-card:is(:hover, [data-state="hover"])) .mb-trust-logo {
+  :global(.mb-card[data-state="hover"]) .mb-trust-logo {
     opacity: 1;
     filter: grayscale(0%);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global(.mb-card:hover) .mb-trust-logo {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
   }
 
   .mb-trust-logo img {

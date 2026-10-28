@@ -76,10 +76,18 @@ const { label, state, class: extraClass, ...rest } = Astro.props;
       color var(--mb-snap);
   }
 
-  .mb-choice:is(:hover, [data-state="hover"]) .mb-choice-label {
+  .mb-choice[data-state="hover"] .mb-choice-label {
     color: var(--ink);
     background: var(--v2-panel-elevated);
     border-color: var(--ink);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-choice:hover .mb-choice-label {
+      color: var(--ink);
+      background: var(--v2-panel-elevated);
+      border-color: var(--ink);
+    }
   }
 
   .mb-choice:is(:active, [data-state="pressed"]) .mb-choice-label {
@@ -109,11 +117,16 @@ const { label, state, class: extraClass, ...rest } = Astro.props;
     border-color: var(--mb-hair);
   }
 
-  .mb-choice:is(:hover, [data-state="hover"])
-    .mb-choice-input:checked
-    + .mb-choice-label {
+  .mb-choice[data-state="hover"] .mb-choice-input:checked + .mb-choice-label {
     background: var(--blue-2);
     border-color: var(--blue-2);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-choice:hover .mb-choice-input:checked + .mb-choice-label {
+      background: var(--blue-2);
+      border-color: var(--blue-2);
+    }
   }
 
   /* Under the hover rule's weight, so a pointer over a sending form does
