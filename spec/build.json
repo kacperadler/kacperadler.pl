@@ -1054,9 +1054,9 @@
   {
     "id": "KA0128",
     "title": "After a long message the success card is a tall, mostly empty box",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0128-after-a-long-message-the-success-card-is-a-tall-mostly-empty-box/ticket.md",
-    "updated": "2026-10-28T20:04:17.714Z",
+    "updated": "2026-10-28T20:35:56.735Z",
     "after": [
       "KA0109"
     ]
