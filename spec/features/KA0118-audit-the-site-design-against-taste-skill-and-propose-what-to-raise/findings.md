@@ -70,7 +70,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: `src/components/mb/header.astro:30-38` ("Umów rozmowę"), `src/components/mb/sections/hero.astro:76-83` ("Umów bezpłatną konsultację", outline "Zobacz, co mogę zrobić dla Twojej firmy") and `:98-102` ("Zobacz realizacje"), `src/components/mb/sections/problems.astro:46-48` and `src/components/mb/sections/how-i-work.astro:50-52` ("Umów bezpłatną rozmowę"); an arrow on 9 buttons of the home page (`iconEnd="lucide:arrow-right"` in `header.astro`, `hero.astro` ×2, `problems.astro`, `services.astro` (one per step, 3), `how-i-work.astro`, `contact-form.astro`)
 - What: Taste Skill `copy.md` §4 "The primary action keeps one name everywhere on the page. One primary button per screen; a second action is a plain text link. No arrow glyph on every link and button; at most one arrow, on the primary action". The action that goes to #contact has three names; the 1440 first screen carries four buttons (header CTA, two hero buttons, the card's button), three with an arrow (`p1-hero-1440-before.png`).
 - Suggestion: one label for #contact everywhere (e.g. "Umów bezpłatną rozmowę"); the hero's second action and the card's "Zobacz realizacje" as text links (`link.astro`), the arrow only on the primary button. Visitor sees: one obvious thing to press on each screen. Cost: about 10 lines; copy changes in their own `copy(<section>)` commits; `home.spec.ts` checks on button labels updated. Approved decision: touches KA0075's hero buttons and labels (2026-10-26, sent verbatim) and the copy in `tresc.md`.
-- Status: open
+- Status: dropped (the human followed the coordinator's recommendation on 2026-10-28: it changes approved copy or layout for little gain)
 
 ## F5. Running text in the full ink and at 16px
 
@@ -88,7 +88,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: problems (#problems) or contact (#contact), `src/components/mb/sections/problems.astro:43-49` (the closing sentence and button)
 - What: Taste Skill step 4 "One live thing ... made from the idea ... set the loan and read the real monthly figure", `critique.md` cap "No live thing: creativity cannot exceed 7.5" ("in blind tests every winning page had one and the jurors named it first"). The page's one live element is the cell width readout under the cursor: it belongs to the drawing, not to the visitor's business.
 - Suggestion: a small calculator in the section that names the problems: people × hours a week spent on the task → hours a month and a year handed back, with the sentence and the button under it. Rules from the skill: real numbers only (no promised savings rate), works with a thumb, a plain fallback without script (the sentence alone), never blocks reading. Visitor sees: their own number before the call. Cost: a component, a vanilla script in `src/scripts/`, e2e for the figure and the no-JS fallback, copy approved by the human. Approved decision: adds an element to a KA0075 section (order and copy unchanged); related to KA0095 (a demo of Kacper's own automation).
-- Status: open
+- Status: dropped (the human followed the coordinator's recommendation on 2026-10-28: it changes approved copy or layout for little gain)
 
 ## F7. "Proces" is the one section head with an empty right half
 
@@ -97,7 +97,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: `src/components/mb/sections/how-i-work.astro:28-30` (SectionHead without a lede)
 - What: Taste Skill "Equal outer margins; no section huddled on one side with the other half of the screen empty" (`layout.md` §5). Every other section head carries a lede on the right; "Od rozmowy do działającego systemu." stands alone, with the right half of the sheet empty beside it and above the first step (seen at 1440 in the audit's page slices, between the cases table and the first process card).
 - Suggestion: a one-sentence lede for the process, in the tone of the others (e.g. what the visitor gets at each step and when). Visitor sees: the head row filled like the others. Cost: 3 lines plus the copy, in a `copy(process)` commit. Approved decision: touches KA0075's approved copy (the head has no lede in `tresc.md`).
-- Status: open
+- Status: dropped (the human followed the coordinator's recommendation on 2026-10-28: it changes approved copy or layout for little gain)
 
 ## F8. Legal pages: an empty right column under the lede
 
@@ -106,7 +106,7 @@ F1 to F11 are proposals, ordered by visible benefit; F12 to F18 are the Taste Sk
 - Where: `src/layouts/legal-layout.astro:27-35` (SectionHead and Prose), `src/components/mb/prose.astro` (the column, 690px)
 - What: Taste Skill "Use the width the page has set up" (`layout.md` §5). `inspect.mjs` on `/polityka-prywatnosci/`: `hero-void` WARN, 28% of the first screen one empty block (600x600 at 840,300), `off-centre` (content 156px from the left, 330px from the right). The text column is the right measure; the right half holds only "Ostatnia aktualizacja".
 - Suggestion: a table of contents of the page's h2s in the right column (the headings already carry ids, e.g. `#1-administrator-danych`), sticky under the header on desktop, above the text on a phone. Visitor sees: where each topic is, one click away, on a page people open to find one answer. Cost: about 40 lines in `legal-layout.astro` (headings from `getHeadings()`), an e2e check that each link reaches its heading. Approved decision: none.
-- Status: open
+- Status: dropped (the human followed the coordinator's recommendation on 2026-10-28: it changes approved copy or layout for little gain)
 
 ## F9. "CRM-y" in "Aplikacje szyte na miarę" breaks at its hyphen
 
