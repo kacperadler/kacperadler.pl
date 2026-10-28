@@ -39,3 +39,4 @@ In:
 
 - 2026-10-28: Source: F4 of KA0104
 - 2026-10-28: The human approved it; runs one at a time after KA0105 (shared CSS files).
+- 2026-10-28: The coordinator: the pagination page-jump input at 16px is in scope, since the Goal is that no form field zooms the page on iOS; the human was told and did not object.
