@@ -7,12 +7,13 @@ import { expect, test } from "@playwright/test";
 // specs pin the conditions that keep Safari from doing it.
 
 // Every field a visitor types into, on the pages that have one: the contact
-// form (email, message) and the pagination "go to page" field (/lista/, the
-// e2e fixture). The honeypot sits under aria-hidden, out of reach.
+// form (email, company, message) and the pagination "go to page" field
+// (/lista/, the e2e fixture). The honeypot sits under aria-hidden, out of
+// reach.
 const FIELDS =
   'input:not([type="checkbox"], [type="radio"], [type="hidden"]), textarea, select';
 const PAGES = [
-  { fields: 2, path: "/" },
+  { fields: 3, path: "/" },
   { fields: 1, path: "/lista/" },
 ];
 
