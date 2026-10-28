@@ -136,6 +136,59 @@ test.describe("minimal brutalism", () => {
     await nav.hover();
     await expect(nav).toHaveAttribute("data-transitions-run", "color;");
   });
+
+  // The hairline is mixed from the ink (KA0117), not a copy of its RGB: a new
+  // --ink takes the hairline with it, and over the substrate today's ink
+  // still paints the grey the hard-coded value did, rgb(32, 34, 36).
+  test("the hairline is the ink at 10% and follows a new ink", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    // Paints the substrate, then the hairline (or a reference colour) over
+    // it into one canvas pixel, with --ink set to `ink` while it is read.
+    const paint = (ink: string | null, over: string) =>
+      page.evaluate(
+        ([newInk, colour]) => {
+          const root = document.documentElement;
+          if (newInk) {
+            root.style.setProperty("--ink", newInk);
+          }
+          const probe = document.createElement("div");
+          probe.style.color = colour;
+          probe.style.backgroundColor = "var(--v2-bg)";
+          document.body.append(probe);
+          const { color, backgroundColor } = getComputedStyle(probe);
+          probe.remove();
+          root.style.removeProperty("--ink");
+          const canvas = document.createElement("canvas");
+          canvas.width = 1;
+          canvas.height = 1;
+          const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+          context.fillStyle = backgroundColor;
+          context.fillRect(0, 0, 1, 1);
+          context.fillStyle = color;
+          context.fillRect(0, 0, 1, 1);
+          return [...context.getImageData(0, 0, 1, 1).data.slice(0, 3)];
+        },
+        [ink, over] as const
+      );
+
+    expect(await paint(null, "var(--v2-line)")).toEqual([32, 34, 36]);
+    // The trip through oklch may round a channel one step off the sRGB tint.
+    for (const [ink, tenth] of [
+      ["#ece7dc", "rgba(236, 231, 220, 0.1)"],
+      ["#ff0000", "rgba(255, 0, 0, 0.1)"],
+      ["#00ff80", "rgba(0, 255, 128, 0.1)"],
+    ] as const) {
+      // biome-ignore lint/performance/noAwaitInLoops: one ink at a time
+      const hairline = await paint(ink, "var(--v2-line)");
+      const reference = await paint(null, tenth);
+      expect(
+        Math.max(...hairline.map((c, i) => Math.abs(c - (reference[i] ?? 0)))),
+        `${ink}: hairline ${hairline}, ink at 10% ${reference}`
+      ).toBeLessThanOrEqual(1);
+    }
+  });
 });
 
 // The section rhythm and the headlines are fluid (KA0113): one clamp() each,
