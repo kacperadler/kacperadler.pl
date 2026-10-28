@@ -67,14 +67,14 @@ Dependabot (`.github/dependabot.yml`) co tydzień otwiera PR-y dla bun i GitHub 
 
 ## Leady i powiadomienia
 
-Formularz kontaktowy (`src/scripts/contact-form.ts`) wysyła JSON `{ email, types, message, website }` (`types`: jeden lub kilka typów projektu) na `POST /api/lead` (`src/pages/api/lead.ts`, jedyna trasa renderowana na żądanie). Trasa sprawdza pola tymi samymi regułami co przeglądarka (`src/lib/lead.ts`), zapisuje lead w SQLite (`src/lib/leads-db.ts`, tabela `leads(id, created_at, email, type, message)`, tworzona przy pierwszym zapisie; `type` to wybrane typy po przecinku, np. `audit,implementation`) i wysyła powiadomienie przez API Resend (`src/lib/send-email.ts`, sam `fetch`, limit 5 s).
+Formularz kontaktowy (`src/scripts/contact-form.ts`) wysyła JSON `{ email, company, types, message, website }` (`types`: jeden lub kilka typów projektu; `company`: nazwa firmy, nieobowiązkowa, do 200 znaków) na `POST /api/lead` (`src/pages/api/lead.ts`, jedyna trasa renderowana na żądanie). Trasa sprawdza pola tymi samymi regułami co przeglądarka (`src/lib/lead.ts`), zapisuje lead w SQLite (`src/lib/leads-db.ts`, tabela `leads(id, created_at, email, type, message, company)`, tworzona przy pierwszym zapisie; `type` to wybrane typy po przecinku, np. `audit,implementation`; `company` to `''`, gdy firmy nie podano - tabela sprzed tego pola dostaje kolumnę przy pierwszym zapisie, a jej wiersze `''`) i wysyła powiadomienie przez API Resend (`src/lib/send-email.ts`, sam `fetch`, limit 5 s).
 
 - `type` to `audit | implementation | partner | other` (`projectTypes`); wiersze zapisane wcześniej zostają z `ai | webapp | landing | mobile | tool`, ale nowy lead z takim typem dostaje 400.
 - Wypełniony honeypot (`website`) → 200, nic nie zapisane.
 - Złe pola → 400; lead nie da się zapisać → 500 (formularz pokazuje błąd).
 - Więcej niż 5 postów na minutę z jednego IP (wszystkie 5 mogą przyjść naraz, szósty od razu dostaje 429) → 429 od nginx (`limit_req` w `nginx.conf`), zanim żądanie dotrze do Node; formularz pokazuje błąd wysyłki. IP klienta nginx bierze z ostatniego adresu w `X-Forwarded-For`, który dopisuje Traefik, ale tylko gdy żądanie przyszło z `10.0.0.0/8` (sieć `dokploy-network`); z innego adresu nagłówek jest ignorowany, więc skrypt nie podszyje się pod nowy adres przy każdym poście.
 - Mail nie poszedł albo nie jest skonfigurowany → tylko wpis w logach; lead zostaje zapisany, odwiedzający widzi sukces.
-- Mail zawiera tylko numer leada, typ projektu i godzinę - bez emaila i treści odwiedzającego (polityka prywatności mówi, że nie ma zewnętrznych procesorów danych). Lead czytasz z bazy.
+- Mail zawiera tylko numer leada, typ projektu i godzinę - bez emaila, firmy i treści odwiedzającego (polityka prywatności mówi, że nie ma zewnętrznych procesorów danych). Lead czytasz z bazy.
 - Logi niosą tylko numer leada: `[lead] saved #<id>`.
 
 Zmienne środowiskowe (czytane z `process.env` przy każdym żądaniu, nie wkompilowane w build; nigdy nie commituj ich wartości):

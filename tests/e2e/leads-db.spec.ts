@@ -27,11 +27,13 @@ test.describe("saveLead", () => {
     const before = new Date().toISOString();
 
     const first = saveLead(path, {
+      company: "Kowalski sp. z o.o.",
       email: "a@example.com",
       message: "Pierwsza",
       types: ["audit", "implementation"],
     });
     const second = saveLead(path, {
+      company: "",
       email: "b@example.com",
       message: "Druga\nz nową linią i 'cudzysłowem'",
       types: ["other"],
@@ -42,12 +44,14 @@ test.describe("saveLead", () => {
     const rows = readLeads(path);
     expect(rows.map(({ created_at, ...rest }) => rest)).toEqual([
       {
+        company: "Kowalski sp. z o.o.",
         email: "a@example.com",
         id: 1,
         message: "Pierwsza",
         type: "audit,implementation",
       },
       {
+        company: "",
         email: "b@example.com",
         id: 2,
         message: "Druga\nz nową linią i 'cudzysłowem'",
@@ -60,7 +64,9 @@ test.describe("saveLead", () => {
     }
   });
 
-  test("adds to a file that already holds leads", () => {
+  // The table as it was before the company field (KA0096): its rows stay,
+  // with no company, and a new lead keeps its own.
+  test("adds to a file that already holds leads, from before the company field", () => {
     const path = freshPath();
     const db = new DatabaseSync(path);
     db.exec(`CREATE TABLE leads (
@@ -79,14 +85,27 @@ test.describe("saveLead", () => {
 
     expect(
       saveLead(path, {
+        company: "Nowa Firma",
         email: "new@example.com",
         message: "Nowy",
         types: ["audit"],
       })
     ).toBe(2);
-    expect(readLeads(path).map((row) => row.email)).toEqual([
-      "old@example.com",
-      "new@example.com",
+    expect(readLeads(path).map(({ created_at, ...rest }) => rest)).toEqual([
+      {
+        company: "",
+        email: "old@example.com",
+        id: 1,
+        message: "Stary",
+        type: "webapp",
+      },
+      {
+        company: "Nowa Firma",
+        email: "new@example.com",
+        id: 2,
+        message: "Nowy",
+        type: "audit",
+      },
     ]);
   });
 
@@ -94,7 +113,12 @@ test.describe("saveLead", () => {
     const path = join(freshPath(), "..", "missing-dir", "leads.sqlite");
 
     expect(() =>
-      saveLead(path, { email: "a@example.com", message: "x", types: ["audit"] })
+      saveLead(path, {
+        company: "",
+        email: "a@example.com",
+        message: "x",
+        types: ["audit"],
+      })
     ).toThrow();
   });
 });

@@ -7,6 +7,7 @@ const ANY_VALUE = /.*/;
 const LEAD_API = "**/api/lead";
 
 interface SavedLead {
+  company: string;
   email: string;
   message: string;
   type: string;
@@ -25,7 +26,9 @@ function savedLeads(email: string): SavedLead[] {
   const db = new DatabaseSync(path, { readOnly: true });
   try {
     return db
-      .prepare("SELECT email, type, message FROM leads WHERE email = ?")
+      .prepare(
+        "SELECT email, type, message, company FROM leads WHERE email = ?"
+      )
       .all(email) as unknown as SavedLead[];
   } finally {
     db.close();
@@ -105,6 +108,10 @@ test.describe("contact form", () => {
     await expect(
       page.locator('[data-contact-form] [data-field="message"]')
     ).toHaveAttribute("data-invalid", "true");
+    // The company is optional: an empty one is never flagged.
+    await expect(
+      page.locator('[data-contact-form] [data-field="company"]')
+    ).not.toHaveAttribute("data-invalid", ANY_VALUE);
 
     // Wrapper enters validation-error so the form stays visible and
     // the inline field errors do the talking; the submit-error banner
@@ -151,18 +158,71 @@ test.describe("contact form", () => {
     ).not.toHaveAttribute("data-invalid", ANY_VALUE);
   });
 
+  test("a company name over 200 characters is flagged and nothing is sent; editing it clears the mark", async ({
+    page,
+  }) => {
+    let sent = 0;
+    await page.route(LEAD_API, (route) => {
+      sent += 1;
+      return route.fulfill({ json: { ok: true }, status: 200 });
+    });
+    await page.goto("/#contact");
+    await page.waitForLoadState("networkidle");
+
+    const company = page.locator('[data-contact-form] [data-field="company"]');
+    await page.fill(
+      '[data-contact-form] input[name="email"]',
+      "kacper@example.com"
+    );
+    await page.fill(
+      '[data-contact-form] input[name="company"]',
+      "F".repeat(201)
+    );
+    await pickType(page, "audit");
+    await page.fill('[data-contact-form] textarea[name="message"]', "Treść");
+
+    await page.click("[data-contact-form] [data-submit]");
+    await expect(company).toHaveAttribute("data-invalid", "true");
+    await expect(company.locator(".mb-field-error")).toHaveText(
+      "Nazwa firmy może mieć najwyżej 200 znaków."
+    );
+    await expect(company.locator(".mb-field-error")).toBeVisible();
+    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+      "data-state",
+      "error-validation"
+    );
+    for (const name of ["email", "type", "message"]) {
+      // biome-ignore lint/performance/noAwaitInLoops: one field at a time
+      await expect(
+        page.locator(`[data-contact-form] [data-field="${name}"]`)
+      ).not.toHaveAttribute("data-invalid", ANY_VALUE);
+    }
+    expect(sent).toBe(0);
+
+    await page.fill(
+      '[data-contact-form] input[name="company"]',
+      "F".repeat(200)
+    );
+    await expect(company).not.toHaveAttribute("data-invalid", ANY_VALUE);
+  });
+
   test("valid submit saves the lead and shows the success card", async ({
     page,
   }) => {
     // No stub: the lead goes to the preview's /api/lead and its SQLite file.
     const email = uniqueEmail("success");
     const message = "Chciałbym wdrożyć agenta AI w firmie.";
+    const company = "Kowalski sp. z o.o.";
 
     await stubUmami(page);
     await page.goto("/#contact");
     await page.waitForLoadState("networkidle");
 
     await page.fill('[data-contact-form] input[name="email"]', email);
+    await page.fill(
+      '[data-contact-form] input[name="company"]',
+      ` ${company} `
+    );
     await pickType(page, "implementation");
     await pickType(page, "audit");
     await page.fill('[data-contact-form] textarea[name="message"]', message);
@@ -192,13 +252,37 @@ test.describe("contact form", () => {
     expect(request.method()).toBe("POST");
     expect(request.headers()["content-type"]).toBe("application/json");
     expect(request.postDataJSON()).toEqual({
+      company,
       email,
       message,
       types: ["audit", "implementation"],
       website: "",
     });
     expect(savedLeads(email)).toEqual([
-      { email, message, type: "audit,implementation" },
+      { company, email, message, type: "audit,implementation" },
+    ]);
+  });
+
+  test("a lead sent with the company left empty is saved without one", async ({
+    page,
+  }) => {
+    const email = uniqueEmail("no-company");
+    await page.goto("/#contact");
+    await page.waitForLoadState("networkidle");
+
+    await page.fill('[data-contact-form] input[name="email"]', email);
+    await pickType(page, "other");
+    await page.fill('[data-contact-form] textarea[name="message"]', "Treść");
+    const sent = page.waitForRequest(LEAD_API);
+    await page.click("[data-contact-form] [data-submit]");
+
+    expect((await sent).postDataJSON().company).toBe("");
+    await expect(page.locator("[data-contact-wrap]")).toHaveAttribute(
+      "data-state",
+      "success"
+    );
+    expect(savedLeads(email)).toEqual([
+      { company: "", email, message: "Treść", type: "other" },
     ]);
   });
 
@@ -245,6 +329,15 @@ test.describe("contact form", () => {
       lead: { email: "", message: "   ", types: ["audit"] },
       name: "a blank message",
     },
+    {
+      lead: {
+        company: "F".repeat(201),
+        email: "",
+        message: "Treść",
+        types: ["audit"],
+      },
+      name: "a company over 200 characters",
+    },
   ]) {
     test(`the server turns away ${name} with 400 and saves nothing`, async ({
       request,
@@ -267,7 +360,23 @@ test.describe("contact form", () => {
       data: { email, message, types: ["other"], website: "" },
     });
     expect(res.status()).toBe(200);
-    expect(savedLeads(email)).toEqual([{ email, message, type: "other" }]);
+    expect(savedLeads(email)).toEqual([
+      { company: "", email, message, type: "other" },
+    ]);
+  });
+
+  test("the server takes a company of exactly 200 characters", async ({
+    request,
+  }) => {
+    const email = uniqueEmail("company-limit");
+    const company = "F".repeat(200);
+    const res = await request.post("/api/lead", {
+      data: { company, email, message: "Treść", types: ["other"], website: "" },
+    });
+    expect(res.status()).toBe(200);
+    expect(savedLeads(email)).toEqual([
+      { company, email, message: "Treść", type: "other" },
+    ]);
   });
 
   test("the server answers a filled honeypot with 200 and saves nothing", async ({
@@ -294,7 +403,9 @@ test.describe("contact form", () => {
         data: { email, message, types: [type], website: "" },
       });
       expect(res.status()).toBe(200);
-      expect(savedLeads(email)).toEqual([{ email, message, type }]);
+      expect(savedLeads(email)).toEqual([
+        { company: "", email, message, type },
+      ]);
     });
   }
 
@@ -313,7 +424,12 @@ test.describe("contact form", () => {
     });
     expect(res.status()).toBe(200);
     expect(savedLeads(email)).toEqual([
-      { email, message, type: "audit,implementation,partner,other" },
+      {
+        company: "",
+        email,
+        message,
+        type: "audit,implementation,partner,other",
+      },
     ]);
   });
 
@@ -333,10 +449,15 @@ test.describe("contact form", () => {
       await expect(type).toHaveAttribute("type", "checkbox");
     }
 
-    // Tab walks from the e-mail through every chip; Space ticks the one in
-    // focus and leaves the others as they are.
+    // Tab walks from the e-mail through the company to every chip; Space
+    // ticks the one in focus and leaves the others as they are.
     await page.locator('[data-contact-form] input[name="email"]').focus();
     await page.keyboard.type("klawiatura@example.com");
+    await page.keyboard.press("Tab");
+    await expect(
+      page.locator('[data-contact-form] input[name="company"]')
+    ).toBeFocused();
+    await page.keyboard.type("Klawiatura S.A.");
     await page.keyboard.press("Tab");
     await expect(types.nth(0)).toBeFocused();
     await page.keyboard.press("Space");
@@ -362,10 +483,12 @@ test.describe("contact form", () => {
     const sent = page.waitForRequest(LEAD_API);
     await page.keyboard.press("Tab");
     await page.keyboard.press("Enter");
-    expect((await sent).postDataJSON().types).toEqual(["audit", "partner"]);
+    const body = (await sent).postDataJSON();
+    expect(body.types).toEqual(["audit", "partner"]);
+    expect(body.company).toBe("Klawiatura S.A.");
   });
 
-  test("the project chips are as high as the e-mail field and level with it", async ({
+  test("the project chips are as high as the e-mail field and sit in one row", async ({
     page,
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
@@ -385,7 +508,7 @@ test.describe("contact form", () => {
     expect(chips).toHaveLength(4);
     for (const chip of chips) {
       expect(chip.height).toBe(field.height);
-      expect(chip.y).toBe(field.y);
+      expect(chip.y).toBe((chips[0] as DOMRect).y);
     }
   });
 
@@ -446,6 +569,7 @@ test.describe("contact form", () => {
       '[data-contact-form] input[name="email"]',
       "kacper@example.com"
     );
+    await page.fill('[data-contact-form] input[name="company"]', "Firma");
     await pickType(page, "implementation");
     await page.fill(
       '[data-contact-form] textarea[name="message"]',
@@ -467,6 +591,9 @@ test.describe("contact form", () => {
     await expect(page.locator("[data-form-success]")).toBeHidden();
     await expect(
       page.locator('[data-contact-form] input[name="email"]')
+    ).toHaveValue("");
+    await expect(
+      page.locator('[data-contact-form] input[name="company"]')
     ).toHaveValue("");
     await expect(
       page.locator('[data-contact-form] textarea[name="message"]')
@@ -536,12 +663,14 @@ test.describe("contact form", () => {
     await page.waitForLoadState("networkidle");
 
     const email = page.locator('[data-contact-form] input[name="email"]');
+    const company = page.locator('[data-contact-form] input[name="company"]');
     const message = page.locator(
       '[data-contact-form] textarea[name="message"]'
     );
     const types = page.locator('[data-contact-form] input[name="type"]');
     const submit = page.locator("[data-contact-form] [data-submit]");
     await email.fill("kacper@example.com");
+    await company.fill("Firma");
     await pickType(page, "implementation");
     await message.fill("Wysyłam i czekam");
 
@@ -552,6 +681,7 @@ test.describe("contact form", () => {
         "submitting"
       );
       await expect(email).toBeDisabled();
+      await expect(company).toBeDisabled();
       await expect(message).toBeDisabled();
       await expect(submit).toBeDisabled();
       expect(await types.count()).toBe(4);
@@ -579,6 +709,7 @@ test.describe("contact form", () => {
       "error-submit"
     );
     await expect(email).toBeEnabled();
+    await expect(company).toBeEnabled();
     await expect(message).toBeEnabled();
     await expect(submit).toBeEnabled();
     for (const type of await types.all()) {
@@ -586,6 +717,7 @@ test.describe("contact form", () => {
       await expect(type).toBeEnabled();
     }
     await expect(email).toHaveValue("kacper@example.com");
+    await expect(company).toHaveValue("Firma");
     await expect(message).toHaveValue("Wysyłam i czekam");
     await expect(
       page.locator('[data-contact-form] input[value="implementation"]')
