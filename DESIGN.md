@@ -104,7 +104,7 @@ There is one design, served at `/`, and it is dark only. Its components live in 
 | `blue`           | `--blue`              | `#8eaed8`                |
 | `blue-2`         | `--blue-2`            | `#b4c8e6`                |
 | `error`          | `--error`             | `#e07a70`                |
-| hairline         | `--v2-line`           | `rgba(236, 231, 220, 0.1)` |
+| hairline         | `--v2-line`           | `oklch(from var(--ink) l c h / 0.1)`: `ink` at 10%, so it follows `--ink`; over `base` it paints `rgb(32, 34, 36)` |
 
 `on-blue` has no property of its own: text on a `blue` or `error` block is `base` (`--v2-bg`), 8.5:1 and 6.7:1. The `--v2-` prefix is left over from an earlier redesign; it names no separate version.
 

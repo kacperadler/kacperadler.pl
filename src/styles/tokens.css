@@ -40,11 +40,11 @@
 
   /* Surfaces: --v2-bg is the substrate behind everything, --v2-panel and
    * --v2-panel-elevated are the raised and lit cell. --v2-line is the
-   * hairline tint. */
+   * hairline tint: the ink at 10%, mixed from --ink so it follows it. */
   --v2-bg: #0a0c10;
   --v2-panel: #14171c;
   --v2-panel-elevated: #1a1e26;
-  --v2-line: rgba(236, 231, 220, 0.1);
+  --v2-line: oklch(from var(--ink) l c h / 0.1);
 
   /* Spacing scale, mirrors the DESIGN.md spec. */
   --v2-space-md: 16px;
