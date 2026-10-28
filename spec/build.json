@@ -886,9 +886,9 @@
   {
     "id": "KA0110",
     "title": "Hover styles answer taps on touch screens",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0110-hover-styles-answer-taps-on-touch-screens/ticket.md",
-    "updated": "2026-10-28T19:23:03.515Z",
+    "updated": "2026-10-28T19:27:13.841Z",
     "after": [
       "KA0114"
     ]
