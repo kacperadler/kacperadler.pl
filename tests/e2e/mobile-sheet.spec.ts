@@ -1,32 +1,93 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 
 const HASH_CONTACT = /#contact$/;
+
+// Whether `control` takes focus when asked: a control of the page behind
+// the open sheet must not.
+const takesFocus = (control: Locator) =>
+  control.evaluate((el) => {
+    el.focus();
+    return document.activeElement === el;
+  });
+
+// The page behind the sheet: its first link, in the header.
+const pageLink = (page: Page) => page.locator(".mb-frame a[href]").first();
 
 // Mobile sheet only renders the hamburger below 880px - run these tests
 // at a phone-sized viewport to make the trigger interactive.
 test.use({ viewport: { height: 812, width: 375 } });
 
 test.describe("mobile sheet", () => {
-  test("hamburger opens sheet, X closes it", async ({ page }) => {
+  test("hamburger opens the sheet as a modal dialog, X closes it", async ({
+    page,
+  }) => {
     await page.goto("/");
 
     const sheet = page.locator("#mobile-sheet");
     const trigger = page.locator("[data-menu-open]");
 
-    await expect(sheet).toHaveAttribute("aria-hidden", "true");
+    await expect(sheet).toBeHidden();
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
 
     await trigger.click();
 
-    await expect(sheet).toHaveAttribute("data-mobile-sheet", "open");
-    await expect(sheet).toHaveAttribute("aria-hidden", "false");
+    await expect(sheet).toBeVisible();
+    expect(await sheet.evaluate((el) => el.matches(":modal"))).toBe(true);
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
 
     await page.click("[data-menu-close]");
 
-    await expect(sheet).toHaveAttribute("aria-hidden", "true");
+    await expect(sheet).toBeHidden();
+    await expect(sheet).toHaveJSProperty("open", false);
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
+  test("the sheet fades in, and fades out on top of the page", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    // Read in the task of the click: the transitions it starts, sorted.
+    const fadeOf = (selector: string) =>
+      page.evaluate((hook) => {
+        document.querySelector<HTMLElement>(hook)?.click();
+        return (
+          document
+            .querySelector("#mobile-sheet")
+            ?.getAnimations()
+            .map((a) =>
+              a instanceof CSSTransition ? a.transitionProperty : ""
+            )
+            .sort() ?? []
+        );
+      }, selector);
+
+    expect(await fadeOf("[data-menu-open]")).toContain("opacity");
+    await expect(page.locator("#mobile-sheet")).toBeVisible();
+    // Closing keeps it shown and in the top layer until the fade ends.
+    expect(await fadeOf("[data-menu-close]")).toEqual([
+      "display",
+      "opacity",
+      "overlay",
+    ]);
+  });
+
+  test("another dialog closing leaves focus where it is", async ({ page }) => {
+    await page.goto("/");
+
+    await page.evaluate(() => {
+      const other = document.createElement("dialog");
+      other.innerHTML = "<button>OK</button>";
+      document.body.append(other);
+      other.showModal();
+      other.close();
+      document.querySelector<HTMLElement>(".mb-frame a[href]")?.focus();
+    });
+
+    // Its close event comes a task later; give it the time to arrive.
+    await page.waitForTimeout(100);
+    await expect(pageLink(page)).toBeFocused();
   });
 
   test("open sheet takes focus, keeps Tab inside, and X returns it to the trigger", async ({
@@ -37,12 +98,13 @@ test.describe("mobile sheet", () => {
     const sheet = page.locator("#mobile-sheet");
     const trigger = page.locator("[data-menu-open]");
     const close = page.locator("[data-menu-close]");
-    const frame = page.locator(".mb-frame");
 
     await trigger.click();
 
     await expect(close).toBeFocused();
-    await expect(frame).toHaveJSProperty("inert", true);
+    // The page behind is inert: its links refuse focus.
+    expect(await takesFocus(pageLink(page))).toBe(false);
+    await expect(close).toBeFocused();
 
     // One full lap forward: each press moves to the next control of the
     // sheet in DOM order, and the press after the last one wraps back to
@@ -61,7 +123,7 @@ test.describe("mobile sheet", () => {
     await close.click();
 
     await expect(trigger).toBeFocused();
-    await expect(frame).toHaveJSProperty("inert", false);
+    expect(await takesFocus(pageLink(page))).toBe(true);
   });
 
   test.describe("under reduced motion", () => {
@@ -86,12 +148,15 @@ test.describe("mobile sheet", () => {
     const sheet = page.locator("#mobile-sheet");
     const trigger = page.locator("[data-menu-open]");
 
-    await trigger.click();
-    await expect(sheet).toHaveAttribute("data-mobile-sheet", "open");
+    // A click that leaves focus where it was, as in Safari, which does not
+    // focus a clicked button: the dialog would hand focus back to the page.
+    await trigger.dispatchEvent("click");
+    await expect(sheet).toBeVisible();
 
     await page.keyboard.press("Escape");
 
-    await expect(sheet).toHaveAttribute("aria-hidden", "true");
+    await expect(sheet).toBeHidden();
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
     await expect(trigger).toBeFocused();
   });
 
@@ -102,13 +167,69 @@ test.describe("mobile sheet", () => {
     const trigger = page.locator("[data-menu-open]");
 
     await trigger.click();
-    await expect(sheet).toHaveAttribute("data-mobile-sheet", "open");
+    await expect(sheet).toBeVisible();
 
     await page.click('[data-sheet-link][href="/#services"]');
 
-    await expect(sheet).toHaveAttribute("aria-hidden", "true");
+    await expect(sheet).toBeHidden();
     await expect(trigger).toBeFocused();
-    await expect(page.locator(".mb-frame")).toHaveJSProperty("inert", false);
+    expect(await takesFocus(pageLink(page))).toBe(true);
+  });
+
+  test("the page behind does not scroll while the sheet is open", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await page.locator("[data-menu-open]").click();
+    await expect(page.locator("#mobile-sheet")).toBeVisible();
+
+    await page.mouse.move(187, 600);
+    await page.mouse.wheel(0, 600);
+    // Give a wheel that did get through the time to scroll the page.
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+
+    await page.click("[data-menu-close]");
+    await page.mouse.wheel(0, 600);
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeGreaterThan(0);
+  });
+
+  test("a ClientRouter swap with the sheet open leaves a closed sheet and a free page", async ({
+    page,
+  }) => {
+    await page.goto("/regulamin/");
+    // A full reload would drop this; a ClientRouter swap keeps it.
+    await page.evaluate(() => Object.assign(window, { notReloaded: true }));
+    // The brand link takes the ClientRouter to the home page.
+    await page.locator('.mb-frame a[href="/#top"]').first().click();
+    await expect(page).toHaveURL("/#top");
+
+    const trigger = page.locator("[data-menu-open]");
+    await trigger.click();
+    await expect(page.locator("#mobile-sheet")).toBeVisible();
+
+    // Back swaps the body under the open sheet.
+    await page.goBack();
+    await expect(page).toHaveURL("/regulamin/");
+    expect(await page.evaluate(() => "notReloaded" in window)).toBe(true);
+
+    const sheet = page.locator("#mobile-sheet");
+    await expect(sheet).toBeHidden();
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(await takesFocus(pageLink(page))).toBe(true);
+    const before = await page.evaluate(() => window.scrollY);
+    await page.mouse.move(187, 600);
+    await page.mouse.wheel(0, 300);
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeGreaterThan(before);
+
+    await trigger.click();
+    await expect(sheet).toBeVisible();
+    await expect(page.locator("[data-menu-close]")).toBeFocused();
   });
 
   test.describe("on a phone held sideways", () => {
@@ -122,7 +243,7 @@ test.describe("mobile sheet", () => {
       const sheet = page.locator("#mobile-sheet");
       const cta = sheet.locator(".mb-sheet-cta a");
       await page.locator("[data-menu-open]").click();
-      await expect(sheet).toHaveAttribute("data-mobile-sheet", "open");
+      await expect(sheet).toBeVisible();
       await expect(cta).not.toBeInViewport();
 
       await page.mouse.move(422, 195);
@@ -136,7 +257,7 @@ test.describe("mobile sheet", () => {
       expect(await page.evaluate(() => window.scrollY)).toBe(0);
 
       await cta.click();
-      await expect(sheet).toHaveAttribute("aria-hidden", "true");
+      await expect(sheet).toBeHidden();
       await expect(page).toHaveURL(HASH_CONTACT);
     });
   });
@@ -150,7 +271,6 @@ test.describe("mobile sheet", () => {
 
     const dialog = page.getByRole("dialog", { name: "Menu mobilne" });
     await expect(dialog).toBeVisible();
-    await expect(dialog).toHaveAttribute("aria-modal", "true");
     // Let the open transition finish so axe measures contrast on the final
     // paint: wait until the sheet has no running animation, not for a value.
     await dialog.evaluate((sheet) =>
