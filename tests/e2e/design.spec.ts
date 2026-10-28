@@ -108,10 +108,26 @@ const sizesAt = async (page: Page, width: number) => {
   });
 };
 
-const setDefaultFontSize = async (page: Page, standard: number) => {
+// Sets the browser's default font size and opens the page under it; waits
+// until the root reads it, so no size is measured under another setting.
+const openWithDefaultFont = async (
+  page: Page,
+  path: string,
+  standard: number
+) => {
   const cdp = await page.context().newCDPSession(page);
   await cdp.send("Page.enable");
   await cdp.send("Page.setFontSizes", { fontSizes: { fixed: 13, standard } });
+  await page.goto(path);
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () => getComputedStyle(document.documentElement).fontSize
+        ),
+      `the root on ${path} under a ${standard}px default font`
+    )
+    .toBe(`${standard}px`);
 };
 
 test.describe("fluid sizes", () => {
@@ -158,8 +174,7 @@ test.describe("fluid sizes", () => {
   test("the headlines and the rhythm follow the reader's default font size", async ({
     page,
   }) => {
-    await setDefaultFontSize(page, 20);
-    await page.goto("/");
+    await openWithDefaultFont(page, "/", 20);
     const wide = await sizesAt(page, 1920);
     expect(wide.hero).toBeCloseTo(80, 2);
     expect(wide.title).toBeCloseTo(67.5, 2);
@@ -168,8 +183,7 @@ test.describe("fluid sizes", () => {
     // At 1000px every size is on its slope at both settings, so only the
     // slope's rem share can make the larger font larger there.
     const larger = await sizesAt(page, 1000);
-    await setDefaultFontSize(page, 16);
-    await page.reload();
+    await openWithDefaultFont(page, "/", 16);
     const usual = await sizesAt(page, 1000);
     for (const key of Object.keys(larger) as (keyof typeof larger)[]) {
       expect(larger[key], `${key} at 1000px`).toBeGreaterThan(usual[key]);
@@ -191,11 +205,9 @@ test.describe("fluid sizes", () => {
     expect(cases.length).toBeGreaterThan(0);
 
     for (const standard of [20, 24, 32]) {
-      // biome-ignore lint/performance/noAwaitInLoops: one setting at a time
-      await setDefaultFontSize(page, standard);
       for (const path of [...PAGES, ...cases]) {
         // biome-ignore lint/performance/noAwaitInLoops: one page at a time
-        await page.goto(path, { waitUntil: "domcontentloaded" });
+        await openWithDefaultFont(page, path, standard);
         await page.evaluate(() => document.fonts.ready);
         for (const width of [320, 360, 390, 430, 480, 600]) {
           // biome-ignore lint/performance/noAwaitInLoops: one width at a time
