@@ -97,7 +97,6 @@ const hasHeader = has("title") || has("description") || has("action");
     flex-direction: column;
     gap: var(--v2-space-md);
     padding: var(--mb-card-pad);
-    container-type: inline-size;
     color: var(--ink);
     counter-increment: bl-cell;
     background: var(--v2-bg);
@@ -149,38 +148,47 @@ const hasHeader = has("title") || has("description") || has("action");
       color var(--mb-snap);
   }
 
-  /* Grips: four squares on the corners, one clipped box, shown selected. */
+  /* Grips: four squares on the corners, shown selected. One box on the
+   * padding edge, painted past it by its outline and inside by its inset
+   * shadow (ink overflow only: a box placed past the edge would widen the
+   * cell's scrollable overflow), cut to the four corners. */
   .mb-card::after {
+    --bl-out: calc((var(--mb-grip) + 1px) / 2);
+    --bl-in: calc((var(--mb-grip) - 1px) / 2);
+    --bl-o: calc(-1 * var(--bl-out));
+    --bl-xo: calc(100% + var(--bl-out));
+    --bl-xi: calc(100% - var(--bl-in));
     position: absolute;
-    inset: -4px;
+    inset: 0;
     z-index: 1;
     visibility: hidden;
     pointer-events: none;
+    outline: var(--bl-out) solid var(--blue);
     content: "";
-    background: var(--blue);
+    box-shadow: inset 0 0 0 var(--bl-in) var(--blue);
     clip-path: polygon(
-      0 0,
-      var(--mb-grip) 0,
-      var(--mb-grip) var(--mb-grip),
-      0 var(--mb-grip),
-      0 0,
-      calc(100% - var(--mb-grip)) 0,
-      100% 0,
-      100% var(--mb-grip),
-      calc(100% - var(--mb-grip)) var(--mb-grip),
-      calc(100% - var(--mb-grip)) 0,
-      0 0,
-      0 calc(100% - var(--mb-grip)),
-      var(--mb-grip) calc(100% - var(--mb-grip)),
-      var(--mb-grip) 100%,
-      0 100%,
-      0 calc(100% - var(--mb-grip)),
-      calc(100% - var(--mb-grip)) calc(100% - var(--mb-grip)),
-      100% calc(100% - var(--mb-grip)),
-      100% 100%,
-      calc(100% - var(--mb-grip)) 100%,
-      calc(100% - var(--mb-grip)) calc(100% - var(--mb-grip)),
-      0 calc(100% - var(--mb-grip))
+      var(--bl-o) var(--bl-o),
+      var(--bl-in) var(--bl-o),
+      var(--bl-in) var(--bl-in),
+      var(--bl-o) var(--bl-in),
+      var(--bl-o) var(--bl-o),
+      var(--bl-xi) var(--bl-o),
+      var(--bl-xo) var(--bl-o),
+      var(--bl-xo) var(--bl-in),
+      var(--bl-xi) var(--bl-in),
+      var(--bl-xi) var(--bl-o),
+      var(--bl-o) var(--bl-o),
+      var(--bl-o) var(--bl-xi),
+      var(--bl-in) var(--bl-xi),
+      var(--bl-in) var(--bl-xo),
+      var(--bl-o) var(--bl-xo),
+      var(--bl-o) var(--bl-xi),
+      var(--bl-xi) var(--bl-xi),
+      var(--bl-xo) var(--bl-xi),
+      var(--bl-xo) var(--bl-xo),
+      var(--bl-xi) var(--bl-xo),
+      var(--bl-xi) var(--bl-xi),
+      var(--bl-o) var(--bl-xi)
     );
   }
 
@@ -193,17 +201,17 @@ const hasHeader = has("title") || has("description") || has("action");
     background: var(--blue);
   }
 
-  /* Under the cursor the item number reads the cell's outer width: its
-   * container width plus the padding and the rule, as a number of px. A
-   * browser without typed trigonometry keeps the number alone. */
-  @supports (width: calc(1px * tan(atan2(1px, 1px)))) {
-    .mb-card:is(:hover, [data-state="hover"])::before {
-      --bl-w: tan(atan2(100cqw + 2 * var(--mb-card-pad) + 2px, 1px));
-      content:
-        counter(mb-section, decimal-leading-zero) "." counter(bl-cell) " ↔ "
-        counter(bl-w) / "";
-      counter-reset: bl-w var(--bl-w);
-    }
+  /* Under the cursor the item number reads the cell's outer width, a
+   * number of px scripts/blueprint-live.ts keeps in --bl-w on the cell (a
+   * query container would do it in CSS alone, but its layout containment
+   * breaks the subgrids the home sections make of their cells); without
+   * the script the number stands alone. */
+  :global(html[data-bl-live])
+  .mb-card:is(:hover, [data-state="hover"])::before {
+    content:
+      counter(mb-section, decimal-leading-zero) "." counter(bl-cell) " ↔ "
+      counter(bl-w) / "";
+    counter-reset: bl-w var(--bl-w);
   }
 
   .mb-card:is(:hover, [data-state="hover"])::after {

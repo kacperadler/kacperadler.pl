@@ -7,6 +7,12 @@
  * display: contents, no box to watch). The observer reports in steps of
  * 1% of the part's area, so "whole" allows 3% short of it.
  *
+ * It also keeps every cell's outer width, in px, in --bl-w on the cell
+ * (card.astro prints it in the item number of a selected cell), from a
+ * ResizeObserver: a CSS query container would read it alone, but its
+ * layout containment breaks the subgrids the home sections make of their
+ * cells.
+ *
  * data-bl-live goes on before the first paint: base-head.astro sets it
  * inline, and after a ClientRouter swap (which takes the new document's
  * bare <html>) astro:after-swap sets it again before the new page paints.
@@ -16,15 +22,17 @@
 const PARTS =
   ".mb-section-head, .mb-card, .mb-step-marker, .mb-footer, .mb-footer-bottom, .mb-hero-status";
 
-let observer: IntersectionObserver | null = null;
+let seen: IntersectionObserver | null = null;
+let sized: ResizeObserver | null = null;
 
 function live(): void {
   document.documentElement.dataset.blLive = "";
 }
 
 function init(): void {
-  observer?.disconnect();
-  observer = new IntersectionObserver(
+  seen?.disconnect();
+  sized?.disconnect();
+  seen = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
         const box = entry.boundingClientRect;
@@ -33,24 +41,37 @@ function init(): void {
           continue;
         }
         const whole = Math.min(box.height, screen.height);
-        const seen =
+        const isSeen =
           entry.intersectionRect.height >= whole * 0.97 ||
           box.bottom <= screen.top;
-        if (whole > 0 && seen) {
+        if (whole > 0 && isSeen) {
           const part = entry.target.classList.contains("mb-step-marker")
             ? entry.target.parentElement
             : entry.target;
           if (part instanceof HTMLElement) {
             part.dataset.blDrawn = "";
           }
-          observer?.unobserve(entry.target);
+          seen?.unobserve(entry.target);
         }
       }
     },
     { threshold: Array.from({ length: 101 }, (_, i) => i / 100) }
   );
   for (const part of document.querySelectorAll(PARTS)) {
-    observer.observe(part);
+    seen.observe(part);
+  }
+
+  sized = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const width = entry.borderBoxSize[0]?.inlineSize ?? 0;
+      (entry.target as HTMLElement).style.setProperty(
+        "--bl-w",
+        String(Math.round(width))
+      );
+    }
+  });
+  for (const cell of document.querySelectorAll(".mb-card")) {
+    sized.observe(cell);
   }
 }
 

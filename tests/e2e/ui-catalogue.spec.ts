@@ -432,6 +432,7 @@ test.describe("component catalogue (astro dev)", () => {
         return {
           background: style.backgroundColor,
           content: style.content,
+          reads: Number(style.getPropertyValue("--bl-w")),
           width: Math.round(el.getBoundingClientRect().width),
         };
       });
@@ -442,7 +443,8 @@ test.describe("component catalogue (astro dev)", () => {
     const forcedBadge = await paint(forced.locator(".mb-badge"), badge);
     expect(forcedCard).not.toEqual(await paint(idle, card));
     const forcedTag = await tag(forced);
-    expect(forcedTag.content).toContain(`↔ ${forcedTag.width}`);
+    expect(forcedTag.content).toContain("↔");
+    expect(forcedTag.reads).toBe(forcedTag.width);
     expect((await tag(idle)).content).not.toContain("↔");
     expect(forcedTag.background).not.toBe((await tag(idle)).background);
     expect(await grips(forced)).toBe("visible");
@@ -454,7 +456,8 @@ test.describe("component catalogue (astro dev)", () => {
     await idle.hover();
     expect(await paint(idle, card)).toEqual(forcedCard);
     const hoveredTag = await tag(idle);
-    expect(hoveredTag.content).toContain(`↔ ${hoveredTag.width}`);
+    expect(hoveredTag.content).toContain("↔");
+    expect(hoveredTag.reads).toBe(hoveredTag.width);
     expect(hoveredTag.background).toBe(forcedTag.background);
     expect(await grips(idle)).toBe("visible");
     expect(await paint(idle.locator(".mb-badge"), badge)).toEqual(forcedBadge);

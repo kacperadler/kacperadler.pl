@@ -132,10 +132,13 @@ button {
   initial-value: 1;
 }
 
-/* A width in px as a number, for a dimension written in counter(). */
+/* A width in px as a number, for a dimension written in counter(): a
+ * section head's own (section-head.astro, from its container size), a
+ * cell's (scripts/blueprint-live.ts sets it on the cell, its item number
+ * inherits it). */
 @property --bl-w {
   syntax: "<integer>";
-  inherits: false;
+  inherits: true;
   initial-value: 0;
 }
 
