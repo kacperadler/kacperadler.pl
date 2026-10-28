@@ -165,14 +165,14 @@ test.describe("fluid sizes", () => {
     expect(wide.title).toBeCloseTo(67.5, 2);
     expect(wide.section).toBeCloseTo(170, 2);
     expect(wide.block).toBeCloseTo(60, 2);
-    const tablet = await sizesAt(page, 768);
+    // At 1000px every size is on its slope at both settings, so only the
+    // slope's rem share can make the larger font larger there.
+    const larger = await sizesAt(page, 1000);
     await setDefaultFontSize(page, 16);
     await page.reload();
-    const tabletDefault = await sizesAt(page, 768);
-    for (const key of Object.keys(tablet) as (keyof typeof tablet)[]) {
-      expect(tablet[key], `${key} at 768px`).toBeGreaterThan(
-        tabletDefault[key]
-      );
+    const usual = await sizesAt(page, 1000);
+    for (const key of Object.keys(larger) as (keyof typeof larger)[]) {
+      expect(larger[key], `${key} at 1000px`).toBeGreaterThan(usual[key]);
     }
   });
 
