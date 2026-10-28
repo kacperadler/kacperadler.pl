@@ -1064,16 +1064,16 @@
   {
     "id": "KA0129",
     "title": "Two tests flaked under full-suite load",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0129-two-tests-flaked-under-full-suite-load/ticket.md",
-    "updated": "2026-10-28T21:36:29.448Z"
+    "updated": "2026-10-28T21:46:00.480Z"
   },
   {
     "id": "KA0130",
     "title": "After sending, the \"Wiadomość wysłana.\" heading can land above the viewport",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0130-after-sending-the-wiadomosc-wys-ana-heading-can-land-above-the-viewport/ticket.md",
-    "updated": "2026-10-28T20:40:45.075Z",
+    "updated": "2026-10-28T21:40:43.474Z",
     "after": [
       "KA0113"
     ]
