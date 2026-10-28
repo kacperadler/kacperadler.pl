@@ -926,9 +926,9 @@
   {
     "id": "KA0114",
     "title": "One-letter Polish words end lines",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0114-one-letter-polish-words-end-lines/ticket.md",
-    "updated": "2026-10-28T16:52:21.837Z",
+    "updated": "2026-10-28T18:45:10.017Z",
     "after": [
       "KA0108"
     ]
