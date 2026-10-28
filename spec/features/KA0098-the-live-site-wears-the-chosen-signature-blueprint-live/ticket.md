@@ -50,3 +50,4 @@ Out:
 - 2026-10-14: The human: this design update runs on Opus (anthropic/claude-opus-5-5); it matters.
 - 2026-10-14: The human: the worker runs on Fable 5.1; it may adjust layout, components and propose or make copy changes, with the full direction (style, aim, positioning) in hand.
 - 2026-10-28: The human lifted the worker's budget limit (resume with no limit) after two runs spent $10 with no commits.
+- 2026-10-28: The human finds too many lines drawing while scrolling and asked to see option 2: only the hero draws, on page load; every other part of every page stands drawn from the start (no drawing on scroll). Built as one revertable commit to judge on the preview.
