@@ -1,10 +1,13 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 
-/* Textarea: <Input>'s frame and states (hover, focus, invalid, disabled)
- * with a 130px floor, vertical resize only. `value` becomes the initial
- * text. [data-state="hover"] and [data-state="focus"] force those looks on
- * the catalogue page (/ui). */
+/* Textarea: <Input>'s frame and states (hover, focus, invalid, disabled).
+ * It grows with its text (field-sizing: content) from 5lh to 14lh, padding
+ * and border included, then scrolls; no resize handle, a dragged height
+ * would stop the growth.
+ * A browser without field-sizing keeps a 130px floor and vertical resize.
+ * `value` becomes the initial text. [data-state="hover"] and
+ * [data-state="focus"] force those looks on the catalogue page (/ui). */
 type Props = HTMLAttributes<"textarea">;
 
 const { class: extraClass, value, ...rest } = Astro.props;
@@ -31,6 +34,15 @@ const { class: extraClass, value, ...rest } = Astro.props;
     transition:
       border-color var(--mb-snap),
       box-shadow var(--mb-snap);
+  }
+
+  @supports (field-sizing: content) {
+    .mb-textarea {
+      field-sizing: content;
+      min-height: 5lh;
+      max-height: 14lh;
+      resize: none;
+    }
   }
 
   .mb-textarea::placeholder {
