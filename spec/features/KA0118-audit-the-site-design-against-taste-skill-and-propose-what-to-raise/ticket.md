@@ -35,3 +35,4 @@ Out:
 ## Decisions
 
 - 2026-10-28: The human asked to use tasteskill.dev to see how to raise the site further; a report-only audit like KA0104, budget about $10.
+- 2026-10-28: The human took the coordinator's recommendation: adopt F1, F3, F5, F9, F10, F11; F2 once he sends publishable screenshots; drop F4, F6, F7, F8.

@@ -40,3 +40,4 @@ Out:
 - 2026-10-14: From the redesign brief (KA0075 `brief.md` 4.11); the human: the field may be there but is not required.
 - 2026-10-28: The human approved it.
 - 2026-10-28: The human asked for "(opcjonalnie)" in a smaller and slightly less visible type.
+- 2026-10-28: The human approved the merge.

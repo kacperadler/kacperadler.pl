@@ -36,3 +36,4 @@ In:
 
 - 2026-10-28: Source: F1 of KA0104
 - 2026-10-28: The human approved KA0104's top three proposals (F1-F3) as one fix; this ticket carries F2 (KA0106) and F3 (KA0107) too: read their tickets for evidence and Done means. Before/after screenshots of all three.
+- 2026-10-28: The human approved the merge.

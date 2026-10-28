@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+const HASH_CONTACT = /#contact$/;
+
 // Mobile sheet only renders the hamburger below 880px - run these tests
 // at a phone-sized viewport to make the trigger interactive.
 test.use({ viewport: { height: 812, width: 375 } });
@@ -107,6 +109,36 @@ test.describe("mobile sheet", () => {
     await expect(sheet).toHaveAttribute("aria-hidden", "true");
     await expect(trigger).toBeFocused();
     await expect(page.locator(".mb-frame")).toHaveJSProperty("inert", false);
+  });
+
+  test.describe("on a phone held sideways", () => {
+    test.use({ viewport: { height: 390, width: 844 } });
+
+    test("the sheet scrolls its own overflow to FAQ and the CTA", async ({
+      page,
+    }) => {
+      await page.goto("/");
+
+      const sheet = page.locator("#mobile-sheet");
+      const cta = sheet.locator(".mb-sheet-cta a");
+      await page.locator("[data-menu-open]").click();
+      await expect(sheet).toHaveAttribute("data-mobile-sheet", "open");
+      await expect(cta).not.toBeInViewport();
+
+      await page.mouse.move(422, 195);
+      await page.mouse.wheel(0, 600);
+
+      await expect(
+        sheet.locator('[data-sheet-link][href="/#faq"]')
+      ).toBeInViewport();
+      await expect(cta).toBeInViewport();
+      // The page behind stays where it was: the wheel never reached it.
+      expect(await page.evaluate(() => window.scrollY)).toBe(0);
+
+      await cta.click();
+      await expect(sheet).toHaveAttribute("aria-hidden", "true");
+      await expect(page).toHaveURL(HASH_CONTACT);
+    });
   });
 
   test("open sheet is a dialog named 'Menu mobilne' with no axe violations", async ({

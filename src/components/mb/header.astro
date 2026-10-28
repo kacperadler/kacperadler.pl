@@ -53,10 +53,13 @@ import Link from "./link.astro";
 </div>
 
 <style>
+  /* --mb-header (tokens.css) is the header's height at each width; the page's
+   * scroll padding reads the same token, so the two stay one number. */
   .mb-header {
     position: sticky;
     top: 0;
     z-index: 40;
+    min-height: var(--mb-header);
     background: var(--v2-bg);
     border-bottom: 1px solid var(--mb-rule);
   }
@@ -108,9 +111,10 @@ import Link from "./link.astro";
   }
 
   /* Narrow phones: the CTA drops its arrow so brand, CTA and menu fit one
-   * row; where they still do not (a wider fallback font before Geist loads,
-   * a 320px screen) the tail wraps under the brand instead of pushing the
-   * page sideways. */
+   * row; where they still do not (a wider fallback font before Geist loads)
+   * the tail wraps under the brand instead of pushing the page sideways.
+   * Below 360px (a 320px screen) it always takes the second row, so the
+   * header's height there is the one --mb-header gives. */
   @media (max-width: 400px) {
     .mb-nav-tail {
       gap: 8px;
@@ -123,6 +127,12 @@ import Link from "./link.astro";
 
     .mb-nav-tail :global(.mb-btn-icon-end) {
       display: none;
+    }
+  }
+
+  @media (max-width: 359px) {
+    .mb-nav-tail {
+      flex-basis: 100%;
     }
   }
 </style>
