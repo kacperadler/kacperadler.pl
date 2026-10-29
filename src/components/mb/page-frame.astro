@@ -10,8 +10,8 @@ import MobileSheet from "./mobile-sheet.astro";
  * every 16px, longer at 32 and 64, standing still while the page
  * scrolls), the skip link to #top
  * (global.css's .skip-link), the header, the page in the slot, the footer,
- * the EU funding band, and the mobile sheet as a sibling of the frame, so
- * scripts/mobile-sheet.ts can make the frame inert while the sheet is open.
+ * the EU funding band, and after the frame the mobile sheet, a modal
+ * <dialog> that leaves the frame inert while it is open.
  * The frame resets the `mb-section` counter <SectionHead> numbers from.
  * The page loads scripts/mobile-sheet.ts and scripts/blueprint-live.ts
  * itself. */

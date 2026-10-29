@@ -4,35 +4,30 @@ import { contactCta, primaryNav } from "@/data/navigation";
 import Badge from "./badge.astro";
 import Button from "./button.astro";
 
-/* Mobile sheet: the full-screen menu on the solid substrate, no glass. The
- * hooks are scripts/mobile-sheet.ts's: id="mobile-sheet", [data-menu-close],
- * [data-sheet-link], data-mobile-sheet="open" while open. Closed it is
- * visibility: hidden, so nothing inside takes focus. It switches in and
- * out with an opacity snap (--mb-snap), no slide.
+/* Mobile sheet: the full-screen menu on the solid substrate, no glass. A
+ * native <dialog> that scripts/mobile-sheet.ts opens with showModal(): the
+ * browser makes the page behind inert, closes it on Escape and puts it in
+ * the top layer. Its hooks: id="mobile-sheet", [data-menu-close],
+ * [data-sheet-link]. Closed it is display: none, so nothing inside takes
+ * focus. It switches in and out with an opacity snap (--mb-snap), no slide.
  *
  * `preview` renders a static, always-visible copy for the catalogue
- * (/ui): no id, no dialog role, no hooks, so the script never touches
- * it. */
+ * (/ui): a <div>, no id, no dialog role, no hooks, so the script never
+ * touches it. */
 interface Props {
   preview?: boolean;
 }
 
 const { preview = false } = Astro.props;
+const Sheet = preview ? "div" : "dialog";
 const dialog = preview
   ? { "aria-label": "Menu mobilne (podgląd)", role: "group" as const }
-  : {
-      "aria-hidden": "true" as const,
-      "aria-label": "Menu mobilne",
-      "aria-modal": "true" as const,
-      "data-mobile-sheet": true,
-      id: "mobile-sheet",
-      role: "dialog" as const,
-    };
+  : { "aria-label": "Menu mobilne", id: "mobile-sheet" };
 const linkHook = preview ? {} : { "data-sheet-link": true };
 const closeHook = preview ? {} : { "data-menu-close": true };
 ---
 
-<div class:list={["mb-sheet", { "mb-sheet-preview": preview }]} {...dialog}>
+<Sheet class:list={["mb-sheet", { "mb-sheet-preview": preview }]} {...dialog}>
   <span class="mb-sheet-close">
     <Button
       aria-label="Zamknij menu"
@@ -73,48 +68,70 @@ const closeHook = preview ? {} : { "data-menu-close": true };
       </Button>
     </span>
   </div>
-</div>
+</Sheet>
 
 <style>
-  /* The page behind is locked (mobile-sheet.ts), so the sheet scrolls its
-   * own overflow (a phone held sideways) and never hands it to the page.
-   * The close button scrolls away with it; Esc and the links still close. */
+  /* The page behind is locked while the sheet is modal, so the sheet
+   * scrolls its own overflow (a phone held sideways) and never hands it to
+   * the page. The close button scrolls away with it; Esc and the links
+   * still close. The open dialog fills the viewport, over the dialog's own
+   * box (centred, framed, capped short of the edges); the browser's
+   * `dialog:modal` rules end at close(), so the fixed box and its scroller
+   * are set here to hold through the fade out. A closed one keeps the
+   * browser's display: none. */
   .mb-sheet {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    display: flex;
-    visibility: hidden;
     flex-direction: column;
     padding: 80px var(--v2-space-md) 32px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    pointer-events: none;
+    color: inherit;
     background: var(--v2-bg);
-    opacity: 0;
-    /* Closing: visibility waits out the fade. */
-    transition:
-      opacity var(--mb-snap),
-      visibility 0s linear 0.12s;
   }
 
-  .mb-sheet[data-mobile-sheet="open"] {
-    visibility: visible;
-    pointer-events: auto;
+  .mb-sheet[open],
+  .mb-sheet-preview {
+    display: flex;
+  }
+
+  dialog.mb-sheet {
+    position: fixed;
+    inset: 0;
+    width: auto;
+    max-width: none;
+    height: auto;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 0;
+    opacity: 0;
+    /* Closing: display and the top layer wait out the fade. */
+    transition:
+      opacity var(--mb-snap),
+      overlay var(--mb-snap) allow-discrete,
+      display var(--mb-snap) allow-discrete;
+  }
+
+  dialog.mb-sheet[open] {
     opacity: 1;
-    /* Opening: visibility is not transitioned, the sheet shows at once. */
-    transition: opacity var(--mb-snap);
+  }
+
+  @starting-style {
+    dialog.mb-sheet[open] {
+      opacity: 0;
+    }
+  }
+
+  /* The fading sheet shows the page through it, not a dimmed one. */
+  .mb-sheet::backdrop {
+    background: none;
+  }
+
+  :global(html:has(.mb-sheet:modal)) {
+    overflow: hidden;
   }
 
   .mb-sheet-preview {
     position: relative;
-    inset: auto;
-    z-index: auto;
-    visibility: visible;
     min-height: 560px;
-    pointer-events: auto;
     border: 1px solid var(--mb-rule);
-    opacity: 1;
   }
 
   .mb-sheet-close {

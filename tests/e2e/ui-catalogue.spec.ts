@@ -803,11 +803,7 @@ test.describe("component catalogue (astro dev)", () => {
     await expect(sheet).toBeVisible();
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
     await expect(page.locator("[data-menu-close]")).toBeFocused();
-    expect(
-      await page
-        .locator(".mb-frame")
-        .evaluate((el) => (el as HTMLElement).inert)
-    ).toBe(true);
+    expect(await sheet.evaluate((el) => el.matches(":modal"))).toBe(true);
 
     await page.keyboard.press("Escape");
     await expect(sheet).toBeHidden();
