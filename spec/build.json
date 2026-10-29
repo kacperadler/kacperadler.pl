@@ -1128,8 +1128,15 @@
   {
     "id": "KA0136",
     "title": "www.kacperadler.pl serves the whole site instead of redirecting to the apex",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0136-www-kacperadler-pl-serves-the-whole-site-instead-of-redirecting-to-the-apex/ticket.md",
-    "updated": "2026-10-29T09:34:55.252Z"
+    "updated": "2026-10-29T09:36:25.710Z"
+  },
+  {
+    "id": "KA0137",
+    "title": "The site shows up in Google for local searches around Krotoszyn",
+    "status": "planning",
+    "path": "spec/features/KA0137-the-site-shows-up-in-google-for-local-searches-around-krotoszyn/ticket.md",
+    "updated": "2026-10-29T09:38:31.288Z"
   }
 ]
