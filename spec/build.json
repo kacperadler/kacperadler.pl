@@ -1024,9 +1024,9 @@
   {
     "id": "KA0125",
     "title": "\"CRM-y\" in \"Aplikacje szyte na miarę\" breaks at its hyphen",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0125-crm-y-in-aplikacje-szyte-na-miare-breaks-at-its-hyphen/ticket.md",
-    "updated": "2026-10-29T07:32:37.245Z",
+    "updated": "2026-10-29T07:37:47.461Z",
     "after": [
       "KA0111"
     ]
