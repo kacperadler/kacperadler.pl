@@ -578,7 +578,43 @@ test.describe("home page", () => {
     expect(m.y).toBeGreaterThan(t.y + t.height);
   });
 
-  test("the hero's text, buttons, card rows and figures sit on one grid", async ({
+  test("the hero headline leads the first screen: two lines across the sheet on a wide screen, about 46px on a phone", async ({
+    page,
+  }) => {
+    const measure = () =>
+      page.evaluate(() => {
+        const h1 = document.querySelector("#top h1") as Element;
+        const size = Number.parseFloat(getComputedStyle(h1).fontSize);
+        return {
+          lines: Math.round(h1.getBoundingClientRect().height / size),
+          sectionHeadline: Number.parseFloat(
+            getComputedStyle(document.querySelector("#problems h2") as Element)
+              .fontSize
+          ),
+          size,
+        };
+      });
+
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
+    const wide = await measure();
+    // 5.6vw, half as large again as a section's headline.
+    expect(wide.size).toBeCloseTo(80, 0);
+    expect(wide.size).toBeGreaterThan(wide.sectionHeadline * 1.4);
+
+    // Two lines from the narrowest two-column width to a wide monitor.
+    for (const width of [881, 1024, 1280, 1440, 1920]) {
+      // biome-ignore lint/performance/noAwaitInLoops: one width at a time
+      await page.setViewportSize({ height: 900, width });
+      expect((await measure()).lines, `at ${width}px`).toBe(2);
+    }
+
+    await page.setViewportSize({ height: 844, width: 390 });
+    expect((await measure()).size).toBeCloseTo(46, 0);
+  });
+
+  test("the hero's headline spans the sheet over its text, buttons, card rows and figures, which sit on one grid", async ({
     page,
   }) => {
     // Every box in one read, so nothing moves between two measurements.
@@ -595,14 +631,22 @@ test.describe("home page", () => {
           ),
           ctas: all(".mb-hero-ctas .mb-btn"),
           figures: all(".mb-status-figure"),
+          headline: r(hero.querySelector("h1") as Element),
           rows: all(".mb-status-row"),
           text: r(hero.querySelector(".mb-hero-text") as Element),
+          texts: all(".mb-status-text"),
         };
       });
 
     await page.setViewportSize({ height: 1000, width: 1440 });
     await page.goto("/");
     const wide = await measure();
+    // The headline runs across both columns, above them.
+    expect(Math.abs(wide.headline.x - wide.text.x)).toBeLessThan(TOLERANCE);
+    expect(Math.abs(wide.headline.right - wide.card.right)).toBeLessThan(
+      TOLERANCE
+    );
+    expect(wide.headline.bottom).toBeLessThan(wide.text.y);
     // The two columns start and end on the same lines, and the hero's
     // buttons rest on the card button's line.
     expect(Math.abs(wide.card.y - wide.text.y)).toBeLessThan(TOLERANCE);
@@ -613,6 +657,15 @@ test.describe("home page", () => {
       expect(Math.abs(cta.bottom - wide.cardButton.bottom)).toBeLessThan(
         TOLERANCE
       );
+    }
+    // Each figure beside what it counts, every text starting at one x.
+    for (const [i, figure] of wide.figures.entries()) {
+      const text = wide.texts[i] as DOMRect;
+      expect(text.x).toBeGreaterThan(figure.right);
+      expect(Math.abs(text.x - (wide.texts[0]?.x ?? 0))).toBeLessThan(
+        TOLERANCE
+      );
+      expect(figure.bottom).toBeGreaterThan(text.y);
     }
 
     await page.setViewportSize({ height: 844, width: 390 });
@@ -625,6 +678,10 @@ test.describe("home page", () => {
     expect(
       Math.abs(narrow.cardButton.width - (narrow.rows[0]?.width ?? 0))
     ).toBeLessThan(TOLERANCE);
+    // Each figure over what it counts.
+    for (const [i, figure] of narrow.figures.entries()) {
+      expect(narrow.texts[i]?.y ?? 0).toBeGreaterThanOrEqual(figure.bottom);
+    }
 
     await page.setViewportSize({ height: 800, width: 360 });
     const smallest = await measure();

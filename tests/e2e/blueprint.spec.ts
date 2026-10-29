@@ -574,24 +574,24 @@ test.describe("the first screen's entrance", () => {
     ).toEqual([]);
   });
 
-  test("the title block's header is level with the headline", async ({
+  test("the headline runs over the title block, and the subtitle is level with its caption", async ({
     page,
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
     await page.goto("/", { waitUntil: "load" });
     await entranceDone(page);
     const tops = await page.evaluate(() => {
-      const top = (selector: string) =>
-        Math.round(
-          (document.querySelector(selector) as Element).getBoundingClientRect()
-            .top
-        );
+      const box = (selector: string) =>
+        (document.querySelector(selector) as Element).getBoundingClientRect();
       return {
-        caption: top(".mb-status-caption"),
-        headline: top(".mb-hero h1"),
+        caption: Math.round(box(".mb-status-caption").top),
+        headlineBottom: Math.round(box(".mb-hero h1").bottom),
+        status: Math.round(box(".mb-hero-status").top),
+        sub: Math.round(box(".mb-hero-sub").top),
       };
     });
-    expect(Math.abs(tops.caption - tops.headline)).toBeLessThanOrEqual(2);
+    expect(tops.headlineBottom).toBeLessThan(tops.status);
+    expect(Math.abs(tops.caption - tops.sub)).toBeLessThanOrEqual(2);
     expect(
       await page
         .locator(".mb-hero-status")

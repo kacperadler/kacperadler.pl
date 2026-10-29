@@ -1,26 +1,28 @@
 ---
 import Button from "../button.astro";
 
-/* Hero (#top): the headline, subtitle and two buttons beside the results
- * card ("W liczbach": a caption in the text face, a description list of
- * three ruled rows - the figure (dt) in large type over what it counts
- * (dd) - and a button to the case highlights, #cases). The headline is the
- * page's only h1.
+/* Hero (#top): the headline across the sheet, and under it the subtitle
+ * and two buttons beside the results card ("W liczbach": a caption in the
+ * text face, a description list of three ruled rows - the figure (dt) in
+ * large type beside what it counts (dd), over it at 880px and below - and
+ * a button to the case highlights, #cases). The headline is the page's
+ * only h1 and the first screen's one big thing: two lines on a wide
+ * screen.
  *
- * The two columns share one grid: they are equally tall, the text column
- * is padded like the card, so the headline starts level with the card's
- * caption and the hero buttons sit on the same line as the card's button,
- * at the foot of both. The card's rows split the height left between its
- * head and its button evenly (equal rows at every width), and every
- * figure starts at the same x. At 880px and below the columns stack and
- * every button takes the full width.
+ * Under the headline the two columns share one grid row: they are equally
+ * tall, the text column is padded like the card, so the subtitle starts
+ * level with the card's caption and the hero buttons sit on the same line
+ * as the card's button, at the foot of both. The card's rows split the
+ * height left between its head and its button evenly (equal rows at every
+ * width), and every figure starts at the same x. At 880px and below the
+ * columns stack and every button takes the full width.
  *
  * The blueprint's marks (global.css): the drawing's datum - a blue cross
  * with "X 0  Y 0" - sits in the hero's top padding over the headline's
  * corner; the <em> is under a blue dimension brace with its callout; the
  * results card is the sheet's title block, with the sheet's header ("Rys.
  * KA-001 · Arkusz 1/1") as a strip across its top, which the text column
- * is padded for, so the headline stays level with the caption.
+ * is padded for, so the subtitle stays level with the caption.
  *
  * The entrance (global.css, html[data-bl-enter]): the first screen paints
  * at its first frame and holds until that frame is on the screen (the
@@ -61,11 +63,9 @@ const results = [
 
 <section class="mb-hero" id="top">
   <div class="container mb-hero-grid">
-    <div class="mb-hero-text">
-      <h1>
-        Wdrożenia AI i automatyzacje, które przejmują <em>nudną pracę</em>
-      </h1>
+    <h1>Wdrożenia AI i automatyzacje, które przejmują <em>nudną pracę</em></h1>
 
+    <div class="mb-hero-text">
       <p class="mb-hero-sub">
         Tworzę automatyzacje, integracje i aplikacje szyte na miarę. Znajduję
         procesy, które zabierają czas, i zamieniam je w działające systemy. Ty
@@ -112,12 +112,14 @@ const results = [
     padding: var(--v2-space-2xl) 0 var(--v2-space-xl);
   }
 
+  /* The headline takes the first row across both columns; the text and
+   * the card share the second. */
   .mb-hero-grid {
     --bl-datum: calc(-1 * var(--v2-space-lg));
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-    gap: var(--v2-space-xl);
+    gap: var(--v2-space-lg) var(--v2-space-xl);
     align-items: stretch;
   }
 
@@ -153,7 +155,7 @@ const results = [
   }
 
   /* Padded like the card - its rule, its header strip and the gap under
-   * it - so the headline and the card's caption share a top line, and
+   * it - so the subtitle and the card's caption share a top line, and
    * the buttons a bottom one. */
   .mb-hero-text {
     display: flex;
@@ -164,18 +166,22 @@ const results = [
   }
 
   h1 {
-    max-width: 22ch;
-    margin: 0 0 var(--v2-space-lg);
+    grid-column: 1 / -1;
+    margin: 0;
     font-family: var(--mb-display);
-    /* 40px on a 390px phone to 64px at the 1160px container; rem follows
-     * the reader's font size. 12vw caps it on a narrow screen with a large
-     * font, so "automatyzacje," (about 7em, unbreakable) still fits. */
-    font-size: min(clamp(2.5rem, 1.7403rem + 3.1169vw, 4rem), 12vw);
+    /* 46px on a 390px phone to 80px (5.6vw) at 1440px, and no larger:
+     * two lines across the 1128px of the container on a wide screen (they
+     * hold to about 83px); rem follows the reader's font size. 12vw caps
+     * it on a narrow screen with a large font, so "automatyzacje," (about
+     * 7em, unbreakable) still fits. A wider fallback face before Geist
+     * loads (about 8em) breaks the word instead of widening the page. */
+    font-size: min(clamp(2.875rem, 2.0857rem + 3.2381vw, 5rem), 12vw);
     font-weight: 800;
     line-height: 1;
     color: var(--ink);
     letter-spacing: -0.05em;
     text-wrap: balance;
+    overflow-wrap: break-word;
     counter-reset: bl-callout;
   }
 
@@ -221,7 +227,7 @@ const results = [
   .mb-hero-sub {
     max-width: 56ch;
     margin: 0 0 var(--v2-space-lg);
-    font-size: 18px;
+    font-size: 21px;
     line-height: 1.55;
     color: var(--ink);
   }
@@ -285,21 +291,25 @@ const results = [
   }
 
   /* Equal rows: each as tall as the tallest, and together they take the
-   * height the card has between its caption and its button. */
+   * height the card has between its caption and its button. The figures
+   * share one column, as wide as the widest, so every text starts at the
+   * same x beside them. */
   .mb-status-rows {
     display: grid;
     flex: 1;
+    grid-template-columns: auto minmax(0, 1fr);
     grid-auto-rows: 1fr;
+    column-gap: 20px;
     padding: 0;
     margin: 0;
     border-bottom: 1px solid var(--mb-hair);
   }
 
   .mb-status-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    align-items: center;
     padding: 14px 0;
     border-top: 1px solid var(--mb-hair);
   }
@@ -405,6 +415,10 @@ const results = [
       padding: 0;
     }
 
+    .mb-hero-sub {
+      font-size: 18px;
+    }
+
     .mb-hero-ctas {
       flex-direction: column;
       align-items: stretch;
@@ -422,6 +436,16 @@ const results = [
     .mb-hero :global(.mb-btn-face) {
       padding-block: 10px;
       text-align: center;
+    }
+
+    /* Each figure over what it counts. */
+    .mb-status-rows {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mb-status-row {
+      row-gap: 6px;
+      align-content: center;
     }
 
     .mb-status-figure {

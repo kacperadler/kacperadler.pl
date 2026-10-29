@@ -195,8 +195,10 @@ test.describe("minimal brutalism", () => {
 
 // The section rhythm and the headlines are fluid (KA0113): one clamp() each,
 // rem bounds and a rem + vw slope from a 390px phone to the 1160px
-// container, so they grow with the width without a step and follow the
-// reader's default font size, set here as a browser preference over CDP.
+// container - the hero's headline on to 1440px (KA0121), where it sets in
+// two lines across the container - so they grow with the width without a
+// step and follow the reader's default font size, set here as a browser
+// preference over CDP.
 const sizesAt = async (page: Page, width: number) => {
   await page.setViewportSize({ height: 900, width });
   return page.evaluate(() => {
@@ -240,19 +242,24 @@ test.describe("fluid sizes", () => {
     page,
   }) => {
     await page.goto("/");
-    const phone = { block: 32, hero: 40, section: 88, title: 32 };
-    const desk = { block: 48, hero: 64, section: 136, title: 54 };
+    const phone = { block: 32, hero: 46, section: 88, title: 32 };
+    const desk = { block: 48, hero: 80, section: 136, title: 54 };
+    const keys = Object.keys(phone) as (keyof typeof phone)[];
     for (const width of [360, 390]) {
       // biome-ignore lint/performance/noAwaitInLoops: one width at a time
       const at = await sizesAt(page, width);
-      for (const key of Object.keys(phone) as (keyof typeof phone)[]) {
-        expect(at[key], `${key} at ${width}px`).toBeCloseTo(phone[key], 2);
+      for (const key of keys) {
+        // Under 390px the hero's 12vw cap holds it below its phone size.
+        const held =
+          key === "hero" ? Math.min(phone.hero, 0.12 * width) : phone[key];
+        expect(at[key], `${key} at ${width}px`).toBeCloseTo(held, 2);
       }
     }
-    for (const width of [1160, 1440]) {
+    for (const width of [1160, 1440, 1920]) {
       // biome-ignore lint/performance/noAwaitInLoops: one width at a time
       const at = await sizesAt(page, width);
-      for (const key of Object.keys(desk) as (keyof typeof desk)[]) {
+      // The hero's headline still grows from the container to 1440px.
+      for (const key of keys.filter((k) => k !== "hero" || width >= 1440)) {
         expect(at[key], `${key} at ${width}px`).toBeCloseTo(desk[key], 2);
       }
     }
@@ -281,7 +288,7 @@ test.describe("fluid sizes", () => {
   }) => {
     await openWithDefaultFont(page, "/", 20);
     const wide = await sizesAt(page, 1920);
-    expect(wide.hero).toBeCloseTo(80, 2);
+    expect(wide.hero).toBeCloseTo(100, 2);
     expect(wide.title).toBeCloseTo(67.5, 2);
     expect(wide.section).toBeCloseTo(170, 2);
     expect(wide.block).toBeCloseTo(60, 2);
