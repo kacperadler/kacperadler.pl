@@ -4,10 +4,7 @@
 {
   "id": "KA0126",
   "title": "Twelve type sizes where the skill counts five",
-  "date": "2026-10-28",
-  "after": [
-    "KA0121"
-  ]
+  "date": "2026-10-28"
 }
 ```
 

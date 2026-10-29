@@ -40,3 +40,4 @@ In:
 - 2026-10-28: Source: F1 of KA0118
 - 2026-10-28: The human approved it (took the coordinator's recommendation).
 - 2026-10-29: The human: close the empty space between the subtitle and the hero buttons at desktop widths (the buttons sit under the subtitle, not on the card button line); the rest stays.
+- 2026-10-29: The human dropped it: he prefers the current hero ("bardziej mi się podoba jak to jest aktualne"; "odrzucamy i idziemy dalej"). Branch h/2026-10-29-ka0121-hero-headline-bd4f4424 is not merged.
