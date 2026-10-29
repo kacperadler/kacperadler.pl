@@ -1014,9 +1014,9 @@
   {
     "id": "KA0124",
     "title": "Running text in the full ink and at 16px",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0124-running-text-in-the-full-ink-and-at-16px/ticket.md",
-    "updated": "2026-10-28T17:22:48.639Z",
+    "updated": "2026-10-29T07:38:21.230Z",
     "after": [
       "KA0125"
     ]
@@ -1024,9 +1024,9 @@
   {
     "id": "KA0125",
     "title": "\"CRM-y\" in \"Aplikacje szyte na miarę\" breaks at its hyphen",
-    "status": "in-progress",
+    "status": "merged",
     "path": "spec/features/KA0125-crm-y-in-aplikacje-szyte-na-miare-breaks-at-its-hyphen/ticket.md",
-    "updated": "2026-10-29T07:10:00.744Z",
+    "updated": "2026-10-29T07:37:47.461Z",
     "after": [
       "KA0111"
     ]
@@ -1081,9 +1081,9 @@
   {
     "id": "KA0131",
     "title": "Every e2e page load on the preview sends a pageview to the production Umami",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0131-every-e2e-page-load-on-the-preview-sends-a-pageview-to-the-production-umami/ticket.md",
-    "updated": "2026-10-29T07:14:49.908Z"
+    "updated": "2026-10-29T07:38:26.407Z"
   },
   {
     "id": "KA0132",

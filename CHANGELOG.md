@@ -7,6 +7,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 ### Added
 
 - KA0111 Header menu button, header CTA and footer links are small tap targets (2086435)
+- KA0125 "CRM-y" in "Aplikacje szyte na miarę" breaks at its hyphen (0852107)
 
 ### Changed
 
