@@ -4,7 +4,10 @@ import { Icon } from "astro-icon/components";
 
 /* Text link in four looks:
  *   inline  ink text over a 2px blue underline; hover: blue text, the
- *           underline thickens to 3px; press: blue-2 text
+ *           underline thickens to 3px; press: blue-2 text. No hit area
+ *           past its text (nor for a prose link): running text is exempt
+ *           from WCAG 2.5.8, and an area above or below would take the
+ *           taps meant for the lines around it
  *   nav     header navigation in Geist; an ink bar draws in under it from
  *           the left on hover; `.active` (scripts/nav-active.ts on
  *           [data-nav-link]) is a blue bar under blue text; press: the
