@@ -134,10 +134,13 @@ const year = new Date().getFullYear();
     letter-spacing: 0.14em;
   }
 
+  /* 22px between links keeps their 44px hit areas (link.astro) apart: at
+   * 10px they overlapped, the later link took the strip under the one
+   * above, and a tap just under a link opened the next. */
   .mb-footer-cols ul {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 22px;
     padding: 0;
     margin: 0;
     list-style: none;

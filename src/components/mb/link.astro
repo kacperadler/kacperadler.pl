@@ -10,7 +10,8 @@ import { Icon } from "astro-icon/components";
  *           [data-nav-link]) is a blue bar under blue text; press: the
  *           blue bar and text it is about to become
  *   footer  ink-2 list link, an underline fades in on hover; the optional
- *           icon before it turns blue; press: blue text
+ *           icon before it turns blue; press: blue text. Its hit area,
+ *           drawn nowhere, is at least 44px each way
  *   case    "Zobacz realizację": heavy ink text over a blue underline, the
  *           icon after it (an arrow by default) nudges 3px right on hover
  *           and 6px on press
@@ -167,6 +168,7 @@ const iconAfter = variant === "case";
   }
 
   .mb-link-footer {
+    position: relative;
     display: inline-flex;
     gap: 10px;
     align-items: center;
@@ -179,6 +181,12 @@ const iconAfter = variant === "case";
     transition:
       color var(--mb-snap),
       text-decoration-color var(--mb-snap);
+  }
+
+  .mb-link-footer::after {
+    position: absolute;
+    inset: min(0px, (100% - 44px) / 2);
+    content: "";
   }
 
   .mb-link-footer :global(svg) {
