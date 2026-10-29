@@ -1006,7 +1006,7 @@
     "title": "Content labels in the text face, in sentence case",
     "status": "in-progress",
     "path": "spec/features/KA0123-content-labels-in-the-text-face-in-sentence-case/ticket.md",
-    "updated": "2026-10-29T08:15:51.040Z",
+    "updated": "2026-10-29T09:34:53.638Z",
     "after": [
       "KA0124"
     ]
@@ -1108,9 +1108,9 @@
   {
     "id": "KA0134",
     "title": "The e2e run has no WebKit, so the sheet's Safari paths are only simulated",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0134-the-e2e-run-has-no-webkit-so-the-sheet-s-safari-paths-are-only-simulated/ticket.md",
-    "updated": "2026-10-29T07:14:51.717Z",
+    "updated": "2026-10-29T09:34:54.410Z",
     "after": [
       "KA0132"
     ]
@@ -1128,8 +1128,8 @@
   {
     "id": "KA0136",
     "title": "www.kacperadler.pl serves the whole site instead of redirecting to the apex",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0136-www-kacperadler-pl-serves-the-whole-site-instead-of-redirecting-to-the-apex/ticket.md",
-    "updated": "2026-10-29T07:47:43.950Z"
+    "updated": "2026-10-29T09:34:55.252Z"
   }
 ]

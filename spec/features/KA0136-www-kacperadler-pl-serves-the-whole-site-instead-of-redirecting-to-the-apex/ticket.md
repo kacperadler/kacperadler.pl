@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-29: Source: F1 of KA0131
+- 2026-10-29: The human approved it and sets the 301 www → apex redirect in Dokploy himself; the worker then drops www from data-domains once curl shows the 301.
