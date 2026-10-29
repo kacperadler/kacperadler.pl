@@ -1,7 +1,8 @@
 ---
-/* Label: the mono caps label of a form control. A <label> when it points at
- * a control (`for`), otherwise a <span> (a group labelled by its own
- * aria-label). `disabled` mutes it with its control. */
+/* Label: the caption of a form control, in the text face and sentence
+ * case. A <label> when it points at a control (`for`), otherwise a <span>
+ * (a group labelled by its own aria-label). `disabled` mutes it with its
+ * control. */
 interface Props {
   class?: string;
   disabled?: boolean;
@@ -25,13 +26,10 @@ const classes = ["mb-label", { "mb-label-disabled": disabled }, extraClass];
 
 <style>
   .mb-label {
-    font-family: var(--mono);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
     line-height: 1.4;
     color: var(--ink-2);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
   }
 
   .mb-label-disabled {

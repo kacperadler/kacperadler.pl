@@ -3,7 +3,7 @@
  * description under it, the fields (and any <Separator> between them)
  * stacked in the slot.
  *   legendVariant "legend"  a heavy Geist heading
- *   legendVariant "label"   the mono caps label of a single control
+ *   legendVariant "label"   the text-face caption of a single control
  * `disabled` disables every control inside (native fieldset behaviour). */
 interface Props {
   class?: string;
@@ -53,12 +53,9 @@ const {
   }
 
   .mb-legend-label {
-    font-family: var(--mono);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--ink-2);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
   }
 
   .mb-fieldset-description {

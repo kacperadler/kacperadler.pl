@@ -2,10 +2,10 @@
 import Button from "../button.astro";
 
 /* Hero (#top): the headline, subtitle and two buttons beside the results
- * card ("W liczbach": the mono caption, a description list of three ruled
- * rows - the figure (dt) in large type over what it counts (dd) - and a
- * button to the case highlights, #cases). The headline is the page's only
- * h1.
+ * card ("W liczbach": a caption in the text face, a description list of
+ * three ruled rows - the figure (dt) in large type over what it counts
+ * (dd) - and a button to the case highlights, #cases). The headline is the
+ * page's only h1.
  *
  * The two columns share one grid: they are equally tall, the text column
  * is padded like the card, so the headline starts level with the card's
@@ -279,12 +279,9 @@ const results = [
 
   .mb-status-caption {
     margin: 0;
-    font-family: var(--mono);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    color: var(--ink-2);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
+    color: var(--muted);
   }
 
   /* Equal rows: each as tall as the tallest, and together they take the

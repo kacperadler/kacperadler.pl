@@ -13,6 +13,8 @@ const TRANSLUCENT = /rgba\(|\/ /;
 const FOLLOWED_CRUMB = /\/realizacje\/#2025$/;
 const UI_UNPAGED = /\/ui$/;
 const UI_PAGE_7 = /\/ui\?strona=7#mb-pagination$/;
+// The first face is Geist (Chrome writes a one-word name unquoted).
+const TEXT_FACE = /^"?Geist"?,/;
 
 // What moves in the catalogue under no-preference, as motionOf lists it.
 const MOVES_IN_CATALOGUE = [
@@ -292,6 +294,31 @@ test.describe("component catalogue (astro dev)", () => {
         ).toBeVisible()
       )
     );
+  });
+
+  // A group's legend in the "label" variant reads like a field's label: the
+  // text face, sentence case, as written (KA0123).
+  test("a label legend is set like a field label", async ({ page }) => {
+    const props = [
+      "color",
+      "font-family",
+      "font-size",
+      "font-weight",
+      "letter-spacing",
+      "text-transform",
+    ];
+    const legend = await paint(
+      page.locator(".mb-legend-label", { hasText: "Zakres" }),
+      props
+    );
+    expect(legend).toEqual(
+      await paint(page.locator('label.mb-label[for="mb-label-default"]'), props)
+    );
+    expect(legend).toMatchObject({
+      "font-family": expect.stringMatching(TEXT_FACE),
+      "letter-spacing": "normal",
+      "text-transform": "none",
+    });
   });
 
   for (const viewport of [
