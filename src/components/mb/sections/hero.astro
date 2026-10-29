@@ -9,10 +9,10 @@ import Button from "../button.astro";
  * only h1 and the first screen's one big thing: two lines on a wide
  * screen.
  *
- * Under the headline the two columns share one grid row: they are equally
- * tall, the text column is padded like the card, so the subtitle starts
- * level with the card's caption and the hero buttons sit on the same line
- * as the card's button, at the foot of both. The card's rows split the
+ * Under the headline the two columns share one grid row: the text column
+ * is padded like the card, so the subtitle starts level with the card's
+ * caption, and the hero buttons follow the subtitle at the page's rhythm
+ * (2026-10-29: no empty space between them). The card's rows split the
  * height left between its head and its button evenly (equal rows at every
  * width), and every figure starts at the same x. At 880px and below the
  * columns stack and every button takes the full width.
@@ -155,8 +155,7 @@ const results = [
   }
 
   /* Padded like the card - its rule, its header strip and the gap under
-   * it - so the subtitle and the card's caption share a top line, and
-   * the buttons a bottom one. */
+   * it - so the subtitle and the card's caption share a top line. */
   .mb-hero-text {
     display: flex;
     flex-direction: column;
@@ -237,7 +236,6 @@ const results = [
     flex-wrap: wrap;
     gap: 16px;
     align-items: center;
-    margin-top: auto;
   }
 
   /* The title block: its frame traced like a cell's, top, right, bottom,

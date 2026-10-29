@@ -39,3 +39,4 @@ In:
 
 - 2026-10-28: Source: F1 of KA0118
 - 2026-10-28: The human approved it (took the coordinator's recommendation).
+- 2026-10-29: The human: close the empty space between the subtitle and the hero buttons at desktop widths (the buttons sit under the subtitle, not on the card button line); the rest stays.

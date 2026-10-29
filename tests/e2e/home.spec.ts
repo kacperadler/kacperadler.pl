@@ -633,6 +633,7 @@ test.describe("home page", () => {
           figures: all(".mb-status-figure"),
           headline: r(hero.querySelector("h1") as Element),
           rows: all(".mb-status-row"),
+          sub: r(hero.querySelector(".mb-hero-sub") as Element),
           text: r(hero.querySelector(".mb-hero-text") as Element),
           texts: all(".mb-status-text"),
         };
@@ -647,16 +648,12 @@ test.describe("home page", () => {
       TOLERANCE
     );
     expect(wide.headline.bottom).toBeLessThan(wide.text.y);
-    // The two columns start and end on the same lines, and the hero's
-    // buttons rest on the card button's line.
+    // The two columns start on the same line, and the hero's buttons
+    // follow the subtitle at the 32px rhythm, with no gap held open
+    // down to the card's button.
     expect(Math.abs(wide.card.y - wide.text.y)).toBeLessThan(TOLERANCE);
-    expect(Math.abs(wide.card.height - wide.text.height)).toBeLessThan(
-      TOLERANCE
-    );
     for (const cta of wide.ctas) {
-      expect(Math.abs(cta.bottom - wide.cardButton.bottom)).toBeLessThan(
-        TOLERANCE
-      );
+      expect(Math.abs(cta.y - (wide.sub.bottom + 32))).toBeLessThan(TOLERANCE);
     }
     // Each figure beside what it counts, every text starting at one x.
     for (const [i, figure] of wide.figures.entries()) {
