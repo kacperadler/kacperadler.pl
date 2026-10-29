@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Locator, type Page, test } from "@playwright/test";
 import { FADES, motionOf } from "./motion";
 import { sendALead } from "./send-a-lead";
+import { offScaleText } from "./type-scale";
 
 // The catalogue (/ui) exists only on `astro dev`; playwright.config.ts starts
 // one for this tree and passes its port in E2E_DEV_PORT.
@@ -319,6 +320,21 @@ test.describe("component catalogue (astro dev)", () => {
       "letter-spacing": "normal",
       "text-transform": "none",
     });
+  });
+
+  // Every component in every variant holds its text face to the scale
+  // (KA0126, type-scale.ts). Off it: the headlines (the catalogue's own,
+  // a section head's, the sent form's), the mobile sheet's links, the
+  // brand mark (a logo) and screen-reader-only words.
+  test("components set their text on the small, body and lead sizes", async ({
+    page,
+  }) => {
+    expect(
+      await offScaleText(
+        page,
+        "h1, h2, .mb-section-title, .mb-form-success h3, .mb-sheet-link, .mb-mark, .sr-only"
+      )
+    ).toEqual([]);
   });
 
   for (const viewport of [

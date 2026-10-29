@@ -1,5 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 import { FADES, motionOf } from "./motion";
+import { offScaleText } from "./type-scale";
 
 // Minimal brutalism on every production page (KA0069): square corners, no
 // glass, no drifting ribbons over a dot grid - nothing of the old style.
@@ -526,6 +527,39 @@ test.describe("content labels", () => {
       expect(family.split(",")[0]?.trim().replaceAll('"', ""), mark).toBe(
         "Geist Mono"
       );
+    }
+  });
+});
+
+// Every production page holds its text face to the scale (KA0126,
+// type-scale.ts), prose included. Off it: the headlines, the title block's
+// figures, the brand mark (a logo) and screen-reader-only words.
+const PAGE_OFF_SCALE = "h1, h2, .mb-status-figure, .mb-mark, .sr-only";
+
+test.describe("type scale", () => {
+  test("every page's text face uses only the small, body and lead sizes", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/realizacje/");
+    const cases = await page
+      .locator("#top a[href^='/realizacje/']")
+      .evaluateAll((links) =>
+        links.map((link) => link.getAttribute("href") ?? "")
+      );
+    expect(cases.length).toBeGreaterThan(0);
+
+    for (const path of [...PAGES, ...cases]) {
+      for (const width of [390, 1440]) {
+        // biome-ignore lint/performance/noAwaitInLoops: one page and width at a time
+        await page.setViewportSize({ height: 900, width });
+        await page.goto(path);
+        await page.evaluate(() => document.fonts.ready);
+        expect(
+          await offScaleText(page, PAGE_OFF_SCALE),
+          `${path} at ${width}px`
+        ).toEqual([]);
+      }
     }
   });
 });

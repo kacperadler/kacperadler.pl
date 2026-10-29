@@ -34,7 +34,7 @@ typography:
     letterSpacing: -0.035em
   body-lg:
     fontFamily: Geist
-    fontSize: 18px
+    fontSize: 20px
     fontWeight: 400
     lineHeight: 1.55
   body-md:
@@ -55,7 +55,7 @@ typography:
     letterSpacing: 0.14em
   caption:
     fontFamily: Geist
-    fontSize: 13px
+    fontSize: 14px
     fontWeight: 500
     lineHeight: 1.4
 rounded:
@@ -143,12 +143,14 @@ The minimal brutalism vocabulary, in the same file:
 
 Two faces, both self-hosted variable woff2:
 
-- **Geist** (`--sans`, `--mb-display`) - headlines at 700-800 with tight negative tracking (`display-*`), button labels at 650, running prose, form fields, and the captions inside content (`caption`: 13px at 500, sentence case as written, no tracking - KA0123): a step's `Dla kogo` / `Co dostajesz` / `Czas`, a case's `Problem` / `Rozwiązanie` / `Efekt`, the title block's `W liczbach`, the trust bar's line, a contact link's `Email` / `LinkedIn` and the footer's column titles in `muted`; a form field's label and a `label` legend in `ink-2`, so a disabled label (`muted`) and the `(opcjonalnie)` hint stay dimmer than it.
+- **Geist** (`--sans`, `--mb-display`) - headlines at 700-800 with tight negative tracking (`display-*`), button labels at 650, running prose, form fields, and the captions inside content (`caption`: 14px at 500, sentence case as written, no tracking - KA0123): a step's `Dla kogo` / `Co dostajesz` / `Czas`, a case's `Problem` / `Rozwiązanie` / `Efekt`, the title block's `W liczbach`, the trust bar's line, a contact link's `Email` / `LinkedIn` and the footer's column titles in `muted`; a form field's label and a `label` legend in `ink-2`, so a disabled label (`muted`) and the `(opcjonalnie)` hint stay dimmer than it.
 - **Geist Mono** (`--mono`) - the drawing's uppercase labels (`label-mono`: the section label `§ 01 / Oferta`), badges, tags, the footer copyright.
 
 `text-wrap: balance` on headlines; every other text takes `text-wrap: pretty` from `html`, so a paragraph does not end on a lone word (Chrome and Safari; Firefox wraps as before). `<em>` in a headline stays `ink`, on one line, under a `blue` dimension brace (a 0.14em-high bracket, open at the top, `max(2px, 0.05em)` thick) with a callout letter (A, B, counted per headline) on a `blue` box at its right end.
 
-Running text is `ink` at 16px or more: the hero subtitle and the about text (`body-lg`, 18px), section leads, card sentences (a problem and its effect, a step's facts, a case's rows, a process step, an experience entry, a case study's summary), FAQ answers, the sent form's message and prose (`body-md`, 16px). `ink-2` is for what qualifies it, never for a sentence the visitor reads through: labels and captions, the title block's captions under its figures, a step's note and the footer's tagline (`body-sm`, 14px), a card's description line, the drawing's annotations. Form fields are the separate case of KA0108.
+Running text is `ink` at 16px or more: the hero subtitle, the about text and a problem's closing line (`body-lg`, 20px), section leads, card sentences (a problem and its effect, a step's facts, a case's rows, a process step, an experience entry, a case study's summary), FAQ answers, the sent form's message and prose (`body-md`, 16px). `ink-2` is for what qualifies it, never for a sentence the visitor reads through: labels and captions, a step's note and the footer's tagline (`body-sm`, 14px), the title block's captions under its figures (16px), a card's description line, the drawing's annotations. Form fields are the separate case of KA0108.
+
+The text face keeps a short scale (KA0126): 14px small (`caption`, `body-sm`, nav and footer links, button labels - `sm` and `default` share it, `lg` is 16px, `xs` 12px), 16px body (`body-md`, and an `sm` card's title), 20px lead (`body-lg`, and `display-md` for a card's or a step's title, an experience entry's title and the footer's brand), and 12px for the form's `(opcjonalnie)` hint. Prose's `em` sizes land on it too (lead and h3 20px, table 14px). Above it only the headlines (`display-*`, prose's h1 and h2, the sent form's title at 24px), the title block's figures (30px, 26px on a phone) and the mobile sheet's links (28px). The drawing's Geist Mono marks and badges (10-14px) and the brand mark's `k` (15px) keep their own sizes. `type scale` in `design.spec.ts` (every page) and its twin in `ui-catalogue.spec.ts` (every component) hold the text face to it.
 
 Fluid sizes, one `clamp()` each, bounds in `rem` and a `rem + vw` slope worked out from a 390px phone and the 1160px container, held at both ends, so they follow the reader's font size as well as the width: the hero headline (`display-xl`) 40px → 64px, a section headline (`display-lg`) 32px → 54px, `--mb-section-gap` and `--mb-block-gap` (Layout). A headline is also capped at a share of the viewport (12vw in the hero, 13vw in a section) so a large font on a narrow screen never pushes its longest unbreakable word (`automatyzacje,` about 7em, `działającego` with its callout about 6.2em) past the edge. The rest of the type is fixed px (KA0104 F16), apart from the fields (`max(16px, 1rem)`) and prose (`1rem`).
 
