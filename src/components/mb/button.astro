@@ -33,8 +33,9 @@ import Spinner from "./spinner.astro";
  *
  * Sizes xs 28 / sm 36 / default 44 / lg 52 px high; icon-xs, icon-sm, icon
  * and icon-lg are the same heights, square, and need `aria-label` and the
- * icon in `iconStart`. The focus ring (global.css) grows out of the edge
- * instead of popping, clear of the layer.
+ * icon in `iconStart`. sm and icon-sm (the header CTA and menu button)
+ * reach a finger's 44px with a hit area drawn nowhere. The focus ring
+ * (global.css) grows out of the edge instead of popping, clear of the layer.
  *
  * Disabled and loading: a flat panel in a hairline, muted text, no layer,
  * nothing moves. The label (icons and text) and the spinner share one cell
@@ -294,6 +295,15 @@ const busy = loading ? "true" : undefined;
   .mb-btn-size-icon-sm {
     width: 36px;
     height: 36px;
+  }
+
+  /* The hit area: an empty box centred on the element, 44px or the
+   * element's own size, whichever is more, so a tap just past the edge
+   * lands. On the still element: the face clips its overflow. */
+  .mb-btn:is(.mb-btn-size-sm, .mb-btn-size-icon-sm)::after {
+    position: absolute;
+    inset: min(0px, (100% - 44px) / 2);
+    content: "";
   }
 
   .mb-btn-size-icon {
