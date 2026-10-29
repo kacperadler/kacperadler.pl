@@ -130,7 +130,7 @@ The minimal brutalism vocabulary, in the same file:
 - **`base` (`#0a0c10`):** the substrate and the idle fill of every cell. Solid: no dot grid, no gradient.
 - **`panel` (`#14171c`):** the flat surface: disabled and loading controls.
 - **`panel-elevated` (`#1a1e26`):** the raised surface - the secondary button and badge - and a lit cell: the fill of a hovered card, under its `blue` grips and item number.
-- **`ink` / `ink-2` / `muted`:** `ink` draws the rules and sets headlines and primary text, `ink-2` body copy and labels, `muted` idle form frames, tags and disabled text (6.5:1 on `panel`, never lowered opacity).
+- **`ink` / `ink-2` / `muted`:** `ink` draws the rules and sets headlines and running text, `ink-2` notes, captions, labels and the drawing's annotations, `muted` idle form frames, tags and disabled text (6.5:1 on `panel`, never lowered opacity).
 - **`blue` (`#8eaed8`):** the **only** chromatic accent: the default button and badge, the dimension brace and callout under `<em>` in a headline, the `§` section counter and the dimension on its line, the datum cross, a selected cell's grips and filled item number, active nav links, focus rings. `blue-2` is the default button's hover.
 - **`error` (`#e07a70`):** form errors, the required `*` after a field label and the destructive variants only (the invalid frame, the error line, the send-error banner). Not an accent: it never decorates. 6.15:1 on `panel`, 6.7:1 on `base`.
 
@@ -142,6 +142,8 @@ Two faces, both self-hosted variable woff2:
 - **Geist Mono** (`--mono`) - uppercase labels (`label-mono`: the section label, field labels, status rows), badges, tags, the footer copyright.
 
 `text-wrap: balance` on headlines; every other text takes `text-wrap: pretty` from `html`, so a paragraph does not end on a lone word (Chrome and Safari; Firefox wraps as before). `<em>` in a headline stays `ink`, on one line, under a `blue` dimension brace (a 0.14em-high bracket, open at the top, `max(2px, 0.05em)` thick) with a callout letter (A, B, counted per headline) on a `blue` box at its right end.
+
+Running text is `ink` at 16px or more: the hero subtitle and the about text (`body-lg`, 18px), section leads, card sentences (a problem and its effect, a step's facts, a case's rows, a process step, an experience entry, a case study's summary), FAQ answers, the sent form's message and prose (`body-md`, 16px). `ink-2` is for what qualifies it, never for a sentence the visitor reads through: mono labels, the title block's captions under its figures, a step's note and the footer's tagline (`body-sm`, 14px), a card's description line, the drawing's annotations. Form fields are the separate case of KA0108.
 
 Fluid sizes, one `clamp()` each, bounds in `rem` and a `rem + vw` slope worked out from a 390px phone and the 1160px container, held at both ends, so they follow the reader's font size as well as the width: the hero headline (`display-xl`) 40px → 64px, a section headline (`display-lg`) 32px → 54px, `--mb-section-gap` and `--mb-block-gap` (Layout). A headline is also capped at a share of the viewport (12vw in the hero, 13vw in a section) so a large font on a narrow screen never pushes its longest unbreakable word (`automatyzacje,` about 7em, `działającego` with its callout about 6.2em) past the edge. The rest of the type is fixed px (KA0104 F16), apart from the fields (`max(16px, 1rem)`) and prose (`1rem`).
 

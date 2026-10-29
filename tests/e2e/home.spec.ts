@@ -427,7 +427,9 @@ test.describe("home page", () => {
   test("the open experience table has rules only between its cells, and a hovered cell lights no panel", async ({
     page,
   }) => {
-    await page.setViewportSize({ height: 1000, width: 1440 });
+    // Tall enough for the whole open table under the sticky header: its
+    // edges are read from a screenshot of the viewport.
+    await page.setViewportSize({ height: 1600, width: 1440 });
     await page.goto("/");
     const experience = page.locator("#about details");
     await experience.locator("summary").click();
