@@ -3,11 +3,11 @@ import { Icon } from "astro-icon/components";
 import Card from "./card.astro";
 
 /* Contact link: a whole `sm` <Card> as the link (email, LinkedIn in the
- * contact section) - a blue icon, the mono caps label, and the value (the
- * slot) pushed to the right; when the cell is narrow the value wraps under
- * them and breaks anywhere rather than widen the page. Hover, press and
- * focus are the card's ([data-state] forces them on /ui). `newTab` opens
- * it in a new tab, without an opener. */
+ * contact section) - a blue icon, the label in the text face, and the
+ * value (the slot) pushed to the right; when the cell is narrow the value
+ * wraps under them and breaks anywhere rather than widen the page. Hover,
+ * press and focus are the card's ([data-state] forces them on /ui).
+ * `newTab` opens it in a new tab, without an opener. */
 interface Props {
   href: string;
   icon: string;
@@ -51,11 +51,9 @@ const { href, icon, label, newTab = false, ...rest } = Astro.props;
 
   .mb-contact-label {
     margin-right: auto;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-2);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
   }
 
   .mb-contact-value {

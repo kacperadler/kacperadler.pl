@@ -356,6 +356,10 @@ const RUNNING_TEXT = {
 const NOTES = [
   ".mb-section-label",
   ".mb-status-caption",
+  ".mb-trust-caption",
+  ".mb-contact-label",
+  "[data-contact-form] .mb-label",
+  ".mb-footer-title",
   ".mb-status-text",
   ".mb-service-fact dt",
   ".mb-service-note",
@@ -426,6 +430,100 @@ test.describe("running text", () => {
       for (const { color, text } of elements) {
         expect(color, `${selector} "${text}"`).not.toBe(ink);
       }
+    }
+  });
+});
+
+// Labels a visitor reads to understand the content are captions in the text
+// face, written in sentence case and set as written; the drawing's own marks
+// keep Geist Mono (KA0123).
+const CONTENT_LABELS = [
+  ".mb-status-caption",
+  ".mb-trust-caption",
+  ".mb-service-fact dt",
+  ".mb-cases-row dt",
+  ".mb-contact-label",
+  "[data-contact-form] .mb-label",
+  ".mb-footer-title",
+];
+
+// A capital, then small letters: the copy is written in sentence case.
+const SENTENCE_CASE = /^\p{Lu}.*\p{Ll}/u;
+
+// The drawing's marks, some of them drawn by a pseudo-element.
+const DRAWING_MARKS: { pseudo?: string; selector: string }[] = [
+  { selector: ".mb-section-label" },
+  { pseudo: "::after", selector: ".mb-section-head" },
+  { pseudo: "::before", selector: ".mb-card" },
+  { pseudo: "::after", selector: ".mb-hero-grid" },
+  { pseudo: "::before", selector: ".mb-hero-status" },
+  { pseudo: "::after", selector: ".mb-footer-bottom" },
+];
+
+test.describe("content labels", () => {
+  test("are captions in the text face, in sentence case, at 13px or more", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const labels = await page.evaluate(
+      (list) =>
+        list.map((selector) => ({
+          elements: [...document.querySelectorAll(selector)].map((el) => {
+            const style = getComputedStyle(el);
+            return {
+              family: style.fontFamily,
+              size: Number.parseFloat(style.fontSize),
+              spacing: style.letterSpacing,
+              text: (el.textContent ?? "").trim(),
+              transform: style.textTransform,
+              weight: style.fontWeight,
+            };
+          }),
+          selector,
+        })),
+      CONTENT_LABELS
+    );
+    for (const { elements, selector } of labels) {
+      expect(elements.length, selector).toBeGreaterThan(0);
+      for (const {
+        family,
+        size,
+        spacing,
+        text,
+        transform,
+        weight,
+      } of elements) {
+        const what = `${selector} "${text}"`;
+        expect(family.split(",")[0]?.trim().replaceAll('"', ""), what).toBe(
+          "Geist"
+        );
+        expect(transform, what).toBe("none");
+        expect(spacing, what).toBe("normal");
+        expect(size, what).toBeGreaterThanOrEqual(13);
+        expect(weight, what).toBe("500");
+        // Sentence case in the copy itself: a capital, then small letters.
+        expect(text, what).toMatch(SENTENCE_CASE);
+      }
+    }
+  });
+
+  test("the drawing's marks keep Geist Mono", async ({ page }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const marks = await page.evaluate(
+      (list) =>
+        list.map(({ pseudo, selector }) => {
+          const el = document.querySelector(selector);
+          return {
+            family: el ? getComputedStyle(el, pseudo).fontFamily : "",
+            mark: `${selector}${pseudo ?? ""}`,
+          };
+        }),
+      DRAWING_MARKS
+    );
+    for (const { family, mark } of marks) {
+      expect(family.split(",")[0]?.trim().replaceAll('"', ""), mark).toBe(
+        "Geist Mono"
+      );
     }
   });
 });

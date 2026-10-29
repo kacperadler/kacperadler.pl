@@ -4,9 +4,10 @@ import { logoBySlug, logoFitBySlug } from "@/data/experience-logos";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
 
-/* Trust bar (#trust): no section head, so it takes no number. A mono
- * caption over one ruled row of logo cells (five a row on the desktop, two
- * at 880px and below in low cells, the lone last one spanning the row).
+/* Trust bar (#trust): no section head, so it takes no number. A caption in
+ * the text face over one ruled row of logo cells (five a row on the
+ * desktop, two at 880px and below in low cells, the lone last one spanning
+ * the row).
  * Each logo is sized by its optical weight (logoFitBySlug); a mark without
  * a name gets the company in text beside it, and then the image is
  * decorative. Otherwise the alt text is the entry's company. The logos
@@ -66,12 +67,9 @@ const logos = ORDER.map((id) => {
 
   .mb-trust-caption {
     margin: 0 0 var(--v2-space-md);
-    font-family: var(--mono);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    color: var(--ink-2);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
+    color: var(--muted);
   }
 
   .mb-trust :global(.mb-trust-logos) {
