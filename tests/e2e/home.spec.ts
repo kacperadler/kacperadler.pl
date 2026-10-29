@@ -177,13 +177,13 @@ test.describe("home page", () => {
     await expect(card.locator(".mb-badge")).toHaveCount(0);
     // A description list: each figure (dt) over what it counts (dd).
     await expect(card.locator("dl > div > dt")).toHaveText([
-      "250+",
-      "100+",
+      "1000+",
+      "500+",
       "24 h",
     ]);
     await expect(card.locator("dl > div > dd")).toHaveText([
       "osób codziennie pracuje w systemach, które współtworzyłem",
-      "osób codziennie korzysta z aplikacji mobilnej, którą stworzyłem dla klienta",
+      "osób codziennie korzysta z aplikacji mobilnych, które stworzyłem",
       "w tym czasie wracam z pierwszym pomysłem na automatyzację",
     ]);
     await expect(
@@ -1013,7 +1013,7 @@ test.describe("home page", () => {
     }
 
     // The facts as the human gave them: the marketplace's launch month,
-    // Energia Direct's ~100 daily users (the hero's "100+"), on the page
+    // Energia Direct's ~100 daily users, on the page
     // and in the full text for AI agents.
     const llmsFull = await (await request.get("/llms-full.txt")).text();
     expect(llmsFull).toContain(
