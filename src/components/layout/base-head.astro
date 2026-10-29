@@ -153,7 +153,9 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
  * is:inline so Astro doesn't try to process the script src; the
  * defer attribute on the injected tag keeps it non-blocking even
  * after load. data-do-not-track lets visitors who set DNT opt out
- * via Umami's own logic. */}
+ * via Umami's own logic. data-domains makes the tracker send nothing
+ * outside the production hosts, so a local preview or the Docker
+ * image opened on localhost stays out of the statistics. */}
 {import.meta.env.PROD && (
   <script
     is:inline
@@ -161,6 +163,7 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
         (() => {
           const src = ${JSON.stringify(`${siteConfig.analytics.umamiUrl}/script.js`)};
           const id = ${JSON.stringify(siteConfig.analytics.umamiWebsiteId)};
+          const domains = ${JSON.stringify(siteConfig.analytics.domains.join(","))};
           let loaded = false;
           function load() {
             if (loaded) return;
@@ -170,6 +173,7 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
             s.defer = true;
             s.dataset.websiteId = id;
             s.dataset.doNotTrack = 'true';
+            s.dataset.domains = domains;
             document.head.appendChild(s);
           }
           if ('requestIdleCallback' in window) {

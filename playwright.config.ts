@@ -9,6 +9,7 @@ import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+import { siteConfig } from "./src/data/site-config";
 
 // Non-default port so the preview can run alongside `bun dev` (which holds 4321).
 const DEFAULT_PORT = 4329;
@@ -125,6 +126,15 @@ export default defineConfig({
 
   use: {
     baseURL: BASE_URL,
+    // The preview is a PROD build, so every page loads Umami and would send
+    // the production statistics a pageview from localhost. The browser cannot
+    // resolve the analytics host, so the script fails at once (KA0131,
+    // analytics.spec.ts).
+    launchOptions: {
+      args: [
+        `--host-resolver-rules=MAP ${new URL(siteConfig.analytics.umamiUrl).hostname} ~NOTFOUND`,
+      ],
+    },
     trace: "on-first-retry",
   },
 

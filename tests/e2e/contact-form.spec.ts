@@ -118,11 +118,12 @@ function contrast(a: string, b: string): number {
 
 // A test opens the form with goto("/#contact") alone: goto waits for the load
 // event, and the form's script (a module script) runs before it. No test
-// waits for "networkidle": on the preview build the page loads Umami from
-// analytics.kacperadler.pl when the browser is idle and sends it a pageview,
-// so the idle network came after two round trips to a remote server, or
-// before them when the machine was busy enough to delay the idle callback.
-// A slow answer from that server ran the wait into the 30 s test timeout.
+// waits for "networkidle": on the preview build the page loads Umami when the
+// browser is idle, so the idle network came after that request, or before it
+// when the machine was busy enough to delay the idle callback. The request
+// used to go to analytics.kacperadler.pl, and a slow answer ran the wait into
+// the 30 s test timeout; the e2e browser now cannot resolve that host
+// (playwright.config.ts), but the wait still depends on the idle callback.
 test.describe("contact form", () => {
   test('the company label reads "Firma", then a smaller, dimmer "(opcjonalnie)" still at 4.5:1', async ({
     page,
