@@ -1014,9 +1014,9 @@
   {
     "id": "KA0124",
     "title": "Running text in the full ink and at 16px",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0124-running-text-in-the-full-ink-and-at-16px/ticket.md",
-    "updated": "2026-10-29T08:10:40.043Z",
+    "updated": "2026-10-29T08:15:23.767Z",
     "after": [
       "KA0125"
     ]
