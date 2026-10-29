@@ -7,6 +7,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 ### Added
 
 - KA0111 Header menu button, header CTA and footer links are small tap targets (2086435)
+- KA0123 Content labels in the text face, in sentence case (2235917)
 - KA0124 Running text in the full ink and at 16px (bf651c5)
 - KA0125 "CRM-y" in "Aplikacje szyte na miarę" breaks at its hyphen (0852107)
 - KA0136 www.kacperadler.pl serves the whole site instead of redirecting to the apex (e63db3a)

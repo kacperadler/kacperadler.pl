@@ -13,4 +13,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/pages/realizacje/[slug].astro:97-103` (`.mb-case-fact dt`: the role, period and stack rows of every case study page)
 - What: KA0123 moved the content labels of the home page (services, cases, the hero's caption, trust, the form, contact links, footer titles) to a 13px Geist caption in sentence case. The case study page's facts table has the same kind of label - read with the content, not a mark of the drawing - and it was not in the ticket's list, so it stays Geist Mono 11px uppercase at 0.12em, the "tiny uppercase letter-spaced label" KA0118 F3 removes elsewhere.
 - Suggestion: the same rule as the home page's step facts (`.mb-service-fact dt`): drop the mono, the uppercase and the tracking, 13px at 500 in `--muted`; add `.mb-case-fact dt` to the content labels check in `tests/e2e/design.spec.ts` (on a case study page). The page's section label stays mono.
-- Status: open
+- Status: ticket KA0139
