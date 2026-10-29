@@ -328,3 +328,104 @@ test.describe("fluid sizes", () => {
     }
   });
 });
+
+// Running text - leads, card sentences, FAQ answers, the hero subtitle,
+// prose - is set in the full ink at 16px or more; the dimmer grey stays for
+// notes, captions and the drawing (KA0124). The ink is read from the page's
+// own --ink, so the test follows the palette.
+const RUNNING_TEXT = {
+  "/": [
+    ".mb-hero-sub",
+    ".mb-section-lede",
+    ".mb-problem",
+    ".mb-problem-effect",
+    ".mb-service-fact dd:not(.mb-service-note)",
+    ".mb-services-apps-text",
+    ".mb-cases-row dd",
+    ".mb-step-desc",
+    ".mb-about-text > p",
+    ".mb-exp-desc",
+    ".mb-faq .mb-accordion-content p",
+    ".mb-form-success p",
+  ],
+  "/polityka-prywatnosci/": [".mb-section-lede", ".mb-prose p"],
+  "/realizacje/": [".mb-section-lede", ".mb-case-summary"],
+  case: [".mb-section-lede", ".mb-prose p"],
+};
+
+const NOTES = [
+  ".mb-section-label",
+  ".mb-status-caption",
+  ".mb-status-text",
+  ".mb-service-fact dt",
+  ".mb-service-note",
+  ".mb-cases-row dt",
+];
+
+// Each element the selectors match: its colour, its font size, and the
+// colour --ink computes to on the same page.
+const textOf = (page: Page, selectors: string[]) =>
+  page.evaluate((list) => {
+    const probe = document.createElement("span");
+    probe.style.color = "var(--ink)";
+    document.body.append(probe);
+    const ink = getComputedStyle(probe).color;
+    probe.remove();
+    return list.map((selector) => ({
+      elements: [...document.querySelectorAll(selector)].map((el) => {
+        const style = getComputedStyle(el);
+        return {
+          color: style.color,
+          size: Number.parseFloat(style.fontSize),
+          text: (el.textContent ?? "").trim().slice(0, 40),
+        };
+      }),
+      ink,
+      selector,
+    }));
+  }, selectors);
+
+test.describe("running text", () => {
+  test("leads, card sentences, FAQ answers and prose are in the ink at 16px or more", async ({
+    page,
+  }) => {
+    await page.goto("/realizacje/");
+    const cases = await page
+      .locator("#top a[href^='/realizacje/']")
+      .evaluateAll((links) =>
+        links.map((link) => link.getAttribute("href") ?? "")
+      );
+    expect(cases.length).toBeGreaterThan(0);
+
+    const { case: onCase, ...onPages } = RUNNING_TEXT;
+    const checks = [
+      ...Object.entries(onPages),
+      ...cases.map((path) => [path, onCase] as const),
+    ];
+    for (const [path, selectors] of checks) {
+      // biome-ignore lint/performance/noAwaitInLoops: one page at a time
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      for (const { elements, ink, selector } of await textOf(page, selectors)) {
+        expect(elements.length, `${path} ${selector}`).toBeGreaterThan(0);
+        for (const { color, size, text } of elements) {
+          expect(color, `${path} ${selector} "${text}"`).toBe(ink);
+          expect(size, `${path} ${selector} "${text}"`).toBeGreaterThanOrEqual(
+            16
+          );
+        }
+      }
+    }
+  });
+
+  test("notes and captions stay dimmer than the running text", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    for (const { elements, ink, selector } of await textOf(page, NOTES)) {
+      expect(elements.length, selector).toBeGreaterThan(0);
+      for (const { color, text } of elements) {
+        expect(color, `${selector} "${text}"`).not.toBe(ink);
+      }
+    }
+  });
+});
