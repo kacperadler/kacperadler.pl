@@ -39,5 +39,3 @@ In:
 
 - 2026-10-28: Source: F7 of KA0104
 - 2026-10-28: The human approved it.
-- 2026-10-29: The human chose option B: raise --mb-footer-gap in footer.astro from 10px to 22px so every footer link has a full 44px tap area with no overlap; the footer lists get taller, a visible change he accepts.
-- 2026-10-29: Coordinator accepts the worker writing the 22px as a literal `gap: 22px` in footer.astro instead of a `--mb-footer-gap` variable: every other gap in the file is a literal, and the outcome is the one the human chose.
