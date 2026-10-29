@@ -896,9 +896,9 @@
   {
     "id": "KA0111",
     "title": "Header menu button, header CTA and footer links are small tap targets",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0111-header-menu-button-header-cta-and-footer-links-are-small-tap-targets/ticket.md",
-    "updated": "2026-10-29T00:40:26.184Z",
+    "updated": "2026-10-29T07:04:41.832Z",
     "after": [
       "KA0115"
     ]
