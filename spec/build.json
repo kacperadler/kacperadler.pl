@@ -1041,9 +1041,9 @@
   {
     "id": "KA0127",
     "title": "The phone's logos stay grey",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0127-the-phone-s-logos-stay-grey/ticket.md",
-    "updated": "2026-10-29T11:46:21.047Z",
+    "updated": "2026-10-29T12:32:00.989Z",
     "after": [
       "KA0126"
     ]

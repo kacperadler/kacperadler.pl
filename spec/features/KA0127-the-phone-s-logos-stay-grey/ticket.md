@@ -39,3 +39,4 @@ In:
 
 - 2026-10-28: Source: F11 of KA0118
 - 2026-10-28: The human approved it (took the coordinator's recommendation).
+- 2026-10-29: The human: the logos in "O mnie" (about.astro) stay grey on phones; only the trust bar and cases logos go colour.
