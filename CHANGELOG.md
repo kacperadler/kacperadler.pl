@@ -6,6 +6,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 
 ### Changed
 
+- KA0115 The mobile sheet re-implements what `<dialog>` gives (ff69c00)
 - KA0116 A global rule strips every transition under reduced motion (34f7f6f)
 - KA0117 Derived colours are hard-coded instead of mixed from the palette (5516a19)
 

@@ -936,9 +936,9 @@
   {
     "id": "KA0115",
     "title": "The mobile sheet re-implements what `<dialog>` gives",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0115-the-mobile-sheet-re-implements-what-dialog-gives/ticket.md",
-    "updated": "2026-10-29T00:34:54.725Z",
+    "updated": "2026-10-29T00:40:02.502Z",
     "after": [
       "KA0117"
     ]
@@ -1098,5 +1098,12 @@
     "status": "planning",
     "path": "spec/features/KA0133-above-the-default-worker-count-more-specs-time-out/ticket.md",
     "updated": "2026-10-28T21:50:32.045Z"
+  },
+  {
+    "id": "KA0134",
+    "title": "The e2e run has no WebKit, so the sheet's Safari paths are only simulated",
+    "status": "planning",
+    "path": "spec/features/KA0134-the-e2e-run-has-no-webkit-so-the-sheet-s-safari-paths-are-only-simulated/ticket.md",
+    "updated": "2026-10-29T00:40:02.499Z"
   }
 ]
