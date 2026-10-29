@@ -53,6 +53,7 @@ test.describe("mobile sheet", () => {
   });
 
   test("the sheet fades in, and fades out on top of the page", async ({
+    browserName,
     page,
   }) => {
     await page.goto("/");
@@ -93,11 +94,14 @@ test.describe("mobile sheet", () => {
       )
     ).toBe("rgba(0, 0, 0, 0)");
     // Closing keeps it shown over the whole screen and in the top layer
-    // until the fade ends.
-    expect(await fadeOf("[data-menu-close]")).toEqual({
-      box: [0, 0, 375, 812],
-      fades: ["display", "opacity", "overlay"],
-    });
+    // until the fade ends. WebKit starts no transition on a closing dialog
+    // (KA0134 run): it hides at once, never as a sheet slid off the screen.
+    // When WebKit fades it, the box must hold there too.
+    expect(await fadeOf("[data-menu-close]")).toEqual(
+      browserName === "webkit"
+        ? { box: [0, 0, 0, 0], fades: [] }
+        : { box: [0, 0, 375, 812], fades: ["display", "opacity", "overlay"] }
+    );
   });
 
   test("another dialog closing leaves focus where it is", async ({ page }) => {
@@ -177,6 +181,8 @@ test.describe("mobile sheet", () => {
 
     // A click that leaves focus where it was, as in Safari, which does not
     // focus a clicked button: the dialog would hand focus back to the page.
+    // Simulated in WebKit too: Playwright's Linux WebKit focuses a clicked
+    // button (KA0134 run), so a real click there hides the gap.
     await trigger.dispatchEvent("click");
     await expect(sheet).toBeVisible();
     // From any control: Shift+Tab wraps to the last one, the CTA.
@@ -210,9 +216,9 @@ test.describe("mobile sheet", () => {
     page,
   }) => {
     await page.goto("/");
-    // Chromium never scrolls the page under the contained modal, by wheel
-    // or key; iOS Safari does under a finger, so the root itself must not
-    // scroll while the sheet is up.
+    // No browser scrolls the page under the contained modal by wheel or
+    // key; iOS Safari does under a finger, which Playwright cannot drive in
+    // WebKit, so the root itself must not scroll while the sheet is up.
     const rootOverflow = () =>
       page.evaluate(() => getComputedStyle(document.documentElement).overflowY);
     expect(await rootOverflow()).toBe("visible");
@@ -253,8 +259,7 @@ test.describe("mobile sheet", () => {
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(await takesFocus(pageLink(page))).toBe(true);
     const before = await page.evaluate(() => window.scrollY);
-    await page.mouse.move(187, 600);
-    await page.mouse.wheel(0, 300);
+    await page.keyboard.press("PageDown");
     await expect
       .poll(() => page.evaluate(() => window.scrollY))
       .toBeGreaterThan(before);
@@ -265,7 +270,13 @@ test.describe("mobile sheet", () => {
   });
 
   test.describe("on a phone held sideways", () => {
-    test.use({ viewport: { height: 390, width: 844 } });
+    // Scrolled by a wheel: mobile WebKit has none, and Playwright drives no
+    // finger pan there, so WebKit runs these as a desktop with a mouse.
+    test.use({
+      hasTouch: false,
+      isMobile: false,
+      viewport: { height: 390, width: 844 },
+    });
 
     test("the sheet scrolls its own overflow to FAQ and the CTA", async ({
       page,
@@ -293,9 +304,16 @@ test.describe("mobile sheet", () => {
       await expect(page).toHaveURL(HASH_CONTACT);
     });
 
-    test("where the fade out leaves the top layer (no `overlay`, as in Safari), the sheet holds its box and scroll", async ({
+    // Chromium keeps a closing dialog in the top layer through `overlay`;
+    // a browser that fades `display` with no `overlay` takes it out at
+    // once, so the sheet's own fixed box must hold. WebKit has no
+    // `overlay` but does not fade a closing dialog at all (the test above),
+    // so only Chromium, with `overlay` left out, can show the hold.
+    test("where the fade out leaves the top layer (no `overlay`), the sheet holds its box and scroll", async ({
+      browserName,
       page,
     }) => {
+      test.skip(browserName === "webkit", "WebKit fades no closing dialog");
       await page.goto("/");
       // Down the page, where a sheet that lost its fixed box would slide off.
       await page.evaluate(() =>

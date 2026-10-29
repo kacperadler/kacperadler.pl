@@ -117,7 +117,36 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        // The preview is a PROD build, so every page loads Umami and would
+        // send the production statistics a pageview from localhost. The
+        // browser cannot resolve the analytics host, so the script fails at
+        // once (KA0131, analytics.spec.ts).
+        launchOptions: {
+          args: [
+            `--host-resolver-rules=MAP ${new URL(siteConfig.analytics.umamiUrl).hostname} ~NOTFOUND`,
+          ],
+        },
+      },
+    },
+    // Safari's engine on an iPhone, for the specs of what only iPhone
+    // visitors would see (KA0134): the menu sheet, the iOS form fields and
+    // touch. WebKit has no resolver rules, so every request but the
+    // preview's goes to a proxy where nothing listens and fails: the Umami
+    // script never loads (analytics.spec.ts runs here too).
+    {
+      name: "webkit",
+      testMatch: [
+        "analytics.spec.ts",
+        "ios-safari.spec.ts",
+        "mobile-sheet.spec.ts",
+        "touch-hover.spec.ts",
+      ],
+      use: {
+        ...devices["iPhone 15"],
+        proxy: { bypass: "localhost", server: "http://127.0.0.1:9" },
+      },
     },
   ],
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
@@ -126,15 +155,6 @@ export default defineConfig({
 
   use: {
     baseURL: BASE_URL,
-    // The preview is a PROD build, so every page loads Umami and would send
-    // the production statistics a pageview from localhost. The browser cannot
-    // resolve the analytics host, so the script fails at once (KA0131,
-    // analytics.spec.ts).
-    launchOptions: {
-      args: [
-        `--host-resolver-rules=MAP ${new URL(siteConfig.analytics.umamiUrl).hostname} ~NOTFOUND`,
-      ],
-    },
     trace: "on-first-retry",
   },
 

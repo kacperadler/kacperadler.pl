@@ -2,16 +2,23 @@ import { expect, test } from "@playwright/test";
 
 // The preview is a PROD build, so every page a spec opens runs the Umami
 // loader from base-head.astro (KA0131). Two guards keep a test run out of the
-// production statistics: the e2e browser cannot resolve the analytics host
-// (`--host-resolver-rules` in playwright.config.ts), and the tracker is told
-// to count only the production hosts (`data-domains`), which also covers a
-// local `bun run preview` or the Docker image opened by hand.
+// production statistics: the e2e browser cannot reach the analytics host
+// (playwright.config.ts: Chromium cannot resolve it, `--host-resolver-rules`;
+// WebKit sends every request but the preview's to a proxy where nothing
+// listens), and the tracker is told to count only the production hosts
+// (`data-domains`), which also covers a local `bun run preview` or the Docker
+// image opened by hand.
 
 const UMAMI = "https://analytics.kacperadler.pl";
 const SCRIPT = `${UMAMI}/script.js`;
+const BLOCKED: Record<string, string> = {
+  chromium: "net::ERR_NAME_NOT_RESOLVED",
+  webkit: "Could not connect to proxy server 127.0.0.1: Connection refused",
+};
 
 test.describe("analytics on the preview", () => {
   test("the browser cannot reach the analytics host, so the run sends Umami no pageview", async ({
+    browserName,
     page,
   }) => {
     const toUmami: string[] = [];
@@ -37,7 +44,7 @@ test.describe("analytics on the preview", () => {
 
     await page.goto("/");
 
-    expect(await script).toBe("net::ERR_NAME_NOT_RESOLVED");
+    expect(await script).toBe(BLOCKED[browserName]);
     expect(await page.evaluate(() => "umami" in window)).toBe(false);
     expect(toUmami).toEqual([`GET ${SCRIPT}`]);
   });

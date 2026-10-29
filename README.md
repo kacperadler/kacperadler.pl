@@ -25,7 +25,7 @@ Produkcja: [kacperadler.pl](https://kacperadler.pl) - statyczny build Astro serw
 
 - **[bun](https://bun.sh)** ≥ 1.3 (wersja z `packageManager` w `package.json`), dostępny w `PATH` - pre-commit hook woła `bunx`
 - **Node 22.13+** - Astro CLI uruchamia się na Node, a trasa `/api/lead` potrzebuje wbudowanego `node:sqlite`
-- Do testów E2E przeglądarka Playwrighta: `bunx playwright install chromium`
+- Do testów E2E przeglądarki Playwrighta: `bunx playwright install --with-deps chromium webkit` (`--with-deps` doinstalowuje biblioteki systemowe WebKita, przez `sudo`)
 - Do lokalnego testu obrazu: Docker
 
 ## Komendy
@@ -44,7 +44,7 @@ bun dev
 | `bun run lint`        | `ultracite check` - lint + format check Biome, razem z `.astro`        |
 | `bun run format`      | `ultracite fix` - poprawki lintu + formatowanie                        |
 | `bun run check`       | `astro check` - type-check, też plików `.astro`                        |
-| `bun run test:e2e`    | Playwright (chromium, headless); sam buduje `dist/` i odpala preview   |
+| `bun run test:e2e`    | Playwright (chromium i webkit, headless); sam buduje `dist/` i odpala preview |
 | `bun run test:e2e:ui` | Playwright w trybie UI                                                 |
 
 ## Jak działają checki
@@ -57,9 +57,11 @@ bun dev
 **CI** (GitHub Actions, `.github/workflows/ci.yml`) na `push` i `pull_request` do `main`:
 
 1. **build**: Node 22 + bun, `bun install --frozen-lockfile`, `bun run lint`, `bun run check`, `bun run build`
-2. **e2e** (po build): Playwright chromium z cache przeglądarek, `bun run test:e2e`, raport w artefakcie `playwright-report`
+2. **e2e** (po build): Playwright chromium i webkit z cache przeglądarek, `bun run test:e2e`, raport w artefakcie `playwright-report`
 
 `bun run test:e2e` buduje stronę dwa razy (`webServer` w `playwright.config.ts`): `E2E_FIXTURES=none` do `dist-no-case-studies/` (stan bez case studies, z pustego `tests/fixtures/no-case-studies`) i `E2E_FIXTURES=1` do `dist/` z przykładowym `tests/fixtures/case-studies/przyklad.mdx`, dopóki `src/content/case-studies` nie ma żadnego `.mdx`. Build produkcyjny nie czyta fixture'ów. Preview zapisuje leady do świeżego pliku SQLite w katalogu tymczasowym (`E2E_LEADS_DB`, `LEADS_DB_PATH` preview) i ma puste `RESEND_API_KEY`, więc test nigdy nie wysyła prawdziwego maila.
+
+Projekt `chromium` (desktop) puszcza wszystkie specy. Projekt `webkit` (silnik Safari, `devices["iPhone 15"]`) puszcza tylko to, co widzi odwiedzający z iPhone'a: `mobile-sheet`, `ios-safari`, `touch-hover`, plus `analytics`, który pilnuje, że i ten projekt nie dosięga Umami (WebKit nie zna `--host-resolver-rules`, więc wszystko poza `localhost` idzie do proxy, na którym nic nie słucha). Playwright nie rusza palcem w WebKicie i mobilny WebKit nie ma kółka myszy, więc testy przewijania kółkiem i testy myszy biegną tam jako desktop z myszą.
 
 Specy katalogu `/ui` (`ui-catalogue`, `dev-no-reload`) idą na `astro dev` tego drzewa, uruchomionym z `E2E_DEV_NO_WATCH=1` (`astro.config.mjs`): ten serwer nie obserwuje żadnego pliku, więc commit (lint-staged poprawia pliki, `astro check`) albo edycja w trakcie runu nie przeładowuje strony pod działającym testem.
 

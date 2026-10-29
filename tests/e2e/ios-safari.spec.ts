@@ -3,7 +3,8 @@ import { expect, test } from "@playwright/test";
 // What iOS Safari does and Chromium does not (KA0108): it zooms the page into
 // a focused field whose text is under 16px, inflates text after a turn to
 // landscape unless the root sets -webkit-text-size-adjust, and its 100vh is
-// the height with the toolbar hidden. Chromium shows none of it, so these
+// the height with the toolbar hidden. Chromium shows none of it, and the
+// webkit project (KA0134) runs Playwright's Linux WebKit, not iOS, so these
 // specs pin the conditions that keep Safari from doing it.
 
 // Every field a visitor types into, on the pages that have one: the contact
@@ -54,7 +55,13 @@ test.describe("iOS Safari", () => {
     }
   });
 
-  test("text keeps its size after a turn to landscape", async ({ page }) => {
+  test("text keeps its size after a turn to landscape", async ({
+    browserName,
+    page,
+  }) => {
+    // Playwright's WebKit is the Linux port, built without text autosizing:
+    // it drops -webkit-text-size-adjust from the computed style.
+    test.skip(browserName === "webkit", "WebKit on Linux has no autosizing");
     for (const path of ["/", "/this-route-does-not-exist"]) {
       // biome-ignore lint/performance/noAwaitInLoops: one page at a time
       await page.goto(path);

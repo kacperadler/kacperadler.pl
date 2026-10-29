@@ -84,15 +84,19 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+          # The browser list is in the key: a cache saved with chromium alone
+          # would hit and leave webkit missing.
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}-chromium-webkit
 
+      # webkit: the Safari-engine project (playwright.config.ts) runs the
+      # menu sheet, iOS field and touch specs.
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: bunx playwright install --with-deps chromium
+        run: bunx playwright install --with-deps chromium webkit
 
       - name: Install system deps for cached browsers
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: bunx playwright install-deps chromium
+        run: bunx playwright install-deps chromium webkit
 
       - name: Run Playwright tests
         run: bun run test:e2e

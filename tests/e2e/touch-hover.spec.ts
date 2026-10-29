@@ -269,6 +269,9 @@ test.describe("touch screen", () => {
 });
 
 test.describe("mouse", () => {
+  // The webkit project is an iPhone; a mouse is a desktop's.
+  test.use({ hasTouch: false, isMobile: false });
+
   test("a pointer resting on a cell selects it and lifts a button", async ({
     page,
   }) => {
