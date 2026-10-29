@@ -216,6 +216,30 @@ const hoverBoth = async (page: Page) => {
   return { hoveredButton, hoveredCard, idleButton, idleCard };
 };
 
+// The client logos in the trust bar and the cases are grey until their
+// cell is hovered (KA0075), so only where a pointer hovers: a touch screen
+// shows them in colour at rest (KA0127).
+const LOGOS = [".mb-trust-logo", ".mb-cases-logo"];
+
+// Each section's logos at rest, as "filter opacity", one entry per paint.
+const logoPaint = async (page: Page) => {
+  await page.goto("/");
+  return await Promise.all(
+    LOGOS.map(async (selector) => {
+      const paints = await page.locator(selector).evaluateAll((els) =>
+        els.map((el) => {
+          const { filter, opacity } = getComputedStyle(el);
+          return `${filter} ${opacity}`;
+        })
+      );
+      return { paints: [...new Set(paints)], selector };
+    })
+  );
+};
+
+const everyLogo = (paint: string) =>
+  LOGOS.map((selector) => ({ paints: [paint], selector }));
+
 test.describe("touch screen", () => {
   test.use({
     hasTouch: true,
@@ -266,6 +290,10 @@ test.describe("touch screen", () => {
       role: { highlight: transparent, touch: "manipulation" },
     });
   });
+
+  test("the client logos show in colour at rest", async ({ page }) => {
+    expect(await logoPaint(page)).toEqual(everyLogo("none 1"));
+  });
 });
 
 test.describe("mouse", () => {
@@ -284,5 +312,9 @@ test.describe("mouse", () => {
     expect(hoveredButton.hovered).toBe(true);
     expect(hoveredButton.fill).not.toBe(idleButton.fill);
     expect(hoveredButton.lift).not.toBe(idleButton.lift);
+  });
+
+  test("the client logos are grey at rest", async ({ page }) => {
+    expect(await logoPaint(page)).toEqual(everyLogo("grayscale(1) 0.6"));
   });
 });

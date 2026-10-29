@@ -87,8 +87,6 @@ const logos = ORDER.map((id) => {
     gap: 10px;
     align-items: center;
     max-width: 100%;
-    opacity: 0.6;
-    filter: grayscale(100%);
     transition:
       filter var(--mb-snap),
       opacity var(--mb-snap);
@@ -99,7 +97,14 @@ const logos = ORDER.map((id) => {
     filter: grayscale(0%);
   }
 
+  /* Grey until the cell is hovered, so only where a pointer hovers: a
+     touch screen shows the logos in colour at rest (KA0127). */
   @media (hover: hover) and (pointer: fine) {
+    .mb-trust-logo {
+      opacity: 0.6;
+      filter: grayscale(100%);
+    }
+
     :global(.mb-card:hover) .mb-trust-logo {
       opacity: 1;
       filter: grayscale(0%);
