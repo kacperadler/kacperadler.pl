@@ -3,9 +3,11 @@ export const siteConfig = {
   // third party - the script only loads in PROD and respects the
   // visitor's Do Not Track setting (see base-head.astro).
   analytics: {
-    // The hosts Umami counts (its data-domains): the site answers on both,
-    // and a page opened anywhere else (localhost, a preview) sends nothing.
-    domains: ["kacperadler.pl", "www.kacperadler.pl"],
+    // The host Umami counts (its data-domains): only the apex, since
+    // www.kacperadler.pl serves no page of its own (Dokploy sends it to the
+    // apex, KA0136), and a page opened anywhere else (localhost, a preview)
+    // sends nothing.
+    domains: ["kacperadler.pl"],
     umamiUrl: "https://analytics.kacperadler.pl",
     umamiWebsiteId: "937a952a-548b-4e9d-ba9a-d511be5454f6",
   },

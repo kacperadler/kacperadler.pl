@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 // loader from base-head.astro (KA0131). Two guards keep a test run out of the
 // production statistics: the e2e browser cannot resolve the analytics host
 // (`--host-resolver-rules` in playwright.config.ts), and the tracker is told
-// to count only the production hosts (`data-domains`), which also covers a
+// to count only the production host (`data-domains`), which also covers a
 // local `bun run preview` or the Docker image opened by hand.
 
 const UMAMI = "https://analytics.kacperadler.pl";
@@ -42,16 +42,17 @@ test.describe("analytics on the preview", () => {
     expect(toUmami).toEqual([`GET ${SCRIPT}`]);
   });
 
-  // www.kacperadler.pl serves the site too (200, no redirect to the apex), so
-  // both hosts count; localhost, where the preview runs, does not.
-  test("the tracker counts pageviews only on the production hosts", async ({
+  // www.kacperadler.pl serves no page of its own (Dokploy sends it to the
+  // apex, KA0136), so only the apex counts; localhost, where the preview runs,
+  // does not.
+  test("the tracker counts pageviews only on the production host", async ({
     page,
   }) => {
     await page.goto("/");
 
     await expect(page.locator(`script[src="${SCRIPT}"]`)).toHaveAttribute(
       "data-domains",
-      "kacperadler.pl,www.kacperadler.pl"
+      "kacperadler.pl"
     );
   });
 });

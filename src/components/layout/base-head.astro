@@ -154,7 +154,7 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? siteConfig.url).toString();
  * defer attribute on the injected tag keeps it non-blocking even
  * after load. data-do-not-track lets visitors who set DNT opt out
  * via Umami's own logic. data-domains makes the tracker send nothing
- * outside the production hosts, so a local preview or the Docker
+ * outside the production host, so a local preview or the Docker
  * image opened on localhost stays out of the statistics. */}
 {import.meta.env.PROD && (
   <script
