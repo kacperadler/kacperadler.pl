@@ -4,6 +4,10 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 
 ## 2026-10-29
 
+### Added
+
+- KA0111 Header menu button, header CTA and footer links are small tap targets (2086435)
+
 ### Changed
 
 - KA0115 The mobile sheet re-implements what `<dialog>` gives (ff69c00)

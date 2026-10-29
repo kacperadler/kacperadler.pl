@@ -896,9 +896,9 @@
   {
     "id": "KA0111",
     "title": "Header menu button, header CTA and footer links are small tap targets",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0111-header-menu-button-header-cta-and-footer-links-are-small-tap-targets/ticket.md",
-    "updated": "2026-10-29T07:04:41.832Z",
+    "updated": "2026-10-29T07:09:32.127Z",
     "after": [
       "KA0115"
     ]
@@ -1105,5 +1105,12 @@
     "status": "planning",
     "path": "spec/features/KA0134-the-e2e-run-has-no-webkit-so-the-sheet-s-safari-paths-are-only-simulated/ticket.md",
     "updated": "2026-10-29T00:40:02.499Z"
+  },
+  {
+    "id": "KA0135",
+    "title": "The inline \"formularzu\" link in the FAQ lede is 21px tall",
+    "status": "planning",
+    "path": "spec/features/KA0135-the-inline-formularzu-link-in-the-faq-lede-is-21px-tall/ticket.md",
+    "updated": "2026-10-29T07:09:32.123Z"
   }
 ]
