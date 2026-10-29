@@ -322,17 +322,17 @@ test.describe("component catalogue (astro dev)", () => {
     });
   });
 
-  // Every component in every variant holds its text face to the scale
-  // (KA0126, type-scale.ts). Off it: the headlines (the catalogue's own,
-  // a section head's, the sent form's), the mobile sheet's links, the
-  // brand mark (a logo) and screen-reader-only words.
+  // Every component in every variant holds its text to the scale (KA0126,
+  // KA0140, type-scale.ts), mono marks and the brand mark included. Off it:
+  // the headlines (the catalogue's own, a section head's, the sent form's),
+  // the mobile sheet's links and screen-reader-only words.
   test("components set their text on the small, body and lead sizes", async ({
     page,
   }) => {
     expect(
       await offScaleText(
         page,
-        "h1, h2, .mb-section-title, .mb-form-success h3, .mb-sheet-link, .mb-mark, .sr-only"
+        "h1, h2, .mb-section-title, .mb-form-success h3, .mb-sheet-link, .sr-only"
       )
     ).toEqual([]);
   });

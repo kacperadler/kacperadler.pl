@@ -531,10 +531,10 @@ test.describe("content labels", () => {
   });
 });
 
-// Every production page holds its text face to the scale (KA0126,
-// type-scale.ts), prose included. Off it: the headlines, the title block's
-// figures, the brand mark (a logo) and screen-reader-only words.
-const PAGE_OFF_SCALE = "h1, h2, .mb-status-figure, .mb-mark, .sr-only";
+// Every production page holds its text to the scale (KA0126, KA0140,
+// type-scale.ts), prose and the drawing's mono marks included. Off it: the
+// headlines, the title block's figures and screen-reader-only words.
+const PAGE_OFF_SCALE = "h1, h2, .mb-status-figure, .sr-only";
 
 test.describe("type scale", () => {
   test("every page's text face uses only the small, body and lead sizes", async ({
