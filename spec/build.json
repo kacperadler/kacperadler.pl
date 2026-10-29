@@ -1083,7 +1083,7 @@
     "title": "Every e2e page load on the preview sends a pageview to the production Umami",
     "status": "done",
     "path": "spec/features/KA0131-every-e2e-page-load-on-the-preview-sends-a-pageview-to-the-production-umami/ticket.md",
-    "updated": "2026-10-29T07:38:26.407Z"
+    "updated": "2026-10-29T07:42:16.523Z"
   },
   {
     "id": "KA0132",
