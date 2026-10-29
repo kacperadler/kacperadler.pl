@@ -1081,9 +1081,9 @@
   {
     "id": "KA0131",
     "title": "Every e2e page load on the preview sends a pageview to the production Umami",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0131-every-e2e-page-load-on-the-preview-sends-a-pageview-to-the-production-umami/ticket.md",
-    "updated": "2026-10-29T07:42:16.523Z"
+    "updated": "2026-10-29T07:47:43.955Z"
   },
   {
     "id": "KA0132",
@@ -1124,5 +1124,12 @@
     "after": [
       "KA0127"
     ]
+  },
+  {
+    "id": "KA0136",
+    "title": "www.kacperadler.pl serves the whole site instead of redirecting to the apex",
+    "status": "planning",
+    "path": "spec/features/KA0136-www-kacperadler-pl-serves-the-whole-site-instead-of-redirecting-to-the-apex/ticket.md",
+    "updated": "2026-10-29T07:47:43.950Z"
   }
 ]

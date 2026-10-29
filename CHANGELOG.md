@@ -9,6 +9,10 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0111 Header menu button, header CTA and footer links are small tap targets (2086435)
 - KA0125 "CRM-y" in "Aplikacje szyte na miarę" breaks at its hyphen (0852107)
 
+### Fixed
+
+- KA0131 Every e2e page load on the preview sends a pageview to the production Umami (541417a)
+
 ### Changed
 
 - KA0115 The mobile sheet re-implements what `<dialog>` gives (ff69c00)

@@ -13,4 +13,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: Dokploy domain settings / `nginx.conf`, `src/data/site-config.ts` (`analytics.domains`)
 - What: `curl -sSI https://www.kacperadler.pl/` answers `HTTP/2 200` with the home page (no `Location`), so the site lives on two hosts. The pages carry `rel="canonical"` to `https://kacperadler.pl/...`, but Umami records the two hostnames apart, and the tracker's `data-domains` has to list both (`kacperadler.pl,www.kacperadler.pl`) or the www visits go uncounted.
 - Suggestion: redirect `www.kacperadler.pl` to `https://kacperadler.pl$request_uri` with a 301 (in Dokploy's domain/Traefik settings or a `server_name www.kacperadler.pl` block in `nginx.conf`), then drop `www.kacperadler.pl` from `siteConfig.analytics.domains` and from `tests/e2e/analytics.spec.ts`. The Dokploy settings are not in the repo, so the human checks where the www host is configured.
-- Status: open
+- Status: ticket KA0136
