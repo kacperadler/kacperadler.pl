@@ -1034,9 +1034,9 @@
   {
     "id": "KA0126",
     "title": "Twelve type sizes where the skill counts five",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0126-twelve-type-sizes-where-the-skill-counts-five/ticket.md",
-    "updated": "2026-10-29T11:41:09.287Z"
+    "updated": "2026-10-29T11:45:51.122Z"
   },
   {
     "id": "KA0127",
@@ -1149,5 +1149,12 @@
     "status": "planning",
     "path": "spec/features/KA0139-the-case-study-s-facts-table-still-labels-its-rows-in-11px-mono-caps/ticket.md",
     "updated": "2026-10-29T10:03:52.189Z"
+  },
+  {
+    "id": "KA0140",
+    "title": "The mono marks still carry four sizes, so `size-count` stays a WARN",
+    "status": "planning",
+    "path": "spec/features/KA0140-the-mono-marks-still-carry-four-sizes-so-size-count-stays-a-warn/ticket.md",
+    "updated": "2026-10-29T11:45:51.116Z"
   }
 ]
