@@ -39,3 +39,4 @@ In:
 
 - 2026-10-29: Source: F1 of KA0115
 - 2026-10-29: The human approved it ("mozesz zrobic wszytskie 5").
+- 2026-10-29: Coordinator accepts keeping two Chromium-side simulations (click focus, root overflow) in both engines and skipping the overlay fade one in WebKit: Linux WebKit cannot show those Safari behaviours (review 22a189f0 confirmed by mutation).
