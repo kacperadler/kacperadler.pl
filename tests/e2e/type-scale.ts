@@ -1,14 +1,14 @@
 import type { Page } from "@playwright/test";
 
-// The text face keeps a short scale besides the headlines (KA0126): 14px
-// small (captions, labels, buttons, the nav), 16px body, 20px lead (the hero
-// subtitle, the about text, a card's title), and 12px for the form's
-// "(opcjonalnie)" hint and the xs button. The drawing's mono marks keep
-// their own sizes.
+// The page carries one type scale besides the headlines (KA0126, KA0140):
+// 14px small (captions, labels, buttons, the nav, the drawing's mono numbers),
+// 16px body (and the brand mark's "k"), 20px lead (the hero subtitle, the
+// about text, a card's title), and 12px for the form's "(opcjonalnie)" hint,
+// the xs button and the drawing's mono labels and badges.
 export const TEXT_SIZES: readonly number[] = [12, 14, 16, 20];
 
-// Every shown text in the text face whose size is off the scale, as
-// "<size> <element> <text>", leaving out the elements under `offScale`.
+// Every shown text whose size is off the scale, as "<size> <element> <text>",
+// leaving out the elements under `offScale`.
 // Closed accordions are opened first, as they hold text too; run it under
 // reduced motion, so an opened one shows at once.
 export const offScaleText = (page: Page, offScale: string) =>
@@ -33,7 +33,7 @@ export const offScaleText = (page: Page, offScale: string) =>
         }
         const style = getComputedStyle(el);
         const size = Number.parseFloat(style.fontSize);
-        if (style.fontFamily.includes("Mono") || sizes.includes(size)) {
+        if (sizes.includes(size)) {
           continue;
         }
         found.push(`${size}px ${el.className || el.tagName} "${text}"`);

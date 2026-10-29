@@ -78,3 +78,53 @@ test("favicon.ico holds the square brand mark at every size", async ({
   );
   expect(sizes).toEqual([16, 32, 48]);
 });
+
+// Red channel halfway between `base` (0x0a) and `blue` (0x8e): a darker
+// pixel is the `k`.
+const K_RED = (0x0a + 0x8e) / 2;
+
+// Rows of the mark's `blue` block that hold a pixel of the `k`; a row with
+// no `blue` is outside the block.
+const kRows = async (png: Buffer) => {
+  const { data, info } = await sharp(png)
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const rows = Array.from({ length: info.height }, (_, y) =>
+    Array.from({ length: info.width }, (__, x) => {
+      const i = (y * info.width + x) * 3;
+      return Array.from(data.subarray(i, i + 3));
+    })
+  );
+  return rows.filter(
+    (row) =>
+      row.some((rgb) => near(rgb, BLUE)) &&
+      row.some((rgb) => (rgb[0] ?? 255) < K_RED)
+  ).length;
+};
+
+// The favicon's `k` is the brand mark's `k` (KA0140: 16px in the 28px mark,
+// on the text scale): drawn ten times over, both stand as tall on the box.
+test.describe("favicon k", () => {
+  test.use({ deviceScaleFactor: 10 });
+
+  test("stands as tall as the brand mark's k", async ({ page, request }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
+    const mark = await page
+      .locator(".mb-mark")
+      .first()
+      .screenshot({ scale: "device" });
+    const svg = await (await request.get("/favicon.svg")).body();
+    const favicon = await sharp(svg, { density: 720 })
+      .resize(280, 280)
+      .png()
+      .toBuffer();
+
+    // 16px Geist's k is about 114 of the 280 rows, 15px's about 107.
+    expect(
+      Math.abs((await kRows(mark)) - (await kRows(favicon)))
+    ).toBeLessThanOrEqual(3);
+  });
+});
