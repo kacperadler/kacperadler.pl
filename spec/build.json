@@ -1024,9 +1024,9 @@
   {
     "id": "KA0125",
     "title": "\"CRM-y\" in \"Aplikacje szyte na miarę\" breaks at its hyphen",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0125-crm-y-in-aplikacje-szyte-na-miare-breaks-at-its-hyphen/ticket.md",
-    "updated": "2026-10-29T07:10:00.744Z",
+    "updated": "2026-10-29T07:32:37.245Z",
     "after": [
       "KA0111"
     ]
@@ -1081,9 +1081,9 @@
   {
     "id": "KA0131",
     "title": "Every e2e page load on the preview sends a pageview to the production Umami",
-    "status": "planned",
+    "status": "review",
     "path": "spec/features/KA0131-every-e2e-page-load-on-the-preview-sends-a-pageview-to-the-production-umami/ticket.md",
-    "updated": "2026-10-29T07:14:49.908Z"
+    "updated": "2026-10-29T07:28:08.089Z"
   },
   {
     "id": "KA0132",
