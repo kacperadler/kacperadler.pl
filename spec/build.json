@@ -1004,9 +1004,9 @@
   {
     "id": "KA0123",
     "title": "Content labels in the text face, in sentence case",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0123-content-labels-in-the-text-face-in-sentence-case/ticket.md",
-    "updated": "2026-10-29T09:42:55.255Z",
+    "updated": "2026-10-29T09:55:13.750Z",
     "after": [
       "KA0124"
     ]
@@ -1108,9 +1108,9 @@
   {
     "id": "KA0134",
     "title": "The e2e run has no WebKit, so the sheet's Safari paths are only simulated",
-    "status": "in-progress",
+    "status": "review",
     "path": "spec/features/KA0134-the-e2e-run-has-no-webkit-so-the-sheet-s-safari-paths-are-only-simulated/ticket.md",
-    "updated": "2026-10-29T09:34:54.410Z",
+    "updated": "2026-10-29T09:57:14.737Z",
     "after": [
       "KA0132"
     ]
@@ -1128,9 +1128,9 @@
   {
     "id": "KA0136",
     "title": "www.kacperadler.pl serves the whole site instead of redirecting to the apex",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0136-www-kacperadler-pl-serves-the-whole-site-instead-of-redirecting-to-the-apex/ticket.md",
-    "updated": "2026-10-29T09:53:19.379Z"
+    "updated": "2026-10-29T09:58:39.977Z"
   },
   {
     "id": "KA0137",
@@ -1138,5 +1138,12 @@
     "status": "planning",
     "path": "spec/features/KA0137-the-site-shows-up-in-google-for-local-searches-around-krotoszyn/ticket.md",
     "updated": "2026-10-29T09:38:31.288Z"
+  },
+  {
+    "id": "KA0138",
+    "title": "dev-no-reload.spec.ts is flaky on a fresh worktree",
+    "status": "dropped",
+    "path": "spec/features/KA0138-dev-no-reload-spec-ts-is-flaky-on-a-fresh-worktree/ticket.md",
+    "updated": "2026-10-29T09:58:47.697Z"
   }
 ]

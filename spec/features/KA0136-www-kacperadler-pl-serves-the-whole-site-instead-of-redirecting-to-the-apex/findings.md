@@ -13,4 +13,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `tests/e2e/dev-no-reload.spec.ts:21`
 - What: the first full `bun run test` in a worktree right after `bun install` failed this test once and passed it on retry (`1 flaky, 241 passed`): `locator.evaluate: Execution context was destroyed, most likely because of a navigation` at `html.evaluate(...)`, right after `page.goto(`${DEV_URL}/ui`)`. The page navigated on its own before the probe was set. [INFERENCE] Vite's first-visit dependency optimisation reloads the page, which is a reload the spec does not cause and does not wait out.
 - Suggestion: before setting the probe, wait until the dev server has settled (for example a warm-up `goto` of `/ui` and `waitForLoadState("networkidle")`, or `optimizeDeps.include` for the deps `/ui` pulls in), so the test only sees reloads caused by the file it writes. Keep the assertion itself.
-- Status: open
+- Status: dropped, duplicate of KA0099 (the same dev-no-reload flake); ticket KA0138 dropped.
