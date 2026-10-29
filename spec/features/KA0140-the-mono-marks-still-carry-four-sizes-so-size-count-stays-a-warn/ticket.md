@@ -4,7 +4,10 @@
 {
   "id": "KA0140",
   "title": "The mono marks still carry four sizes, so `size-count` stays a WARN",
-  "date": "2026-10-29"
+  "date": "2026-10-29",
+  "after": [
+    "KA0135"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-29: Source: F1 of KA0126
+- 2026-10-29: The human approved it ("KA0140 zatwierdzam"), against the recommendation to drop; the favicon k follows the brand k.

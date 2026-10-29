@@ -1041,9 +1041,9 @@
   {
     "id": "KA0127",
     "title": "The phone's logos stay grey",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0127-the-phone-s-logos-stay-grey/ticket.md",
-    "updated": "2026-10-28T17:22:50.402Z",
+    "updated": "2026-10-29T11:46:21.047Z",
     "after": [
       "KA0126"
     ]
@@ -1153,8 +1153,11 @@
   {
     "id": "KA0140",
     "title": "The mono marks still carry four sizes, so `size-count` stays a WARN",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0140-the-mono-marks-still-carry-four-sizes-so-size-count-stays-a-warn/ticket.md",
-    "updated": "2026-10-29T11:45:51.116Z"
+    "updated": "2026-10-29T12:17:08.910Z",
+    "after": [
+      "KA0135"
+    ]
   }
 ]
