@@ -11,6 +11,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0124 Running text in the full ink and at 16px (bf651c5)
 - KA0125 "CRM-y" in "Aplikacje szyte na miarę" breaks at its hyphen (0852107)
 - KA0126 Twelve type sizes where the skill counts five (543eb60)
+- KA0127 The phone's logos stay grey (9aaa0d7)
 - KA0136 www.kacperadler.pl serves the whole site instead of redirecting to the apex (e63db3a)
 
 ### Fixed

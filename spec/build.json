@@ -1041,9 +1041,9 @@
   {
     "id": "KA0127",
     "title": "The phone's logos stay grey",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0127-the-phone-s-logos-stay-grey/ticket.md",
-    "updated": "2026-10-29T12:38:11.503Z",
+    "updated": "2026-10-29T12:42:41.200Z",
     "after": [
       "KA0126"
     ]
@@ -1159,5 +1159,12 @@
     "after": [
       "KA0135"
     ]
+  },
+  {
+    "id": "KA0141",
+    "title": "The experience list's logos stay grey on a phone",
+    "status": "dropped",
+    "path": "spec/features/KA0141-the-experience-list-s-logos-stay-grey-on-a-phone/ticket.md",
+    "updated": "2026-10-29T12:42:50.591Z"
   }
 ]

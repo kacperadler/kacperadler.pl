@@ -13,4 +13,4 @@ A finding ends in one of three statuses: `fixed` (the branch fixed it; name the 
 - Where: `src/components/mb/sections/about.astro:236-257` (`.mb-exp-logo`)
 - What: the "Pełne doświadczenie" accordion in `#about` greys its logos the same way the trust bar and the cases did before KA0127 (`opacity: 0.6; filter: grayscale(100%)` at rest, colour only on `:hover` under `(hover: hover) and (pointer: fine)`), so on a phone a visitor never sees ReX, LeadBuster and the rest in their colours there. KA0127's approved decision covers only the trust bar and the cases. Reproduce: open `/` on a 390px touch viewport, open the accordion; every logo is grey.
 - Suggestion: move the grey rest state of `.mb-exp-logo` into the existing `@media (hover: hover) and (pointer: fine)` block, as KA0127 did in `trust.astro` and `cases.astro`, add `.mb-exp-logo` to `LOGOS` in `tests/e2e/touch-hover.spec.ts`, and widen the sentence in `DESIGN.md` (Motion) and `AGENTS.md` ("Hover tylko pod myszą") to the experience list.
-- Status: open
+- Status: ticket KA0141
