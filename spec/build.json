@@ -1004,9 +1004,9 @@
   {
     "id": "KA0123",
     "title": "Content labels in the text face, in sentence case",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0123-content-labels-in-the-text-face-in-sentence-case/ticket.md",
-    "updated": "2026-10-28T17:22:49.038Z",
+    "updated": "2026-10-29T08:15:51.040Z",
     "after": [
       "KA0124"
     ]
@@ -1088,9 +1088,9 @@
   {
     "id": "KA0132",
     "title": "Other specs still wait for networkidle on preview pages",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0132-other-specs-still-wait-for-networkidle-on-preview-pages/ticket.md",
-    "updated": "2026-10-29T08:08:04.478Z",
+    "updated": "2026-10-29T08:16:56.138Z",
     "after": [
       "KA0131"
     ]
