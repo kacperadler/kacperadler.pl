@@ -987,9 +987,9 @@
   {
     "id": "KA0121",
     "title": "The hero headline in two lines at a size that leads the first screen",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0121-the-hero-headline-in-two-lines-at-a-size-that-leads-the-first-screen/ticket.md",
-    "updated": "2026-10-29T10:04:15.679Z",
+    "updated": "2026-10-29T10:39:35.069Z",
     "after": [
       "KA0123"
     ]
