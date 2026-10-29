@@ -1115,9 +1115,9 @@
   {
     "id": "KA0135",
     "title": "The inline \"formularzu\" link in the FAQ lede is 21px tall",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0135-the-inline-formularzu-link-in-the-faq-lede-is-21px-tall/ticket.md",
-    "updated": "2026-10-29T07:14:52.436Z",
+    "updated": "2026-10-29T12:43:06.296Z",
     "after": [
       "KA0127"
     ]
