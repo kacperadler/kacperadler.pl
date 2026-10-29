@@ -35,13 +35,15 @@ test.describe("mobile sheet", () => {
     await expect(sheet).toBeVisible();
     expect(await sheet.evaluate((el) => el.matches(":modal"))).toBe(true);
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
-    // It covers the whole screen edge to edge, with no frame of its own.
+    // It covers the whole screen edge to edge, with no frame of its own,
+    // and stands its CTA on the bottom padding.
     expect(
       await sheet.evaluate((el) => {
         const { x, y, width, height } = el.getBoundingClientRect();
-        return [x, y, width, height, el.clientLeft, el.clientTop];
+        const cta = el.querySelector(".mb-sheet-cta")?.getBoundingClientRect();
+        return [x, y, width, height, el.clientLeft, el.clientTop, cta?.bottom];
       })
-    ).toEqual([0, 0, 375, 812, 0, 0]);
+    ).toEqual([0, 0, 375, 812, 0, 0, 812 - 32]);
 
     await page.click("[data-menu-close]");
 
@@ -79,12 +81,16 @@ test.describe("mobile sheet", () => {
       }, selector);
 
     expect((await fadeOf("[data-menu-open]")).fades).toContain("opacity");
-    await expect(page.locator("#mobile-sheet")).toBeVisible();
+    const sheet = page.locator("#mobile-sheet");
+    await expect(sheet).toBeVisible();
+    await sheet.evaluate((el) =>
+      Promise.all(el.getAnimations().map((a) => a.finished))
+    );
     // While it fades, the page shows through it as it is, not dimmed.
     expect(
-      await page
-        .locator("#mobile-sheet")
-        .evaluate((el) => getComputedStyle(el, "::backdrop").backgroundColor)
+      await sheet.evaluate(
+        (el) => getComputedStyle(el, "::backdrop").backgroundColor
+      )
     ).toBe("rgba(0, 0, 0, 0)");
     // Closing keeps it shown over the whole screen and in the top layer
     // until the fade ends.
@@ -200,22 +206,24 @@ test.describe("mobile sheet", () => {
     expect(await takesFocus(pageLink(page))).toBe(true);
   });
 
-  test("the page behind does not scroll while the sheet is open", async ({
+  test("the page behind is locked while the sheet is open", async ({
     page,
   }) => {
     await page.goto("/");
+    // Chromium never scrolls the page under the contained modal, by wheel
+    // or key; iOS Safari does under a finger, so the root itself must not
+    // scroll while the sheet is up.
+    const rootOverflow = () =>
+      page.evaluate(() => getComputedStyle(document.documentElement).overflowY);
+    expect(await rootOverflow()).toBe("visible");
 
     await page.locator("[data-menu-open]").click();
     await expect(page.locator("#mobile-sheet")).toBeVisible();
-
-    await page.mouse.move(187, 600);
-    await page.mouse.wheel(0, 600);
-    // Give a wheel that did get through the time to scroll the page.
-    await page.waitForTimeout(300);
-    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    expect(await rootOverflow()).toBe("hidden");
 
     await page.click("[data-menu-close]");
-    await page.mouse.wheel(0, 600);
+    expect(await rootOverflow()).toBe("visible");
+    await page.keyboard.press("PageDown");
     await expect
       .poll(() => page.evaluate(() => window.scrollY))
       .toBeGreaterThan(0);
@@ -283,6 +291,37 @@ test.describe("mobile sheet", () => {
       await cta.click();
       await expect(sheet).toBeHidden();
       await expect(page).toHaveURL(HASH_CONTACT);
+    });
+
+    test("where the fade out leaves the top layer (no `overlay`, as in Safari), the sheet holds its box and scroll", async ({
+      page,
+    }) => {
+      await page.goto("/");
+      // Down the page, where a sheet that lost its fixed box would slide off.
+      await page.evaluate(() =>
+        window.scrollTo({ behavior: "instant", top: 1000 })
+      );
+
+      const sheet = page.locator("#mobile-sheet");
+      await page.locator("[data-menu-open]").click();
+      await expect(sheet).toBeVisible();
+      await page.mouse.move(422, 195);
+      await page.mouse.wheel(0, 600);
+      await expect(sheet.locator(".mb-sheet-cta a")).toBeInViewport();
+
+      // Read in the task of the click, as the fade out begins.
+      const closing = await sheet.evaluate((el) => {
+        el.style.transition =
+          "opacity 0.12s linear, display 0.12s linear allow-discrete";
+        const scrolled = el.scrollTop;
+        el.querySelector<HTMLElement>("[data-menu-close]")?.click();
+        const { x, y, width, height } = el.getBoundingClientRect();
+        return {
+          box: [x, y, width, height],
+          keepsScroll: scrolled > 0 && el.scrollTop === scrolled,
+        };
+      });
+      expect(closing).toEqual({ box: [0, 0, 844, 390], keepsScroll: true });
     });
   });
 

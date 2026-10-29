@@ -4,11 +4,13 @@
  * [data-sheet-link] inside (so anchor navigation dismisses the overlay).
  *
  * The browser does the modal part: while the sheet is open the page behind
- * is inert and Escape closes it; the scroll lock is a CSS rule on
- * `html:has(.mb-sheet:modal)`. The script starts focus on the close button,
- * wraps Tab between the first and last control inside (a modal dialog lets
- * Tab leave for the browser's own UI), keeps aria-expanded on the trigger,
- * and on every close (X, link, Escape) returns focus to the trigger.
+ * is inert, focus starts on its first control (the X) and Escape closes
+ * it; the scroll lock is a CSS rule on `html:has(.mb-sheet:modal)`. The
+ * script wraps Tab between the first and last control inside (a modal
+ * dialog lets Tab leave for the browser's own UI), keeps aria-expanded on
+ * the trigger, and on every close (X, link, Escape) returns focus to the
+ * trigger: the dialog hands it back to whatever held it before, which in
+ * Safari, where a click does not focus a button, is not the trigger.
  *
  * Click, keydown and close listeners are document-level (event delegation;
  * close does not bubble, so it is caught on the way down), so they survive
@@ -51,12 +53,12 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  // The trigger is inert while the sheet is open, so this opens a closed one.
+  // The trigger is inert while the sheet is open, so this opens a closed
+  // one; showModal() focuses its first control, the X.
   const trigger = event.target.closest<HTMLElement>("[data-menu-open]");
   if (trigger) {
     sheet.showModal();
     trigger.setAttribute("aria-expanded", "true");
-    sheet.querySelector<HTMLElement>("[data-menu-close]")?.focus();
     return;
   }
 
