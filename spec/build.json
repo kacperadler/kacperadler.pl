@@ -1014,9 +1014,9 @@
   {
     "id": "KA0124",
     "title": "Running text in the full ink and at 16px",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0124-running-text-in-the-full-ink-and-at-16px/ticket.md",
-    "updated": "2026-10-29T07:38:21.230Z",
+    "updated": "2026-10-29T08:10:40.043Z",
     "after": [
       "KA0125"
     ]
@@ -1088,9 +1088,9 @@
   {
     "id": "KA0132",
     "title": "Other specs still wait for networkidle on preview pages",
-    "status": "planned",
+    "status": "review",
     "path": "spec/features/KA0132-other-specs-still-wait-for-networkidle-on-preview-pages/ticket.md",
-    "updated": "2026-10-29T07:14:51.375Z",
+    "updated": "2026-10-29T08:08:04.478Z",
     "after": [
       "KA0131"
     ]
