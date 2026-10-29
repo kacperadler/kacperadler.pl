@@ -1153,9 +1153,9 @@
   {
     "id": "KA0140",
     "title": "The mono marks still carry four sizes, so `size-count` stays a WARN",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0140-the-mono-marks-still-carry-four-sizes-so-size-count-stays-a-warn/ticket.md",
-    "updated": "2026-10-29T14:42:30.581Z",
+    "updated": "2026-10-29T14:47:16.030Z",
     "after": [
       "KA0135"
     ]
