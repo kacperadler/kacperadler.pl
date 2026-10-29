@@ -2,10 +2,11 @@ import { expect, test } from "@playwright/test";
 
 // The header's call button and menu button are 36px and the footer links
 // 22px high (KA0111); an empty ::after around each takes the taps just past
-// the drawn edge. The buttons reach 44px each way. The footer links sit 32px
-// apart, so theirs stops halfway into the list's gap: a tap under a link
-// lands on it or on nothing, never on the next one. Reduced motion keeps
-// the header's entrance from moving it while the points are read.
+// the drawn edge, 44px each way. The footer's lists space their links far
+// enough apart that those areas never overlap: a tap between two links
+// lands on the nearer one or on nothing, never on the far one. Reduced
+// motion keeps the header's entrance from moving it while the points are
+// read.
 test.use({
   contextOptions: { reducedMotion: "reduce" },
   hasTouch: true,
@@ -59,7 +60,7 @@ test.describe("tap targets on a phone", () => {
     await expect(page.locator("#mobile-sheet")).toHaveJSProperty("open", true);
   });
 
-  test("a footer link takes a tap just past its edge, and a tap between two links lands on the nearer one or none", async ({
+  test("a footer link takes a tap 44px high, and a tap between two links lands on the nearer one or none", async ({
     page,
   }) => {
     await page.goto("/");
@@ -73,9 +74,16 @@ test.describe("tap targets on a phone", () => {
           const box = link.getBoundingClientRect();
           const x = box.left + Math.min(10, box.width / 2);
           const name = link.textContent?.trim();
-          for (const y of [box.top - 4, box.bottom + 4]) {
+          if (box.height >= 44) {
+            found.push(`${name}: drawn ${box.height}px high, no area needed`);
+          }
+          // 21.5px above and below the centre: just inside a 44px area.
+          const centre = box.top + box.height / 2;
+          for (const y of [centre - 21.5, centre + 21.5]) {
             if (!link.contains(document.elementFromPoint(x, y))) {
-              found.push(`${name}: a tap at ${y - box.top}px misses it`);
+              found.push(
+                `${name}: a tap ${(y - centre).toFixed(1)}px from its centre misses it`
+              );
             }
           }
           const next = links[i + 1];

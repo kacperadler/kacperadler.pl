@@ -134,22 +134,16 @@ const year = new Date().getFullYear();
     letter-spacing: 0.14em;
   }
 
+  /* 22px between links keeps their 44px hit areas (link.astro) apart: at
+   * 10px they overlapped, the later link took the strip under the one
+   * above, and a tap just under a link opened the next. */
   .mb-footer-cols ul {
-    --mb-footer-gap: 10px;
     display: flex;
     flex-direction: column;
-    gap: var(--mb-footer-gap);
+    gap: 22px;
     padding: 0;
     margin: 0;
     list-style: none;
-  }
-
-  /* The links' hit areas (link.astro) reach halfway into the gap and no
-   * further, so neighbours never overlap: where they did, the later link
-   * took the strip under the one above, and a tap just under a link opened
-   * the next. */
-  .mb-footer-cols :global(.mb-link-footer::after) {
-    inset-block: calc(var(--mb-footer-gap) / -2);
   }
 
   .mb-footer-bottom {
