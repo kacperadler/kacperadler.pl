@@ -86,8 +86,9 @@ test.describe("axe-core a11y", () => {
     await page.route("**/api/lead", (route) =>
       route.fulfill({ json: { error: "store" }, status: 500 })
     );
+    // goto waits for the load event; contact-form.ts, a module script, runs
+    // before it, so the form takes the submit below.
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
     const wrap = page.locator("[data-contact-wrap]");
 
     // Empty submit: every field invalid, error lines and coral frames shown.

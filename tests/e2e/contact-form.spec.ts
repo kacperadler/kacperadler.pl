@@ -444,7 +444,6 @@ test.describe("contact form", () => {
       route.fulfill({ json: { ok: true }, status: 200 })
     );
     await page.goto("/#contact");
-    await page.waitForLoadState("networkidle");
     const email = page.locator('[data-contact-form] input[name="email"]');
     await email.fill("a@example.com");
     await pickType(page, "audit");

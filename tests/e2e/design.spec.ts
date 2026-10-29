@@ -68,7 +68,9 @@ test.describe("minimal brutalism", () => {
     for (const path of [...PAGES, ...cases]) {
       // biome-ignore lint/performance/noAwaitInLoops: one page at a time
       await page.setViewportSize({ height: 900, width: 1440 });
-      await page.goto(path, { waitUntil: "networkidle" });
+      // The page as a visitor sees it before the resize: loaded, in Geist.
+      await page.goto(path);
+      await page.evaluate(() => document.fonts.ready);
       await cdp.send("Animation.setPlaybackRate", { playbackRate: 0 });
       await page.setViewportSize({ height: 800, width: 360 });
       const frame = await page.evaluate(() => ({
