@@ -1014,9 +1014,9 @@
   {
     "id": "KA0124",
     "title": "Running text in the full ink and at 16px",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0124-running-text-in-the-full-ink-and-at-16px/ticket.md",
-    "updated": "2026-10-28T17:22:48.639Z",
+    "updated": "2026-10-29T07:38:21.230Z",
     "after": [
       "KA0125"
     ]
@@ -1081,9 +1081,9 @@
   {
     "id": "KA0131",
     "title": "Every e2e page load on the preview sends a pageview to the production Umami",
-    "status": "review",
+    "status": "done",
     "path": "spec/features/KA0131-every-e2e-page-load-on-the-preview-sends-a-pageview-to-the-production-umami/ticket.md",
-    "updated": "2026-10-29T07:28:08.089Z"
+    "updated": "2026-10-29T07:38:26.407Z"
   },
   {
     "id": "KA0132",
