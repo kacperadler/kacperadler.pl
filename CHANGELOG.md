@@ -14,6 +14,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0127 The phone's logos stay grey (9aaa0d7)
 - KA0135 The inline "formularzu" link in the FAQ lede is 21px tall (27511b7)
 - KA0136 www.kacperadler.pl serves the whole site instead of redirecting to the apex (e63db3a)
+- KA0142 The hero card counts 1000+ system users and 500+ mobile app users (8ce164e)
 
 ### Fixed
 
