@@ -936,9 +936,9 @@
   {
     "id": "KA0115",
     "title": "The mobile sheet re-implements what `<dialog>` gives",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0115-the-mobile-sheet-re-implements-what-dialog-gives/ticket.md",
-    "updated": "2026-10-28T16:52:27.891Z",
+    "updated": "2026-10-29T00:34:54.725Z",
     "after": [
       "KA0117"
     ]
