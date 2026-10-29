@@ -216,10 +216,10 @@ const hoverBoth = async (page: Page) => {
   return { hoveredButton, hoveredCard, idleButton, idleCard };
 };
 
-// The client logos are grey until their cell is hovered (KA0075), so only
-// where a pointer hovers: a touch screen shows them in colour at rest
-// (KA0127). The trust bar, the cases and the experience list.
-const LOGOS = [".mb-trust-logo", ".mb-cases-logo", ".mb-exp-logo"];
+// The client logos in the trust bar and the cases are grey until their
+// cell is hovered (KA0075), so only where a pointer hovers: a touch screen
+// shows them in colour at rest (KA0127).
+const LOGOS = [".mb-trust-logo", ".mb-cases-logo"];
 
 // Each section's logos at rest, as "filter opacity", one entry per paint.
 const logoPaint = async (page: Page) => {

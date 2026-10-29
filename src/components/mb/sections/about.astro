@@ -237,6 +237,8 @@ const caseStudies = await caseStudiesByExperience();
     width: auto;
     max-width: 140px;
     max-height: 32px;
+    opacity: 0.6;
+    filter: grayscale(100%);
     transition:
       filter var(--mb-snap),
       opacity var(--mb-snap);
@@ -247,14 +249,7 @@ const caseStudies = await caseStudiesByExperience();
     filter: grayscale(0%);
   }
 
-  /* Grey until the cell is hovered, so only where a pointer hovers: a
-     touch screen shows the logos in colour at rest (KA0127). */
   @media (hover: hover) and (pointer: fine) {
-    .mb-exp-logo {
-      opacity: 0.6;
-      filter: grayscale(100%);
-    }
-
     :global(.mb-card:hover) .mb-exp-logo {
       opacity: 1;
       filter: grayscale(0%);
