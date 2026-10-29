@@ -13,6 +13,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 ### Fixed
 
 - KA0131 Every e2e page load on the preview sends a pageview to the production Umami (541417a)
+- KA0132 Other specs still wait for networkidle on preview pages (764e225)
 
 ### Changed
 

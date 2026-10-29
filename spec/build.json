@@ -1088,9 +1088,9 @@
   {
     "id": "KA0132",
     "title": "Other specs still wait for networkidle on preview pages",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0132-other-specs-still-wait-for-networkidle-on-preview-pages/ticket.md",
-    "updated": "2026-10-29T08:16:56.138Z",
+    "updated": "2026-10-29T08:22:12.282Z",
     "after": [
       "KA0131"
     ]
