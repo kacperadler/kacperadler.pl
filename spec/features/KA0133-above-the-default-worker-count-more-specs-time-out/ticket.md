@@ -4,7 +4,10 @@
 {
   "id": "KA0133",
   "title": "Above the default worker count, more specs time out",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0134"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F3 of KA0129
+- 2026-10-29: The human approved it ("mozesz zrobic wszytskie 5").

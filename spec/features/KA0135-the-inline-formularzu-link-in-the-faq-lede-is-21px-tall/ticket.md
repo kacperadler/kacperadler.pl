@@ -4,7 +4,10 @@
 {
   "id": "KA0135",
   "title": "The inline \"formularzu\" link in the FAQ lede is 21px tall",
-  "date": "2026-10-29"
+  "date": "2026-10-29",
+  "after": [
+    "KA0127"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-29: Source: F1 of KA0111
+- 2026-10-29: The human approved it ("mozesz zrobic wszytskie 5").

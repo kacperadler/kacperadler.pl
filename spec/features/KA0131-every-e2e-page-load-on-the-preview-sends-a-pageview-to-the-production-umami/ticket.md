@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F1 of KA0129
+- 2026-10-29: The human approved it ("mozesz zrobic wszytskie 5").

@@ -4,7 +4,10 @@
 {
   "id": "KA0132",
   "title": "Other specs still wait for networkidle on preview pages",
-  "date": "2026-10-28"
+  "date": "2026-10-28",
+  "after": [
+    "KA0131"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-28: Source: F2 of KA0129
+- 2026-10-29: The human approved it ("mozesz zrobic wszytskie 5").

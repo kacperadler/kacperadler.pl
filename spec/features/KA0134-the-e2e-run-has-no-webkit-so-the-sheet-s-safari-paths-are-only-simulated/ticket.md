@@ -4,7 +4,10 @@
 {
   "id": "KA0134",
   "title": "The e2e run has no WebKit, so the sheet's Safari paths are only simulated",
-  "date": "2026-10-29"
+  "date": "2026-10-29",
+  "after": [
+    "KA0132"
+  ]
 }
 ```
 
@@ -35,3 +38,4 @@ In:
 ## Decisions
 
 - 2026-10-29: Source: F1 of KA0115
+- 2026-10-29: The human approved it ("mozesz zrobic wszytskie 5").

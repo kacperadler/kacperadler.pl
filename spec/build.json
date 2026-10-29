@@ -1024,9 +1024,9 @@
   {
     "id": "KA0125",
     "title": "\"CRM-y\" in \"Aplikacje szyte na miarę\" breaks at its hyphen",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0125-crm-y-in-aplikacje-szyte-na-miare-breaks-at-its-hyphen/ticket.md",
-    "updated": "2026-10-28T17:22:48.258Z",
+    "updated": "2026-10-29T07:10:00.744Z",
     "after": [
       "KA0111"
     ]
@@ -1081,36 +1081,48 @@
   {
     "id": "KA0131",
     "title": "Every e2e page load on the preview sends a pageview to the production Umami",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0131-every-e2e-page-load-on-the-preview-sends-a-pageview-to-the-production-umami/ticket.md",
-    "updated": "2026-10-28T21:50:32.039Z"
+    "updated": "2026-10-29T07:14:49.908Z"
   },
   {
     "id": "KA0132",
     "title": "Other specs still wait for networkidle on preview pages",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0132-other-specs-still-wait-for-networkidle-on-preview-pages/ticket.md",
-    "updated": "2026-10-28T21:50:32.041Z"
+    "updated": "2026-10-29T07:14:51.375Z",
+    "after": [
+      "KA0131"
+    ]
   },
   {
     "id": "KA0133",
     "title": "Above the default worker count, more specs time out",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0133-above-the-default-worker-count-more-specs-time-out/ticket.md",
-    "updated": "2026-10-28T21:50:32.045Z"
+    "updated": "2026-10-29T07:14:52.043Z",
+    "after": [
+      "KA0134"
+    ]
   },
   {
     "id": "KA0134",
     "title": "The e2e run has no WebKit, so the sheet's Safari paths are only simulated",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0134-the-e2e-run-has-no-webkit-so-the-sheet-s-safari-paths-are-only-simulated/ticket.md",
-    "updated": "2026-10-29T00:40:02.499Z"
+    "updated": "2026-10-29T07:14:51.717Z",
+    "after": [
+      "KA0132"
+    ]
   },
   {
     "id": "KA0135",
     "title": "The inline \"formularzu\" link in the FAQ lede is 21px tall",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0135-the-inline-formularzu-link-in-the-faq-lede-is-21px-tall/ticket.md",
-    "updated": "2026-10-29T07:09:32.123Z"
+    "updated": "2026-10-29T07:14:52.436Z",
+    "after": [
+      "KA0127"
+    ]
   }
 ]
