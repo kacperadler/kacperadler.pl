@@ -2,6 +2,12 @@
 
 Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at the next merge.
 
+## 2026-10-31
+
+### Changed
+
+- KA0143 README reads like a person wrote it, without the internal detail (a8d9a36)
+
 ## 2026-10-29
 
 ### Added

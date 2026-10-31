@@ -1177,8 +1177,8 @@
   {
     "id": "KA0143",
     "title": "README reads like a person wrote it, without the internal detail",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0143-readme-reads-like-a-person-wrote-it-without-the-internal-detail/ticket.md",
-    "updated": "2026-10-31T08:01:53.475Z"
+    "updated": "2026-10-31T08:29:15.249Z"
   }
 ]
