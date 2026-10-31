@@ -54,7 +54,7 @@ COPY docker-start.sh /docker-start.sh
 # The Node server listens only inside the container; nginx is the way in.
 # /data is the Dokploy volume that keeps the SQLite file across deploys.
 # RESEND_API_KEY, LEAD_NOTIFY_FROM and LEAD_NOTIFY_TO come from Dokploy's
-# Environment tab (README.md), never from the image.
+# Environment tab (docs/deploy.md), never from the image.
 ENV HOST=127.0.0.1 PORT=4321 LEADS_DB_PATH=/data/leads.sqlite
 RUN mkdir -p /data
 
