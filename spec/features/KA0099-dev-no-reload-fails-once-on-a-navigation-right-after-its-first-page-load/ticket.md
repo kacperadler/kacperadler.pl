@@ -35,3 +35,4 @@ In:
 ## Decisions
 
 - 2026-10-14: Source: F1 of KA0092
+- 2026-10-31: Kacper approved: fix the test.
