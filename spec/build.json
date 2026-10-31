@@ -797,9 +797,9 @@
   {
     "id": "KA0099",
     "title": "dev-no-reload fails once on a navigation right after its first page load",
-    "status": "planned",
+    "status": "merged",
     "path": "spec/features/KA0099-dev-no-reload-fails-once-on-a-navigation-right-after-its-first-page-load/ticket.md",
-    "updated": "2026-10-31T19:12:33.553Z"
+    "updated": "2026-10-31T20:40:10.039Z"
   },
   {
     "id": "KA0100",
@@ -1180,5 +1180,12 @@
     "status": "merged",
     "path": "spec/features/KA0143-readme-reads-like-a-person-wrote-it-without-the-internal-detail/ticket.md",
     "updated": "2026-10-31T08:29:15.249Z"
+  },
+  {
+    "id": "KA0144",
+    "title": "The ui-catalogue specs can be the first page of the e2e dev server and get its startup reload",
+    "status": "planning",
+    "path": "spec/features/KA0144-the-ui-catalogue-specs-can-be-the-first-page-of-the-e2e-dev-server-and-get-its-startup-reload/ticket.md",
+    "updated": "2026-10-31T20:40:10.035Z"
   }
 ]

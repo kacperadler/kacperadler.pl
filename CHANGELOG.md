@@ -4,6 +4,10 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 
 ## 2026-10-31
 
+### Fixed
+
+- KA0099 dev-no-reload fails once on a navigation right after its first page load (4b784be)
+
 ### Changed
 
 - KA0143 README reads like a person wrote it, without the internal detail (a8d9a36)
