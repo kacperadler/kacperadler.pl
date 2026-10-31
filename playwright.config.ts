@@ -110,6 +110,15 @@ const LEADS_DB =
   join(mkdtempSync(join(tmpdir(), "kacperadler-e2e-")), "leads.sqlite");
 process.env.E2E_LEADS_DB = LEADS_DB;
 
+// The e2e dev server's stdout goes to this file rather than into the run's
+// output, where it would print a line per request; dev-no-reload.spec.ts
+// quotes the lines it wrote when a page of it navigates away under the spec
+// (why the dev server reloaded it). Passed to the workers the same way.
+const DEV_LOG =
+  process.env.E2E_DEV_LOG ??
+  join(mkdtempSync(join(tmpdir(), "kacperadler-e2e-dev-")), "dev.log");
+process.env.E2E_DEV_LOG = DEV_LOG;
+
 export default defineConfig({
   forbidOnly: !!process.env.CI,
   fullyParallel: true,
@@ -156,7 +165,8 @@ export default defineConfig({
   // keeps `astro dev` in the foreground too and lets it run next to the
   // `bun dev` of the main checkout. E2E_DEV_NO_WATCH=1 makes it watch no
   // file (see astro.config.mjs): a commit or `astro check` in this tree
-  // during the run cannot reload a page under a running spec.
+  // during the run cannot reload a page under a running spec. Its stdout goes
+  // to DEV_LOG.
   webServer: [
     {
       command: `E2E_FIXTURES=none bun run build -- --outDir dist-no-case-studies && bun run build && bun run preview -- --port ${PORT} --ignore-lock`,
@@ -168,7 +178,7 @@ export default defineConfig({
       url: BASE_URL,
     },
     {
-      command: `bun run dev -- --port ${DEV_PORT} --ignore-lock`,
+      command: `bun run dev -- --port ${DEV_PORT} --ignore-lock > "${DEV_LOG}"`,
       env: { E2E_DEV_NO_WATCH: "1" },
       reuseExistingServer: false,
       stderr: "pipe",
