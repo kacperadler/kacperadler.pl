@@ -122,6 +122,11 @@ process.env.E2E_DEV_LOG = DEV_LOG;
 export default defineConfig({
   forbidOnly: !!process.env.CI,
   fullyParallel: true,
+  // The run writes below test-results/ and playwright-report/, never the
+  // folders themselves: Playwright removes its outputDir and the HTML report
+  // folder before it writes, and a sandbox that lets a run write inside the
+  // top-level folders lets it neither remove nor make one (KA0147).
+  outputDir: "test-results/e2e",
 
   projects: [
     {
@@ -129,7 +134,12 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
+  reporter: process.env.CI
+    ? [
+        ["github"],
+        ["html", { open: "never", outputFolder: "playwright-report/html" }],
+      ]
+    : "list",
   retries: process.env.CI ? 2 : 0,
   testDir: "./tests/e2e",
 
