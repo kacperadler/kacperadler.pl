@@ -1198,9 +1198,9 @@
   {
     "id": "KA0146",
     "title": "Redesign inspired by the Skills section of safwatk.com, on the new palette",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0146-redesign-inspired-by-the-skills-section-of-safwatk-com-on-the-new-palette/ticket.md",
-    "updated": "2026-11-05T14:01:41.604Z",
+    "updated": "2026-11-05T15:10:56.946Z",
     "after": [
       "KA0145"
     ]
