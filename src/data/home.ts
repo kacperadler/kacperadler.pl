@@ -58,7 +58,7 @@ export const customApps = {
 // The offer's lede: how pricing works. The audit credit is the audit
 // step's own `note` (src/content/services/audit.json).
 export const offerPricing =
-  "Każdy projekt wyceniam indywidualnie. Wycenę dostajesz w 2–3 dni po rozmowie. Rozmowa i wycena są bezpłatne i do niczego nie zobowiązują.";
+  "Każdy projekt wyceniam indywidualnie. Wycenę dostajesz w 2-3 dni po rozmowie. Rozmowa i wycena są bezpłatne i do niczego nie zobowiązują.";
 
 /* A project told as problem, solution and effect, newest first.
  * `experiences` are the ids of its entries in src/content/experience (one,
