@@ -192,6 +192,39 @@ test.describe("minimal brutalism", () => {
       ).toBeLessThanOrEqual(1);
     }
   });
+
+  // The owner's palette (KA0145): Galactic Blue the ground, Lime Green the
+  // main call to action with Galactic Blue text, True Blue only for state -
+  // the focus ring and the focused field's shadow.
+  test("Galactic Blue ground, Lime Green CTA, True Blue focus", async ({
+    page,
+  }) => {
+    const galactic = "rgb(4, 24, 59)";
+    const lime = "rgb(126, 211, 33)";
+    const trueBlue = "rgb(44, 146, 229)";
+    await page.goto("/");
+    await expect(page.locator("body")).toHaveCSS("background-color", galactic);
+    for (const cta of [
+      page.locator("[data-nav-cta]"),
+      page.locator("[data-submit]"),
+    ]) {
+      // biome-ignore lint/performance/noAwaitInLoops: one CTA at a time
+      await expect(cta.locator(".mb-btn-face")).toHaveCSS(
+        "background-color",
+        lime
+      );
+      await expect(cta).toHaveCSS("color", galactic);
+    }
+
+    await page.keyboard.press("Tab");
+    await expect(page.locator(":focus-visible")).toHaveCSS(
+      "outline-color",
+      trueBlue
+    );
+    const email = page.locator("[data-contact-form] input[type=email]");
+    await email.focus();
+    await expect(email).toHaveCSS("box-shadow", `${trueBlue} 4px 4px 0px 0px`);
+  });
 });
 
 // The section rhythm and the headlines are fluid (KA0113): one clamp() each,
