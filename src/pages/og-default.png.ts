@@ -24,10 +24,10 @@ export const prerender = true;
 const GEIST_TTF = path.resolve("./src/assets/fonts/Geist-Variable.ttf");
 
 /* Palette from tokens.css (DESIGN.md); the site is dark-only. */
-const BASE = "#0a0c10";
+const BASE = "#04183b";
 const INK = "#ece7dc";
 const INK_2 = "#c8c3b8";
-const BLUE = "#8eaed8";
+const LIME = "#7ed321";
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -140,7 +140,7 @@ export async function GET(): Promise<Response> {
     .mono { font-family: monospace; font-weight: 500; }
     .label { fill: ${INK_2}; letter-spacing: 0.14em; }
     .tag { font-family: Geist, sans-serif; fill: ${INK_2}; }
-    .url { fill: ${BLUE}; }
+    .url { fill: ${LIME}; }
     .mark-ch { font-family: Geist, sans-serif; font-weight: 800; fill: ${BASE}; }
   </style>
 
@@ -153,7 +153,7 @@ export async function GET(): Promise<Response> {
   ${rule(SPLIT, URL_RULE_Y, SHEET_RIGHT - SPLIT, 1)}
 
   <rect x="${TEXT_X}" y="${MARK_Y}" width="${MARK_SIZE}" height="${MARK_SIZE}" fill="${INK}" />
-  <rect x="${TEXT_X + 1}" y="${MARK_Y + 1}" width="${MARK_SIZE - 2}" height="${MARK_SIZE - 2}" fill="${BLUE}" />
+  <rect x="${TEXT_X + 1}" y="${MARK_Y + 1}" width="${MARK_SIZE - 2}" height="${MARK_SIZE - 2}" fill="${LIME}" />
   <text class="mark-ch" x="${TEXT_X + MARK_SIZE / 2}" y="${MARK_Y + 26}" font-size="22" text-anchor="middle">k</text>
   <text class="mono label" x="${TEXT_X + MARK_SIZE + 16}" y="${MARK_Y + 24}" font-size="16">${role}</text>
 

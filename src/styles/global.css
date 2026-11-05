@@ -76,7 +76,7 @@ a,
 /* [data-state="focus-visible"] forces the ring on the catalogue page (/ui). */
 :focus-visible,
 [data-state="focus-visible"] {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--true-blue);
   outline-offset: 3px;
 }
 

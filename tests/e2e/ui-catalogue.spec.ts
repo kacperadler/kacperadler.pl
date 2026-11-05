@@ -619,7 +619,7 @@ test.describe("component catalogue (astro dev)", () => {
     expect(gap).toBeLessThanOrEqual(4);
   });
 
-  test("a pressed nav link turns blue like its forced press", async ({
+  test("a pressed nav link turns lime like its forced press", async ({
     page,
   }) => {
     const nav = (caption: string) =>
@@ -1348,7 +1348,7 @@ test.describe("production build", () => {
 
   // Tag and status pill are badge variants now: a case study's stack tags
   // keep their own case in the muted frame, the availability (in the mobile
-  // menu) keeps its blue frame and square dot.
+  // menu) keeps its lime frame and square dot.
   test("stack tags and the availability are badge variants", async ({
     page,
   }) => {
@@ -1365,13 +1365,13 @@ test.describe("production build", () => {
 
     const status = page.locator("#mobile-sheet .mb-badge-status");
     await expect(status).toHaveText("Przyjmuję nowe projekty");
-    await expect(status).toHaveCSS("border-color", "rgb(142, 174, 216)");
+    await expect(status).toHaveCSS("border-color", "rgb(126, 211, 33)");
     expect(
       await status.evaluate((el) => {
         const dot = getComputedStyle(el, "::before");
         return `${dot.width} ${dot.height} ${dot.backgroundColor}`;
       })
-    ).toBe("7px 7px rgb(142, 174, 216)");
+    ).toBe("7px 7px rgb(126, 211, 33)");
     await expect(page.locator(".mb-tag, .mb-status-pill")).toHaveCount(0);
   });
 

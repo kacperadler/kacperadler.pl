@@ -18,18 +18,30 @@
 }
 
 :root {
+  /* The palette (KA0145): Galactic Blue the substrate (--v2-bg and the
+   * steps above it), Lime Green the accent (--blue), True Blue the second
+   * colour, used sparingly and only for state: focus rings, the focused
+   * field's shadow, a selected cell's grips and number, the sent form's
+   * shadow. True Blue is never text (5.3:1 on --v2-bg, 4.1:1 on
+   * --v2-panel-elevated); text on it or on Lime Green is --v2-bg, never
+   * white (white on True Blue is 3.3:1). */
+  --galactic-blue: #04183b;
+  --true-blue: #2c92e5;
+  --lime-green: #7ed321;
+
   --ink: #ece7dc;
   --ink-2: #c8c3b8;
   --muted: #9d9c95;
 
-  /* Brand accent - the only chromatic color in the palette. */
-  --blue: #8eaed8;
-  --blue-2: #b4c8e6;
+  /* Brand accent: Lime Green (the name is left from the earlier blue).
+   * Links, ids, accent text, highlights and the main call to action's fill;
+   * text on it is --v2-bg. --blue-2 is its lighter step (hover, press). */
+  --blue: var(--lime-green);
+  --blue-2: #a3e45c;
 
-  /* Error - form validation and the send-error banner. Warm coral that sits
-   * with the warm ink; 6.15:1 on --v2-panel, 6.7:1 on --v2-bg (WCAG AA
-   * 4.5:1 for text, 3:1 for the invalid border). Not an accent: only for
-   * errors. */
+  /* Error - form validation and the send-error banner. Warm coral; 5.25:1
+   * on --v2-panel, 6:1 on --v2-bg (WCAG AA 4.5:1 for text, 3:1 for the
+   * invalid border). Not an accent: only for errors. */
   --error: #e07a70;
 
   /* Typography stacks. */
@@ -38,12 +50,13 @@
 
   --container: 1160px;
 
-  /* Surfaces: --v2-bg is the substrate behind everything, --v2-panel and
-   * --v2-panel-elevated are the raised and lit cell. --v2-line is the
-   * hairline tint: the ink at 10%, mixed from --ink so it follows it. */
-  --v2-bg: #0a0c10;
-  --v2-panel: #14171c;
-  --v2-panel-elevated: #1a1e26;
+  /* Surfaces: --v2-bg is the substrate behind everything (Galactic Blue),
+   * --v2-panel and --v2-panel-elevated are the raised and lit cell, lighter
+   * steps of its hue. --v2-line is the hairline tint: the ink at 10%,
+   * mixed from --ink so it follows it. */
+  --v2-bg: var(--galactic-blue);
+  --v2-panel: #0a2350;
+  --v2-panel-elevated: #112c5e;
   --v2-line: oklch(from var(--ink) l c h / 0.1);
 
   /* Spacing scale, mirrors the DESIGN.md spec. */

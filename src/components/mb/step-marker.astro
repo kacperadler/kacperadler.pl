@@ -8,10 +8,10 @@
  * line, dash-dot, standing drawn from the start (global.css: only the
  * hero enters on page load).
  *
- * The rail fills as the page scrolls: a 2px blue line over the ink one
+ * The rail fills as the page scrolls: a 2px lime line over the ink one
  * follows a line across the middle of the viewport (each row's segment
  * fills while that line crosses it, so the segments read as one fill),
- * and a mark turns blue when the line reaches its centre. CSS
+ * and a mark turns lime when the line reaches its centre. CSS
  * scroll-driven animations (a view timeline per segment and per mark), no
  * script. Under prefers-reduced-motion, or where the browser has no view
  * timelines, rail and marks show fully filled. Decorative: the step's
@@ -37,7 +37,7 @@ const { num } = Astro.props;
     justify-content: center;
   }
 
-  /* The ink rail, and the box the blue fill runs in: the same segment. */
+  /* The ink rail, and the box the lime fill runs in: the same segment. */
   .mb-step-marker::before,
   .mb-step-fill {
     position: absolute;

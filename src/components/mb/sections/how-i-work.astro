@@ -8,7 +8,7 @@ import SectionHead from "../section-head.astro";
 import StepMarker from "../step-marker.astro";
 
 /* Process (#how): the steps on a rail of square numbered marks that fills
- * blue as the page scrolls (step-marker.astro). Each card's head is one
+ * lime as the page scrolls (step-marker.astro). Each card's head is one
  * line: the title on the left, the duration badge at the right end.
  *
  * Desktop: the rail runs down the middle and the steps alternate left and
@@ -16,7 +16,7 @@ import StepMarker from "../step-marker.astro";
  * next step one row lower, so a card starts about halfway down the one
  * before it on the other side and no side is left empty. A short
  * horizontal connector joins each card to its mark at the mark's height:
- * 1px ink, 2px blue once the mark has filled.
+ * 1px ink, 2px lime once the mark has filled.
  *
  * At 880px and below one column with the rail on the left, the cards
  * 40px apart, no connectors. Under the steps, the
@@ -103,7 +103,7 @@ import StepMarker from "../step-marker.astro";
 
   /* The connector: from the mark's edge to the card's, on the mark's
    * centre. A 2px box drawing a 1px ink line until the fill reaches the
-   * mark, then a 2px blue one; filled from the start under reduced motion
+   * mark, then a 2px lime one; filled from the start under reduced motion
    * or without view timelines, like the rail. */
   .mb-step-link {
     position: relative;

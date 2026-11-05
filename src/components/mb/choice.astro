@@ -8,7 +8,7 @@ import type { HTMLAttributes } from "astro/types";
  * high, the height of <Input>, so a row of chips lines up with a field
  * beside it.
  *   hover    the lit cell in the ink frame; press: the flat panel
- *   checked  a solid blue block, blue-2 on hover
+ *   checked  a solid lime block, lime-2 on hover
  *   focus    keyboard focus: the ring around the chip
  * Every state keeps the 1px frame and the type weight, so checking a chip
  * moves nothing. Disabled: the flat panel, muted text; a checked chip
@@ -102,7 +102,7 @@ const { label, state, class: extraClass, ...rest } = Astro.props;
 
   .mb-choice-input:is(:focus-visible, [data-state="focus-visible"])
     + .mb-choice-label {
-    outline: 2px solid var(--blue);
+    outline: 2px solid var(--true-blue);
     outline-offset: 2px;
   }
 

@@ -141,8 +141,8 @@ test.describe("minimal brutalism", () => {
   });
 
   // The hairline is mixed from the ink (KA0117), not a copy of its RGB: a new
-  // --ink takes the hairline with it, and over the substrate today's ink
-  // still paints the grey the hard-coded value did, rgb(32, 34, 36).
+  // --ink takes the hairline with it, and over the Galactic Blue substrate
+  // (KA0145) today's ink paints rgb(27, 45, 75).
   test("the hairline is the ink at 10% and follows a new ink", async ({
     page,
   }) => {
@@ -176,7 +176,7 @@ test.describe("minimal brutalism", () => {
         [ink, over] as const
       );
 
-    expect(await paint(null, "var(--v2-line)")).toEqual([32, 34, 36]);
+    expect(await paint(null, "var(--v2-line)")).toEqual([27, 45, 75]);
     // The trip through oklch may round a channel one step off the sRGB tint.
     for (const [ink, tenth] of [
       ["#ece7dc", "rgba(236, 231, 220, 0.1)"],
@@ -191,6 +191,39 @@ test.describe("minimal brutalism", () => {
         `${ink}: hairline ${hairline}, ink at 10% ${reference}`
       ).toBeLessThanOrEqual(1);
     }
+  });
+
+  // The owner's palette (KA0145): Galactic Blue the ground, Lime Green the
+  // main call to action with Galactic Blue text, True Blue only for state -
+  // the focus ring and the focused field's shadow.
+  test("Galactic Blue ground, Lime Green CTA, True Blue focus", async ({
+    page,
+  }) => {
+    const galactic = "rgb(4, 24, 59)";
+    const lime = "rgb(126, 211, 33)";
+    const trueBlue = "rgb(44, 146, 229)";
+    await page.goto("/");
+    await expect(page.locator("body")).toHaveCSS("background-color", galactic);
+    for (const cta of [
+      page.locator("[data-nav-cta]"),
+      page.locator("[data-submit]"),
+    ]) {
+      // biome-ignore lint/performance/noAwaitInLoops: one CTA at a time
+      await expect(cta.locator(".mb-btn-face")).toHaveCSS(
+        "background-color",
+        lime
+      );
+      await expect(cta).toHaveCSS("color", galactic);
+    }
+
+    await page.keyboard.press("Tab");
+    await expect(page.locator(":focus-visible")).toHaveCSS(
+      "outline-color",
+      trueBlue
+    );
+    const email = page.locator("[data-contact-form] input[type=email]");
+    await email.focus();
+    await expect(email).toHaveCSS("box-shadow", `${trueBlue} 4px 4px 0px 0px`);
   });
 });
 

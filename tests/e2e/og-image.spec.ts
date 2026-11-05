@@ -4,9 +4,9 @@ import sharp from "sharp";
 
 // The share image is drawn in the site's minimal brutalism (KA0073): a solid
 // `base` substrate, the photo in a square 1px `ink` frame, a square brand mark.
-const BASE = [0x0a, 0x0c, 0x10];
+const BASE = [0x04, 0x18, 0x3b];
 const INK = [0xec, 0xe7, 0xdc];
-const BLUE = [0x8e, 0xae, 0xd8];
+const LIME = [0x7e, 0xd3, 0x21];
 
 // The sheet sits 45px in from every edge; the brand mark is a 36px square at
 // the top left of the text cell, which starts 40px right of the photo.
@@ -69,8 +69,8 @@ test("the OG image is a ruled sheet on a solid substrate", async () => {
       expect(pixel(x, y), `corner ${x},${y}`).toEqual(INK);
     }
   }
-  expect(pixel(MARK.left + 1, MARK.top + 1)).toEqual(BLUE);
-  expect(pixel(MARK.right - 1, MARK.bottom - 1)).toEqual(BLUE);
+  expect(pixel(MARK.left + 1, MARK.top + 1)).toEqual(LIME);
+  expect(pixel(MARK.right - 1, MARK.bottom - 1)).toEqual(LIME);
 });
 
 // The headline is the site's Geist (ExtraBold, from src/assets/fonts), not a

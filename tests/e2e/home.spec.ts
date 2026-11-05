@@ -839,22 +839,21 @@ test.describe("home page", () => {
       reducedMotion: "no-preference",
     });
     const page = await context.newPage();
-    // The 2px blue line over each segment (its scale), and which marks are
-    // blue.
+    // The 2px lime line over each segment (its scale), and which marks are
+    // lime.
     const fill = () =>
       page.locator("#how").evaluate((how) => ({
         dots: [...how.querySelectorAll(".mb-step-dot")].map(
-          (dot) =>
-            getComputedStyle(dot).backgroundColor === "rgb(142, 174, 216)"
+          (dot) => getComputedStyle(dot).backgroundColor === "rgb(126, 211, 33)"
         ),
         lines: [...how.querySelectorAll(".mb-step-fill")].map(
           (line) =>
             new DOMMatrix(getComputedStyle(line, "::before").transform).d
         ),
-        // A connector turns blue with its mark.
+        // A connector turns lime with its mark.
         links: [...how.querySelectorAll(".mb-step-link")].map(
           (link) =>
-            getComputedStyle(link).backgroundColor === "rgb(142, 174, 216)"
+            getComputedStyle(link).backgroundColor === "rgb(126, 211, 33)"
         ),
       }));
     // Puts the element's centre a little past the viewport's middle line.
@@ -883,7 +882,7 @@ test.describe("home page", () => {
     });
 
     // The middle of the viewport on the third mark: the first two segments
-    // full, the marks up to the third blue, the rest still empty.
+    // full, the marks up to the third lime, the rest still empty.
     await scrollTo("#how .mb-step:nth-child(3) .mb-step-dot");
     await expect
       .poll(async () => (await fill()).dots)
@@ -921,8 +920,8 @@ test.describe("home page", () => {
       ),
     }));
     expect(state.animations).toBe(0);
-    expect(new Set(state.links)).toEqual(new Set(["rgb(142, 174, 216)"]));
-    expect(new Set(state.dots)).toEqual(new Set(["rgb(142, 174, 216)"]));
+    expect(new Set(state.links)).toEqual(new Set(["rgb(126, 211, 33)"]));
+    expect(new Set(state.dots)).toEqual(new Set(["rgb(126, 211, 33)"]));
     expect(new Set(state.lines)).toEqual(new Set(["none"]));
     await context.close();
   });
