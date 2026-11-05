@@ -1,4 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
+import sharp from "sharp";
 import { FADES, motionOf } from "./motion";
 import { offScaleText } from "./type-scale";
 
@@ -227,6 +228,78 @@ test.describe("minimal brutalism", () => {
   });
 });
 
+// More colour per section, still dark (KA0146): Problems, Cases and About
+// stand on a full-width Panel field, the other sections on the ground. Each
+// field's break lines are filled with its own colour, so across the line
+// where an edge meets its field the page paints one colour, no seam.
+test("the problems, cases and about sections stand on panel fields with seamless edges", async ({
+  page,
+}) => {
+  const galactic = "rgb(4, 24, 59)";
+  const panel = "rgb(10, 35, 80)";
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await page.goto("/");
+  const grounds = await page.evaluate(() =>
+    [...document.querySelectorAll("main > section")].map((section) => ({
+      background: getComputedStyle(section).backgroundColor,
+      edges: [...section.querySelectorAll(":scope > .mb-band-edge")].map(
+        (edge) => getComputedStyle(edge, "::before").backgroundColor
+      ),
+      id: section.id,
+      width: section.getBoundingClientRect().width,
+    }))
+  );
+  const fields = ["problems", "cases", "about"];
+  for (const ground of grounds) {
+    if (fields.includes(ground.id)) {
+      expect(ground.background, ground.id).toBe(panel);
+      expect(ground.edges, ground.id).toEqual([panel, panel]);
+      expect(ground.width, ground.id).toBe(1440);
+    } else {
+      expect(ground.background, ground.id).toBe("rgba(0, 0, 0, 0)");
+      expect(ground.edges, ground.id).toEqual([]);
+    }
+  }
+  await expect(page.locator("body")).toHaveCSS("background-color", galactic);
+
+  // Two rows over the line where the top edge meets the field, and two
+  // where the field meets its bottom edge, across the width: one colour.
+  for (const id of fields) {
+    const section = page.locator(`#${id}`);
+    // biome-ignore lint/performance/noAwaitInLoops: one field at a time
+    await section.scrollIntoViewIfNeeded();
+    for (const at of ["top", "bottom"] as const) {
+      // biome-ignore lint/performance/noAwaitInLoops: one edge at a time
+      await section.evaluate((el, side) => {
+        const rect = el.getBoundingClientRect();
+        const y = side === "top" ? rect.top : rect.bottom;
+        window.scrollTo({
+          behavior: "instant",
+          top: window.scrollY + y - window.innerHeight / 2,
+        });
+      }, at);
+      const rect = await section.boundingBox();
+      if (!rect) {
+        throw new Error(`#${id} is not rendered`);
+      }
+      const y = Math.round(at === "top" ? rect.y : rect.y + rect.height);
+      const { data, info } = await sharp(
+        await page.screenshot({
+          clip: { height: 2, width: 1440, x: 0, y: y - 1 },
+        })
+      )
+        .removeAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const colours = new Set<string>();
+      for (let i = 0; i < data.length; i += info.channels) {
+        colours.add(`${data[i]},${data[i + 1]},${data[i + 2]}`);
+      }
+      expect([...colours], `#${id} ${at}`).toEqual(["10,35,80"]);
+    }
+  }
+});
+
 // The section rhythm and the headlines are fluid (KA0113): one clamp() each,
 // rem bounds and a rem + vw slope from a 390px phone to the 1160px
 // container, so they grow with the width without a step and follow the
@@ -274,8 +347,8 @@ test.describe("fluid sizes", () => {
     page,
   }) => {
     await page.goto("/");
-    const phone = { block: 32, hero: 40, section: 88, title: 32 };
-    const desk = { block: 48, hero: 64, section: 136, title: 54 };
+    const phone = { block: 32, hero: 40, section: 88, title: 40 };
+    const desk = { block: 48, hero: 64, section: 136, title: 88 };
     for (const width of [360, 390]) {
       // biome-ignore lint/performance/noAwaitInLoops: one width at a time
       const at = await sizesAt(page, width);
@@ -316,7 +389,7 @@ test.describe("fluid sizes", () => {
     await openWithDefaultFont(page, "/", 20);
     const wide = await sizesAt(page, 1920);
     expect(wide.hero).toBeCloseTo(80, 2);
-    expect(wide.title).toBeCloseTo(67.5, 2);
+    expect(wide.title).toBeCloseTo(110, 2);
     expect(wide.section).toBeCloseTo(170, 2);
     expect(wide.block).toBeCloseTo(60, 2);
     // At 1000px every size is on its slope at both settings, so only the

@@ -28,12 +28,14 @@ import Choice from "@/components/mb/choice.astro";
 import ContactForm from "@/components/mb/contact-form.astro";
 import ContactLink from "@/components/mb/contact-link.astro";
 import Field from "@/components/mb/field.astro";
+import FieldEdge from "@/components/mb/field-edge.astro";
 import FieldSet from "@/components/mb/field-set.astro";
 import Input from "@/components/mb/input.astro";
 import Label from "@/components/mb/label.astro";
 import Link from "@/components/mb/link.astro";
 import MobileSheet from "@/components/mb/mobile-sheet.astro";
 import Pagination from "@/components/mb/pagination.astro";
+import ProcessFigure from "@/components/mb/process-figure.astro";
 import Prose from "@/components/mb/prose.astro";
 import Radio from "@/components/mb/radio.astro";
 import SectionHead from "@/components/mb/section-head.astro";
@@ -41,6 +43,7 @@ import Separator from "@/components/mb/separator.astro";
 import Spinner from "@/components/mb/spinner.astro";
 import StepMarker from "@/components/mb/step-marker.astro";
 import Textarea from "@/components/mb/textarea.astro";
+import type { ProcessFigureName } from "@/data/process";
 import { siteConfig } from "@/data/site-config";
 
 type Forced = "idle" | "hover" | "pressed" | "focus-visible";
@@ -201,6 +204,14 @@ const linkStates: readonly Forced[] = [
   "hover",
   "pressed",
   "focus-visible",
+];
+
+const figures: ProcessFigureName[] = [
+  "conversation",
+  "plan",
+  "stages",
+  "revision",
+  "care",
 ];
 
 // Copy of unequal length, so the rail shows marks centred on cards of
@@ -1368,6 +1379,51 @@ const steps = [
       </div>
     </section>
 
+    <section aria-labelledby="mb-process-figure" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-process-figure">Rysunek etapu</h2>
+      <p class="mb-ui-note">
+        <code>process-figure.astro</code>
+        - rysunek szczegółu etapu procesu w slocie <code>image</code> karty:
+        rysunek 1px tuszem stoi narysowany, warstwa 2px limonkowa (to, co etap
+        daje) dorysowuje się od lewej, gdy strona przewija się przez rysunek -
+        <code>clip-path</code>
+        na własnej osi <code>view()</code>, bez skryptu. Przy
+        <code>prefers-reduced-motion</code>
+        albo bez osi widoku stoi narysowana.
+      </p>
+      {figures.map((figure) => (
+        <div class="mb-ui-row">
+          <p class="mb-ui-row-label">{figure}</p>
+          <div class="mb-ui-narrow mb-ui-sample">
+            <Card tag="div">
+              <ProcessFigure name={figure} slot="image" />
+              <span slot="title">{figure}</span>
+            </Card>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section aria-labelledby="mb-band-edge" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-band-edge">Pole sekcji</h2>
+      <p class="mb-ui-note">
+        <code>.mb-band</code>
+        (global.css) z <code>field-edge.astro</code>
+        - sekcja na pełnej szerokości w kolorze <code>--v2-panel</code>, z linią
+        urwania (fala 1px tuszem) na górze i na dole. Pole ustawia
+        <code>--v2-bg</code>
+        na swój kolor, więc komórki w nim go dziedziczą.
+      </p>
+      <div class="mb-ui-band mb-band">
+        <FieldEdge side="top" />
+        <Card tag="div">
+          <span slot="title">Komórka na polu</span>
+          Tło komórki to kolor pola.
+        </Card>
+        <FieldEdge side="bottom" />
+      </div>
+    </section>
+
     <section aria-labelledby="mb-section-head" class="mb-ui-section">
       <h2 class="mb-ui-h2" id="mb-section-head">Nagłówek sekcji</h2>
       <p class="mb-ui-note">
@@ -1380,6 +1436,16 @@ const steps = [
       </p>
       <div class="mb-ui-counter">
         <SectionHead as="h3" label="Proces">
+          Od <em>rozmowy</em> do <em>produktu</em>.
+          <Fragment slot="lede">
+            Biorąc pod uwagę Twoje potrzeby, skupiam się na znalezieniu
+            najlepszego rozwiązania dla Ciebie.
+          </Fragment>
+        </SectionHead>
+      </div>
+      <p class="mb-ui-row-label">poster</p>
+      <div class="mb-ui-counter">
+        <SectionHead as="h3" label="Proces" poster>
           Od <em>rozmowy</em> do <em>produktu</em>.
           <Fragment slot="lede">
             Biorąc pod uwagę Twoje potrzeby, skupiam się na znalezieniu
@@ -1798,6 +1864,11 @@ console.log(greeting);</code></pre>
 
   .mb-ui-counter {
     counter-reset: mb-section;
+  }
+
+  .mb-ui-band {
+    padding: var(--v2-space-lg);
+    margin-block: var(--mb-edge);
   }
 
   .mb-ui-sheet {

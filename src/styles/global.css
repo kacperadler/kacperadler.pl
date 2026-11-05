@@ -127,6 +127,21 @@ a,
   margin: 0 auto;
 }
 
+/* A colour field: a home section on a full-width band of --v2-panel,
+ * opened and closed by a break line (field-edge.astro). It sets --v2-bg
+ * to its colour, so everything inside painted on the substrate - a cell's
+ * fill, the dimension's mask, an outline button's face, the edge's fill -
+ * follows the field, and text on lime (--v2-bg) takes the field colour
+ * (8.3:1 on Lime Green). The field keeps the section gap above and adds
+ * it inside, top and bottom, so it reads as a chapter with more air. No
+ * form sits in one: a field's fill would equal a disabled field's. */
+.mb-band {
+  --v2-bg: var(--v2-panel);
+  position: relative;
+  padding-block: var(--mb-section-gap);
+  background: var(--v2-bg);
+}
+
 /* The blueprint: the page is an engineer's drawing (section-head.astro:
  * a dimension line, ticks, the width, the § label, the brace under the
  * <em> and its callout; card.astro: the numbered frame, the grips;

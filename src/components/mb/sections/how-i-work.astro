@@ -1,15 +1,19 @@
 ---
-import { Icon } from "astro-icon/components";
 import { processSteps } from "@/data/process";
 import Badge from "../badge.astro";
 import Button from "../button.astro";
 import Card from "../card.astro";
+import ProcessFigure from "../process-figure.astro";
 import SectionHead from "../section-head.astro";
 import StepMarker from "../step-marker.astro";
 
-/* Process (#how): the steps on a rail of square numbered marks that fills
- * lime as the page scrolls (step-marker.astro). Each card's head is one
- * line: the title on the left, the duration badge at the right end.
+/* Process (#how), the page's signature: the route of a process sheet, its
+ * steps on a rail of square numbered marks that fills lime as the page
+ * scrolls (step-marker.astro). Each card opens on the step's detail
+ * drawing (process-figure.astro, its lime layer drawn in as the rail comes
+ * to it), then one line - the title on the left, the duration badge at the
+ * right end - the description, and under a hairline the step's outcome
+ * after the lime arrow, as the problems cells show their effect.
  *
  * Desktop: the rail runs down the middle and the steps alternate left and
  * right of it, staggered - one grid whose steps each span two rows, every
@@ -25,8 +29,11 @@ import StepMarker from "../step-marker.astro";
 
 <section class="mb-how" id="how">
   <div class="container">
-    <SectionHead label="Proces">
+    <SectionHead label="Proces" poster>
       Od rozmowy do <em>działającego</em> systemu.
+      <Fragment slot="lede">
+        Pięć kroków. Na każdym wiesz, co robimy i co z niego dostajesz.
+      </Fragment>
     </SectionHead>
 
     <ol class="mb-how-steps">
@@ -34,12 +41,18 @@ import StepMarker from "../step-marker.astro";
         <li class="mb-step" style={`--mb-step-row: ${i + 1}`}>
           <StepMarker num={step.num} />
           <Card tag="div">
+            <ProcessFigure name={step.figure} slot="image" />
             <div class="mb-step-head">
-              <Icon aria-hidden="true" class="mb-step-icon" name={step.icon} />
               <h3>{step.title}</h3>
               <Badge variant="outline">{step.badge}</Badge>
             </div>
             <p class="mb-step-desc">{step.description}</p>
+            <p class="mb-step-outcome">
+              <span aria-hidden="true" class="mb-step-arrow">
+                →
+              </span>
+              {step.outcome}
+            </p>
           </Card>
           <span aria-hidden="true" class="mb-step-link" />
         </li>
@@ -63,14 +76,14 @@ import StepMarker from "../step-marker.astro";
 
   /* Desktop: card | rail | card. A step takes rows n and n+1, the next
    * step n+1 and n+2, so the two sides overlap by a row; two cards on one
-   * side stand a row gap apart. The gap is wide (128px), so a card starts
-   * near the foot of the one before it: each step stands clear of its
-   * neighbours, and the sides still overlap a little, so neither has a
-   * hole. */
+   * side stand a row gap apart. The gap is wide (280px, about 0.7 of a
+   * card with its drawing, 370-420px), so a card starts near the foot of
+   * the one before it: each step stands clear of its neighbours, and the
+   * sides still overlap a little, so neither has a hole. */
   .mb-how-steps {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--mb-how-rail) minmax(0, 1fr);
-    row-gap: 128px;
+    row-gap: 280px;
     padding: 0;
     margin: 0;
     list-style: none;
@@ -147,22 +160,14 @@ import StepMarker from "../step-marker.astro";
     }
   }
 
-  /* One line: icon and title left, the duration at the right end. It
-   * never wraps below: a long title wraps inside its own box, and icon and
-   * badge sit on its first line (24px high). */
+  /* One line: title left, the duration at the right end. It never wraps
+   * below: a long title wraps inside its own box, and the badge sits on
+   * its first line (24px high). */
   .mb-step-head {
     display: flex;
     gap: 12px;
     align-items: flex-start;
     margin-bottom: 12px;
-  }
-
-  .mb-step-head :global(.mb-step-icon) {
-    flex-shrink: 0;
-    width: 22px;
-    height: 22px;
-    margin-top: 1px;
-    color: var(--blue);
   }
 
   .mb-step-head :global(.mb-badge) {
@@ -185,6 +190,25 @@ import StepMarker from "../step-marker.astro";
   .mb-step-desc {
     max-width: 70ch;
     margin: 0;
+  }
+
+  /* The outcome under a hairline, after the lime arrow (problems.astro's
+   * effect line). */
+  .mb-step-outcome {
+    display: flex;
+    gap: 10px;
+    padding-top: var(--v2-space-md);
+    margin: var(--v2-space-md) 0 0;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--ink);
+    border-top: 1px solid var(--mb-hair);
+  }
+
+  .mb-step-arrow {
+    flex-shrink: 0;
+    color: var(--blue);
   }
 
   /* Under the rail, centred on it. */

@@ -3,6 +3,7 @@ import { problems } from "@/data/home";
 import Button from "../button.astro";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
+import FieldEdge from "../field-edge.astro";
 import SectionHead from "../section-head.astro";
 
 /* Problems (#problems): the situations a visitor should recognise, six
@@ -16,9 +17,10 @@ import SectionHead from "../section-head.astro";
  * line and the button to the contact form. */
 ---
 
-<section class="mb-problems" id="problems">
+<section class="mb-problems mb-band" id="problems">
+  <FieldEdge side="top" />
   <div class="container">
-    <SectionHead label="Problem">
+    <SectionHead label="Problem" poster>
       Brzmi <em>znajomo</em>?
       <Fragment slot="lede">
         Jeśli rozpoznajesz swoją firmę choć w jednym punkcie, jesteś we
@@ -48,6 +50,7 @@ import SectionHead from "../section-head.astro";
       >
     </div>
   </div>
+  <FieldEdge side="bottom" />
 </section>
 
 <style>

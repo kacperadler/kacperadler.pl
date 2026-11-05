@@ -70,7 +70,9 @@ export async function GET(): Promise<Response> {
       (step) =>
         `### ${step.num}. ${step.title} (${step.badge})
 
-${step.description}`
+${step.description}
+
+→ ${step.outcome}`
     )
     .join("\n\n");
 

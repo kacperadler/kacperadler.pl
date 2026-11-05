@@ -7,6 +7,7 @@ import Badge from "../badge.astro";
 import Button from "../button.astro";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
+import FieldEdge from "../field-edge.astro";
 import Link from "../link.astro";
 import SectionHead from "../section-head.astro";
 
@@ -49,9 +50,10 @@ const cases = caseHighlights.map((highlight) => {
 });
 ---
 
-<section class="mb-cases" id="cases">
+<section class="mb-cases mb-band" id="cases">
+  <FieldEdge side="top" />
   <div class="container">
-    <SectionHead label="Realizacje">
+    <SectionHead label="Realizacje" poster>
       Co już <em>działa</em>.
       <Fragment slot="lede">
         Każdy projekt oceniam po jednym kryterium: czy ktoś realnie oszczędza
@@ -118,6 +120,7 @@ const cases = caseHighlights.map((highlight) => {
       </div>
     )}
   </div>
+  <FieldEdge side="bottom" />
 </section>
 
 <style>

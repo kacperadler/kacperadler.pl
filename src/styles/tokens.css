@@ -97,7 +97,8 @@
    *   --mb-pen      how long the pen takes over the hero; the buttons rise
    *                 in last and the entrance ends about 1.6s after it starts
    *   --mb-note     the drawing's annotation type: small mono caps
-   *   --mb-grip     the side of a selected cell's corner grips */
+   *   --mb-grip     the side of a selected cell's corner grips
+   *   --mb-edge     the height of a colour field's break line (field-edge.astro) */
   --mb-rule: var(--ink);
   --mb-hair: var(--v2-line);
   --mb-shift: 4px;
@@ -110,6 +111,7 @@
   --mb-pen: 1s;
   --mb-note: 500 10px / 1 var(--mono);
   --mb-grip: 7px;
+  --mb-edge: 16px;
   color-scheme: dark;
 }
 

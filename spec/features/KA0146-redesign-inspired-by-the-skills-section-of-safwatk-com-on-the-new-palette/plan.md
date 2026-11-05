@@ -81,17 +81,17 @@ Section spacing: a `panel` section keeps `margin-top: var(--mb-section-gap)` and
  390: rail on the left, one column: [mark] card (drawing on top) …, cards 40px apart
 ```
 
-**Process copy.** "Proposal" means new copy for the owner to approve. Placeholders must be replaced by Kacper before merge.
+**Process copy.** The outcome lines of steps 01-03 and the lede are approved by the owner (KA-D8). Placeholders must be replaced by Kacper before merge.
 
 | # | Title | Duration | Description | Outcome line (new) |
 |---|---|---|---|---|
-| 01 | Rozmowa | ~30 min | unchanged | Proposal: "Pierwszy pomysł na automatyzację w 24 h." (the hero's own fact) |
-| 02 | Plan i wycena | 2–3 dni | unchanged | Proposal: "Dokument z zakresem, terminem i ceną." |
-| 03 | Wdrożenie etapami | co tydzień | unchanged | Proposal: "Kolejna działająca część systemu do sprawdzenia." |
+| 01 | Rozmowa | ~30 min | unchanged | "Pierwszy pomysł na automatyzację w 24 h." (the hero's own fact) |
+| 02 | Plan i wycena | 2–3 dni | unchanged | "Dokument z zakresem, terminem i ceną." |
+| 03 | Wdrożenie etapami | co tydzień | unchanged | "Kolejna działająca część systemu do sprawdzenia." |
 | 04 | Feedback | na bieżąco | unchanged | [DO UZUPEŁNIENIA - Kacper: co klient dostaje po zgłoszeniu uwag, np. w jakim czasie zmiana trafia do systemu] |
 | 05 | Opieka | po wdrożeniu | unchanged | [DO UZUPEŁNIENIA - Kacper: co obejmuje opieka, np. co monitorujesz i jak często klient dostaje raport] |
 
-Lede (proposal): "Pięć kroków. Na każdym wiesz, co robimy i co z niego dostajesz."
+Lede: "Pięć kroków. Na każdym wiesz, co robimy i co z niego dostajesz."
 
 **Illustrations to draw.** All are inline SVG, hand-drawn for this site, `aria-hidden` (the text carries the meaning). Each has a 1px `ink` layer and a 2px `lime` layer, square corners except where noted, and a fixed `viewBox` so nothing shifts on load.
 1. **Rozmowa:** three process boxes joined by arrows (today's process) and two square callout boxes on leaders (the questions). Lime: a dimension brace under the middle box with a lime callout square (what to automate).
@@ -228,6 +228,6 @@ Lede (proposal): "Pięć kroków. Na każdym wiesz, co robimy i co z niego dosta
 - **Project checks:** `bun run check`, `bun run lint`, `bun run build`, `bun run test:e2e`. Docker specs skip with a reason where Docker is unreachable (KA0147). Run each in one call with a 1800 s timeout.
 
 ## Open questions
-- **Steps 04 and 05:** Kacper needs to supply the outcome lines (placeholders above), and approve the proposed outcome lines for steps 01-03 and the process lede.
+- **Steps 04 and 05:** Kacper needs to supply the outcome lines (placeholders above). The outcome lines for steps 01-03 and the process lede are approved (KA-D8).
 - **Scroll-drawn figures:** should the lime layer of the drawings be drawn on scroll? That relaxes KA0098's "nothing draws on scroll" inside the process section. The alternative is that the drawings stand drawn and only the rail moves.
 - **Colour fields:** the plan keeps every field dark (`base` / `panel`), for the dark-only bar. Does the owner want one full-width Lime Green band (for example behind the process section), with `base` text on it? It would be the one bright area on the page.
