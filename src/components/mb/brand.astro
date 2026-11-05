@@ -3,16 +3,21 @@ import { siteConfig } from "@/data/site-config";
 
 /* The brand: a square lime "k" mark beside "Kacper Adler" in heavy Geist,
  * linking to the top of the home page. `size` "sm" sits in the header,
- * "lg" in the footer. */
+ * "lg" in the footer. Hover, in the buttons' voice: a hard ink layer
+ * slides out from under the mark and "Adler" brightens from ink-2 to ink.
+ * Only the layer moves (under prefers-reduced-motion it is there at
+ * once); [data-state="hover"] forces the state on the catalogue (/ui). */
 interface Props {
+  "data-state"?: "hover";
   size?: "sm" | "lg";
 }
 
-const { size = "sm" } = Astro.props;
+const { "data-state": state, size = "sm" } = Astro.props;
 ---
 
 <a
   aria-label={`${siteConfig.name} - Strona główna`}
+  data-state={state}
   href="/#top"
   class:list={["mb-brand", `mb-brand-${size}`]}
 >
@@ -59,5 +64,30 @@ const { size = "sm" } = Astro.props;
     font-style: normal;
     font-weight: 500;
     color: var(--ink-2);
+    transition: color var(--mb-snap);
+  }
+
+  .mb-brand[data-state="hover"] .mb-mark {
+    box-shadow: var(--mb-shift) var(--mb-shift) 0 var(--mb-rule);
+  }
+
+  .mb-brand[data-state="hover"] em {
+    color: var(--ink);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mb-brand:hover .mb-mark {
+      box-shadow: var(--mb-shift) var(--mb-shift) 0 var(--mb-rule);
+    }
+
+    .mb-brand:hover em {
+      color: var(--ink);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mb-mark {
+      transition: box-shadow var(--mb-snap);
+    }
   }
 </style>
