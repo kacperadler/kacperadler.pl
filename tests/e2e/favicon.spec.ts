@@ -1,19 +1,19 @@
 import { expect, test } from "@playwright/test";
 import sharp from "sharp";
 
-// The favicon is the brand mark of brand.astro (KA0073): a square `blue` block
+// The favicon is the brand mark of brand.astro (KA0073): a square `lime` block
 // in a 1px `ink` rule with a heavy `k` in `base`, drawn on a 28-unit box like
 // the 28px mark in the header.
 const INK = [0xec, 0xe7, 0xdc];
-const BLUE = [0x8e, 0xae, 0xd8];
-const BASE = [0x0a, 0x0c, 0x10];
+const LIME = [0x7e, 0xd3, 0x21];
+const BASE = [0x04, 0x18, 0x3b];
 
 // Every RGB channel within 8 of the colour (the alpha is checked apart).
 const near = (actual: number[], expected: number[]) =>
   expected.every((value, i) => Math.abs((actual[i] ?? 0) - value) <= 8);
 
 // Square corners show as opaque pixels (a rounded mark leaves them clear),
-// the block inside the rule is `blue` and the stem of the `k` is `base`.
+// the block inside the rule is `lime` and the stem of the `k` is `base`.
 const expectMark = async (png: Buffer, label: string) => {
   const { data, info } = await sharp(png)
     .ensureAlpha()
@@ -37,7 +37,7 @@ const expectMark = async (png: Buffer, label: string) => {
     expect(pixel(x, y)[3], `${label} corner ${x},${y}`).toBe(255);
   }
   const inside = Math.round(size * 0.15);
-  expect(near(pixel(inside, inside), BLUE), `${label} block`).toBe(true);
+  expect(near(pixel(inside, inside), LIME), `${label} block`).toBe(true);
   const stem = pixel(Math.floor((size * 11) / 28), Math.floor(size / 2));
   expect(near(stem, BASE), `${label} k stem`).toBe(true);
   return pixel;
@@ -51,7 +51,7 @@ test("favicon.svg is the square brand mark", async ({ request }) => {
   const pixel = await expectMark(await response.body(), "svg");
   expect(pixel(0, 0).slice(0, 3)).toEqual(INK);
   expect(pixel(27, 14).slice(0, 3)).toEqual(INK);
-  expect(pixel(1, 1).slice(0, 3)).toEqual(BLUE);
+  expect(pixel(1, 1).slice(0, 3)).toEqual(LIME);
 });
 
 test("favicon.ico holds the square brand mark at every size", async ({
@@ -79,12 +79,12 @@ test("favicon.ico holds the square brand mark at every size", async ({
   expect(sizes).toEqual([16, 32, 48]);
 });
 
-// Red channel halfway between `base` (0x0a) and `blue` (0x8e): a darker
+// Red channel halfway between `base` (0x04) and `lime` (0x7e): a darker
 // pixel is the `k`.
-const K_RED = (0x0a + 0x8e) / 2;
+const K_RED = (0x04 + 0x7e) / 2;
 
-// Rows of the mark's `blue` block that hold a pixel of the `k`; a row with
-// no `blue` is outside the block.
+// Rows of the mark's `lime` block that hold a pixel of the `k`; a row with
+// no `lime` is outside the block.
 const kRows = async (png: Buffer) => {
   const { data, info } = await sharp(png)
     .removeAlpha()
@@ -98,7 +98,7 @@ const kRows = async (png: Buffer) => {
   );
   return rows.filter(
     (row) =>
-      row.some((rgb) => near(rgb, BLUE)) &&
+      row.some((rgb) => near(rgb, LIME)) &&
       row.some((rgb) => (rgb[0] ?? 255) < K_RED)
   ).length;
 };

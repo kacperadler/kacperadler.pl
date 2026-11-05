@@ -141,8 +141,8 @@ test.describe("minimal brutalism", () => {
   });
 
   // The hairline is mixed from the ink (KA0117), not a copy of its RGB: a new
-  // --ink takes the hairline with it, and over the substrate today's ink
-  // still paints the grey the hard-coded value did, rgb(32, 34, 36).
+  // --ink takes the hairline with it, and over the Galactic Blue substrate
+  // (KA0145) today's ink paints rgb(27, 45, 75).
   test("the hairline is the ink at 10% and follows a new ink", async ({
     page,
   }) => {
@@ -176,7 +176,7 @@ test.describe("minimal brutalism", () => {
         [ink, over] as const
       );
 
-    expect(await paint(null, "var(--v2-line)")).toEqual([32, 34, 36]);
+    expect(await paint(null, "var(--v2-line)")).toEqual([27, 45, 75]);
     // The trip through oklch may round a channel one step off the sRGB tint.
     for (const [ink, tenth] of [
       ["#ece7dc", "rgba(236, 231, 220, 0.1)"],

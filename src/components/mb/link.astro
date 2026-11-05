@@ -3,19 +3,19 @@ import type { HTMLAttributes } from "astro/types";
 import { Icon } from "astro-icon/components";
 
 /* Text link in four looks:
- *   inline  ink text over a 2px blue underline; hover: blue text, the
- *           underline thickens to 3px; press: blue-2 text. No hit area
+ *   inline  ink text over a 2px lime underline; hover: lime text, the
+ *           underline thickens to 3px; press: lime-2 text. No hit area
  *           past its text (nor for a prose link): running text is exempt
  *           from WCAG 2.5.8, and an area above or below would take the
  *           taps meant for the lines around it
  *   nav     header navigation in Geist; an ink bar draws in under it from
  *           the left on hover; `.active` (scripts/nav-active.ts on
- *           [data-nav-link]) is a blue bar under blue text; press: the
- *           blue bar and text it is about to become
+ *           [data-nav-link]) is a lime bar under lime text; press: the
+ *           lime bar and text it is about to become
  *   footer  ink-2 list link, an underline fades in on hover; the optional
- *           icon before it turns blue; press: blue text. Its hit area,
+ *           icon before it turns lime; press: lime text. Its hit area,
  *           drawn nowhere, is at least 44px each way
- *   case    "Zobacz realizację": heavy ink text over a blue underline, the
+ *   case    "Zobacz realizację": heavy ink text over a lime underline, the
  *           icon after it (an arrow by default) nudges 3px right on hover
  *           and 6px on press
  * `icon` takes an Iconify name. The label is trimmed and touches the tags:

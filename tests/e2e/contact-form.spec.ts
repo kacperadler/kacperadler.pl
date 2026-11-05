@@ -1022,8 +1022,8 @@ test.describe("contact form", () => {
       }
       // The disabled look: fields on the flat panel, the chosen type a
       // muted block.
-      await expect(email).toHaveCSS("background-color", "rgb(20, 23, 28)");
-      await expect(message).toHaveCSS("background-color", "rgb(20, 23, 28)");
+      await expect(email).toHaveCSS("background-color", "rgb(10, 35, 80)");
+      await expect(message).toHaveCSS("background-color", "rgb(10, 35, 80)");
       await expect(
         page
           .locator("[data-contact-form] label", {
