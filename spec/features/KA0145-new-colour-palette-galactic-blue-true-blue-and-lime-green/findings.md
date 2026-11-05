@@ -12,7 +12,7 @@ A finding ends in one of four statuses: `fixed in <commit>` (the branch fixed it
 - What: after KA0145 `--blue` holds Lime Green and `--blue-2` its lighter step; about 30 components read them by those names (`git grep -c 'var(--blue' -- src`). `tokens.css` and `DESIGN.md` say the name is left over, but a reader of a component sees `var(--blue)` paint green. The ticket's Scope keeps components out unless they set a colour outside the tokens, so the branch kept the names.
 - Suggestion: rename `--blue` → `--accent` and `--blue-2` → `--accent-2` in every `src` file in one cutover (no alias), and the `lime` / `lime-2` rows of the `DESIGN.md` table with them. No visual change; the e2e suite pins computed colours, not property names.
 - Budget: 1
-- Status: open
+- Status: ticket KA0148
 
 ## F2. DESIGN.md forbids chromatic shadows while the field and form shadows are chromatic
 
@@ -21,4 +21,4 @@ A finding ends in one of four statuses: `fixed in <commit>` (the branch fixed it
 - Where: `DESIGN.md:243`
 - What: the Don'ts say "Don't add soft or chromatic drop shadows", but the focused field's hard shadow and the sent contact form's shadow have been the accent colour since before KA0145 (now `true-blue`, `input.astro`, `textarea.astro`, `contact-form.astro`).
 - Suggestion: reword the line to forbid soft shadows and any chromatic shadow other than the `true-blue` state shadow, or make those shadows `ink`; the owner picks which.
-- Status: open
+- Status: ticket KA0149

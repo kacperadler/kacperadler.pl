@@ -1191,9 +1191,9 @@
   {
     "id": "KA0145",
     "title": "New colour palette: Galactic Blue, True Blue and Lime Green",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0145-new-colour-palette-galactic-blue-true-blue-and-lime-green/ticket.md",
-    "updated": "2026-11-05T13:42:54.342Z"
+    "updated": "2026-11-05T13:47:11.900Z"
   },
   {
     "id": "KA0146",
@@ -1211,5 +1211,19 @@
     "status": "merged",
     "path": "spec/features/KA0147-the-e2e-specs-that-need-docker-skip-with-a-reason-where-docker-is-unreachable-as/ticket.md",
     "updated": "2026-11-05T13:33:43.226Z"
+  },
+  {
+    "id": "KA0148",
+    "title": "The accent's properties are still named `--blue` / `--blue-2`",
+    "status": "planning",
+    "path": "spec/features/KA0148-the-accent-s-properties-are-still-named-blue-blue-2/ticket.md",
+    "updated": "2026-11-05T13:47:11.895Z"
+  },
+  {
+    "id": "KA0149",
+    "title": "DESIGN.md forbids chromatic shadows while the field and form shadows are chromatic",
+    "status": "planning",
+    "path": "spec/features/KA0149-design-md-forbids-chromatic-shadows-while-the-field-and-form-shadows-are/ticket.md",
+    "updated": "2026-11-05T13:47:11.898Z"
   }
 ]
