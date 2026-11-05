@@ -16,12 +16,8 @@
     "height": 1377,
     "overflowX": false,
     "offenders": [],
-    "h1": [
-      "Tej strony nie ma."
-    ],
-    "smallTargets": [
-      "https://krotoszyn.praca. 277x18"
-    ],
+    "h1": ["Tej strony nie ma."],
+    "smallTargets": ["https://krotoszyn.praca. 277x18"],
     "glHidden": [],
     "title": "Strona nie znaleziona - Kacper Adler",
     "glOn": false,
@@ -50,9 +46,7 @@
     "height": 1476,
     "overflowX": false,
     "offenders": [],
-    "h1": [
-      "Tej strony nie ma."
-    ],
+    "h1": ["Tej strony nie ma."],
     "smallTargets": [],
     "glHidden": [],
     "title": "Strona nie znaleziona - Kacper Adler",
@@ -137,10 +131,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "backgroundColor",
-          "transform"
-        ]
+        "changed": ["backgroundColor", "transform"]
       },
       {
         "shot": "h-02",
@@ -148,10 +139,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "backgroundColor",
-          "transform"
-        ]
+        "changed": ["backgroundColor", "transform"]
       },
       {
         "shot": "h-03",
@@ -159,12 +147,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "boxShadow",
-          "color",
-          "borderColor",
-          "textDecorationColor"
-        ]
+        "changed": ["boxShadow", "color", "borderColor", "textDecorationColor"]
       },
       {
         "shot": "h-04",
@@ -172,12 +155,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "color",
-          "borderColor",
-          "textDecorationColor",
-          "transform"
-        ]
+        "changed": ["color", "borderColor", "textDecorationColor", "transform"]
       },
       {
         "shot": "h-05",
@@ -185,10 +163,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "backgroundColor",
-          "transform"
-        ]
+        "changed": ["backgroundColor", "transform"]
       },
       {
         "shot": "h-06",
@@ -196,12 +171,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "boxShadow",
-          "color",
-          "borderColor",
-          "textDecorationColor"
-        ]
+        "changed": ["boxShadow", "color", "borderColor", "textDecorationColor"]
       },
       {
         "shot": "h-07",
@@ -209,11 +179,7 @@
         "interactive": true,
         "primary": false,
         "react": "color",
-        "changed": [
-          "color",
-          "borderColor",
-          "textDecorationColor"
-        ]
+        "changed": ["color", "borderColor", "textDecorationColor"]
       }
     ],
     "noHoverChange": [],

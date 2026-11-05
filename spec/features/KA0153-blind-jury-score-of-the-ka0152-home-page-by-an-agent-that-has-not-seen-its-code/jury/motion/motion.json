@@ -1,1074 +1,1074 @@
 {
- "d1440": {
-  "viewport": {
-   "width": 1440,
-   "height": 900
+  "d1440": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "reducedMotion": false,
+    "load": [
+      {
+        "file": "f-00.png",
+        "ms": 108
+      },
+      {
+        "file": "f-01.png",
+        "ms": 217
+      },
+      {
+        "file": "f-02.png",
+        "ms": 318
+      },
+      {
+        "file": "f-03.png",
+        "ms": 428
+      },
+      {
+        "file": "f-04.png",
+        "ms": 549
+      },
+      {
+        "file": "f-05.png",
+        "ms": 658
+      },
+      {
+        "file": "f-06.png",
+        "ms": 783
+      },
+      {
+        "file": "f-07.png",
+        "ms": 891
+      },
+      {
+        "file": "f-08.png",
+        "ms": 1006
+      },
+      {
+        "file": "f-09.png",
+        "ms": 1129
+      },
+      {
+        "file": "f-10.png",
+        "ms": 1249
+      },
+      {
+        "file": "f-11.png",
+        "ms": 1366
+      },
+      {
+        "file": "f-12.png",
+        "ms": 1514
+      },
+      {
+        "file": "f-13.png",
+        "ms": 1665
+      },
+      {
+        "file": "f-14.png",
+        "ms": 1797
+      },
+      {
+        "file": "f-15.png",
+        "ms": 1910
+      },
+      {
+        "file": "f-16.png",
+        "ms": 2042
+      },
+      {
+        "file": "f-17.png",
+        "ms": 2180
+      },
+      {
+        "file": "f-18.png",
+        "ms": 2295
+      },
+      {
+        "file": "f-19.png",
+        "ms": 2408
+      },
+      {
+        "file": "f-20.png",
+        "ms": 2522
+      },
+      {
+        "file": "f-21.png",
+        "ms": 2639
+      },
+      {
+        "file": "f-22.png",
+        "ms": 2758
+      },
+      {
+        "file": "f-23.png",
+        "ms": 2871
+      }
+    ],
+    "scroll": [
+      {
+        "file": "f-00.png",
+        "scrollY": 0
+      },
+      {
+        "file": "f-01.png",
+        "scrollY": 216
+      },
+      {
+        "file": "f-02.png",
+        "scrollY": 432
+      },
+      {
+        "file": "f-03.png",
+        "scrollY": 648
+      },
+      {
+        "file": "f-04.png",
+        "scrollY": 864
+      },
+      {
+        "file": "f-05.png",
+        "scrollY": 1080
+      },
+      {
+        "file": "f-06.png",
+        "scrollY": 1296
+      },
+      {
+        "file": "f-07.png",
+        "scrollY": 1512
+      },
+      {
+        "file": "f-08.png",
+        "scrollY": 1728
+      },
+      {
+        "file": "f-09.png",
+        "scrollY": 1944
+      },
+      {
+        "file": "f-10.png",
+        "scrollY": 2161
+      },
+      {
+        "file": "f-11.png",
+        "scrollY": 2377
+      },
+      {
+        "file": "f-12.png",
+        "scrollY": 2593
+      },
+      {
+        "file": "f-13.png",
+        "scrollY": 2809
+      },
+      {
+        "file": "f-14.png",
+        "scrollY": 3025
+      },
+      {
+        "file": "f-15.png",
+        "scrollY": 3241
+      },
+      {
+        "file": "f-16.png",
+        "scrollY": 3457
+      },
+      {
+        "file": "f-17.png",
+        "scrollY": 3673
+      },
+      {
+        "file": "f-18.png",
+        "scrollY": 3889
+      },
+      {
+        "file": "f-19.png",
+        "scrollY": 4105
+      },
+      {
+        "file": "f-20.png",
+        "scrollY": 4321
+      },
+      {
+        "file": "f-21.png",
+        "scrollY": 4537
+      },
+      {
+        "file": "f-22.png",
+        "scrollY": 4753
+      },
+      {
+        "file": "f-23.png",
+        "scrollY": 4969
+      },
+      {
+        "file": "f-24.png",
+        "scrollY": 5185
+      },
+      {
+        "file": "f-25.png",
+        "scrollY": 5401
+      },
+      {
+        "file": "f-26.png",
+        "scrollY": 5617
+      },
+      {
+        "file": "f-27.png",
+        "scrollY": 5833
+      },
+      {
+        "file": "f-28.png",
+        "scrollY": 6049
+      },
+      {
+        "file": "f-29.png",
+        "scrollY": 6265
+      },
+      {
+        "file": "f-30.png",
+        "scrollY": 6482
+      },
+      {
+        "file": "f-31.png",
+        "scrollY": 6698
+      },
+      {
+        "file": "f-32.png",
+        "scrollY": 6914
+      },
+      {
+        "file": "f-33.png",
+        "scrollY": 7130
+      },
+      {
+        "file": "f-34.png",
+        "scrollY": 7346
+      },
+      {
+        "file": "f-35.png",
+        "scrollY": 7562
+      },
+      {
+        "file": "f-36.png",
+        "scrollY": 7778
+      },
+      {
+        "file": "f-37.png",
+        "scrollY": 7994
+      },
+      {
+        "file": "f-38.png",
+        "scrollY": 8210
+      },
+      {
+        "file": "f-39.png",
+        "scrollY": 8426
+      }
+    ],
+    "scrollMax": 8426
   },
-  "reducedMotion": false,
-  "load": [
-   {
-    "file": "f-00.png",
-    "ms": 108
-   },
-   {
-    "file": "f-01.png",
-    "ms": 217
-   },
-   {
-    "file": "f-02.png",
-    "ms": 318
-   },
-   {
-    "file": "f-03.png",
-    "ms": 428
-   },
-   {
-    "file": "f-04.png",
-    "ms": 549
-   },
-   {
-    "file": "f-05.png",
-    "ms": 658
-   },
-   {
-    "file": "f-06.png",
-    "ms": 783
-   },
-   {
-    "file": "f-07.png",
-    "ms": 891
-   },
-   {
-    "file": "f-08.png",
-    "ms": 1006
-   },
-   {
-    "file": "f-09.png",
-    "ms": 1129
-   },
-   {
-    "file": "f-10.png",
-    "ms": 1249
-   },
-   {
-    "file": "f-11.png",
-    "ms": 1366
-   },
-   {
-    "file": "f-12.png",
-    "ms": 1514
-   },
-   {
-    "file": "f-13.png",
-    "ms": 1665
-   },
-   {
-    "file": "f-14.png",
-    "ms": 1797
-   },
-   {
-    "file": "f-15.png",
-    "ms": 1910
-   },
-   {
-    "file": "f-16.png",
-    "ms": 2042
-   },
-   {
-    "file": "f-17.png",
-    "ms": 2180
-   },
-   {
-    "file": "f-18.png",
-    "ms": 2295
-   },
-   {
-    "file": "f-19.png",
-    "ms": 2408
-   },
-   {
-    "file": "f-20.png",
-    "ms": 2522
-   },
-   {
-    "file": "f-21.png",
-    "ms": 2639
-   },
-   {
-    "file": "f-22.png",
-    "ms": 2758
-   },
-   {
-    "file": "f-23.png",
-    "ms": 2871
-   }
-  ],
-  "scroll": [
-   {
-    "file": "f-00.png",
-    "scrollY": 0
-   },
-   {
-    "file": "f-01.png",
-    "scrollY": 216
-   },
-   {
-    "file": "f-02.png",
-    "scrollY": 432
-   },
-   {
-    "file": "f-03.png",
-    "scrollY": 648
-   },
-   {
-    "file": "f-04.png",
-    "scrollY": 864
-   },
-   {
-    "file": "f-05.png",
-    "scrollY": 1080
-   },
-   {
-    "file": "f-06.png",
-    "scrollY": 1296
-   },
-   {
-    "file": "f-07.png",
-    "scrollY": 1512
-   },
-   {
-    "file": "f-08.png",
-    "scrollY": 1728
-   },
-   {
-    "file": "f-09.png",
-    "scrollY": 1944
-   },
-   {
-    "file": "f-10.png",
-    "scrollY": 2161
-   },
-   {
-    "file": "f-11.png",
-    "scrollY": 2377
-   },
-   {
-    "file": "f-12.png",
-    "scrollY": 2593
-   },
-   {
-    "file": "f-13.png",
-    "scrollY": 2809
-   },
-   {
-    "file": "f-14.png",
-    "scrollY": 3025
-   },
-   {
-    "file": "f-15.png",
-    "scrollY": 3241
-   },
-   {
-    "file": "f-16.png",
-    "scrollY": 3457
-   },
-   {
-    "file": "f-17.png",
-    "scrollY": 3673
-   },
-   {
-    "file": "f-18.png",
-    "scrollY": 3889
-   },
-   {
-    "file": "f-19.png",
-    "scrollY": 4105
-   },
-   {
-    "file": "f-20.png",
-    "scrollY": 4321
-   },
-   {
-    "file": "f-21.png",
-    "scrollY": 4537
-   },
-   {
-    "file": "f-22.png",
-    "scrollY": 4753
-   },
-   {
-    "file": "f-23.png",
-    "scrollY": 4969
-   },
-   {
-    "file": "f-24.png",
-    "scrollY": 5185
-   },
-   {
-    "file": "f-25.png",
-    "scrollY": 5401
-   },
-   {
-    "file": "f-26.png",
-    "scrollY": 5617
-   },
-   {
-    "file": "f-27.png",
-    "scrollY": 5833
-   },
-   {
-    "file": "f-28.png",
-    "scrollY": 6049
-   },
-   {
-    "file": "f-29.png",
-    "scrollY": 6265
-   },
-   {
-    "file": "f-30.png",
-    "scrollY": 6482
-   },
-   {
-    "file": "f-31.png",
-    "scrollY": 6698
-   },
-   {
-    "file": "f-32.png",
-    "scrollY": 6914
-   },
-   {
-    "file": "f-33.png",
-    "scrollY": 7130
-   },
-   {
-    "file": "f-34.png",
-    "scrollY": 7346
-   },
-   {
-    "file": "f-35.png",
-    "scrollY": 7562
-   },
-   {
-    "file": "f-36.png",
-    "scrollY": 7778
-   },
-   {
-    "file": "f-37.png",
-    "scrollY": 7994
-   },
-   {
-    "file": "f-38.png",
-    "scrollY": 8210
-   },
-   {
-    "file": "f-39.png",
-    "scrollY": 8426
-   }
-  ],
-  "scrollMax": 8426
- },
- "m390": {
-  "viewport": {
-   "width": 390,
-   "height": 844
+  "m390": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "reducedMotion": false,
+    "load": [
+      {
+        "file": "f-00.png",
+        "ms": 95
+      },
+      {
+        "file": "f-01.png",
+        "ms": 196
+      },
+      {
+        "file": "f-02.png",
+        "ms": 276
+      },
+      {
+        "file": "f-03.png",
+        "ms": 360
+      },
+      {
+        "file": "f-04.png",
+        "ms": 444
+      },
+      {
+        "file": "f-05.png",
+        "ms": 529
+      },
+      {
+        "file": "f-06.png",
+        "ms": 617
+      },
+      {
+        "file": "f-07.png",
+        "ms": 698
+      },
+      {
+        "file": "f-08.png",
+        "ms": 781
+      },
+      {
+        "file": "f-09.png",
+        "ms": 864
+      },
+      {
+        "file": "f-10.png",
+        "ms": 947
+      },
+      {
+        "file": "f-11.png",
+        "ms": 1031
+      },
+      {
+        "file": "f-12.png",
+        "ms": 1113
+      },
+      {
+        "file": "f-13.png",
+        "ms": 1199
+      },
+      {
+        "file": "f-14.png",
+        "ms": 1286
+      },
+      {
+        "file": "f-15.png",
+        "ms": 1385
+      },
+      {
+        "file": "f-16.png",
+        "ms": 1484
+      },
+      {
+        "file": "f-17.png",
+        "ms": 1582
+      },
+      {
+        "file": "f-18.png",
+        "ms": 1664
+      },
+      {
+        "file": "f-19.png",
+        "ms": 1747
+      },
+      {
+        "file": "f-20.png",
+        "ms": 1830
+      },
+      {
+        "file": "f-21.png",
+        "ms": 1912
+      },
+      {
+        "file": "f-22.png",
+        "ms": 1995
+      },
+      {
+        "file": "f-23.png",
+        "ms": 2078
+      }
+    ],
+    "scroll": [
+      {
+        "file": "f-00.png",
+        "scrollY": 0
+      },
+      {
+        "file": "f-01.png",
+        "scrollY": 338
+      },
+      {
+        "file": "f-02.png",
+        "scrollY": 676
+      },
+      {
+        "file": "f-03.png",
+        "scrollY": 1015
+      },
+      {
+        "file": "f-04.png",
+        "scrollY": 1353
+      },
+      {
+        "file": "f-05.png",
+        "scrollY": 1691
+      },
+      {
+        "file": "f-06.png",
+        "scrollY": 2029
+      },
+      {
+        "file": "f-07.png",
+        "scrollY": 2367
+      },
+      {
+        "file": "f-08.png",
+        "scrollY": 2705
+      },
+      {
+        "file": "f-09.png",
+        "scrollY": 3044
+      },
+      {
+        "file": "f-10.png",
+        "scrollY": 3382
+      },
+      {
+        "file": "f-11.png",
+        "scrollY": 3720
+      },
+      {
+        "file": "f-12.png",
+        "scrollY": 4058
+      },
+      {
+        "file": "f-13.png",
+        "scrollY": 4396
+      },
+      {
+        "file": "f-14.png",
+        "scrollY": 4735
+      },
+      {
+        "file": "f-15.png",
+        "scrollY": 5073
+      },
+      {
+        "file": "f-16.png",
+        "scrollY": 5411
+      },
+      {
+        "file": "f-17.png",
+        "scrollY": 5749
+      },
+      {
+        "file": "f-18.png",
+        "scrollY": 6087
+      },
+      {
+        "file": "f-19.png",
+        "scrollY": 6425
+      },
+      {
+        "file": "f-20.png",
+        "scrollY": 6764
+      },
+      {
+        "file": "f-21.png",
+        "scrollY": 7102
+      },
+      {
+        "file": "f-22.png",
+        "scrollY": 7440
+      },
+      {
+        "file": "f-23.png",
+        "scrollY": 7778
+      },
+      {
+        "file": "f-24.png",
+        "scrollY": 8116
+      },
+      {
+        "file": "f-25.png",
+        "scrollY": 8454
+      },
+      {
+        "file": "f-26.png",
+        "scrollY": 8793
+      },
+      {
+        "file": "f-27.png",
+        "scrollY": 9131
+      },
+      {
+        "file": "f-28.png",
+        "scrollY": 9469
+      },
+      {
+        "file": "f-29.png",
+        "scrollY": 9807
+      },
+      {
+        "file": "f-30.png",
+        "scrollY": 10145
+      },
+      {
+        "file": "f-31.png",
+        "scrollY": 10484
+      },
+      {
+        "file": "f-32.png",
+        "scrollY": 10822
+      },
+      {
+        "file": "f-33.png",
+        "scrollY": 11160
+      },
+      {
+        "file": "f-34.png",
+        "scrollY": 11498
+      },
+      {
+        "file": "f-35.png",
+        "scrollY": 11836
+      },
+      {
+        "file": "f-36.png",
+        "scrollY": 12174
+      },
+      {
+        "file": "f-37.png",
+        "scrollY": 12513
+      },
+      {
+        "file": "f-38.png",
+        "scrollY": 12851
+      },
+      {
+        "file": "f-39.png",
+        "scrollY": 13189
+      }
+    ],
+    "scrollMax": 13189
   },
-  "reducedMotion": false,
-  "load": [
-   {
-    "file": "f-00.png",
-    "ms": 95
-   },
-   {
-    "file": "f-01.png",
-    "ms": 196
-   },
-   {
-    "file": "f-02.png",
-    "ms": 276
-   },
-   {
-    "file": "f-03.png",
-    "ms": 360
-   },
-   {
-    "file": "f-04.png",
-    "ms": 444
-   },
-   {
-    "file": "f-05.png",
-    "ms": 529
-   },
-   {
-    "file": "f-06.png",
-    "ms": 617
-   },
-   {
-    "file": "f-07.png",
-    "ms": 698
-   },
-   {
-    "file": "f-08.png",
-    "ms": 781
-   },
-   {
-    "file": "f-09.png",
-    "ms": 864
-   },
-   {
-    "file": "f-10.png",
-    "ms": 947
-   },
-   {
-    "file": "f-11.png",
-    "ms": 1031
-   },
-   {
-    "file": "f-12.png",
-    "ms": 1113
-   },
-   {
-    "file": "f-13.png",
-    "ms": 1199
-   },
-   {
-    "file": "f-14.png",
-    "ms": 1286
-   },
-   {
-    "file": "f-15.png",
-    "ms": 1385
-   },
-   {
-    "file": "f-16.png",
-    "ms": 1484
-   },
-   {
-    "file": "f-17.png",
-    "ms": 1582
-   },
-   {
-    "file": "f-18.png",
-    "ms": 1664
-   },
-   {
-    "file": "f-19.png",
-    "ms": 1747
-   },
-   {
-    "file": "f-20.png",
-    "ms": 1830
-   },
-   {
-    "file": "f-21.png",
-    "ms": 1912
-   },
-   {
-    "file": "f-22.png",
-    "ms": 1995
-   },
-   {
-    "file": "f-23.png",
-    "ms": 2078
-   }
-  ],
-  "scroll": [
-   {
-    "file": "f-00.png",
-    "scrollY": 0
-   },
-   {
-    "file": "f-01.png",
-    "scrollY": 338
-   },
-   {
-    "file": "f-02.png",
-    "scrollY": 676
-   },
-   {
-    "file": "f-03.png",
-    "scrollY": 1015
-   },
-   {
-    "file": "f-04.png",
-    "scrollY": 1353
-   },
-   {
-    "file": "f-05.png",
-    "scrollY": 1691
-   },
-   {
-    "file": "f-06.png",
-    "scrollY": 2029
-   },
-   {
-    "file": "f-07.png",
-    "scrollY": 2367
-   },
-   {
-    "file": "f-08.png",
-    "scrollY": 2705
-   },
-   {
-    "file": "f-09.png",
-    "scrollY": 3044
-   },
-   {
-    "file": "f-10.png",
-    "scrollY": 3382
-   },
-   {
-    "file": "f-11.png",
-    "scrollY": 3720
-   },
-   {
-    "file": "f-12.png",
-    "scrollY": 4058
-   },
-   {
-    "file": "f-13.png",
-    "scrollY": 4396
-   },
-   {
-    "file": "f-14.png",
-    "scrollY": 4735
-   },
-   {
-    "file": "f-15.png",
-    "scrollY": 5073
-   },
-   {
-    "file": "f-16.png",
-    "scrollY": 5411
-   },
-   {
-    "file": "f-17.png",
-    "scrollY": 5749
-   },
-   {
-    "file": "f-18.png",
-    "scrollY": 6087
-   },
-   {
-    "file": "f-19.png",
-    "scrollY": 6425
-   },
-   {
-    "file": "f-20.png",
-    "scrollY": 6764
-   },
-   {
-    "file": "f-21.png",
-    "scrollY": 7102
-   },
-   {
-    "file": "f-22.png",
-    "scrollY": 7440
-   },
-   {
-    "file": "f-23.png",
-    "scrollY": 7778
-   },
-   {
-    "file": "f-24.png",
-    "scrollY": 8116
-   },
-   {
-    "file": "f-25.png",
-    "scrollY": 8454
-   },
-   {
-    "file": "f-26.png",
-    "scrollY": 8793
-   },
-   {
-    "file": "f-27.png",
-    "scrollY": 9131
-   },
-   {
-    "file": "f-28.png",
-    "scrollY": 9469
-   },
-   {
-    "file": "f-29.png",
-    "scrollY": 9807
-   },
-   {
-    "file": "f-30.png",
-    "scrollY": 10145
-   },
-   {
-    "file": "f-31.png",
-    "scrollY": 10484
-   },
-   {
-    "file": "f-32.png",
-    "scrollY": 10822
-   },
-   {
-    "file": "f-33.png",
-    "scrollY": 11160
-   },
-   {
-    "file": "f-34.png",
-    "scrollY": 11498
-   },
-   {
-    "file": "f-35.png",
-    "scrollY": 11836
-   },
-   {
-    "file": "f-36.png",
-    "scrollY": 12174
-   },
-   {
-    "file": "f-37.png",
-    "scrollY": 12513
-   },
-   {
-    "file": "f-38.png",
-    "scrollY": 12851
-   },
-   {
-    "file": "f-39.png",
-    "scrollY": 13189
-   }
-  ],
-  "scrollMax": 13189
- },
- "d1440-reduced": {
-  "viewport": {
-   "width": 1440,
-   "height": 900
+  "d1440-reduced": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "reducedMotion": true,
+    "load": [
+      {
+        "file": "f-00.png",
+        "ms": 94
+      },
+      {
+        "file": "f-01.png",
+        "ms": 217
+      },
+      {
+        "file": "f-02.png",
+        "ms": 329
+      },
+      {
+        "file": "f-03.png",
+        "ms": 441
+      },
+      {
+        "file": "f-04.png",
+        "ms": 542
+      },
+      {
+        "file": "f-05.png",
+        "ms": 643
+      },
+      {
+        "file": "f-06.png",
+        "ms": 758
+      },
+      {
+        "file": "f-07.png",
+        "ms": 860
+      },
+      {
+        "file": "f-08.png",
+        "ms": 977
+      },
+      {
+        "file": "f-09.png",
+        "ms": 1093
+      },
+      {
+        "file": "f-10.png",
+        "ms": 1211
+      },
+      {
+        "file": "f-11.png",
+        "ms": 1327
+      },
+      {
+        "file": "f-12.png",
+        "ms": 1441
+      },
+      {
+        "file": "f-13.png",
+        "ms": 1543
+      },
+      {
+        "file": "f-14.png",
+        "ms": 1643
+      },
+      {
+        "file": "f-15.png",
+        "ms": 1759
+      },
+      {
+        "file": "f-16.png",
+        "ms": 1859
+      },
+      {
+        "file": "f-17.png",
+        "ms": 1959
+      },
+      {
+        "file": "f-18.png",
+        "ms": 2076
+      },
+      {
+        "file": "f-19.png",
+        "ms": 2193
+      },
+      {
+        "file": "f-20.png",
+        "ms": 2309
+      },
+      {
+        "file": "f-21.png",
+        "ms": 2430
+      },
+      {
+        "file": "f-22.png",
+        "ms": 2542
+      },
+      {
+        "file": "f-23.png",
+        "ms": 2643
+      }
+    ],
+    "scroll": [
+      {
+        "file": "f-00.png",
+        "scrollY": 0
+      },
+      {
+        "file": "f-01.png",
+        "scrollY": 216
+      },
+      {
+        "file": "f-02.png",
+        "scrollY": 432
+      },
+      {
+        "file": "f-03.png",
+        "scrollY": 648
+      },
+      {
+        "file": "f-04.png",
+        "scrollY": 864
+      },
+      {
+        "file": "f-05.png",
+        "scrollY": 1080
+      },
+      {
+        "file": "f-06.png",
+        "scrollY": 1296
+      },
+      {
+        "file": "f-07.png",
+        "scrollY": 1512
+      },
+      {
+        "file": "f-08.png",
+        "scrollY": 1728
+      },
+      {
+        "file": "f-09.png",
+        "scrollY": 1944
+      },
+      {
+        "file": "f-10.png",
+        "scrollY": 2161
+      },
+      {
+        "file": "f-11.png",
+        "scrollY": 2377
+      },
+      {
+        "file": "f-12.png",
+        "scrollY": 2593
+      },
+      {
+        "file": "f-13.png",
+        "scrollY": 2809
+      },
+      {
+        "file": "f-14.png",
+        "scrollY": 3025
+      },
+      {
+        "file": "f-15.png",
+        "scrollY": 3241
+      },
+      {
+        "file": "f-16.png",
+        "scrollY": 3457
+      },
+      {
+        "file": "f-17.png",
+        "scrollY": 3673
+      },
+      {
+        "file": "f-18.png",
+        "scrollY": 3889
+      },
+      {
+        "file": "f-19.png",
+        "scrollY": 4105
+      },
+      {
+        "file": "f-20.png",
+        "scrollY": 4321
+      },
+      {
+        "file": "f-21.png",
+        "scrollY": 4537
+      },
+      {
+        "file": "f-22.png",
+        "scrollY": 4753
+      },
+      {
+        "file": "f-23.png",
+        "scrollY": 4969
+      },
+      {
+        "file": "f-24.png",
+        "scrollY": 5185
+      },
+      {
+        "file": "f-25.png",
+        "scrollY": 5401
+      },
+      {
+        "file": "f-26.png",
+        "scrollY": 5617
+      },
+      {
+        "file": "f-27.png",
+        "scrollY": 5833
+      },
+      {
+        "file": "f-28.png",
+        "scrollY": 6049
+      },
+      {
+        "file": "f-29.png",
+        "scrollY": 6265
+      },
+      {
+        "file": "f-30.png",
+        "scrollY": 6482
+      },
+      {
+        "file": "f-31.png",
+        "scrollY": 6698
+      },
+      {
+        "file": "f-32.png",
+        "scrollY": 6914
+      },
+      {
+        "file": "f-33.png",
+        "scrollY": 7130
+      },
+      {
+        "file": "f-34.png",
+        "scrollY": 7346
+      },
+      {
+        "file": "f-35.png",
+        "scrollY": 7562
+      },
+      {
+        "file": "f-36.png",
+        "scrollY": 7778
+      },
+      {
+        "file": "f-37.png",
+        "scrollY": 7994
+      },
+      {
+        "file": "f-38.png",
+        "scrollY": 8210
+      },
+      {
+        "file": "f-39.png",
+        "scrollY": 8426
+      }
+    ],
+    "scrollMax": 8426
   },
-  "reducedMotion": true,
-  "load": [
-   {
-    "file": "f-00.png",
-    "ms": 94
-   },
-   {
-    "file": "f-01.png",
-    "ms": 217
-   },
-   {
-    "file": "f-02.png",
-    "ms": 329
-   },
-   {
-    "file": "f-03.png",
-    "ms": 441
-   },
-   {
-    "file": "f-04.png",
-    "ms": 542
-   },
-   {
-    "file": "f-05.png",
-    "ms": 643
-   },
-   {
-    "file": "f-06.png",
-    "ms": 758
-   },
-   {
-    "file": "f-07.png",
-    "ms": 860
-   },
-   {
-    "file": "f-08.png",
-    "ms": 977
-   },
-   {
-    "file": "f-09.png",
-    "ms": 1093
-   },
-   {
-    "file": "f-10.png",
-    "ms": 1211
-   },
-   {
-    "file": "f-11.png",
-    "ms": 1327
-   },
-   {
-    "file": "f-12.png",
-    "ms": 1441
-   },
-   {
-    "file": "f-13.png",
-    "ms": 1543
-   },
-   {
-    "file": "f-14.png",
-    "ms": 1643
-   },
-   {
-    "file": "f-15.png",
-    "ms": 1759
-   },
-   {
-    "file": "f-16.png",
-    "ms": 1859
-   },
-   {
-    "file": "f-17.png",
-    "ms": 1959
-   },
-   {
-    "file": "f-18.png",
-    "ms": 2076
-   },
-   {
-    "file": "f-19.png",
-    "ms": 2193
-   },
-   {
-    "file": "f-20.png",
-    "ms": 2309
-   },
-   {
-    "file": "f-21.png",
-    "ms": 2430
-   },
-   {
-    "file": "f-22.png",
-    "ms": 2542
-   },
-   {
-    "file": "f-23.png",
-    "ms": 2643
-   }
-  ],
-  "scroll": [
-   {
-    "file": "f-00.png",
-    "scrollY": 0
-   },
-   {
-    "file": "f-01.png",
-    "scrollY": 216
-   },
-   {
-    "file": "f-02.png",
-    "scrollY": 432
-   },
-   {
-    "file": "f-03.png",
-    "scrollY": 648
-   },
-   {
-    "file": "f-04.png",
-    "scrollY": 864
-   },
-   {
-    "file": "f-05.png",
-    "scrollY": 1080
-   },
-   {
-    "file": "f-06.png",
-    "scrollY": 1296
-   },
-   {
-    "file": "f-07.png",
-    "scrollY": 1512
-   },
-   {
-    "file": "f-08.png",
-    "scrollY": 1728
-   },
-   {
-    "file": "f-09.png",
-    "scrollY": 1944
-   },
-   {
-    "file": "f-10.png",
-    "scrollY": 2161
-   },
-   {
-    "file": "f-11.png",
-    "scrollY": 2377
-   },
-   {
-    "file": "f-12.png",
-    "scrollY": 2593
-   },
-   {
-    "file": "f-13.png",
-    "scrollY": 2809
-   },
-   {
-    "file": "f-14.png",
-    "scrollY": 3025
-   },
-   {
-    "file": "f-15.png",
-    "scrollY": 3241
-   },
-   {
-    "file": "f-16.png",
-    "scrollY": 3457
-   },
-   {
-    "file": "f-17.png",
-    "scrollY": 3673
-   },
-   {
-    "file": "f-18.png",
-    "scrollY": 3889
-   },
-   {
-    "file": "f-19.png",
-    "scrollY": 4105
-   },
-   {
-    "file": "f-20.png",
-    "scrollY": 4321
-   },
-   {
-    "file": "f-21.png",
-    "scrollY": 4537
-   },
-   {
-    "file": "f-22.png",
-    "scrollY": 4753
-   },
-   {
-    "file": "f-23.png",
-    "scrollY": 4969
-   },
-   {
-    "file": "f-24.png",
-    "scrollY": 5185
-   },
-   {
-    "file": "f-25.png",
-    "scrollY": 5401
-   },
-   {
-    "file": "f-26.png",
-    "scrollY": 5617
-   },
-   {
-    "file": "f-27.png",
-    "scrollY": 5833
-   },
-   {
-    "file": "f-28.png",
-    "scrollY": 6049
-   },
-   {
-    "file": "f-29.png",
-    "scrollY": 6265
-   },
-   {
-    "file": "f-30.png",
-    "scrollY": 6482
-   },
-   {
-    "file": "f-31.png",
-    "scrollY": 6698
-   },
-   {
-    "file": "f-32.png",
-    "scrollY": 6914
-   },
-   {
-    "file": "f-33.png",
-    "scrollY": 7130
-   },
-   {
-    "file": "f-34.png",
-    "scrollY": 7346
-   },
-   {
-    "file": "f-35.png",
-    "scrollY": 7562
-   },
-   {
-    "file": "f-36.png",
-    "scrollY": 7778
-   },
-   {
-    "file": "f-37.png",
-    "scrollY": 7994
-   },
-   {
-    "file": "f-38.png",
-    "scrollY": 8210
-   },
-   {
-    "file": "f-39.png",
-    "scrollY": 8426
-   }
-  ],
-  "scrollMax": 8426
- },
- "m390-reduced": {
-  "viewport": {
-   "width": 390,
-   "height": 844
-  },
-  "reducedMotion": true,
-  "load": [
-   {
-    "file": "f-00.png",
-    "ms": 91
-   },
-   {
-    "file": "f-01.png",
-    "ms": 210
-   },
-   {
-    "file": "f-02.png",
-    "ms": 290
-   },
-   {
-    "file": "f-03.png",
-    "ms": 374
-   },
-   {
-    "file": "f-04.png",
-    "ms": 457
-   },
-   {
-    "file": "f-05.png",
-    "ms": 539
-   },
-   {
-    "file": "f-06.png",
-    "ms": 622
-   },
-   {
-    "file": "f-07.png",
-    "ms": 708
-   },
-   {
-    "file": "f-08.png",
-    "ms": 791
-   },
-   {
-    "file": "f-09.png",
-    "ms": 874
-   },
-   {
-    "file": "f-10.png",
-    "ms": 957
-   },
-   {
-    "file": "f-11.png",
-    "ms": 1040
-   },
-   {
-    "file": "f-12.png",
-    "ms": 1123
-   },
-   {
-    "file": "f-13.png",
-    "ms": 1206
-   },
-   {
-    "file": "f-14.png",
-    "ms": 1291
-   },
-   {
-    "file": "f-15.png",
-    "ms": 1374
-   },
-   {
-    "file": "f-16.png",
-    "ms": 1457
-   },
-   {
-    "file": "f-17.png",
-    "ms": 1539
-   },
-   {
-    "file": "f-18.png",
-    "ms": 1623
-   },
-   {
-    "file": "f-19.png",
-    "ms": 1706
-   },
-   {
-    "file": "f-20.png",
-    "ms": 1790
-   },
-   {
-    "file": "f-21.png",
-    "ms": 1873
-   },
-   {
-    "file": "f-22.png",
-    "ms": 1956
-   },
-   {
-    "file": "f-23.png",
-    "ms": 2039
-   }
-  ],
-  "scroll": [
-   {
-    "file": "f-00.png",
-    "scrollY": 0
-   },
-   {
-    "file": "f-01.png",
-    "scrollY": 338
-   },
-   {
-    "file": "f-02.png",
-    "scrollY": 676
-   },
-   {
-    "file": "f-03.png",
-    "scrollY": 1015
-   },
-   {
-    "file": "f-04.png",
-    "scrollY": 1353
-   },
-   {
-    "file": "f-05.png",
-    "scrollY": 1691
-   },
-   {
-    "file": "f-06.png",
-    "scrollY": 2029
-   },
-   {
-    "file": "f-07.png",
-    "scrollY": 2367
-   },
-   {
-    "file": "f-08.png",
-    "scrollY": 2705
-   },
-   {
-    "file": "f-09.png",
-    "scrollY": 3044
-   },
-   {
-    "file": "f-10.png",
-    "scrollY": 3382
-   },
-   {
-    "file": "f-11.png",
-    "scrollY": 3720
-   },
-   {
-    "file": "f-12.png",
-    "scrollY": 4058
-   },
-   {
-    "file": "f-13.png",
-    "scrollY": 4396
-   },
-   {
-    "file": "f-14.png",
-    "scrollY": 4735
-   },
-   {
-    "file": "f-15.png",
-    "scrollY": 5073
-   },
-   {
-    "file": "f-16.png",
-    "scrollY": 5411
-   },
-   {
-    "file": "f-17.png",
-    "scrollY": 5749
-   },
-   {
-    "file": "f-18.png",
-    "scrollY": 6087
-   },
-   {
-    "file": "f-19.png",
-    "scrollY": 6425
-   },
-   {
-    "file": "f-20.png",
-    "scrollY": 6764
-   },
-   {
-    "file": "f-21.png",
-    "scrollY": 7102
-   },
-   {
-    "file": "f-22.png",
-    "scrollY": 7440
-   },
-   {
-    "file": "f-23.png",
-    "scrollY": 7778
-   },
-   {
-    "file": "f-24.png",
-    "scrollY": 8116
-   },
-   {
-    "file": "f-25.png",
-    "scrollY": 8454
-   },
-   {
-    "file": "f-26.png",
-    "scrollY": 8793
-   },
-   {
-    "file": "f-27.png",
-    "scrollY": 9131
-   },
-   {
-    "file": "f-28.png",
-    "scrollY": 9469
-   },
-   {
-    "file": "f-29.png",
-    "scrollY": 9807
-   },
-   {
-    "file": "f-30.png",
-    "scrollY": 10145
-   },
-   {
-    "file": "f-31.png",
-    "scrollY": 10484
-   },
-   {
-    "file": "f-32.png",
-    "scrollY": 10822
-   },
-   {
-    "file": "f-33.png",
-    "scrollY": 11160
-   },
-   {
-    "file": "f-34.png",
-    "scrollY": 11498
-   },
-   {
-    "file": "f-35.png",
-    "scrollY": 11836
-   },
-   {
-    "file": "f-36.png",
-    "scrollY": 12174
-   },
-   {
-    "file": "f-37.png",
-    "scrollY": 12513
-   },
-   {
-    "file": "f-38.png",
-    "scrollY": 12851
-   },
-   {
-    "file": "f-39.png",
-    "scrollY": 13189
-   }
-  ],
-  "scrollMax": 13189
- }
+  "m390-reduced": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "reducedMotion": true,
+    "load": [
+      {
+        "file": "f-00.png",
+        "ms": 91
+      },
+      {
+        "file": "f-01.png",
+        "ms": 210
+      },
+      {
+        "file": "f-02.png",
+        "ms": 290
+      },
+      {
+        "file": "f-03.png",
+        "ms": 374
+      },
+      {
+        "file": "f-04.png",
+        "ms": 457
+      },
+      {
+        "file": "f-05.png",
+        "ms": 539
+      },
+      {
+        "file": "f-06.png",
+        "ms": 622
+      },
+      {
+        "file": "f-07.png",
+        "ms": 708
+      },
+      {
+        "file": "f-08.png",
+        "ms": 791
+      },
+      {
+        "file": "f-09.png",
+        "ms": 874
+      },
+      {
+        "file": "f-10.png",
+        "ms": 957
+      },
+      {
+        "file": "f-11.png",
+        "ms": 1040
+      },
+      {
+        "file": "f-12.png",
+        "ms": 1123
+      },
+      {
+        "file": "f-13.png",
+        "ms": 1206
+      },
+      {
+        "file": "f-14.png",
+        "ms": 1291
+      },
+      {
+        "file": "f-15.png",
+        "ms": 1374
+      },
+      {
+        "file": "f-16.png",
+        "ms": 1457
+      },
+      {
+        "file": "f-17.png",
+        "ms": 1539
+      },
+      {
+        "file": "f-18.png",
+        "ms": 1623
+      },
+      {
+        "file": "f-19.png",
+        "ms": 1706
+      },
+      {
+        "file": "f-20.png",
+        "ms": 1790
+      },
+      {
+        "file": "f-21.png",
+        "ms": 1873
+      },
+      {
+        "file": "f-22.png",
+        "ms": 1956
+      },
+      {
+        "file": "f-23.png",
+        "ms": 2039
+      }
+    ],
+    "scroll": [
+      {
+        "file": "f-00.png",
+        "scrollY": 0
+      },
+      {
+        "file": "f-01.png",
+        "scrollY": 338
+      },
+      {
+        "file": "f-02.png",
+        "scrollY": 676
+      },
+      {
+        "file": "f-03.png",
+        "scrollY": 1015
+      },
+      {
+        "file": "f-04.png",
+        "scrollY": 1353
+      },
+      {
+        "file": "f-05.png",
+        "scrollY": 1691
+      },
+      {
+        "file": "f-06.png",
+        "scrollY": 2029
+      },
+      {
+        "file": "f-07.png",
+        "scrollY": 2367
+      },
+      {
+        "file": "f-08.png",
+        "scrollY": 2705
+      },
+      {
+        "file": "f-09.png",
+        "scrollY": 3044
+      },
+      {
+        "file": "f-10.png",
+        "scrollY": 3382
+      },
+      {
+        "file": "f-11.png",
+        "scrollY": 3720
+      },
+      {
+        "file": "f-12.png",
+        "scrollY": 4058
+      },
+      {
+        "file": "f-13.png",
+        "scrollY": 4396
+      },
+      {
+        "file": "f-14.png",
+        "scrollY": 4735
+      },
+      {
+        "file": "f-15.png",
+        "scrollY": 5073
+      },
+      {
+        "file": "f-16.png",
+        "scrollY": 5411
+      },
+      {
+        "file": "f-17.png",
+        "scrollY": 5749
+      },
+      {
+        "file": "f-18.png",
+        "scrollY": 6087
+      },
+      {
+        "file": "f-19.png",
+        "scrollY": 6425
+      },
+      {
+        "file": "f-20.png",
+        "scrollY": 6764
+      },
+      {
+        "file": "f-21.png",
+        "scrollY": 7102
+      },
+      {
+        "file": "f-22.png",
+        "scrollY": 7440
+      },
+      {
+        "file": "f-23.png",
+        "scrollY": 7778
+      },
+      {
+        "file": "f-24.png",
+        "scrollY": 8116
+      },
+      {
+        "file": "f-25.png",
+        "scrollY": 8454
+      },
+      {
+        "file": "f-26.png",
+        "scrollY": 8793
+      },
+      {
+        "file": "f-27.png",
+        "scrollY": 9131
+      },
+      {
+        "file": "f-28.png",
+        "scrollY": 9469
+      },
+      {
+        "file": "f-29.png",
+        "scrollY": 9807
+      },
+      {
+        "file": "f-30.png",
+        "scrollY": 10145
+      },
+      {
+        "file": "f-31.png",
+        "scrollY": 10484
+      },
+      {
+        "file": "f-32.png",
+        "scrollY": 10822
+      },
+      {
+        "file": "f-33.png",
+        "scrollY": 11160
+      },
+      {
+        "file": "f-34.png",
+        "scrollY": 11498
+      },
+      {
+        "file": "f-35.png",
+        "scrollY": 11836
+      },
+      {
+        "file": "f-36.png",
+        "scrollY": 12174
+      },
+      {
+        "file": "f-37.png",
+        "scrollY": 12513
+      },
+      {
+        "file": "f-38.png",
+        "scrollY": 12851
+      },
+      {
+        "file": "f-39.png",
+        "scrollY": 13189
+      }
+    ],
+    "scrollMax": 13189
+  }
 }

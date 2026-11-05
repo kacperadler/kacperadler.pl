@@ -14,13 +14,8 @@
     "height": 9326,
     "overflowX": false,
     "offenders": [],
-    "h1": [
-      "Wdrożenia AI i automatyzacje, które przejmują nudną pracę"
-    ],
-    "smallTargets": [
-      "formularzu 79x21",
-      "https://krotoszyn.praca. 277x18"
-    ],
+    "h1": ["Wdrożenia AI i automatyzacje, które przejmują nudną pracę"],
+    "smallTargets": ["formularzu 79x21", "https://krotoszyn.praca. 277x18"],
     "glHidden": [],
     "title": "Wdrożenia AI i automatyzacje dla firm | Kacper Adler",
     "glOn": false,
@@ -49,12 +44,8 @@
     "height": 14033,
     "overflowX": false,
     "offenders": [],
-    "h1": [
-      "Wdrożenia AI i automatyzacje, które przejmują nudną pracę"
-    ],
-    "smallTargets": [
-      "formularzu 79x21"
-    ],
+    "h1": ["Wdrożenia AI i automatyzacje, które przejmują nudną pracę"],
+    "smallTargets": ["formularzu 79x21"],
     "glHidden": [],
     "title": "Wdrożenia AI i automatyzacje dla firm | Kacper Adler",
     "glOn": false,
@@ -138,10 +129,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "backgroundColor",
-          "transform"
-        ]
+        "changed": ["backgroundColor", "transform"]
       },
       {
         "shot": "h-02",
@@ -149,10 +137,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "backgroundColor",
-          "transform"
-        ]
+        "changed": ["backgroundColor", "transform"]
       },
       {
         "shot": "h-03",
@@ -160,10 +145,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "backgroundColor",
-          "transform"
-        ]
+        "changed": ["backgroundColor", "transform"]
       },
       {
         "shot": "h-04",
@@ -197,12 +179,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "boxShadow",
-          "color",
-          "borderColor",
-          "textDecorationColor"
-        ]
+        "changed": ["boxShadow", "color", "borderColor", "textDecorationColor"]
       },
       {
         "shot": "h-07",
@@ -210,12 +187,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "color",
-          "borderColor",
-          "textDecorationColor",
-          "transform"
-        ]
+        "changed": ["color", "borderColor", "textDecorationColor", "transform"]
       }
     ],
     "noHoverChange": [],

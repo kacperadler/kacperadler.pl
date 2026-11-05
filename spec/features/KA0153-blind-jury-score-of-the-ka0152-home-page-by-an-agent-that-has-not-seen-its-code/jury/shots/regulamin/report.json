@@ -14,9 +14,7 @@
     "height": 3786,
     "overflowX": false,
     "offenders": [],
-    "h1": [
-      "Regulamin serwisu"
-    ],
+    "h1": ["Regulamin serwisu"],
     "smallTargets": [
       "kontakt@kacperadler.pl 180x21",
       "Polityka prywatności 159x21",
@@ -51,9 +49,7 @@
     "height": 4992,
     "overflowX": false,
     "offenders": [],
-    "h1": [
-      "Regulamin serwisu"
-    ],
+    "h1": ["Regulamin serwisu"],
     "smallTargets": [
       "kontakt@kacperadler.pl 180x21",
       "Polityka prywatności 159x21",
@@ -142,11 +138,7 @@
         "interactive": true,
         "primary": true,
         "react": "color",
-        "changed": [
-          "color",
-          "borderColor",
-          "textDecorationColor"
-        ]
+        "changed": ["color", "borderColor", "textDecorationColor"]
       },
       {
         "shot": "h-02",
@@ -154,12 +146,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "boxShadow",
-          "color",
-          "borderColor",
-          "textDecorationColor"
-        ]
+        "changed": ["boxShadow", "color", "borderColor", "textDecorationColor"]
       },
       {
         "shot": "h-03",
@@ -167,12 +154,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "color",
-          "borderColor",
-          "textDecorationColor",
-          "transform"
-        ]
+        "changed": ["color", "borderColor", "textDecorationColor", "transform"]
       },
       {
         "shot": "h-04",
@@ -180,10 +162,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "backgroundColor",
-          "transform"
-        ]
+        "changed": ["backgroundColor", "transform"]
       },
       {
         "shot": "h-05",
@@ -191,12 +170,7 @@
         "interactive": true,
         "primary": true,
         "react": "moves",
-        "changed": [
-          "boxShadow",
-          "color",
-          "borderColor",
-          "textDecorationColor"
-        ]
+        "changed": ["boxShadow", "color", "borderColor", "textDecorationColor"]
       },
       {
         "shot": "h-06",
@@ -204,11 +178,7 @@
         "interactive": true,
         "primary": false,
         "react": "color",
-        "changed": [
-          "color",
-          "borderColor",
-          "textDecorationColor"
-        ]
+        "changed": ["color", "borderColor", "textDecorationColor"]
       },
       {
         "shot": "h-07",
@@ -219,12 +189,8 @@
         "changed": []
       }
     ],
-    "noHoverChange": [
-      "h-07 a \"https://krotoszyn.praca.gov.pl/projekty-\""
-    ],
-    "colorOnly": [
-      "h-01 a \"kontakt@kacperadler.pl\""
-    ],
+    "noHoverChange": ["h-07 a \"https://krotoszyn.praca.gov.pl/projekty-\""],
+    "colorOnly": ["h-01 a \"kontakt@kacperadler.pl\""],
     "covered": [],
     "cursorFollower": false
   },
