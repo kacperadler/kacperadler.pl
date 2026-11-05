@@ -1,4 +1,4 @@
-import { readFileSync, statSync, utimesSync } from "node:fs";
+import { readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { stripVTControlCharacters } from "node:util";
 import {
   expect,
@@ -14,13 +14,12 @@ import {
 const DEV_URL = `http://localhost:${process.env.E2E_DEV_PORT}`;
 const DEV_LOG = process.env.E2E_DEV_LOG ?? "";
 
-// Files the catalogue page is rendered from. A watching dev server answers a
-// write to any of them with a full reload of every open page; a commit
-// during the run writes them (lint-staged fixes the staged files).
-const RENDERED_FROM = [
-  "src/components/mb/button.astro",
-  "src/pages/_ui/catalogue.astro",
-];
+// A module of the open page that no commit or check owns: .astro/ is
+// git-ignored, so writing it changes no tracked file. The page imports it, so
+// a watching dev server answers a write to it as to any file the page is
+// built from (a component a commit's lint-staged fix rewrites): with a full
+// reload of the page, as the module accepts no hot update.
+const PROBE_MODULE = `.astro/dev-reload-probe-${process.pid}.js`;
 
 // Vite's HMR socket (ws://localhost:<port>/?token=...) and the reload the dev
 // server sends on it at startup.
@@ -122,15 +121,19 @@ test("a file written in the tree during the run does not reload a page of the e2
     el.dataset.devReloadProbe = "";
   });
   const from = statSync(DEV_LOG).size;
+  writeFileSync(PROBE_MODULE, "export default 1;\n");
 
-  // A new modification time is what a write looks like to the watcher; the
-  // content stays as it is.
-  const now = new Date();
-  for (const file of RENDERED_FROM) {
-    utimesSync(file, now, now);
+  try {
+    // The import puts the module into the page's module graph.
+    await page.evaluate(async (url) => {
+      await import(url);
+    }, `/${PROBE_MODULE}`);
+    writeFileSync(PROBE_MODULE, "export default 2;\n");
+    // A watching server reloads the page within a few hundred milliseconds.
+    await page.waitForTimeout(2000);
+  } finally {
+    rmSync(PROBE_MODULE, { force: true });
   }
-  // A watching server reloads the page within a few hundred milliseconds.
-  await page.waitForTimeout(2000);
 
   // A reload would have replaced the document that holds the probe.
   await expect(
