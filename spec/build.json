@@ -1243,15 +1243,15 @@
   {
     "id": "KA0152",
     "title": "The home page reaches a jury estimate of 8.5, scored blind with its motion",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0152-the-home-page-reaches-a-jury-estimate-of-8-5-scored-blind-with-its-motion/ticket.md",
-    "updated": "2026-11-05T18:42:09.871Z"
+    "updated": "2026-11-05T20:20:36.756Z"
   },
   {
     "id": "KA0153",
     "title": "Blind jury score of the KA0152 home page, by an agent that has not seen its code or earlier scores",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/ticket.md",
-    "updated": "2026-11-05T19:49:32.378Z"
+    "updated": "2026-11-05T19:49:36.009Z"
   }
 ]
