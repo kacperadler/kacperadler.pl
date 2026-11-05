@@ -1357,7 +1357,8 @@ const steps = [
         linia 2px (za linią w połowie wysokości okna), a znacznik, pusty do tej
         pory, wypełnia się na limonkowo od górnej krawędzi do dolnej, z
         wygładzeniem, gdy ta linia przez niego przechodzi - animacje CSS
-        sterowane przewijaniem, bez skryptu. Przy
+        sterowane przewijaniem, bez skryptu. W procesie na stronie głównej lista
+        kroków gra szynę, znaczniki i rysunki po kolei na jednej osi. Przy
         <code>prefers-reduced-motion</code>
         szyna i znaczniki są od razu wypełnione.
       </p>
@@ -1390,7 +1391,8 @@ const steps = [
         rysunku, każdy od lewej i z wygładzeniem, od górnej krawędzi rysunku na
         80% wysokości okna do dolnej w jego połowie -
         <code>clip-path</code>
-        na osi <code>view()</code> rysunku, bez skryptu. Przy
+        na osi <code>view()</code> rysunku, bez skryptu (w procesie na stronie
+        głównej: po swoim znaczniku, na osi listy kroków). Przy
         <code>prefers-reduced-motion</code>
         albo bez osi widoku stoi narysowana.
       </p>
