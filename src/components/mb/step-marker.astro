@@ -11,11 +11,13 @@
  * The rail fills as the page scrolls: a 2px lime line over the ink one
  * follows a line across the middle of the viewport (each row's segment
  * fills while that line crosses it, so the segments read as one fill),
- * and a mark turns lime when the line reaches its centre. CSS
- * scroll-driven animations (a view timeline per segment and per mark), no
- * script. Under prefers-reduced-motion, or where the browser has no view
- * timelines, rail and marks show fully filled. Decorative: the step's
- * title carries the meaning. */
+ * and a mark fills lime from its top edge to its bottom one, eased, while
+ * that line crosses it, so the rail runs into it; its number turns dark
+ * as the fill passes its middle. CSS scroll-driven animations (a view
+ * timeline per segment and per mark), no script. Under
+ * prefers-reduced-motion, or where the browser has no view timelines,
+ * rail and marks show fully filled. Decorative: the step's title carries
+ * the meaning. */
 interface Props {
   num: string;
 }
@@ -105,7 +107,9 @@ const { num } = Astro.props;
    * fill runs from its top on that line (cover range: the box entering at
    * the bottom of the viewport is 0, so the top is at the line after half
    * the viewport) to its bottom on it (the end of the cover range less
-   * half the viewport). A mark switches when its centre is on the line. */
+   * half the viewport). A mark stands empty - ink number in an ink rule -
+   * and its lime fill, over the rule, grows down from its top edge on the
+   * line to its bottom edge on it, eased in and out. */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .mb-step-fill::before {
@@ -121,10 +125,31 @@ const { num } = Astro.props;
       }
 
       .mb-step-dot {
-        animation: mb-step-dot linear both;
-        animation-range: cover calc(50vh + var(--mb-step-dot) / 2) cover
-          calc(50vh + var(--mb-step-dot) / 2 + 1px);
-        animation-timeline: view();
+        isolation: isolate;
+        background: var(--v2-bg);
+        border-color: var(--mb-rule);
+        view-timeline: --mb-step-dot block;
+        animation: mb-step-num step-start both;
+        animation-range: cover 50vh cover calc(50vh + var(--mb-step-dot));
+      }
+
+      .mb-step-dot::before {
+        position: absolute;
+        inset: -1px;
+        z-index: -1;
+        content: "";
+        background: var(--blue);
+        transform-origin: top center;
+        animation: mb-step-fill ease-in-out both;
+        animation-range: cover 50vh cover calc(50vh + var(--mb-step-dot));
+      }
+
+      .mb-step-marker > .mb-step-dot {
+        animation-timeline: --mb-step-dot;
+      }
+
+      .mb-step-marker > .mb-step-dot::before {
+        animation-timeline: --mb-step-dot;
       }
     }
   }
@@ -139,17 +164,15 @@ const { num } = Astro.props;
     }
   }
 
-  @keyframes mb-step-dot {
-    from {
+  /* step-start: ink up to the middle of the range, dark after it. */
+  @keyframes mb-step-num {
+    from,
+    50% {
       color: var(--ink);
-      background: var(--v2-bg);
-      border-color: var(--mb-rule);
     }
 
     to {
       color: var(--v2-bg);
-      background: var(--blue);
-      border-color: var(--blue);
     }
   }
 
