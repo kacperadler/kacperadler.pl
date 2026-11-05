@@ -37,3 +37,4 @@ Out:
 - The specs' assertions: unchanged.
 
 ## Decisions
+- 2026-11-05: KA0147 joins the queue before KA0145, by the recommendation under KA-D3; the owner: "add this new tasks to queue (KA-D3: any question by its recommendation)" (KA-D4)
