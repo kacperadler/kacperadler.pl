@@ -1,0 +1,4 @@
+
+3 pages crawled from http://127.0.0.1:4400/
+heaviest page /: ~225 KB | html 27 | JS 8 (gz) | CSS 0 (gz) | fonts 138 | images 52
+0 FAIL, 0 WARN
