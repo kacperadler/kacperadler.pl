@@ -1285,8 +1285,8 @@
   {
     "id": "KA0158",
     "title": "The process animates in order: step 1 mark, then its drawing, then step 2 mark, then its drawing",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0158-the-process-animates-in-order-step-1-mark-then-its-drawing-then-step-2-mark-then/ticket.md",
-    "updated": "2026-11-05T21:19:41.242Z"
+    "updated": "2026-11-05T23:10:52.313Z"
   }
 ]
