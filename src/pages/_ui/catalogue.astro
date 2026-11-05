@@ -1354,9 +1354,10 @@ const steps = [
         pierwszy w wierszu i siedzi na środku wysokości wiersza; wiersze ułożone
         w listę łączą szyny w jedną linię od pierwszego znacznika do ostatniego.
         Szyna to oś kreska-kropka. Przy przewijaniu szynę wypełnia limonkowa
-        linia 2px (za linią w połowie wysokości okna), a znacznik robi się
-        limonkowy, gdy linia dojdzie do jego środka - animacje CSS sterowane
-        przewijaniem, bez skryptu. Przy
+        linia 2px (za linią w połowie wysokości okna), a znacznik, pusty do tej
+        pory, wypełnia się na limonkowo od górnej krawędzi do dolnej, z
+        wygładzeniem, gdy ta linia przez niego przechodzi - animacje CSS
+        sterowane przewijaniem, bez skryptu. Przy
         <code>prefers-reduced-motion</code>
         szyna i znaczniki są od razu wypełnione.
       </p>
@@ -1385,9 +1386,11 @@ const steps = [
         <code>process-figure.astro</code>
         - rysunek szczegółu etapu procesu w slocie <code>image</code> karty:
         rysunek 1px tuszem stoi narysowany, warstwa 2px limonkowa (to, co etap
-        daje) dorysowuje się od lewej, gdy strona przewija się przez rysunek -
+        daje) dorysowuje się przy przewijaniu kawałek po kawałku, w kolejności
+        rysunku, każdy od lewej i z wygładzeniem, od górnej krawędzi rysunku na
+        80% wysokości okna do dolnej w jego połowie -
         <code>clip-path</code>
-        na własnej osi <code>view()</code>, bez skryptu. Przy
+        na osi <code>view()</code> rysunku, bez skryptu. Przy
         <code>prefers-reduced-motion</code>
         albo bez osi widoku stoi narysowana.
       </p>

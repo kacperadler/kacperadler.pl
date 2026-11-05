@@ -850,27 +850,30 @@ test.describe("home page", () => {
       reducedMotion: "no-preference",
     });
     const page = await context.newPage();
-    // The 2px lime line over each segment (its scale), which marks are
-    // lime, and how much of each drawing's lime layer is drawn in (its
-    // clip from the right: 0 hidden, 1 drawn).
+    // The 2px lime line over each segment (its scale), which marks the
+    // fill has reached the middle of (their lime fill's scale), and how
+    // much of each drawing's lime layer is drawn in (the mean progress of
+    // its pieces' draw: 0 hidden, 1 drawn).
     const fill = () =>
       page.locator("#how").evaluate((how) => ({
         dots: [...how.querySelectorAll(".mb-step-dot")].map(
-          (dot) => getComputedStyle(dot).backgroundColor === "rgb(126, 211, 33)"
+          (dot) =>
+            new DOMMatrix(getComputedStyle(dot, "::before").transform).d >= 0.5
         ),
         figures: [...how.querySelectorAll(".mb-figure-lime")].map((layer) => {
-          const clip = getComputedStyle(layer).clipPath;
-          const sides = clip.slice("inset(".length, -1).split(" ");
-          const right = sides[1] ?? sides[0] ?? "";
-          return right.endsWith("%")
-            ? Math.round(100 - Number.parseFloat(right)) / 100
-            : 1;
+          const pieces = [...layer.children].map(
+            (piece) =>
+              piece.getAnimations()[0]?.effect?.getComputedTiming().progress ??
+              1
+          );
+          const mean = pieces.reduce((a, b) => a + b, 0) / pieces.length;
+          return Math.round(mean * 100) / 100;
         }),
         lines: [...how.querySelectorAll(".mb-step-fill")].map(
           (line) =>
             new DOMMatrix(getComputedStyle(line, "::before").transform).d
         ),
-        // A connector turns lime with its mark.
+        // A connector turns lime as its mark's fill reaches its middle.
         links: [...how.querySelectorAll(".mb-step-link")].map(
           (link) =>
             getComputedStyle(link).backgroundColor === "rgb(126, 211, 33)"
@@ -903,8 +906,9 @@ test.describe("home page", () => {
     });
 
     // The middle of the viewport on the third mark: the first two segments
-    // full, the marks up to the third lime, the rest still empty; the
-    // drawings of the first two steps drawn in, the last two not yet.
+    // full, the marks up to the third filled to their middle, the rest
+    // still empty; the drawings of the first three steps drawn in, the
+    // last two not yet.
     await scrollTo("#how .mb-step:nth-child(3) .mb-step-dot");
     await expect
       .poll(async () => (await fill()).dots)
@@ -913,8 +917,9 @@ test.describe("home page", () => {
     expect(middle.lines.slice(0, 2)).toEqual([1, 1]);
     expect(middle.lines.slice(3)).toEqual([0, 0]);
     expect(middle.links).toEqual(middle.dots);
-    expect(middle.figures.slice(0, 2)).toEqual([1, 1]);
-    expect(middle.figures.slice(3)).toEqual([0, 0]);
+    expect(middle.figures.slice(0, 3)).toEqual([1, 1, 1]);
+    expect(middle.figures[3]).toBeLessThan(1);
+    expect(middle.figures[4]).toBeLessThan(1);
 
     await scrollTo("#how .mb-how-cta");
     await expect.poll(fill).toEqual({
@@ -925,6 +930,121 @@ test.describe("home page", () => {
     });
     await context.close();
   });
+
+  // KA0157: the lime parts draw in where a visitor sees them happen, not
+  // at once. Scrolling through the process in small steps, each drawing's
+  // lime layer draws over at least 30% of the viewport's height of scroll
+  // (its own height, about 112px, read as a flash), one piece after the
+  // other; each mark fills over its own height, eased, from the moment the
+  // rail's tip on the middle line reaches its top edge.
+  for (const viewport of [
+    { height: 1000, width: 1440 },
+    { height: 844, width: 390 },
+  ]) {
+    test(`at ${viewport.width}px the process drawings draw in piece by piece over 30% of the viewport, and each mark fills eased as the rail reaches it`, async ({
+      browser,
+    }) => {
+      const context = await browser.newContext({
+        reducedMotion: "no-preference",
+        viewport,
+      });
+      const page = await context.newPage();
+      await page.goto("/");
+      const STEP = 12;
+      const samples = await page.evaluate(async (step) => {
+        const how = document.querySelector("#how") as HTMLElement;
+        const top = how.getBoundingClientRect().top + scrollY;
+        const out: {
+          dots: { fill: number | null; scale: number; top: number }[];
+          figures: (number | null)[][];
+          y: number;
+        }[] = [];
+        for (let y = top - innerHeight; y < top + how.offsetHeight; y += step) {
+          scrollTo({ behavior: "instant", top: y });
+          // Two frames: the scroll timelines have caught up with it.
+          const { promise, resolve } = Promise.withResolvers<number>();
+          requestAnimationFrame(() => requestAnimationFrame(resolve));
+          // biome-ignore lint/performance/noAwaitInLoops: samples in scroll order
+          await promise;
+          out.push({
+            // A mark's lime fill is its ::before's mb-step-fill.
+            dots: [...how.querySelectorAll(".mb-step-dot")].map((dot) => ({
+              fill:
+                dot
+                  .getAnimations({ subtree: true })
+                  .find(
+                    (animation) =>
+                      (animation as CSSAnimation).animationName ===
+                      "mb-step-fill"
+                  )
+                  ?.effect?.getComputedTiming().progress ?? null,
+              scale: new DOMMatrix(getComputedStyle(dot, "::before").transform)
+                .d,
+              top: dot.getBoundingClientRect().top - innerHeight / 2,
+            })),
+            figures: [...how.querySelectorAll(".mb-figure-lime")].map((layer) =>
+              [...layer.children].map(
+                (piece) =>
+                  piece.getAnimations()[0]?.effect?.getComputedTiming()
+                    .progress ?? null
+              )
+            ),
+            y: scrollY,
+          });
+        }
+        return out;
+      }, STEP);
+      // The scroll position of the first sample that `passes`.
+      const firstY = (passes: (sample: (typeof samples)[number]) => boolean) =>
+        samples.find(passes)?.y ?? Number.NaN;
+
+      const figureCount = samples[0]?.figures.length ?? 0;
+      expect(figureCount).toBe(5);
+      for (let f = 0; f < figureCount; f += 1) {
+        const start = firstY((s) =>
+          (s.figures[f] ?? []).some((p) => p !== null && p > 0)
+        );
+        const end = firstY((s) => (s.figures[f] ?? []).every((p) => p === 1));
+        expect(end - start, `drawing ${f + 1}`).toBeGreaterThanOrEqual(
+          viewport.height * 0.3
+        );
+        // A piece starts only once the one before it is drawn.
+        for (const sample of samples) {
+          const pieces = sample.figures[f] ?? [];
+          for (let k = 1; k < pieces.length; k += 1) {
+            if ((pieces[k] ?? 0) > 0) {
+              expect(pieces[k - 1], `drawing ${f + 1}`).toBeGreaterThan(0.99);
+            }
+          }
+        }
+      }
+
+      const dotSize = viewport.width > 880 ? 48 : 36;
+      for (let d = 0; d < 5; d += 1) {
+        const filling = samples.filter((s) => {
+          const fill = s.dots[d]?.fill;
+          return fill !== null && fill !== undefined && fill > 0 && fill < 1;
+        });
+        const start = firstY((s) => (s.dots[d]?.fill ?? 0) > 0);
+        const end = firstY((s) => s.dots[d]?.fill === 1);
+        expect(end - start, `mark ${d + 1}`).toBeGreaterThanOrEqual(
+          dotSize / 2
+        );
+        // The rail's tip, on the middle line, has reached the top edge.
+        for (const sample of filling) {
+          expect(sample.dots[d]?.top, `mark ${d + 1}`).toBeLessThanOrEqual(0.5);
+        }
+        // Eased: early in the range the fill lags its linear share.
+        for (const sample of filling) {
+          const dot = sample.dots[d];
+          if (dot?.fill && dot.fill < 0.4) {
+            expect(dot.scale, `mark ${d + 1}`).toBeLessThan(dot.fill);
+          }
+        }
+      }
+      await context.close();
+    });
+  }
 
   test("with reduced motion the process rail shows filled and the drawings drawn, nothing moves", async ({
     browser,
@@ -937,9 +1057,9 @@ test.describe("home page", () => {
       dots: [...how.querySelectorAll(".mb-step-dot")].map(
         (dot) => getComputedStyle(dot).backgroundColor
       ),
-      figures: [...how.querySelectorAll(".mb-figure-lime")].map(
-        (layer) => getComputedStyle(layer).clipPath
-      ),
+      figures: [
+        ...how.querySelectorAll(".mb-figure-lime, .mb-figure-lime > *"),
+      ].map((piece) => getComputedStyle(piece).clipPath),
       lines: [...how.querySelectorAll(".mb-step-fill")].map(
         (line) => getComputedStyle(line, "::before").transform
       ),
@@ -951,7 +1071,8 @@ test.describe("home page", () => {
     expect(new Set(state.links)).toEqual(new Set(["rgb(126, 211, 33)"]));
     expect(new Set(state.dots)).toEqual(new Set(["rgb(126, 211, 33)"]));
     expect(new Set(state.lines)).toEqual(new Set(["none"]));
-    expect(state.figures).toEqual(["none", "none", "none", "none", "none"]);
+    expect(state.figures.length).toBeGreaterThan(5);
+    expect(new Set(state.figures)).toEqual(new Set(["none"]));
     await context.close();
   });
 

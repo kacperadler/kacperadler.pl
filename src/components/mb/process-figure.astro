@@ -23,12 +23,17 @@ import type { ProcessFigureName } from "@/data/process";
  * load and a card stays short. Decorative: the step's title and text
  * carry the meaning.
  *
- * The lime layer is drawn in left to right as the page scrolls past the
- * drawing: a clip-path on its own view timeline, over the rail segment's
- * range (the box's top on the viewport's middle line to its bottom there),
- * so it is drawn before the step's mark turns lime (step-marker.astro).
- * Under prefers-reduced-motion, without view timelines or without CSS
- * animations it stands drawn. */
+ * The lime layer draws in as the page scrolls past the drawing, piece by
+ * piece in the drawing's own order (the brace, then its callout; the
+ * chain along the bars; one module, then the next; the cloud, then its
+ * triangle; the trace, then its end mark): each piece is uncovered left to
+ * right by a clip-path, eased, on the drawing's view timeline. The whole
+ * draw runs from the drawing's top at 80% of the viewport's height to its
+ * bottom on the viewport's middle line, 30% of the viewport plus the
+ * drawing's height of scroll, so it ends before the step's mark turns lime
+ * (step-marker.astro); `--mb-from` and `--mb-to` on a piece are its share
+ * of that range. Under prefers-reduced-motion, without view timelines or
+ * without CSS animations it stands drawn. */
 interface Props {
   name: ProcessFigureName;
 }
@@ -97,8 +102,15 @@ const grid = [60, 100, 140, 180, 220, 260, 300, 340];
   <svg aria-hidden="true" class="mb-figure-lime" viewBox="0 0 400 120">
     {name === "conversation" && (
       <>
-        <path d="M165 86v8h70v-8" />
-        <rect class="mb-figure-fill" height="10" width="10" x="243" y="96" />
+        <path d="M165 86v8h70v-8" style="--mb-to: 0.65" />
+        <rect
+          class="mb-figure-fill"
+          height="10"
+          style="--mb-from: 0.65"
+          width="10"
+          x="243"
+          y="96"
+        />
       </>
     )}
     {name === "plan" && (
@@ -106,22 +118,47 @@ const grid = [60, 100, 140, 180, 220, 260, 300, 340];
     )}
     {name === "stages" && (
       <>
-        <rect class="mb-figure-fill" height="18" width="160" x="120" y="64" />
-        <rect class="mb-figure-fill" height="18" width="160" x="120" y="91" />
+        <rect
+          class="mb-figure-fill"
+          height="18"
+          style="--mb-to: 0.5"
+          width="160"
+          x="120"
+          y="64"
+        />
+        <rect
+          class="mb-figure-fill"
+          height="18"
+          style="--mb-from: 0.5"
+          width="160"
+          x="120"
+          y="91"
+        />
       </>
     )}
     {name === "revision" && (
       <>
         <path
           d={`M205 26${cloudTop}${cloudRight}${cloudBottom}${cloudLeft}z`}
+          style="--mb-to: 0.75"
         />
-        <path d="M340 12l12 20h-24z" />
+        <path d="M340 12l12 20h-24z" style="--mb-from: 0.75" />
       </>
     )}
     {name === "care" && (
       <>
-        <path d="M40 62l30-4 30 8 30-12 30 6 30 10 30-14 30 6 30-10 30 12 26-4" />
-        <rect class="mb-figure-fill" height="8" width="8" x="352" y="56" />
+        <path
+          d="M40 62l30-4 30 8 30-12 30 6 30 10 30-14 30 6 30-10 30 12 26-4"
+          style="--mb-to: 0.85"
+        />
+        <rect
+          class="mb-figure-fill"
+          height="8"
+          style="--mb-from: 0.85"
+          width="8"
+          x="352"
+          y="56"
+        />
       </>
     )}
   </svg>
@@ -176,27 +213,37 @@ const grid = [60, 100, 140, 180, 220, 260, 300, 340];
 
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
-      .mb-figure-lime {
-        animation: mb-figure-draw linear both;
-        animation-range: cover 50vh cover calc(100% - 50vh);
+      .mb-figure {
+        view-timeline: --mb-figure block;
+      }
+
+      /* cover 20vh: the drawing's top at 80% of the viewport; cover
+       * calc(100% - 50vh): its bottom on the middle line. */
+      .mb-figure-lime > * {
+        animation: mb-figure-draw ease-in-out both;
+        animation-range: cover calc(20vh + (100% - 70vh) * var(--mb-from, 0))
+          cover calc(20vh + (100% - 70vh) * var(--mb-to, 1));
       }
 
       /* Its own rule, a step more specific: the build's minifier folds an
-       * animation-timeline into the animation shorthand, where browsers
-       * drop it. */
-      .mb-figure > .mb-figure-lime {
-        animation-timeline: view();
+       * animation-timeline that names a timeline into the animation
+       * shorthand, which browsers do not accept there. */
+      .mb-figure > .mb-figure-lime > * {
+        animation-timeline: --mb-figure;
       }
     }
   }
 
+  /* The insets reach 4 units past the piece's box, so its stroke, which
+   * does not scale, is never cut; the start is an empty strip at its left
+   * edge. */
   @keyframes mb-figure-draw {
     from {
-      clip-path: inset(0 100% 0 0);
+      clip-path: inset(-4px calc(100% + 4px) -4px -4px);
     }
 
     to {
-      clip-path: inset(0);
+      clip-path: inset(-4px);
     }
   }
 </style>
