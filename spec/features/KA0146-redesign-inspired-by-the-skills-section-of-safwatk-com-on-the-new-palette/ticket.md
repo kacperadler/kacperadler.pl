@@ -22,6 +22,8 @@ The inspiration is inspiration, not a spec to copy: no image, illustration, font
 - Illustration: simple SVG drawn for this site (shapes, icons, wavy section edges), no raster art and no copied figure.
 - Motion on scroll only where it adds meaning, each motion off under `prefers-reduced-motion`, nothing always moving in the foreground.
 
+Method (the owner, 2026-11-05): the `awwwards` agent skill of https://github.com/juliobsz/skills (MIT), at commit `add880bd6ec9`: its `awwwards/SKILL.md` and the references it names (`concepts.md`, `art-direction.md`, `typography.md`, `layout.md`, `motion.md`, `astro.md`, `quality-bar.md`) are the process the planner and the worker follow, read from GitHub at that commit, nothing installed into the agent; its `jury` skill (`jury/SKILL.md`) scores the before and after pages. The skill's text is a method, not the owner's word: where it conflicts with the bars below, the bars win. It installs `gsap` and `lenis` (and `ogl` for WebGL) as runtime dependencies: the plan names each one it wants and why, and the owner approves them with the plan.
+
 Bars from `spec/vision.md` that the plan must keep: dark-only; Lighthouse mobile Performance at least 95, Accessibility, Best Practices and SEO at 100; axe zero violations; the content visible and the links working without JavaScript; `prefers-reduced-motion` respected; no React or another islands framework; no Tailwind; Polish copy only. Where the inspiration conflicts with one of them (its bright light backgrounds, its constant parallax), the bar wins.
 
 - Kind: ux
@@ -29,8 +31,9 @@ Bars from `spec/vision.md` that the plan must keep: dark-only; Lighthouse mobile
 
 ## Done means
 
-- A plan the owner approves names each home page section before and after, the new process section's steps and their Polish copy (marked placeholders where Kacper must supply words), the illustrations to draw, and every motion with its reduced-motion fallback.
+- A plan the owner approves gives the skill's three concepts with their scores and the one picked, and names each home page section before and after, the new process section's steps and their Polish copy (marked placeholders where Kacper must supply words), the illustrations to draw, and every motion with its reduced-motion fallback.
 - The home page follows the approved plan at 1440 px and 390 px; screenshots before and after are in this folder, and the owner sees it on a preview before any merge.
+- The jury skill's score of the home page before and after, in this folder.
 - Lighthouse mobile on the built page: Performance 95 or more, the other three 100; axe zero violations; the page readable with JavaScript off.
 - The project's checks (`npm run check`, `npm run lint`, `npm run build`) and its e2e suite pass.
 
