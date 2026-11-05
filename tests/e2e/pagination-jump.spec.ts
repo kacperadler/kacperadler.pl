@@ -24,6 +24,22 @@ let origin = "";
 const docker = (...args: string[]) =>
   execFileSync("docker", args, { encoding: "utf8" }).trim();
 
+// An Arthur job's sandbox has no Unix stream socket, so it never reaches the
+// Docker daemon: skip there, and run wherever `docker version` answers.
+const dockerAnswers = (): boolean => {
+  try {
+    execFileSync("docker", ["version"], { stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+test.skip(
+  !dockerAnswers(),
+  "Docker is unreachable here (an Arthur job's sandbox, or no Docker): this spec runs in CI and where Docker runs"
+);
+
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async () => {

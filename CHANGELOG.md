@@ -1,86 +1,74 @@
 # Changelog
 
-Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at the next merge.
+Generated from the merged tickets of `spec/build.json` by `arthur changelog`; a hand edit is overwritten at the next merge.
 
-## 2026-10-31
-
-### Fixed
-
-- KA0099 dev-no-reload fails once on a navigation right after its first page load (4b784be)
+## 2026-11-05
 
 ### Changed
 
+- KA0147 The e2e specs that need Docker skip with a reason where Docker is unreachable, as in an Arthur job (7cde02d)
+
+## 2026-10-31
+
+### Other
+
+- KA0099 dev-no-reload fails once on a navigation right after its first page load (4b784be)
 - KA0143 README reads like a person wrote it, without the internal detail (a8d9a36)
 
 ## 2026-10-29
 
-### Added
+### Other
 
 - KA0111 Header menu button, header CTA and footer links are small tap targets (2086435)
+- KA0115 The mobile sheet re-implements what `<dialog>` gives (ff69c00)
+- KA0116 A global rule strips every transition under reduced motion (34f7f6f)
+- KA0117 Derived colours are hard-coded instead of mixed from the palette (5516a19)
 - KA0123 Content labels in the text face, in sentence case (2235917)
 - KA0124 Running text in the full ink and at 16px (bf651c5)
 - KA0125 "CRM-y" in "Aplikacje szyte na miarę" breaks at its hyphen (0852107)
 - KA0126 Twelve type sizes where the skill counts five (543eb60)
 - KA0127 The phone's logos stay grey (9aaa0d7)
+- KA0131 Every e2e page load on the preview sends a pageview to the production Umami (541417a)
+- KA0132 Other specs still wait for networkidle on preview pages (764e225)
 - KA0135 The inline "formularzu" link in the FAQ lede is 21px tall (27511b7)
 - KA0136 www.kacperadler.pl serves the whole site instead of redirecting to the apex (e63db3a)
 - KA0140 The mono marks still carry four sizes, so `size-count` stays a WARN (cda7934)
 - KA0142 The hero card counts 1000+ system users and 500+ mobile app users (8ce164e)
 
-### Fixed
-
-- KA0131 Every e2e page load on the preview sends a pageview to the production Umami (541417a)
-- KA0132 Other specs still wait for networkidle on preview pages (764e225)
-
-### Changed
-
-- KA0115 The mobile sheet re-implements what `<dialog>` gives (ff69c00)
-- KA0116 A global rule strips every transition under reduced motion (34f7f6f)
-- KA0117 Derived colours are hard-coded instead of mixed from the palette (5516a19)
-
 ## 2026-10-28
 
-### Added
+### Other
 
 - KA0075 The home page layout and sections present Kacper better (01f7736)
 - KA0096 The contact form asks for the company name, optionally (d7541b7)
 - KA0098 The live site wears the chosen signature, blueprint-live (794139c)
 - KA0102 The 404 page's rule is the one line the pen does not draw (1399005)
+- KA0103 The 360px entrance-after-paint test is flaky (545af2d)
 - KA0104 Audit the site CSS against good-css.com and propose what to adopt (6f0a0eb)
+- KA0105 In-page links park the section head under the sticky header (2a54f5c)
 - KA0108 iOS Safari: form fields at 15px, text inflation, 100vh on the 404 (a1ead45)
+- KA0109 In forced-colors mode a focused field shows no focus at all (8d9d6c5)
 - KA0110 Hover styles answer taps on touch screens (64523ac)
 - KA0112 The message box scrolls inside itself instead of growing (b7ac93a)
 - KA0113 Section rhythm jumps at 880px; headline sizes ignore the reader's font size (40a35d6)
 - KA0114 One-letter Polish words end lines (e1c3a33)
 - KA0118 Audit the site design against Taste Skill and propose what to raise (35c837d)
-- KA0128 After a long message the success card is a tall, mostly empty box (d32edd4)
-- KA0130 After sending, the "Wiadomość wysłana." heading can land above the viewport (f64413f)
-
-### Fixed
-
-- KA0103 The 360px entrance-after-paint test is flaky (545af2d)
-- KA0105 In-page links park the section head under the sticky header (2a54f5c)
-- KA0109 In forced-colors mode a focused field shows no focus at all (8d9d6c5)
-- KA0129 Two tests flaked under full-suite load (8be5bac)
-
-### Other
-
 - KA0120 The marketplace case says I adapted code from another project, not that I fixed theirs (73cb530)
+- KA0128 After a long message the success card is a tall, mostly empty box (d32edd4)
+- KA0129 Two tests flaked under full-suite load (8be5bac)
+- KA0130 After sending, the "Wiadomość wysłana." heading can land above the viewport (f64413f)
 
 ## 2026-10-14
 
-### Added
+### Other
 
 - KA0027 Leads stored in SQLite through one on-demand API route (ca675a8)
 - KA0054 Patterns not yet in the catalogue (4759f70)
 - KA0073 The OG image still draws the old design (4f06881)
-- KA0083 The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form (d2b3973)
-- KA0084 The card bar slides in and out in the direction the cursor moves (ca27cd4)
-
-### Fixed
-
 - KA0074 `bun run check` reads the Playwright HTML report when `CI` is set (4e894b9)
 - KA0078 Pagination jump needs a page that reads its query (f6f7342)
+- KA0083 The /ui components get the feedback of 2026-10-14: buttons, loading, avatars, radio, choice, card, contact form (d2b3973)
+- KA0084 The card bar slides in and out in the direction the cursor moves (ca27cd4)
 - KA0085 /ui scrolls 8px sideways at 360px on the first load, now and then (66b0825)
 - KA0086 Under reduced motion every restyle lags one frame on every page (128929f)
 - KA0088 The "move under no-preference" motion test races the transitions it looks for (4d67b3d)
@@ -91,17 +79,33 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 
 ## 2026-10-11
 
-### Fixed
+### Other
 
 - KA0081 Blueprint-live: the rulers stand still as in blueprint (c73d020)
 
 ## 2026-10-10
 
-### Added
+### Other
 
 - KA0001 Onboarding: vision and criteria for kacperadler.pl (87eb449)
+- KA0002 Docs match the code and the harness standards (AGENTS.md) (237e8a7)
 - KA0003 Update dependencies, Astro to the newest release (8412871)
+- KA0004 Harness gap: no `test` script, so `npm test` fails (a6bd5fb)
 - KA0005 The dropped email-templates offer is still on the site (d80d012)
+- KA0006 Em-dashes left in generated text and docs (f8e8e2e)
+- KA0008 `DESIGN.md` still describes `/v2` and the theme toggle (977143c)
+- KA0009 The privacy policy says the site stores a theme preference in `localStorage` (8a20178)
+- KA0010 Code comments still point at `v2-layout` and `body.v2-body` (d450f62)
+- KA0012 `@/stores` path alias with no `src/stores` (aa7a919)
+- KA0013 astro-icon 1.2 warns on every build about a missing `src/icons` (e5eee8c)
+- KA0014 `@types/node` 26 typechecks against a newer Node than CI and Docker run (2ec2514)
+- KA0015 The mobile menu has no accessible name (c12cd49)
+- KA0016 The e2e suite cannot start Astro 7 preview: it detaches (2f475d1)
+- KA0017 CSS still carries `light-dark()` pairs whose light half never renders (bba607f)
+- KA0019 The modal mobile sheet does not move or hold focus (40e700a)
+- KA0022 contact-form e2e spec fails now and then in parallel runs (3da9e1f)
+- KA0024 Drop editor and agent configs, Biome formats .astro instead of Prettier (478c000)
+- KA0025 Drop project-plan.md and rewrite README.md (1918d42)
 - KA0026 Offer: AI agents, automation, Claude Code and Codex training (7453229)
 - KA0028 Case studies in MDX: collection, list and page (6feb382)
 - KA0036 Kacper is a software engineer, not a frontend engineer (a8f5655)
@@ -113,6 +117,7 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0042 Design proposal: computer (8269e9e)
 - KA0043 Design proposal: professional (86692e8)
 - KA0044 Design proposal: minimal brutalism (7913cf5)
+- KA0047 review.md still says package.json has no test script (882b23a)
 - KA0065 Design proposal: minimal brutalism computer (b0634b2)
 - KA0067 Keep only the minimal brutalism proposal (85fb50e)
 - KA0068 Minimal brutalism components in the /ui catalogue (a271183)
@@ -121,28 +126,5 @@ Generated from `spec/features/` by `h changelog`; a hand edit is overwritten at 
 - KA0072 A signature of Kacper's own in the minimal brutalism style (890ae8d)
 - KA0076 Signature proposal: editorial (8d3181c)
 - KA0077 Signature proposal: live-grid (06004dd)
-- KA0080 Design proposal: blueprint drawn on scroll (a7c100d)
-
-### Fixed
-
-- KA0004 Harness gap: no `test` script, so `npm test` fails (a6bd5fb)
-- KA0009 The privacy policy says the site stores a theme preference in `localStorage` (8a20178)
-- KA0014 `@types/node` 26 typechecks against a newer Node than CI and Docker run (2ec2514)
-- KA0015 The mobile menu has no accessible name (c12cd49)
-- KA0016 The e2e suite cannot start Astro 7 preview: it detaches (2f475d1)
-- KA0019 The modal mobile sheet does not move or hold focus (40e700a)
-- KA0022 contact-form e2e spec fails now and then in parallel runs (3da9e1f)
 - KA0079 Blueprint: the cell tag is unreadable on hover (5677b49)
-
-### Changed
-
-- KA0002 Docs match the code and the harness standards (AGENTS.md) (237e8a7)
-- KA0006 Em-dashes left in generated text and docs (f8e8e2e)
-- KA0008 `DESIGN.md` still describes `/v2` and the theme toggle (977143c)
-- KA0010 Code comments still point at `v2-layout` and `body.v2-body` (d450f62)
-- KA0012 `@/stores` path alias with no `src/stores` (aa7a919)
-- KA0013 astro-icon 1.2 warns on every build about a missing `src/icons` (e5eee8c)
-- KA0017 CSS still carries `light-dark()` pairs whose light half never renders (bba607f)
-- KA0024 Drop editor and agent configs, Biome formats .astro instead of Prettier (478c000)
-- KA0025 Drop project-plan.md and rewrite README.md (1918d42)
-- KA0047 review.md still says package.json has no test script (882b23a)
+- KA0080 Design proposal: blueprint drawn on scroll (a7c100d)
