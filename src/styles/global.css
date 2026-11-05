@@ -25,9 +25,14 @@ html {
  * query and puts only what moves (a scroll, a transform, a height, a
  * shadow or a focus ring sliding out) inside
  * prefers-reduced-motion: no-preference. Colour and opacity fades are not
- * motion and run for everyone. */
+ * motion and run for everyone.
+ *
+ * A link in the page glides to its section: scripts/glide.ts marks
+ * data-glide for 2s after a click on it. Nothing else scrolls smoothly:
+ * Tab brings the focused element into view at once, so it is never off
+ * screen behind a glide. */
 @media (prefers-reduced-motion: no-preference) {
-  html {
+  html[data-glide] {
     scroll-behavior: smooth;
   }
 }

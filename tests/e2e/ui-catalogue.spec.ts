@@ -1141,8 +1141,7 @@ test.describe("button layer and loading (astro dev)", () => {
       }
 
       const button = buttonIn(page, variant, "idle");
-      // Mid-viewport, clear of the sticky header, so the pointer reaches it;
-      // instant, as html scrolls smoothly.
+      // Mid-viewport, clear of the sticky header, so the pointer reaches it.
       await button.evaluate((el) =>
         el.scrollIntoView({ behavior: "instant", block: "center" })
       );

@@ -117,6 +117,11 @@ test.describe("minimal brutalism", () => {
       // biome-ignore lint/performance/noAwaitInLoops: one page at a time
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(path, { waitUntil: "domcontentloaded" });
+      // Marked as an in-page link glide (scripts/glide.ts), the one scroll
+      // that may be smooth.
+      await page.evaluate(() => {
+        document.documentElement.dataset.glide = "";
+      });
       expect(await motionOf(page), path).toEqual([]);
       await page.emulateMedia({ reducedMotion: "no-preference" });
       expect(await motionOf(page), path).toContain(
