@@ -256,7 +256,7 @@ test("the problems, cases and about sections stand on panel fields with seamless
       expect(ground.edges, ground.id).toEqual([panel, panel]);
       expect(ground.width, ground.id).toBe(1440);
     } else {
-      expect(ground.background, ground.id).toMatch(/rgba\(0, 0, 0, 0\)/);
+      expect(ground.background, ground.id).toBe("rgba(0, 0, 0, 0)");
       expect(ground.edges, ground.id).toEqual([]);
     }
   }
@@ -269,6 +269,7 @@ test("the problems, cases and about sections stand on panel fields with seamless
     // biome-ignore lint/performance/noAwaitInLoops: one field at a time
     await section.scrollIntoViewIfNeeded();
     for (const at of ["top", "bottom"] as const) {
+      // biome-ignore lint/performance/noAwaitInLoops: one edge at a time
       await section.evaluate((el, side) => {
         const rect = el.getBoundingClientRect();
         const y = side === "top" ? rect.top : rect.bottom;
