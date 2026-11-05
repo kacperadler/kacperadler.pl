@@ -1187,5 +1187,12 @@
     "status": "planning",
     "path": "spec/features/KA0144-the-ui-catalogue-specs-can-be-the-first-page-of-the-e2e-dev-server-and-get-its-startup-reload/ticket.md",
     "updated": "2026-10-31T20:40:10.035Z"
+  },
+  {
+    "id": "KA0145",
+    "title": "New colour palette: Galactic Blue, True Blue and Lime Green",
+    "status": "planning",
+    "path": "spec/features/KA0145-new-colour-palette-galactic-blue-true-blue-and-lime-green/ticket.md",
+    "updated": "2026-11-05T12:13:50.035Z"
   }
 ]
