@@ -1,0 +1,240 @@
+{
+  "url": "http://100.76.234.51:4322/polityka-prywatnosci",
+  "errors": [],
+  "failed": [],
+  "desktop": {
+    "loadMs": 49,
+    "loaderMs": null,
+    "settledMs": 2220,
+    "vitals": {
+      "lcpMs": 64,
+      "lcpElement": "h1.mb-section-title",
+      "cls": 0
+    },
+    "height": 4954,
+    "overflowX": false,
+    "offenders": [],
+    "h1": [
+      "Polityka prywatności"
+    ],
+    "smallTargets": [
+      "kontakt@kacperadler.pl 180x21",
+      "uodo.gov.pl 85x21",
+      "kontakt@kacperadler.pl 180x21",
+      "https://krotoszyn.praca. 277x18"
+    ],
+    "glHidden": [],
+    "title": "Polityka prywatności - Kacper Adler",
+    "glOn": false,
+    "scrollFps": {
+      "fps": 60,
+      "worstFrameMs": 17
+    },
+    "nav": {
+      "href": "/",
+      "scrollYAfter": 0,
+      "title": "Wdrożenia AI i automatyzacje dla firm | Kacper Adler"
+    },
+    "idleMotion": false,
+    "idleAt": null
+  },
+  "mobile": {
+    "throttled": true,
+    "loadMs": 1325,
+    "loaderMs": null,
+    "settledMs": 3348,
+    "vitals": {
+      "lcpMs": 608,
+      "lcpElement": "p",
+      "cls": 0.057
+    },
+    "height": 6896,
+    "overflowX": false,
+    "offenders": [],
+    "h1": [
+      "Polityka prywatności"
+    ],
+    "smallTargets": [
+      "kontakt@kacperadler.pl 180x21",
+      "uodo.gov.pl 85x21",
+      "kontakt@kacperadler.pl 180x21"
+    ],
+    "glHidden": [],
+    "title": "Polityka prywatności - Kacper Adler",
+    "glOn": false,
+    "scrollFps": {
+      "fps": 60,
+      "worstFrameMs": 17
+    }
+  },
+  "files": [
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-00-firstpaint.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-01-hero.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-02-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-03-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-04-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-05-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-06-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-07-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-90-transition-a.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-90-transition-b.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-90-transition-c.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-91-after-nav.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/d-92-back.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/k-01-focus.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/k-02-focus.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/k-03-focus.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/k-04-focus.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-01-rest.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-01-hover.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-02-rest.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-02-hover.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-03-rest.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-03-hover.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-04-rest.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-04-hover.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-05-rest.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-05-hover.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-06-rest.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-06-hover.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-07-rest.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/h-07-hover.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/m-01-hero.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/m-02-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/m-03-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/m-04-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/m-05-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/m-06-scroll.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/r-01-hero.png",
+    "/home/kacper/.arthur-worktrees/2026-11-05-worker-9fce7ca4/spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/jury/shots/polityka-prywatnosci/r-02-mid.png"
+  ],
+  "notes": [
+    "desktop FPS runs headless on a software GPU: treat it as a floor, not a measurement of real hardware",
+    "mobile runs at 4x CPU slowdown on slow 4G: mobile.vitals and mobile.scrollFps are the numbers that count",
+    "loadMs: ms from navigation to the load event, null if it had not fired after 30 s (desktop) or 60 s (phone); a heavy page takes long, while visitors see content at vitals.lcpMs. loaderMs: ms until the #loader ended, null when the page has none",
+    "settledMs: ms from navigation by which the first screen stopped changing, never before the fixed wait. null: still changing at the cap, either a long intro or continuous motion (a live shader, video); d-01-hero / m-01-hero tell which. reduced.moving: the screen was still changing 1.5 s after load with reduced motion on"
+  ],
+  "keyboard": {
+    "stops": [
+      "a \"Przejdź do treści\"",
+      "a \"k Kacper Adler\"",
+      "a \"Oferta\"",
+      "a \"Realizacje\"",
+      "a \"Proces\"",
+      "a \"O mnie\"",
+      "a \"FAQ\"",
+      "a \"Umów rozmowę\"",
+      "a \"kontakt@kacperadler.pl\"",
+      "a \"uodo.gov.pl\"",
+      "a \"kontakt@kacperadler.pl\"",
+      "a \"k Kacper Adler\""
+    ],
+    "skipLinkFirst": false,
+    "noVisibleFocus": [],
+    "invisibleFocus": [],
+    "stuck": false
+  },
+  "hover": {
+    "targets": [
+      {
+        "shot": "h-01",
+        "label": "a \"kontakt@kacperadler.pl\"",
+        "interactive": true,
+        "primary": true,
+        "react": "color",
+        "changed": [
+          "color",
+          "borderColor",
+          "textDecorationColor"
+        ]
+      },
+      {
+        "shot": "h-02",
+        "label": "a \"Kacper Adler\"",
+        "interactive": true,
+        "primary": true,
+        "react": "moves",
+        "changed": [
+          "boxShadow",
+          "color",
+          "borderColor",
+          "textDecorationColor"
+        ]
+      },
+      {
+        "shot": "h-03",
+        "label": "a \"Oferta\"",
+        "interactive": true,
+        "primary": true,
+        "react": "moves",
+        "changed": [
+          "color",
+          "borderColor",
+          "textDecorationColor",
+          "transform"
+        ]
+      },
+      {
+        "shot": "h-04",
+        "label": "a \"Umów rozmowę\"",
+        "interactive": true,
+        "primary": true,
+        "react": "moves",
+        "changed": [
+          "backgroundColor",
+          "transform"
+        ]
+      },
+      {
+        "shot": "h-05",
+        "label": "a \"Kacper Adler\"",
+        "interactive": true,
+        "primary": true,
+        "react": "moves",
+        "changed": [
+          "boxShadow",
+          "color",
+          "borderColor",
+          "textDecorationColor"
+        ]
+      },
+      {
+        "shot": "h-06",
+        "label": "a \"Polityka prywatności\"",
+        "interactive": true,
+        "primary": false,
+        "react": "color",
+        "changed": [
+          "color",
+          "borderColor",
+          "textDecorationColor"
+        ]
+      },
+      {
+        "shot": "h-07",
+        "label": "a \"https://krotoszyn.praca.gov.pl/projekty-\"",
+        "interactive": true,
+        "primary": true,
+        "react": "none",
+        "changed": []
+      }
+    ],
+    "noHoverChange": [
+      "h-07 a \"https://krotoszyn.praca.gov.pl/projekty-\""
+    ],
+    "colorOnly": [
+      "h-01 a \"kontakt@kacperadler.pl\""
+    ],
+    "covered": [],
+    "cursorFollower": false
+  },
+  "reduced": {
+    "hiddenText": 0,
+    "moving": false
+  },
+  "a11y": {
+    "violations": [],
+    "serious": 0,
+    "contrastNeedsReview": 15
+  }
+}
