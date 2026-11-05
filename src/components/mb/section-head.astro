@@ -182,9 +182,15 @@ const Heading = as;
     color: var(--ink);
   }
 
-  /* Poster: the headline fills the row; the lede steps under it into the
-   * right column. Same rem + vw slope as the section rhythm, capped at
-   * 13vw like the default. */
+  /* Poster: the label 24px over the headline; the headline fills the row;
+   * the lede steps under it into the right column, 24px down, clear of a
+   * callout hanging off a brace above it. 40px on a 390px phone to 88px at
+   * the 1160px container on a rem + vw slope, capped at 13vw like the
+   * default. */
+  .mb-section-head-poster .mb-section-label {
+    margin-bottom: 24px;
+  }
+
   .mb-section-head-poster .mb-section-title {
     grid-column: 1 / -1;
     font-size: min(clamp(2.5rem, 0.9805rem + 6.2338vw, 5.5rem), 13vw);
@@ -195,7 +201,7 @@ const Heading = as;
 
   .mb-section-head-poster .mb-section-lede {
     grid-column: 2;
-    margin-top: var(--v2-space-lg);
+    margin-top: 24px;
   }
 
   @media (max-width: 880px) {
@@ -204,7 +210,7 @@ const Heading = as;
       row-gap: var(--v2-space-md);
     }
 
-    .mb-section-label {
+    .mb-section-head .mb-section-label {
       margin-bottom: 0;
     }
 

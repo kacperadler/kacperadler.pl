@@ -54,8 +54,9 @@ import SectionHead from "../section-head.astro";
 </section>
 
 <style>
+  /* A field: half a gap above, half inside (global.css, .mb-band). */
   .mb-problems {
-    margin-top: var(--mb-section-gap);
+    margin-top: calc(var(--mb-section-gap) / 2);
   }
 
   /* A cell spans three row tracks of the table (heading, sentence,

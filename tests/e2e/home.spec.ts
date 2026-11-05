@@ -698,7 +698,7 @@ test.describe("home page", () => {
     );
   });
 
-  test("the process alternates around a central rail, staggered with room and joined to it, and runs in one column on a phone", async ({
+  test("the process alternates around a central rail, staggered and joined to it, and runs in one column on a phone", async ({
     page,
   }) => {
     const layout = () =>
@@ -788,19 +788,19 @@ test.describe("home page", () => {
             (step.titleLine.y + step.titleLine.height / 2)
         )
       ).toBeLessThan(TOLERANCE);
-      // Staggered: each card starts near the foot of the one before it
-      // (they still overlap, so no side has a hole, but each step stands
-      // clear), and two cards on one side stand 280px apart.
+      // Staggered: each card starts a little past the middle of the one
+      // before it (they overlap, so no side has a hole, and the route
+      // reads as one zigzag), and two cards on one side stand 64px apart.
       const previous = wide[i - 1];
       if (previous) {
         const into = (step.card.top - previous.card.top) / previous.card.height;
-        expect(into, `card ${i + 1}`).toBeGreaterThan(0.8);
-        expect(into, `card ${i + 1}`).toBeLessThan(1);
+        expect(into, `card ${i + 1}`).toBeGreaterThan(0.5);
+        expect(into, `card ${i + 1}`).toBeLessThan(0.7);
       }
       const sameSide = wide[i - 2];
       if (sameSide) {
         expect(
-          Math.abs(step.card.top - sameSide.card.bottom - 280),
+          Math.abs(step.card.top - sameSide.card.bottom - 64),
           `card ${i + 1}`
         ).toBeLessThan(TOLERANCE);
       }
@@ -953,6 +953,17 @@ test.describe("home page", () => {
     expect(new Set(state.lines)).toEqual(new Set(["none"]));
     expect(state.figures).toEqual(["none", "none", "none", "none", "none"]);
     await context.close();
+  });
+
+  // The whole page stays a read, not a trek (KA0151, KA0152): at 1440px no
+  // taller than 9500px.
+  test("the home page is at most 9500px tall at 1440px", async ({ page }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollHeight)
+    ).toBeLessThanOrEqual(9500);
   });
 
   test("between the offer and the contact form, the process ends at a button to the form", async ({

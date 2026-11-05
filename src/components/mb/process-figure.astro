@@ -18,8 +18,10 @@ import type { ProcessFigureName } from "@/data/process";
  *   - care: a trace on a grid between two dashed tolerance lines; lime,
  *     the trace, inside the band, ending in a square mark.
  * Strokes do not scale (vector-effect), so a line stays 1px or 2px at any
- * width; the fixed viewBox keeps the height from the width, so nothing
- * shifts on load. Decorative: the step's title and text carry the meaning.
+ * width; the fixed viewBox keeps the height from the width, up to 80px (a
+ * wider card centres the drawing at that height), so nothing shifts on
+ * load and a card stays short. Decorative: the step's title and text
+ * carry the meaning.
  *
  * The lime layer is drawn in left to right as the page scrolls past the
  * drawing: a clip-path on its own view timeline, over the rail segment's
@@ -135,6 +137,7 @@ const grid = [60, 100, 140, 180, 220, 260, 300, 340];
     grid-area: 1 / 1;
     width: 100%;
     height: auto;
+    max-height: 80px;
     overflow: visible;
     fill: none;
     stroke-linecap: square;

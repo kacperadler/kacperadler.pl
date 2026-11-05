@@ -267,6 +267,28 @@ test("the problems, cases and about sections stand on panel fields with seamless
   }
   await expect(page.locator("body")).toHaveCSS("background-color", galactic);
 
+  // The break line cuts the section gap in half: half a gap above a field,
+  // half inside it at the top and at the bottom, half before the section
+  // after it, so content to content stays one gap (the contact section's,
+  // between two sections on the ground).
+  const rhythm = await page.evaluate(() => {
+    const px = (el: Element | null, property: "marginTop" | "paddingTop") =>
+      Number.parseFloat(getComputedStyle(el as Element)[property]);
+    const gap = px(document.querySelector("#contact"), "marginTop");
+    return [...document.querySelectorAll("main > section.mb-band")].map(
+      (band) => ({
+        above: px(band, "marginTop") / gap,
+        after: px(band.nextElementSibling, "marginTop") / gap,
+        bottom: Number.parseFloat(getComputedStyle(band).paddingBottom) / gap,
+        id: band.id,
+        top: px(band, "paddingTop") / gap,
+      })
+    );
+  });
+  expect(rhythm).toEqual(
+    fields.map((id) => ({ above: 0.5, after: 0.5, bottom: 0.5, id, top: 0.5 }))
+  );
+
   // Two rows over the line where the top edge meets the field, and two
   // where the field meets its bottom edge, across the width: one colour.
   for (const id of fields) {
@@ -319,7 +341,7 @@ const sizesAt = async (page: Page, width: number) => {
     return {
       block: px(".mb-problems-close", "marginTop"),
       hero: px("h1", "fontSize"),
-      section: px(".mb-services", "marginTop"),
+      section: px(".mb-contact", "marginTop"),
       title: px(".mb-section-title", "fontSize"),
     };
   });
@@ -353,7 +375,7 @@ test.describe("fluid sizes", () => {
   }) => {
     await page.goto("/");
     const phone = { block: 32, hero: 40, section: 88, title: 40 };
-    const desk = { block: 48, hero: 64, section: 136, title: 88 };
+    const desk = { block: 48, hero: 64, section: 120, title: 88 };
     for (const width of [360, 390]) {
       // biome-ignore lint/performance/noAwaitInLoops: one width at a time
       const at = await sizesAt(page, width);
@@ -395,7 +417,7 @@ test.describe("fluid sizes", () => {
     const wide = await sizesAt(page, 1920);
     expect(wide.hero).toBeCloseTo(80, 2);
     expect(wide.title).toBeCloseTo(110, 2);
-    expect(wide.section).toBeCloseTo(170, 2);
+    expect(wide.section).toBeCloseTo(150, 2);
     expect(wide.block).toBeCloseTo(60, 2);
     // At 1000px every size is on its slope at both settings, so only the
     // slope's rem share can make the larger font larger there.

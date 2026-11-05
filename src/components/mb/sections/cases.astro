@@ -124,8 +124,9 @@ const cases = caseHighlights.map((highlight) => {
 </section>
 
 <style>
+  /* A field: half a gap above, half inside (global.css, .mb-band). */
   .mb-cases {
-    margin-top: var(--mb-section-gap);
+    margin-top: calc(var(--mb-section-gap) / 2);
   }
 
   /* The cells of a row share five row tracks (head, problem, solution,
