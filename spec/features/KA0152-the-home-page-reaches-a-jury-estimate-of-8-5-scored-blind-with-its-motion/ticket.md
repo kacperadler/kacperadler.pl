@@ -46,3 +46,4 @@ Out:
 ## Decisions
 - 2026-11-05: KA0152 starts now: home page to jury 8.5+, blind score with motion, accessibility kept, preview before merge; the owner: "tbh, we need at least 8.5 so do what we need to have that 8.5, and run this so i can open in my browser, and the score check the animations too? also remember about accessibility" (KA-D12)
 - 2026-11-05: KA0152 deciding score comes from a new separate agent, never the worker that built it; the owner: "ok, to check the score use new agent, not the same one" (KA-D13)
+- 2026-11-05: KA0152 continues with no budget limit (--budget 0) until it finishes and is scored; the owner: "Give the task no limit on the budget" (KA-D14)
