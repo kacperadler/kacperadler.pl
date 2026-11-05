@@ -205,7 +205,7 @@ Najszybciej przez formularz na ${siteConfig.url}/#contact (odpowiadam w ciągu 2
 2. **Ile czasu to zajmuje**
 3. **Czego szukasz** - audyt, wdrożenie czy stała współpraca
 
-2–3 zdania wystarczą, żeby zacząć rozmowę.
+2-3 zdania wystarczą, żeby zacząć rozmowę.
 `;
 
   return new Response(body, {
