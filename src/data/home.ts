@@ -133,7 +133,7 @@ export const faq: readonly FaqItem[] = [
   },
   {
     answer:
-      "To zależy od zakresu. Wycenę dostajesz w 2–3 dni po bezpłatnej rozmowie, bez ukrytych kosztów.",
+      "To zależy od zakresu. Wycenę dostajesz w 2-3 dni po bezpłatnej rozmowie, bez ukrytych kosztów.",
     question: "Ile to kosztuje?",
   },
   {
@@ -152,7 +152,7 @@ export const faq: readonly FaqItem[] = [
     question: "Nie znam się na technologii. Czy to problem?",
   },
   {
-    answer: "Pierwsze działające elementy zwykle po 1–2 tygodniach.",
+    answer: "Pierwsze działające elementy zwykle po 1-2 tygodniach.",
     question: "Jak szybko zobaczę efekt?",
   },
   {
@@ -162,7 +162,7 @@ export const faq: readonly FaqItem[] = [
   },
   {
     answer:
-      "Przyjmuję 1–2 projekty jednocześnie, żeby każdy dostał pełną uwagę.",
+      "Przyjmuję 1-2 projekty jednocześnie, żeby każdy dostał pełną uwagę.",
     question: "Ile projektów prowadzisz jednocześnie?",
   },
 ];
