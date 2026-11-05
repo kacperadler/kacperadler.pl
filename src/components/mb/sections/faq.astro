@@ -42,8 +42,10 @@ const columns = [faq.slice(0, half), faq.slice(half)];
 </section>
 
 <style>
+  /* After the about field: half a gap, the field pads the other half
+   * (global.css, .mb-band). */
   .mb-faq {
-    margin-top: var(--mb-section-gap);
+    margin-top: calc(var(--mb-section-gap) / 2);
   }
 
   @media (max-width: 880px) {

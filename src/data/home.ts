@@ -58,7 +58,7 @@ export const customApps = {
 // The offer's lede: how pricing works. The audit credit is the audit
 // step's own `note` (src/content/services/audit.json).
 export const offerPricing =
-  "Każdy projekt wyceniam indywidualnie. Wycenę dostajesz w 2–3 dni po rozmowie. Rozmowa i wycena są bezpłatne i do niczego nie zobowiązują.";
+  "Każdy projekt wyceniam indywidualnie. Wycenę dostajesz w 2-3 dni po rozmowie. Rozmowa i wycena są bezpłatne i do niczego nie zobowiązują.";
 
 /* A project told as problem, solution and effect, newest first.
  * `experiences` are the ids of its entries in src/content/experience (one,
@@ -133,7 +133,7 @@ export const faq: readonly FaqItem[] = [
   },
   {
     answer:
-      "To zależy od zakresu. Wycenę dostajesz w 2–3 dni po bezpłatnej rozmowie, bez ukrytych kosztów.",
+      "To zależy od zakresu. Wycenę dostajesz w 2-3 dni po bezpłatnej rozmowie, bez ukrytych kosztów.",
     question: "Ile to kosztuje?",
   },
   {
@@ -152,7 +152,7 @@ export const faq: readonly FaqItem[] = [
     question: "Nie znam się na technologii. Czy to problem?",
   },
   {
-    answer: "Pierwsze działające elementy zwykle po 1–2 tygodniach.",
+    answer: "Pierwsze działające elementy zwykle po 1-2 tygodniach.",
     question: "Jak szybko zobaczę efekt?",
   },
   {
@@ -162,7 +162,7 @@ export const faq: readonly FaqItem[] = [
   },
   {
     answer:
-      "Przyjmuję 1–2 projekty jednocześnie, żeby każdy dostał pełną uwagę.",
+      "Przyjmuję 1-2 projekty jednocześnie, żeby każdy dostał pełną uwagę.",
     question: "Ile projektów prowadzisz jednocześnie?",
   },
 ];

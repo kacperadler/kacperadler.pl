@@ -45,7 +45,7 @@ export async function GET(): Promise<Response> {
       } else if (item.data.badge) {
         period = item.data.badge;
       } else {
-        period = `${startYear}–${endYear}`;
+        period = `${startYear}-${endYear}`;
       }
       return `- **${item.data.company}** (${period}) - ${item.data.role}`;
     })

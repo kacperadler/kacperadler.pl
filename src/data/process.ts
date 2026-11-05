@@ -32,7 +32,7 @@ export const processSteps: readonly ProcessStep[] = [
     title: "Rozmowa",
   },
   {
-    badge: "2–3 dni",
+    badge: "2-3 dni",
     description:
       "Dostajesz krótki dokument: co robimy, w jakiej kolejności, ile to potrwa, ile kosztuje i ile czasu zaoszczędzisz. Bez ukrytych kosztów.",
     figure: "plan",

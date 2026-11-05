@@ -75,8 +75,10 @@ const steps = (await getCollection("services")).sort(
 </section>
 
 <style>
+  /* After the problems field: half a gap, the field pads the other half
+   * (global.css, .mb-band). */
   .mb-services {
-    margin-top: var(--mb-section-gap);
+    margin-top: calc(var(--mb-section-gap) / 2);
   }
 
   /* One more row of the table: -1px puts its top rule on the table's

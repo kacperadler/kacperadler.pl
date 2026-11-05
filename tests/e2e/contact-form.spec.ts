@@ -90,10 +90,9 @@ async function readFormEvents(page: Page): Promise<TrackedEvent[]> {
 // Picks a project type the way a visitor does: by clicking its visible
 // label. The checkbox input is opacity 0 with pointer-events none, and
 // check({ force: true }) on it clicks raw coordinates without waiting for
-// the page to hold still. After goto("/#contact") the browser is still
-// smooth-scrolling to the fragment (html has scroll-behavior: smooth), so
-// that click landed on another field now and then. A label click waits
-// until the label is stable.
+// the page to hold still: while the page still moved under it, that click
+// landed on another field now and then. A label click waits until the
+// label is stable.
 async function pickType(page: Page, value: string): Promise<void> {
   const box = `input[name="type"][value="${value}"]`;
   await page
@@ -395,7 +394,7 @@ test.describe("contact form", () => {
           .querySelector("[data-contact-wrap]")
           ?.getBoundingClientRect().top,
       }));
-    // goto("/#contact") may still be smooth-scrolling: wait for it to settle.
+    // Wait for the page to settle after goto("/#contact").
     let before = await where();
     await expect
       .poll(async () => {
@@ -414,7 +413,7 @@ test.describe("contact form", () => {
     await page.keyboard.press("Enter");
     await expect(sheet).toHaveAttribute("data-state", "success");
     expect(await sheetHeight()).toBeCloseTo(sheetEmpty, 0);
-    // A scroll would be smooth: give it time to move the page first.
+    // Give a scroll time to move the page first.
     await page.waitForTimeout(500);
     expect(await where()).toEqual(before);
     await expect(page.locator("[data-form-success]")).toBeFocused();
@@ -507,7 +506,7 @@ test.describe("contact form", () => {
       await sendLong(page, "submit", submitTop);
 
       await expect(page.locator("[data-form-success]")).toBeFocused();
-      // The page scrolls (smoothly) as little as it takes: the card's top
+      // The page scrolls as little as it takes: the card's top
       // lands under the header, the whole card on screen.
       await expect
         .poll(async () => {
@@ -827,8 +826,8 @@ test.describe("contact form", () => {
   }) => {
     await page.setViewportSize({ height: 900, width: 1440 });
     await page.goto("/#contact");
-    // One read of every box, so the smooth scroll to #contact cannot move
-    // the page between the field and the chips.
+    // One read of every box, so nothing can move the page between the
+    // field and the chips.
     const { chips, field } = await page
       .locator("[data-contact-form]")
       .evaluate((form) => ({

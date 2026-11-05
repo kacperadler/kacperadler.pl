@@ -25,9 +25,14 @@ html {
  * query and puts only what moves (a scroll, a transform, a height, a
  * shadow or a focus ring sliding out) inside
  * prefers-reduced-motion: no-preference. Colour and opacity fades are not
- * motion and run for everyone. */
+ * motion and run for everyone.
+ *
+ * A link in the page glides to its section: scripts/glide.ts marks
+ * data-glide for 2s after a click on it. Nothing else scrolls smoothly:
+ * Tab brings the focused element into view at once, so it is never off
+ * screen behind a glide. */
 @media (prefers-reduced-motion: no-preference) {
-  html {
+  html[data-glide] {
     scroll-behavior: smooth;
   }
 }
@@ -132,13 +137,15 @@ a,
  * to its colour, so everything inside painted on the substrate - a cell's
  * fill, the dimension's mask, an outline button's face, the edge's fill -
  * follows the field, and text on lime (--v2-bg) takes the field colour
- * (8.3:1 on Lime Green). The field keeps the section gap above and adds
- * it inside, top and bottom, so it reads as a chapter with more air. No
+ * (8.3:1 on Lime Green). The break line cuts the section gap in half: the
+ * field and the section after it stand half a gap off (their own
+ * margin-top) and the field pads half a gap inside, so content to content
+ * stays one section gap, as between two sections on the substrate. No
  * form sits in one: a field's fill would equal a disabled field's. */
 .mb-band {
   --v2-bg: var(--v2-panel);
   position: relative;
-  padding-block: var(--mb-section-gap);
+  padding-block: calc(var(--mb-section-gap) / 2);
   background: var(--v2-bg);
 }
 

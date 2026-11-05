@@ -3,8 +3,9 @@ import type { HTMLAttributes } from "astro/types";
 import { Icon } from "astro-icon/components";
 
 /* Text link in four looks:
- *   inline  ink text over a 2px lime underline; hover: lime text, the
- *           underline thickens to 3px; press: lime-2 text. No hit area
+ *   inline  ink text over a 2px lime underline; hover: the lime rises
+ *           from the underline over the word, base text on it; press:
+ *           the same in lime-2. No hit area
  *           past its text (nor for a prose link): running text is exempt
  *           from WCAG 2.5.8, and an area above or below would take the
  *           taps meant for the lines around it
@@ -13,8 +14,9 @@ import { Icon } from "astro-icon/components";
  *           [data-nav-link]) is a lime bar under lime text; press: the
  *           lime bar and text it is about to become
  *   footer  ink-2 list link, an underline fades in on hover; the optional
- *           icon before it turns lime; press: lime text. Its hit area,
- *           drawn nowhere, is at least 44px each way
+ *           icon before it turns lime; press: lime text. Its box is at
+ *           least 24px high; its hit area, drawn nowhere, at least 44px
+ *           each way
  *   case    "Zobacz realizację": heavy ink text over a lime underline, the
  *           icon after it (an arrow by default) nudges 3px right on hover
  *           and 6px on press
@@ -58,30 +60,37 @@ const iconAfter = variant === "case";
     outline-offset: 0;
   }
 
+  /* The underline is a 2px lime fill at the foot of the text (a solid
+   * background-image, as section-head.astro draws its rule), so hover can
+   * grow it up over the word: the text turns base on lime, a callout
+   * filled in. Each line of a wrapped link draws its own. */
   .mb-link-inline {
     color: var(--ink);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-decoration-color: var(--blue);
-    text-underline-offset: 4px;
+    text-decoration: none;
+    background-image: linear-gradient(var(--blue) 0 0);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 2px;
+    box-decoration-break: clone;
     transition: color var(--mb-snap);
   }
 
   .mb-link-inline[data-state="hover"] {
-    color: var(--blue);
-    text-decoration-thickness: 3px;
+    color: var(--v2-bg);
+    background-size: 100% 100%;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .mb-link-inline:hover {
-      color: var(--blue);
-      text-decoration-thickness: 3px;
+      color: var(--v2-bg);
+      background-size: 100% 100%;
     }
   }
 
   .mb-link-inline:is(:active, [data-state="pressed"]) {
-    color: var(--blue-2);
-    text-decoration-thickness: 3px;
+    color: var(--v2-bg);
+    background-image: linear-gradient(var(--blue-2) 0 0);
+    background-size: 100% 100%;
   }
 
   .mb-link-nav {
@@ -175,6 +184,7 @@ const iconAfter = variant === "case";
     display: inline-flex;
     gap: 10px;
     align-items: center;
+    min-height: 24px;
     font-size: 14px;
     color: var(--ink-2);
     text-decoration: underline;
@@ -239,14 +249,14 @@ const iconAfter = variant === "case";
     transform: translateX(6px);
   }
 
-  /* The moves: the ring grows out of the edge, the inline underline
-   * thickens, the nav bar draws in, the case arrow nudges. Without them
-   * each switches at once. */
+  /* The moves: the ring grows out of the edge, the inline link's fill
+   * rises over the word, the nav bar draws in, the case arrow nudges.
+   * Without them each switches at once. */
   @media (prefers-reduced-motion: no-preference) {
     .mb-link-inline {
       transition:
         color var(--mb-snap),
-        text-decoration-thickness var(--mb-snap),
+        background-size var(--mb-snap),
         outline-offset var(--mb-snap);
     }
 

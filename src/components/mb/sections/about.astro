@@ -95,7 +95,7 @@ const caseStudies = await caseStudiesByExperience();
                 metaLabel = item.data.badge;
                 metaFilled = true;
               } else {
-                metaLabel = `${startYear}–${endYear}`;
+                metaLabel = `${startYear}-${endYear}`;
                 metaFilled = false;
               }
               const caseStudy = caseStudies.get(item.id);
@@ -137,8 +137,9 @@ const caseStudies = await caseStudiesByExperience();
 </section>
 
 <style>
+  /* A field: half a gap above, half inside (global.css, .mb-band). */
   .mb-about {
-    margin-top: var(--mb-section-gap);
+    margin-top: calc(var(--mb-section-gap) / 2);
   }
 
   /* Photo and text on one band: the text column sets the height, and the

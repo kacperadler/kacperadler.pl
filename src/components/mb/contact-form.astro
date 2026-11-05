@@ -190,15 +190,17 @@ const id = (name: string) => `${idPrefix}-${name}`;
 </div>
 
 <style>
-  /* The form and the success card share one grid cell, the one not shown
-   * kept in layout but invisible, so nothing jumps when one replaces the
-   * other. Once sent, the hidden form stands as high as it does empty: its
-   * message box drops to its floor (a max-height under the min-height gives
-   * way to it, in every browser and over a dragged height), so a long message
-   * leaves no tall, empty card. The sheet gets shorter only at its bottom
-   * edge, so what stands above it keeps its place; only when the page is
-   * scrolled so near its end that it gets shorter than the scroll, the browser
-   * pulls it down by the difference (the footer stays put). */
+  /* The form and the success card share one grid cell, so nothing jumps
+   * when the card replaces the form: the sent form stays in layout but
+   * invisible, while the card takes no box until then (it would only be
+   * hidden text). Once sent, the hidden form stands as high as it does
+   * empty: its message box drops to its floor (a max-height under the
+   * min-height gives way to it, in every browser and over a dragged height),
+   * so a long message leaves no tall, empty card. The sheet gets shorter
+   * only at its bottom edge, so what stands above it keeps its place; only
+   * when the page is scrolled so near its end that it gets shorter than the
+   * scroll, the browser pulls it down by the difference (the footer stays
+   * put). */
   .mb-contact-form {
     display: grid;
     width: 100%;
@@ -288,8 +290,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
   }
 
   .mb-form-success {
-    display: flex;
-    visibility: hidden;
+    display: none;
     flex-direction: column;
     gap: 12px;
     align-items: center;
@@ -299,7 +300,7 @@ const id = (name: string) => `${idPrefix}-${name}`;
   }
 
   .mb-contact-form[data-state="success"] .mb-form-success {
-    visibility: visible;
+    display: flex;
   }
 
   .mb-success-mark {

@@ -19,7 +19,7 @@ const TEXT_FACE = /^"?Geist"?,/;
 
 // What moves in the catalogue under no-preference, as motionOf lists it.
 const MOVES_IN_CATALOGUE = [
-  /^html scroll-behavior: smooth$/,
+  /^span\.mb-mark transition: box-shadow /,
   /^a\.skip-link transition: transform /,
   /^a\.mb-link mb-link-nav.*::after transition: transform /,
   /^svg.* animation: mb-spin$/,
@@ -1141,8 +1141,7 @@ test.describe("button layer and loading (astro dev)", () => {
       }
 
       const button = buttonIn(page, variant, "idle");
-      // Mid-viewport, clear of the sticky header, so the pointer reaches it;
-      // instant, as html scrolls smoothly.
+      // Mid-viewport, clear of the sticky header, so the pointer reaches it.
       await button.evaluate((el) =>
         el.scrollIntoView({ behavior: "instant", block: "center" })
       );

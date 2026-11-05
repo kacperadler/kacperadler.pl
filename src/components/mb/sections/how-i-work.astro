@@ -68,22 +68,24 @@ import StepMarker from "../step-marker.astro";
 </section>
 
 <style>
+  /* After the cases field: half a gap, the field pads the other half
+   * (global.css, .mb-band). */
   .mb-how {
     --mb-how-rail: 80px;
     --mb-how-dot: 48px;
-    margin-top: var(--mb-section-gap);
+    margin-top: calc(var(--mb-section-gap) / 2);
   }
 
   /* Desktop: card | rail | card. A step takes rows n and n+1, the next
    * step n+1 and n+2, so the two sides overlap by a row; two cards on one
-   * side stand a row gap apart. The gap is wide (280px, about 0.7 of a
-   * card with its drawing, 370-420px), so a card starts near the foot of
-   * the one before it: each step stands clear of its neighbours, and the
-   * sides still overlap a little, so neither has a hole. */
+   * side stand a row gap apart. The gap (64px, a fifth of a card with its
+   * drawing, about 330px) sets the stagger: a card starts a little past
+   * the middle of the one before it, so the route reads as one zigzag,
+   * neither side has a hole and the section stays short. */
   .mb-how-steps {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--mb-how-rail) minmax(0, 1fr);
-    row-gap: 280px;
+    row-gap: 64px;
     padding: 0;
     margin: 0;
     list-style: none;

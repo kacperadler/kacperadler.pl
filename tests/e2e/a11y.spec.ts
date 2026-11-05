@@ -67,6 +67,35 @@ test.describe("axe-core a11y", () => {
     }
   }
 
+  // The tests above read the page under reduced motion; a visitor with
+  // motion on sees the first screen after its entrance and the process
+  // with its rail and drawings filled as far as the scroll (KA0152).
+  for (const viewport of [
+    { height: 900, width: 1440 },
+    { height: 844, width: 390 },
+  ]) {
+    test(`the home page with motion on has no WCAG 2.1 AA violations at ${viewport.width}px`, async ({
+      browser,
+    }) => {
+      test.setTimeout(90_000);
+      const context = await browser.newContext({
+        reducedMotion: "no-preference",
+        viewport,
+      });
+      const page = await context.newPage();
+      await page.goto("/");
+      await page.waitForTimeout(2500);
+      const top = await new AxeBuilder({ page }).withTags(WCAG).analyze();
+      expect(top.violations, "after the entrance").toEqual([]);
+      await page
+        .locator("#how .mb-step:nth-child(3) .mb-card")
+        .scrollIntoViewIfNeeded();
+      const process = await new AxeBuilder({ page }).withTags(WCAG).analyze();
+      expect(process.violations, "mid-process").toEqual([]);
+      await context.close();
+    });
+  }
+
   test("contact form error states have no detectable WCAG 2.1 AA violations", async ({
     page,
   }) => {
