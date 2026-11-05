@@ -48,3 +48,4 @@ Out:
 - Copy beyond the new process section: unchanged.
 
 ## Decisions
+- 2026-11-05: KA0146 as a separate ticket after KA0145: a planner proposes the redesign with the awwwards skill, the owner approves the plan, then a worker builds it; preview before merge; the owner: "KA-D2 - 1" (KA-D2)
