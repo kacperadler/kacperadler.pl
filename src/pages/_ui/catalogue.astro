@@ -1403,17 +1403,17 @@ const steps = [
       ))}
     </section>
 
-    <section aria-labelledby="mb-field-edge" class="mb-ui-section">
-      <h2 class="mb-ui-h2" id="mb-field-edge">Pole sekcji</h2>
+    <section aria-labelledby="mb-band-edge" class="mb-ui-section">
+      <h2 class="mb-ui-h2" id="mb-band-edge">Pole sekcji</h2>
       <p class="mb-ui-note">
-        <code>.mb-field</code>
+        <code>.mb-band</code>
         (global.css) z <code>field-edge.astro</code>
         - sekcja na pełnej szerokości w kolorze <code>--v2-panel</code>, z linią
         urwania (fala 1px tuszem) na górze i na dole. Pole ustawia
         <code>--v2-bg</code>
         na swój kolor, więc komórki w nim go dziedziczą.
       </p>
-      <div class="mb-ui-field mb-field">
+      <div class="mb-ui-band mb-band">
         <FieldEdge side="top" />
         <Card tag="div">
           <span slot="title">Komórka na polu</span>
@@ -1865,7 +1865,7 @@ console.log(greeting);</code></pre>
     counter-reset: mb-section;
   }
 
-  .mb-ui-field {
+  .mb-ui-band {
     padding: var(--v2-space-lg);
     margin-block: var(--mb-edge);
   }

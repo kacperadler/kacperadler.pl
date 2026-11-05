@@ -135,7 +135,7 @@ a,
  * (8.3:1 on Lime Green). The field keeps the section gap above and adds
  * it inside, top and bottom, so it reads as a chapter with more air. No
  * form sits in one: a field's fill would equal a disabled field's. */
-.mb-field {
+.mb-band {
   --v2-bg: var(--v2-panel);
   position: relative;
   padding-block: var(--mb-section-gap);

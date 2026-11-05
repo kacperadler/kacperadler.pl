@@ -242,7 +242,7 @@ test("the problems, cases and about sections stand on panel fields with seamless
   const grounds = await page.evaluate(() =>
     [...document.querySelectorAll("main > section")].map((section) => ({
       background: getComputedStyle(section).backgroundColor,
-      edges: [...section.querySelectorAll(":scope > .mb-field-edge")].map(
+      edges: [...section.querySelectorAll(":scope > .mb-band-edge")].map(
         (edge) => getComputedStyle(edge, "::before").backgroundColor
       ),
       id: section.id,

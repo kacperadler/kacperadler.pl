@@ -1,6 +1,6 @@
 ---
 /* Field edge: the freehand break line (linia urwania) that opens or closes
- * a full-width colour field (`.mb-field`, global.css): the section is a
+ * a full-width colour field (`.mb-band`, global.css): the section is a
  * view cut out of the drawing sheet. One irregular wave tile, 240px wide
  * and --mb-edge high, repeats along the edge (mask-repeat: repeat-x), so
  * the wavelength and the 1px line hold at every width.
@@ -19,11 +19,11 @@ const { side } = Astro.props;
 
 <span
   aria-hidden="true"
-  class:list={["mb-field-edge", `mb-field-edge-${side}`]}
+  class:list={["mb-band-edge", `mb-band-edge-${side}`]}
 ></span>
 
 <style>
-  .mb-field-edge {
+  .mb-band-edge {
     position: absolute;
     right: 0;
     left: 0;
@@ -31,30 +31,30 @@ const { side } = Astro.props;
     pointer-events: none;
   }
 
-  .mb-field-edge-top {
+  .mb-band-edge-top {
     bottom: calc(100% - 1px);
   }
 
-  .mb-field-edge-bottom {
+  .mb-band-edge-bottom {
     top: calc(100% - 1px);
     transform: scaleY(-1);
   }
 
-  .mb-field-edge::before,
-  .mb-field-edge::after {
+  .mb-band-edge::before,
+  .mb-band-edge::after {
     position: absolute;
     inset: 0;
     content: "";
   }
 
-  .mb-field-edge::before {
+  .mb-band-edge::before {
     background: var(--v2-bg);
     mask:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='16'%3E%3Cpath d='M0 8C20 3 45 2 70 5S120 14 150 11S220 13 240 8V16H0z'/%3E%3C/svg%3E")
       0 0 / 240px var(--mb-edge) repeat-x;
   }
 
-  .mb-field-edge::after {
+  .mb-band-edge::after {
     background: var(--mb-rule);
     mask:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='16'%3E%3Cpath d='M0 8C20 3 45 2 70 5S120 14 150 11S220 13 240 8' fill='none' stroke='%23000'/%3E%3C/svg%3E")

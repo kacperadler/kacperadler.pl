@@ -56,7 +56,7 @@ export const processSteps: readonly ProcessStep[] = [
     figure: "revision",
     num: "04",
     outcome:
-      "[DO UZUPEŁNIENIA - Kacper: co klient dostaje po zgłoszeniu uwag, np. w jakim czasie zmiana trafia do systemu]",
+      "Poprawki trafiają do systemu na bieżąco, bez czekania na koniec projektu.",
     title: "Feedback",
   },
   {
@@ -66,7 +66,7 @@ export const processSteps: readonly ProcessStep[] = [
     figure: "care",
     num: "05",
     outcome:
-      "[DO UZUPEŁNIENIA - Kacper: co obejmuje opieka, np. co monitorujesz i jak często klient dostaje raport]",
+      "System pod opieką: pilnuję, żeby działał, i reaguję, gdy coś się zmienia.",
     title: "Opieka",
   },
 ];
