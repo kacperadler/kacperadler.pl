@@ -7,6 +7,7 @@ Generated from the merged tickets of `spec/build.json` by `arthur changelog`; a 
 ### Changed
 
 - KA0145 New colour palette: Galactic Blue, True Blue and Lime Green (89040b7)
+- KA0146 Redesign inspired by the Skills section of safwatk.com, on the new palette (8a5e104)
 - KA0147 The e2e specs that need Docker skip with a reason where Docker is unreachable, as in an Arthur job (7cde02d)
 
 ## 2026-10-31

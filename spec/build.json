@@ -1198,9 +1198,9 @@
   {
     "id": "KA0146",
     "title": "Redesign inspired by the Skills section of safwatk.com, on the new palette",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0146-redesign-inspired-by-the-skills-section-of-safwatk-com-on-the-new-palette/ticket.md",
-    "updated": "2026-11-05T15:31:48.504Z",
+    "updated": "2026-11-05T15:36:20.959Z",
     "after": [
       "KA0145"
     ]
@@ -1225,5 +1225,19 @@
     "status": "planning",
     "path": "spec/features/KA0149-design-md-forbids-chromatic-shadows-while-the-field-and-form-shadows-are/ticket.md",
     "updated": "2026-11-05T13:47:11.898Z"
+  },
+  {
+    "id": "KA0150",
+    "title": "Lighthouse cannot run in the job's environment",
+    "status": "planning",
+    "path": "spec/features/KA0150-lighthouse-cannot-run-in-the-job-s-environment/ticket.md",
+    "updated": "2026-11-05T15:36:20.949Z"
+  },
+  {
+    "id": "KA0151",
+    "title": "The process section is about twice as tall as before",
+    "status": "planning",
+    "path": "spec/features/KA0151-the-process-section-is-about-twice-as-tall-as-before/ticket.md",
+    "updated": "2026-11-05T15:36:20.952Z"
   }
 ]
