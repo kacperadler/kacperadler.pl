@@ -1274,5 +1274,12 @@
     "status": "planning",
     "path": "spec/features/KA0156-the-faq-inline-link-s-underline-disappears-in-forced-colors-mode/ticket.md",
     "updated": "2026-11-05T20:35:18.078Z"
+  },
+  {
+    "id": "KA0157",
+    "title": "The process drawings and step marks draw in slowly as the page scrolls, not almost at once",
+    "status": "planned",
+    "path": "spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/ticket.md",
+    "updated": "2026-11-05T20:36:07.551Z"
   }
 ]
