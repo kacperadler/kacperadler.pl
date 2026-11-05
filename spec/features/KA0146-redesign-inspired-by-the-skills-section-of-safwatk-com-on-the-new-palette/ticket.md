@@ -50,3 +50,4 @@ Out:
 ## Decisions
 - 2026-11-05: KA0146 as a separate ticket after KA0145: a planner proposes the redesign with the awwwards skill, the owner approves the plan, then a worker builds it; preview before merge; the owner: "KA-D2 - 1" (KA-D2)
 - 2026-11-05: Plan approved by the owner: plan.md at cefb46f (by its recommendations, KA-D3); the owner: "add this new tasks to queue (KA-D3: the KA0146 plan and any question by its recommendation)" (KA-D7)
+- 2026-11-05: Process outcome lines of steps 01-03 and the lede approved as proposed; the owner gives the lines of 04 and 05; the owner: "KA-D8 - 1" (KA-D8)
