@@ -41,3 +41,4 @@ Out:
 
 ## Decisions
 - 2026-11-05: KA0157 starts: a calm draw-in for the lime drawings and step marks; preview before merge; the owner: "Everything looks good BUT on this section and this images that you added the green elements almoust appears instantly, and this is distructing i think there should be nice animation for them" (KA-D17)
+- 2026-11-05: Merge KA0157 to kacperadler.pl main; the owner: "KA-D18 1" (KA-D18)
