@@ -1278,8 +1278,8 @@
   {
     "id": "KA0157",
     "title": "The process drawings and step marks draw in slowly as the page scrolls, not almost at once",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/ticket.md",
-    "updated": "2026-11-05T21:04:16.629Z"
+    "updated": "2026-11-05T21:18:19.388Z"
   }
 ]

@@ -1,0 +1,188 @@
+# KA0157 - Outcome
+
+- Merged: 2026-11-05, `24f9b6c`
+- Branch: arthur/2026-11-05-worker-ccd03ded
+- Reviews: review-1.md PASS
+- Cost: worker $4.09, reviews $0.65; review rounds 1
+
+## What went in
+
+- `src/components/mb/process-figure.astro`: the lime layer draws piece by piece in the drawing's order, each eased and left to right, on the figure's own scroll timeline (`--mb-figure`). The draw runs from the drawing's top at 80% of the viewport to its bottom at the middle; each piece's share is set by `--mb-from` / `--mb-to`. It stands fully drawn under reduced motion or without scroll-timeline support.
+- `src/components/mb/step-marker.astro`: a mark stands empty until the rail reaches it, then fills lime top to bottom with an ease while the rail's tip passes through it. The number turns dark at the middle. It shows filled under reduced motion or without scroll-timeline support.
+- `tests/e2e/home.spec.ts`: the rail-fill test reads marks by fill and drawings by piece progress. A new test at 1440 and 390 pins the 30% span, the piece order, the mark's fill span, its start at the rail and its ease. The reduced-motion test checks every piece.
+- `DESIGN.md`: the motion line, the `process-figure` / `step-marker` entries and the connector wording describe the piece-by-piece draw and the eased mark fill.
+- `AGENTS.md`: the how-i-work section describes the new draw-in, the mark fill and when the connector turns lime.
+- `src/pages/_ui/catalogue.astro`: the notes for the step marker and the process drawing describe the new behaviour.
+- `spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/record.mjs`: records 40 frames of a slow scroll through the process at 1440×900 and 390×844 for a given label.
+- `spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/frames.json`: each frame's file, series, viewport and scroll position.
+- `spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-*.png`, `after-*.png`: 160 frames, before (243ca22) and after, desktop and phone.
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-01.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-02.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-03.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-04.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-05.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-06.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-07.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-08.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-09.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-10.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-11.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-12.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-13.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-14.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-15.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-16.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-17.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-18.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-19.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-20.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-21.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-22.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-23.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-24.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-25.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-26.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-27.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-28.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-29.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-30.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-31.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-32.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-33.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-34.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-35.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-36.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-37.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-38.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-39.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-d-40.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-01.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-02.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-03.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-04.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-05.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-06.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-07.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-08.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-09.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-10.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-11.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-12.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-13.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-14.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-15.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-16.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-17.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-18.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-19.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-20.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-21.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-22.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-23.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-24.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-25.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-26.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-27.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-28.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-29.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-30.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-31.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-32.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-33.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-34.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-35.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-36.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-37.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-38.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-39.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/after-m-40.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-01.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-02.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-03.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-04.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-05.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-06.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-07.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-08.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-09.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-10.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-11.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-12.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-13.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-14.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-15.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-16.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-17.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-18.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-19.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-20.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-21.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-22.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-23.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-24.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-25.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-26.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-27.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-28.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-29.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-30.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-31.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-32.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-33.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-34.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-35.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-36.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-37.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-38.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-39.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-d-40.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-01.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-02.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-03.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-04.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-05.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-06.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-07.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-08.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-09.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-10.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-11.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-12.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-13.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-14.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-15.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-16.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-17.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-18.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-19.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-20.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-21.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-22.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-23.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-24.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-25.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-26.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-27.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-28.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-29.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-30.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-31.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-32.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-33.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-34.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-35.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-36.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-37.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-38.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-39.png: not described
+- spec/features/KA0157-the-process-drawings-and-step-marks-draw-in-slowly-as-the-page-scrolls-not/frames/before-m-40.png: not described
+
+## Checks on main
+
+- `bun install --frozen-lockfile`: passed.
+- `npm run check`: passed.
+- `npm test`: passed.
+
+## Left open
+
+- Findings: none; no findings.md on this ticket.
