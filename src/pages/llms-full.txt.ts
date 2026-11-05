@@ -86,7 +86,7 @@ ${step.description}
       } else if (item.data.badge) {
         period = `${item.data.badge}, ${startYear}`;
       } else {
-        period = `${startYear}–${endYear}`;
+        period = `${startYear}-${endYear}`;
       }
       return `### ${item.data.company} (${period})
 
