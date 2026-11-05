@@ -1191,8 +1191,18 @@
   {
     "id": "KA0145",
     "title": "New colour palette: Galactic Blue, True Blue and Lime Green",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0145-new-colour-palette-galactic-blue-true-blue-and-lime-green/ticket.md",
-    "updated": "2026-11-05T12:15:50.773Z"
+    "updated": "2026-11-05T12:15:59.640Z"
+  },
+  {
+    "id": "KA0146",
+    "title": "Redesign inspired by the Skills section of safwatk.com, on the new palette",
+    "status": "planning",
+    "path": "spec/features/KA0146-redesign-inspired-by-the-skills-section-of-safwatk-com-on-the-new-palette/ticket.md",
+    "updated": "2026-11-05T12:18:52.096Z",
+    "after": [
+      "KA0145"
+    ]
   }
 ]
