@@ -27,13 +27,15 @@ import type { ProcessFigureName } from "@/data/process";
  * piece in the drawing's own order (the brace, then its callout; the
  * chain along the bars; one module, then the next; the cloud, then its
  * triangle; the trace, then its end mark): each piece is uncovered left to
- * right by a clip-path, eased, on the drawing's view timeline. The whole
- * draw runs from the drawing's top at 80% of the viewport's height to its
- * bottom on the viewport's middle line, 30% of the viewport plus the
- * drawing's height of scroll, so it ends before the step's mark turns lime
- * (step-marker.astro); `--mb-from` and `--mb-to` on a piece are its share
- * of that range. Under prefers-reduced-motion, without view timelines or
- * without CSS animations it stands drawn. */
+ * right by a clip-path, eased. On its own (the /ui catalogue) the draw
+ * runs on the drawing's view timeline, from its top at 80% of the
+ * viewport's height to its bottom on the viewport's middle line, 30% of
+ * the viewport plus the drawing's height of scroll. A list that orders
+ * the drawings (how-i-work.astro) puts them on its one timeline instead:
+ * `--mb-figure-timeline` names it, and `--mb-figure-from` / `-to` are the
+ * draw's `cover` range on it. `--mb-from` and `--mb-to` on a piece are its
+ * share of that range. Under prefers-reduced-motion, without view
+ * timelines or without CSS animations it stands drawn. */
 interface Props {
   name: ProcessFigureName;
 }
@@ -217,19 +219,31 @@ const grid = [60, 100, 140, 180, 220, 260, 300, 340];
         view-timeline: --mb-figure block;
       }
 
-      /* cover 20vh: the drawing's top at 80% of the viewport; cover
-       * calc(100% - 50vh): its bottom on the middle line. */
+      /* On its own, cover 20vh: the drawing's top at 80% of the viewport;
+       * cover calc(100% - 50vh): its bottom on the middle line. */
       .mb-figure-lime > * {
+        --mb-figure-a: var(--mb-figure-from, 20vh);
+        --mb-figure-b: var(--mb-figure-to, calc(100% - 50vh));
         animation: mb-figure-draw ease-in-out both;
-        animation-range: cover calc(20vh + (100% - 70vh) * var(--mb-from, 0))
-          cover calc(20vh + (100% - 70vh) * var(--mb-to, 1));
+        animation-range: cover
+          calc(
+            var(--mb-figure-a) +
+            (var(--mb-figure-b) - var(--mb-figure-a)) *
+            var(--mb-from, 0)
+          )
+          cover
+          calc(
+            var(--mb-figure-a) +
+            (var(--mb-figure-b) - var(--mb-figure-a)) *
+            var(--mb-to, 1)
+          );
       }
 
       /* Its own rule, a step more specific: the build's minifier folds an
        * animation-timeline that names a timeline into the animation
        * shorthand, which browsers do not accept there. */
       .mb-figure > .mb-figure-lime > * {
-        animation-timeline: --mb-figure;
+        animation-timeline: var(--mb-figure-timeline, --mb-figure);
       }
     }
   }

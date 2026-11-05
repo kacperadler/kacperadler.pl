@@ -8,13 +8,18 @@
  * line, dash-dot, standing drawn from the start (global.css: only the
  * hero enters on page load).
  *
- * The rail fills as the page scrolls: a 2px lime line over the ink one
- * follows a line across the middle of the viewport (each row's segment
- * fills while that line crosses it, so the segments read as one fill),
- * and a mark fills lime from its top edge to its bottom one, eased, while
- * that line crosses it, so the rail runs into it; its number turns dark
- * as the fill passes its middle. CSS scroll-driven animations (a view
- * timeline per segment and per mark), no script. Under
+ * The rail fills as the page scrolls: a 2px lime line over the ink one,
+ * in two pieces, the one into the mark (from the row's top, or
+ * `--mb-step-reach` above it, to the mark's centre) and the one out of it
+ * (from the centre to the row's bottom); a mark fills lime from its top
+ * edge to its bottom one, eased, and its number turns dark as the fill
+ * passes its middle. CSS scroll-driven animations, no script. On its own
+ * (the /ui catalogue) each piece and the mark run on their own view
+ * timeline and follow a line across the middle of the viewport, so the
+ * rail runs into the mark. A list that orders the parts (how-i-work.astro)
+ * puts them all on its one timeline instead: `--mb-step-timeline` names
+ * it, and `--mb-step-in-from` / `-to`, `--mb-step-dot-from` / `-to` and
+ * `--mb-step-out-from` / `-to` are each part's `cover` range on it. Under
  * prefers-reduced-motion, or where the browser has no view timelines,
  * rail and marks show fully filled. Decorative: the step's title carries
  * the meaning. */
@@ -26,7 +31,8 @@ const { num } = Astro.props;
 ---
 
 <div aria-hidden="true" class="mb-step-marker">
-  <span class="mb-step-fill"></span>
+  <span class="mb-step-fill mb-step-in"></span>
+  <span class="mb-step-fill mb-step-out"></span>
   <span class="mb-step-dot">{num}</span>
 </div>
 
@@ -39,7 +45,7 @@ const { num } = Astro.props;
     justify-content: center;
   }
 
-  /* The ink rail, and the box the lime fill runs in: the same segment. */
+  /* The ink rail, and the boxes the lime fill runs in. */
   .mb-step-marker::before,
   .mb-step-fill {
     position: absolute;
@@ -48,11 +54,21 @@ const { num } = Astro.props;
     left: 50%;
   }
 
-  /* The segment is the fill's view timeline; the line itself scales, so
-   * the timeline sits on a box that never transforms. */
+  /* Each piece is its fill's view timeline on its own; the line itself
+   * scales, so the timeline sits on a box that never transforms. */
   .mb-step-fill {
     width: 0;
-    view-timeline: --mb-step-fill block;
+  }
+
+  .mb-step-in {
+    top: calc(-1 * var(--mb-step-reach, 0px));
+    bottom: 50%;
+    view-timeline: --mb-step-in block;
+  }
+
+  .mb-step-out {
+    top: 50%;
+    view-timeline: --mb-step-out block;
   }
 
   .mb-step-marker::before {
@@ -67,14 +83,17 @@ const { num } = Astro.props;
   }
 
   /* The rail runs from the first mark to the last. */
-  :global(:first-child) > .mb-step-marker::before,
-  :global(:first-child) > .mb-step-marker > .mb-step-fill {
+  :global(:first-child) > .mb-step-marker::before {
     top: 50%;
   }
 
-  :global(:last-child) > .mb-step-marker::before,
-  :global(:last-child) > .mb-step-marker > .mb-step-fill {
+  :global(:last-child) > .mb-step-marker::before {
     bottom: 50%;
+  }
+
+  :global(:first-child) > .mb-step-marker > .mb-step-in,
+  :global(:last-child) > .mb-step-marker > .mb-step-out {
+    display: none;
   }
 
   .mb-step-fill::before {
@@ -103,25 +122,39 @@ const { num } = Astro.props;
     border: 1px solid var(--blue);
   }
 
-  /* With motion: the fill follows the viewport's middle line. A segment's
-   * fill runs from its top on that line (cover range: the box entering at
-   * the bottom of the viewport is 0, so the top is at the line after half
-   * the viewport) to its bottom on it (the end of the cover range less
-   * half the viewport). A mark stands empty - ink number in an ink rule -
-   * and its lime fill, over the rule, grows down from its top edge on the
-   * line to its bottom edge on it, eased in and out. */
+  /* With motion, on its own: the fill follows the viewport's middle line.
+   * A piece's fill runs from its top on that line (cover range: the box
+   * entering at the bottom of the viewport is 0, so the top is at the line
+   * after half the viewport) to its bottom on it (the end of the cover
+   * range less half the viewport). A mark stands empty - ink number in an
+   * ink rule - and its lime fill, over the rule, grows down from its top
+   * edge on the line to its bottom edge on it, eased in and out. A list
+   * that orders the parts sets the timeline and the ranges (see above). */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .mb-step-fill::before {
         animation: mb-step-fill linear both;
-        animation-range: cover 50vh cover calc(100% - 50vh);
       }
 
-      /* Its own rule, a step more specific: the build's minifier folds an
-       * animation-timeline that names a timeline into the animation
+      .mb-step-in::before {
+        animation-range: cover var(--mb-step-in-from, 50vh) cover
+          var(--mb-step-in-to, calc(100% - 50vh));
+      }
+
+      .mb-step-out::before {
+        animation-range: cover var(--mb-step-out-from, 50vh) cover
+          var(--mb-step-out-to, calc(100% - 50vh));
+      }
+
+      /* Their own rules, a step more specific: the build's minifier folds
+       * an animation-timeline that names a timeline into the animation
        * shorthand, which browsers do not accept there. */
-      .mb-step-marker > .mb-step-fill::before {
-        animation-timeline: --mb-step-fill;
+      .mb-step-marker > .mb-step-in::before {
+        animation-timeline: var(--mb-step-timeline, --mb-step-in);
+      }
+
+      .mb-step-marker > .mb-step-out::before {
+        animation-timeline: var(--mb-step-timeline, --mb-step-out);
       }
 
       .mb-step-dot {
@@ -130,7 +163,6 @@ const { num } = Astro.props;
         border-color: var(--mb-rule);
         view-timeline: --mb-step-dot block;
         animation: mb-step-num step-start both;
-        animation-range: cover 50vh cover calc(50vh + var(--mb-step-dot));
       }
 
       .mb-step-dot::before {
@@ -141,15 +173,17 @@ const { num } = Astro.props;
         background: var(--blue);
         transform-origin: top center;
         animation: mb-step-fill ease-in-out both;
-        animation-range: cover 50vh cover calc(50vh + var(--mb-step-dot));
       }
 
-      .mb-step-marker > .mb-step-dot {
-        animation-timeline: --mb-step-dot;
+      .mb-step-dot,
+      .mb-step-dot::before {
+        animation-range: cover var(--mb-step-dot-from, 50vh) cover
+          var(--mb-step-dot-to, calc(50vh + var(--mb-step-dot)));
       }
 
+      .mb-step-marker > .mb-step-dot,
       .mb-step-marker > .mb-step-dot::before {
-        animation-timeline: --mb-step-dot;
+        animation-timeline: var(--mb-step-timeline, --mb-step-dot);
       }
     }
   }
