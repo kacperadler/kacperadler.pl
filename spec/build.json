@@ -1204,5 +1204,12 @@
     "after": [
       "KA0145"
     ]
+  },
+  {
+    "id": "KA0147",
+    "title": "The e2e specs that need Docker skip with a reason where Docker is unreachable, as in an Arthur job",
+    "status": "planning",
+    "path": "spec/features/KA0147-the-e2e-specs-that-need-docker-skip-with-a-reason-where-docker-is-unreachable-as/ticket.md",
+    "updated": "2026-11-05T12:49:12.151Z"
   }
 ]
