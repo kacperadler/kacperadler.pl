@@ -1236,8 +1236,15 @@
   {
     "id": "KA0151",
     "title": "The process section is about twice as tall as before",
-    "status": "planning",
+    "status": "dropped",
     "path": "spec/features/KA0151-the-process-section-is-about-twice-as-tall-as-before/ticket.md",
-    "updated": "2026-11-05T15:36:20.952Z"
+    "updated": "2026-11-05T18:42:01.654Z"
+  },
+  {
+    "id": "KA0152",
+    "title": "The home page reaches a jury estimate of 8.5, scored blind with its motion",
+    "status": "planned",
+    "path": "spec/features/KA0152-the-home-page-reaches-a-jury-estimate-of-8-5-scored-blind-with-its-motion/ticket.md",
+    "updated": "2026-11-05T18:42:00.952Z"
   }
 ]
