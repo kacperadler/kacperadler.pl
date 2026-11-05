@@ -53,6 +53,12 @@ export default defineConfig({
   // routes marked prerender = false - the lead store, src/pages/api/lead.ts.
   adapter: node({ mode: "standalone" }),
 
+  // Every page's CSS goes into its HTML as <style>: no stylesheet request
+  // blocks the first paint, so the hero's h1 (the LCP element) paints as
+  // soon as the HTML is in (KA0146, Lighthouse mobile Performance 95). The
+  // whole site's CSS is about 14 KB gzipped, so a page carries it cheaply.
+  build: { inlineStylesheets: "always" },
+
   // Astro 7 defaults to 'jsx' whitespace rules, which drop the space between
   // inline elements written on separate lines (e.g. "Ostatnia aktualizacja:"
   // and its date). Keep the HTML-aware compression the templates are written for;
