@@ -13,8 +13,9 @@ import { Icon } from "astro-icon/components";
  *           [data-nav-link]) is a lime bar under lime text; press: the
  *           lime bar and text it is about to become
  *   footer  ink-2 list link, an underline fades in on hover; the optional
- *           icon before it turns lime; press: lime text. Its hit area,
- *           drawn nowhere, is at least 44px each way
+ *           icon before it turns lime; press: lime text. Its box is at
+ *           least 24px high; its hit area, drawn nowhere, at least 44px
+ *           each way
  *   case    "Zobacz realizację": heavy ink text over a lime underline, the
  *           icon after it (an arrow by default) nudges 3px right on hover
  *           and 6px on press
@@ -175,6 +176,7 @@ const iconAfter = variant === "case";
     display: inline-flex;
     gap: 10px;
     align-items: center;
+    min-height: 24px;
     font-size: 14px;
     color: var(--ink-2);
     text-decoration: underline;
