@@ -13,6 +13,7 @@ import Badge from "../badge.astro";
 import Card from "../card.astro";
 import CellGrid from "../cell-grid.astro";
 import ContactLink from "../contact-link.astro";
+import FieldEdge from "../field-edge.astro";
 import Link from "../link.astro";
 import SectionHead from "../section-head.astro";
 
@@ -33,9 +34,10 @@ const experience = (await getCollection("experience"))
 const caseStudies = await caseStudiesByExperience();
 ---
 
-<section class="mb-about" id="about">
+<section class="mb-about mb-field" id="about">
+  <FieldEdge side="top" />
   <div class="container">
-    <SectionHead label="O mnie">
+    <SectionHead label="O mnie" poster>
       Jedna osoba. <em>Cały</em> system.
       <Fragment slot="lede">
         AI Engineer i partner technologiczny. Dowożę całość sam: od analizy
@@ -131,6 +133,7 @@ const caseStudies = await caseStudiesByExperience();
       </Accordion>
     </div>
   </div>
+  <FieldEdge side="bottom" />
 </section>
 
 <style>

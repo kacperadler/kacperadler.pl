@@ -720,6 +720,7 @@ test.describe("home page", () => {
               );
             })(),
             dot: r(step.querySelector(".mb-step-dot")),
+            figure: r(step.querySelector(".mb-card .mb-figure")),
             link: r(step.querySelector(".mb-step-link")),
             title: r(step.querySelector(".mb-card h3")),
             // The title's first line of text, and where the card's content
@@ -767,6 +768,14 @@ test.describe("home page", () => {
           TOLERANCE
         );
       }
+      // The drawing opens the card: inside it, across its width, above the
+      // title.
+      expect(step.figure.top).toBeGreaterThanOrEqual(step.card.top);
+      expect(step.figure.bottom).toBeLessThan(step.title.top);
+      expect(step.figure.height).toBeGreaterThan(40);
+      expect(Math.abs(step.figure.width - step.card.width)).toBeLessThanOrEqual(
+        TOLERANCE
+      );
       // The duration on the title's line, at its right end.
       expect(step.badge.x).toBeGreaterThan(step.title.right);
       expect(Math.abs(step.badge.right - step.contentRight)).toBeLessThan(
@@ -781,7 +790,7 @@ test.describe("home page", () => {
       ).toBeLessThan(TOLERANCE);
       // Staggered: each card starts near the foot of the one before it
       // (they still overlap, so no side has a hole, but each step stands
-      // clear), and two cards on one side stand 128px apart.
+      // clear), and two cards on one side stand 280px apart.
       const previous = wide[i - 1];
       if (previous) {
         const into = (step.card.top - previous.card.top) / previous.card.height;
@@ -791,7 +800,7 @@ test.describe("home page", () => {
       const sameSide = wide[i - 2];
       if (sameSide) {
         expect(
-          Math.abs(step.card.top - sameSide.card.bottom - 128),
+          Math.abs(step.card.top - sameSide.card.bottom - 280),
           `card ${i + 1}`
         ).toBeLessThan(TOLERANCE);
       }
@@ -808,8 +817,10 @@ test.describe("home page", () => {
       expect(Math.abs(step.card.x - (narrow[0]?.card.x ?? 0))).toBeLessThan(
         TOLERANCE
       );
-      expect(step.dot.right).toBeLessThan(step.card.left);
       expect(step.link.width).toBe(0);
+      // The drawing still opens the card.
+      expect(step.figure.top).toBeGreaterThanOrEqual(step.card.top);
+      expect(step.figure.bottom).toBeLessThan(step.title.top);
       // The duration stays on the title's line, at its right end, even
       // when a narrow card wraps the title.
       expect(Math.abs(step.badge.right - step.contentRight)).toBeLessThan(
@@ -839,13 +850,22 @@ test.describe("home page", () => {
       reducedMotion: "no-preference",
     });
     const page = await context.newPage();
-    // The 2px lime line over each segment (its scale), and which marks are
-    // lime.
+    // The 2px lime line over each segment (its scale), which marks are
+    // lime, and how much of each drawing's lime layer is drawn in (its
+    // clip from the right: 0 hidden, 1 drawn).
     const fill = () =>
       page.locator("#how").evaluate((how) => ({
         dots: [...how.querySelectorAll(".mb-step-dot")].map(
           (dot) => getComputedStyle(dot).backgroundColor === "rgb(126, 211, 33)"
         ),
+        figures: [...how.querySelectorAll(".mb-figure-lime")].map((layer) => {
+          const clip = getComputedStyle(layer).clipPath;
+          const sides = clip.slice("inset(".length, -1).split(" ");
+          const right = sides[1] ?? sides[0] ?? "";
+          return right.endsWith("%")
+            ? Math.round(100 - Number.parseFloat(right)) / 100
+            : 1;
+        }),
         lines: [...how.querySelectorAll(".mb-step-fill")].map(
           (line) =>
             new DOMMatrix(getComputedStyle(line, "::before").transform).d
@@ -877,12 +897,14 @@ test.describe("home page", () => {
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect.poll(fill).toEqual({
       dots: [false, false, false, false, false],
+      figures: [0, 0, 0, 0, 0],
       lines: [0, 0, 0, 0, 0],
       links: [false, false, false, false, false],
     });
 
     // The middle of the viewport on the third mark: the first two segments
-    // full, the marks up to the third lime, the rest still empty.
+    // full, the marks up to the third lime, the rest still empty; the
+    // drawings of the first two steps drawn in, the last two not yet.
     await scrollTo("#how .mb-step:nth-child(3) .mb-step-dot");
     await expect
       .poll(async () => (await fill()).dots)
@@ -891,17 +913,20 @@ test.describe("home page", () => {
     expect(middle.lines.slice(0, 2)).toEqual([1, 1]);
     expect(middle.lines.slice(3)).toEqual([0, 0]);
     expect(middle.links).toEqual(middle.dots);
+    expect(middle.figures.slice(0, 2)).toEqual([1, 1]);
+    expect(middle.figures.slice(3)).toEqual([0, 0]);
 
     await scrollTo("#how .mb-how-cta");
     await expect.poll(fill).toEqual({
       dots: [true, true, true, true, true],
+      figures: [1, 1, 1, 1, 1],
       lines: [1, 1, 1, 1, 1],
       links: [true, true, true, true, true],
     });
     await context.close();
   });
 
-  test("with reduced motion the process rail shows filled, nothing moves", async ({
+  test("with reduced motion the process rail shows filled and the drawings drawn, nothing moves", async ({
     browser,
   }) => {
     const context = await browser.newContext({ reducedMotion: "reduce" });
@@ -911,6 +936,9 @@ test.describe("home page", () => {
       animations: how.getAnimations({ subtree: true }).length,
       dots: [...how.querySelectorAll(".mb-step-dot")].map(
         (dot) => getComputedStyle(dot).backgroundColor
+      ),
+      figures: [...how.querySelectorAll(".mb-figure-lime")].map(
+        (layer) => getComputedStyle(layer).clipPath
       ),
       lines: [...how.querySelectorAll(".mb-step-fill")].map(
         (line) => getComputedStyle(line, "::before").transform
@@ -923,6 +951,7 @@ test.describe("home page", () => {
     expect(new Set(state.links)).toEqual(new Set(["rgb(126, 211, 33)"]));
     expect(new Set(state.dots)).toEqual(new Set(["rgb(126, 211, 33)"]));
     expect(new Set(state.lines)).toEqual(new Set(["none"]));
+    expect(state.figures).toEqual(["none", "none", "none", "none", "none"]);
     await context.close();
   });
 

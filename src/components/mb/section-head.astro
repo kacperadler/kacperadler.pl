@@ -14,17 +14,23 @@
  *     page load). Its pieces still read --bl-p, at its initial 1, in stages
  *     (the rule, the ticks, the dimension and label with the brace, the
  *     callout), so a pen could draw a head again without a new rule.
- *   - `as` picks the heading level (h2 by default). */
+ *   - `as` picks the heading level (h2 by default).
+ *   - `poster` (the home page's sections) sets the headline on its own
+ *     full-width row, 40px on a 390px phone to 88px at the 1160px
+ *     container, weight 850, with the lede under it in the right column.
+ *     Without it (legal pages, case studies, the 404) the head stays two
+ *     columns at 32-54px. */
 interface Props {
   as?: "h1" | "h2" | "h3";
   label: string;
+  poster?: boolean;
 }
 
-const { as = "h2", label } = Astro.props;
+const { as = "h2", label, poster = false } = Astro.props;
 const Heading = as;
 ---
 
-<header class="mb-section-head">
+<header class:list={["mb-section-head", { "mb-section-head-poster": poster }]}>
   <p class="mb-section-label">{label}</p>
   <Heading class="mb-section-title"><slot /></Heading>
   {Astro.slots.has("lede") && (
@@ -176,6 +182,22 @@ const Heading = as;
     color: var(--ink);
   }
 
+  /* Poster: the headline fills the row; the lede steps under it into the
+   * right column. Same rem + vw slope as the section rhythm, capped at
+   * 13vw like the default. */
+  .mb-section-head-poster .mb-section-title {
+    grid-column: 1 / -1;
+    font-size: min(clamp(2.5rem, 0.9805rem + 6.2338vw, 5.5rem), 13vw);
+    font-weight: 850;
+    line-height: 0.96;
+    letter-spacing: -0.05em;
+  }
+
+  .mb-section-head-poster .mb-section-lede {
+    grid-column: 2;
+    margin-top: var(--v2-space-lg);
+  }
+
   @media (max-width: 880px) {
     .mb-section-head {
       grid-template-columns: minmax(0, 1fr);
@@ -184,6 +206,11 @@ const Heading = as;
 
     .mb-section-label {
       margin-bottom: 0;
+    }
+
+    .mb-section-head-poster .mb-section-lede {
+      grid-column: 1;
+      margin-top: 0;
     }
   }
 </style>
