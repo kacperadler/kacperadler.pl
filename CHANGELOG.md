@@ -2,6 +2,12 @@
 
 Generated from the merged tickets of `spec/build.json` by `arthur changelog`; a hand edit is overwritten at the next merge.
 
+## 2026-11-06
+
+### Changed
+
+- KA0158 The process animates in order: step 1 mark, then its drawing, then step 2 mark, then its drawing (72aa697)
+
 ## 2026-11-05
 
 ### Changed

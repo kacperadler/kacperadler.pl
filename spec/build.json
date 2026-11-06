@@ -1285,8 +1285,29 @@
   {
     "id": "KA0158",
     "title": "The process animates in order: step 1 mark, then its drawing, then step 2 mark, then its drawing",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0158-the-process-animates-in-order-step-1-mark-then-its-drawing-then-step-2-mark-then/ticket.md",
-    "updated": "2026-11-05T23:10:52.313Z"
+    "updated": "2026-11-06T07:36:25.860Z"
+  },
+  {
+    "id": "KA0159",
+    "title": "Local Lighthouse Performance moves with the home page's raw HTML size, which production never serves",
+    "status": "planning",
+    "path": "spec/features/KA0159-local-lighthouse-performance-moves-with-the-home-page-s-raw-html-size-which/ticket.md",
+    "updated": "2026-11-06T07:36:25.842Z"
+  },
+  {
+    "id": "KA0160",
+    "title": "On desktop a drawing draws over about a fifth of the viewport's scroll, not KA0157's 30%",
+    "status": "planning",
+    "path": "spec/features/KA0160-on-desktop-a-drawing-draws-over-about-a-fifth-of-the-viewport-s-scroll-not/ticket.md",
+    "updated": "2026-11-06T07:36:25.847Z"
+  },
+  {
+    "id": "KA0161",
+    "title": "**lower drawing floor.** The minimum scroll per drawing drops from KA0157's 30% of the viewport to 18% at 1440 px and 28% at 390 px",
+    "status": "planning",
+    "path": "spec/features/KA0161-lower-drawing-floor-the-minimum-scroll-per-drawing-drops-from-ka0157-s-30-of-the/ticket.md",
+    "updated": "2026-11-06T07:36:25.850Z"
   }
 ]
