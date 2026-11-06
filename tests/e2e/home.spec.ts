@@ -722,6 +722,9 @@ test.describe("home page", () => {
             dot: r(step.querySelector(".mb-step-dot")),
             figure: r(step.querySelector(".mb-card .mb-figure")),
             link: r(step.querySelector(".mb-step-link")),
+            // The lime rail's pieces into the mark and out of it.
+            railIn: r(step.querySelector(".mb-step-in")),
+            railOut: r(step.querySelector(".mb-step-out")),
             title: r(step.querySelector(".mb-card h3")),
             // The title's first line of text, and where the card's content
             // ends on the right.
@@ -796,6 +799,14 @@ test.describe("home page", () => {
         const into = (step.card.top - previous.card.top) / previous.card.height;
         expect(into, `card ${i + 1}`).toBeGreaterThan(0.5);
         expect(into, `card ${i + 1}`).toBeLessThan(0.7);
+        // The lime rail into this mark starts under the mark before it,
+        // though its row starts lower, so the line between them has no gap.
+        expect(step.railIn.top, `rail to mark ${i + 1}`).toBeGreaterThan(
+          previous.dot.top
+        );
+        expect(step.railIn.top, `rail to mark ${i + 1}`).toBeLessThan(
+          previous.dot.bottom
+        );
       }
       const sameSide = wide[i - 2];
       if (sameSide) {
@@ -839,6 +850,12 @@ test.describe("home page", () => {
         expect(
           Math.abs(step.card.top - previous.card.bottom - 40)
         ).toBeLessThan(TOLERANCE);
+        // The lime rail into this mark starts where the one out of the
+        // mark before it ends.
+        expect(
+          Math.abs(step.railIn.top - previous.railOut.bottom),
+          `rail to mark ${i + 1}`
+        ).toBeLessThan(TOLERANCE);
       }
     }
   });
@@ -850,10 +867,11 @@ test.describe("home page", () => {
       reducedMotion: "no-preference",
     });
     const page = await context.newPage();
-    // The 2px lime line over each segment (its scale), which marks the
-    // fill has reached the middle of (their lime fill's scale), and how
-    // much of each drawing's lime layer is drawn in (the mean progress of
-    // its pieces' draw: 0 hidden, 1 drawn).
+    // The 2px lime line over each piece of rail (its scale; the first
+    // mark has no rail into it, the last none out of it), which marks have
+    // filled past their middle (their lime fill's scale), and how much of
+    // each drawing's lime layer is drawn in (the mean progress of its
+    // pieces' draw: 0 hidden, 1 drawn).
     const fill = () =>
       page.locator("#how").evaluate((how) => ({
         dots: [...how.querySelectorAll(".mb-step-dot")].map(
@@ -869,31 +887,18 @@ test.describe("home page", () => {
           const mean = pieces.reduce((a, b) => a + b, 0) / pieces.length;
           return Math.round(mean * 100) / 100;
         }),
-        lines: [...how.querySelectorAll(".mb-step-fill")].map(
-          (line) =>
-            new DOMMatrix(getComputedStyle(line, "::before").transform).d
-        ),
+        lines: [...how.querySelectorAll(".mb-step-fill")]
+          .filter((line) => getComputedStyle(line).display !== "none")
+          .map(
+            (line) =>
+              new DOMMatrix(getComputedStyle(line, "::before").transform).d
+          ),
         // A connector turns lime as its mark's fill reaches its middle.
         links: [...how.querySelectorAll(".mb-step-link")].map(
           (link) =>
             getComputedStyle(link).backgroundColor === "rgb(126, 211, 33)"
         ),
       }));
-    // Puts the element's centre a little past the viewport's middle line.
-    const scrollTo = (selector: string) =>
-      page.evaluate((target) => {
-        const rect = (
-          document.querySelector(target) as Element
-        ).getBoundingClientRect();
-        window.scrollTo(
-          0,
-          rect.top +
-            rect.height / 2 +
-            8 +
-            window.scrollY -
-            window.innerHeight / 2
-        );
-      }, selector);
 
     await page.setViewportSize({ height: 1000, width: 1440 });
     await page.goto("/");
@@ -901,47 +906,42 @@ test.describe("home page", () => {
     await expect.poll(fill).toEqual({
       dots: [false, false, false, false, false],
       figures: [0, 0, 0, 0, 0],
-      lines: [0, 0, 0, 0, 0],
+      lines: [0, 0, 0, 0, 0, 0, 0, 0],
       links: [false, false, false, false, false],
     });
 
-    // The middle of the viewport on the third mark: the first two segments
-    // full, the marks up to the third filled to their middle, the rest
-    // still empty; the drawings of the first three steps drawn in, the
-    // last two not yet.
-    await scrollTo("#how .mb-step:nth-child(3) .mb-step-dot");
-    await expect
-      .poll(async () => (await fill()).dots)
-      .toEqual([true, true, true, false, false]);
-    const middle = await fill();
-    expect(middle.lines.slice(0, 2)).toEqual([1, 1]);
-    expect(middle.lines.slice(3)).toEqual([0, 0]);
-    expect(middle.links).toEqual(middle.dots);
-    expect(middle.figures.slice(0, 3)).toEqual([1, 1, 1]);
-    expect(middle.figures[3]).toBeLessThan(1);
-    expect(middle.figures[4]).toBeLessThan(1);
-
-    await scrollTo("#how .mb-how-cta");
+    // Past the section: its bottom at the viewport's top.
+    await page.evaluate(() =>
+      window.scrollTo(
+        0,
+        (document.querySelector("#how") as Element).getBoundingClientRect()
+          .bottom + window.scrollY
+      )
+    );
     await expect.poll(fill).toEqual({
       dots: [true, true, true, true, true],
       figures: [1, 1, 1, 1, 1],
-      lines: [1, 1, 1, 1, 1],
+      lines: [1, 1, 1, 1, 1, 1, 1, 1],
       links: [true, true, true, true, true],
     });
     await context.close();
   });
 
-  // KA0157: the lime parts draw in where a visitor sees them happen, not
-  // at once. Scrolling through the process in small steps, each drawing's
-  // lime layer draws over at least 30% of the viewport's height of scroll
-  // (its own height, about 112px, read as a flash), one piece after the
-  // other; each mark fills over its own height, eased, from the moment the
-  // rail's tip on the middle line reaches its top edge.
-  for (const viewport of [
-    { height: 1000, width: 1440 },
-    { height: 844, width: 390 },
+  // KA0157 and KA0158: the lime parts draw in where a visitor sees them
+  // happen, one at a time, in the route's order. Scrolling through the
+  // process in small steps: mark 01 fills, then drawing 01 draws, then the
+  // rail runs on to mark 02, which fills, then drawing 02 ... drawing 05;
+  // nothing starts before the part before it is complete, and a mark or a
+  // drawing plays only while it is whole on screen, under the header.
+  // Each drawing draws one piece after the other over a calm span of
+  // scroll (`draw`, a share of the viewport's height; its own height,
+  // about 112px, read as a flash), each mark fills eased over at least
+  // half its height.
+  for (const { draw, viewport } of [
+    { draw: 0.18, viewport: { height: 1000, width: 1440 } },
+    { draw: 0.28, viewport: { height: 844, width: 390 } },
   ]) {
-    test(`at ${viewport.width}px the process drawings draw in piece by piece over 30% of the viewport, and each mark fills eased as the rail reaches it`, async ({
+    test(`at ${viewport.width}px the process plays in order on screen: each mark, then its drawing piece by piece, then the rail to the next mark`, async ({
       browser,
     }) => {
       const context = await browser.newContext({
@@ -953,10 +953,34 @@ test.describe("home page", () => {
       const STEP = 12;
       const samples = await page.evaluate(async (step) => {
         const how = document.querySelector("#how") as HTMLElement;
+        const header = (
+          document.querySelector(".mb-header") as Element
+        ).getBoundingClientRect().bottom;
+        const fillOf = (el: Element | null) =>
+          el
+            ?.getAnimations({ subtree: true })
+            .find(
+              (animation) =>
+                (animation as CSSAnimation).animationName === "mb-step-fill"
+            )
+            ?.effect?.getComputedTiming().progress ?? null;
+        // On screen: whole, between the header and the viewport's bottom.
+        const shown = (el: Element) => {
+          const rect = el.getBoundingClientRect();
+          return rect.top >= header - 0.5 && rect.bottom <= innerHeight + 0.5;
+        };
         const top = how.getBoundingClientRect().top + scrollY;
         const out: {
-          dots: { fill: number | null; scale: number; top: number }[];
-          figures: (number | null)[][];
+          dots: {
+            fill: number | null;
+            // Its connector (desktop) is lime.
+            linked: boolean;
+            scale: number;
+            shown: boolean;
+          }[];
+          figures: { pieces: (number | null)[]; shown: boolean }[];
+          // The rail out of each mark and into the next, per step.
+          rails: { in: number | null; out: number | null }[];
           y: number;
         }[] = [];
         for (let y = top - innerHeight; y < top + how.offsetHeight; y += step) {
@@ -966,29 +990,37 @@ test.describe("home page", () => {
           requestAnimationFrame(() => requestAnimationFrame(resolve));
           // biome-ignore lint/performance/noAwaitInLoops: samples in scroll order
           await promise;
+          const steps = [...how.querySelectorAll(".mb-step")];
           out.push({
             // A mark's lime fill is its ::before's mb-step-fill.
-            dots: [...how.querySelectorAll(".mb-step-dot")].map((dot) => ({
-              fill:
-                dot
-                  .getAnimations({ subtree: true })
-                  .find(
-                    (animation) =>
-                      (animation as CSSAnimation).animationName ===
-                      "mb-step-fill"
-                  )
-                  ?.effect?.getComputedTiming().progress ?? null,
-              scale: new DOMMatrix(getComputedStyle(dot, "::before").transform)
-                .d,
-              top: dot.getBoundingClientRect().top - innerHeight / 2,
+            dots: steps.map((s) => {
+              const dot = s.querySelector(".mb-step-dot") as Element;
+              return {
+                fill: fillOf(dot),
+                linked:
+                  getComputedStyle(s.querySelector(".mb-step-link") as Element)
+                    .backgroundColor === "rgb(126, 211, 33)",
+                scale: new DOMMatrix(
+                  getComputedStyle(dot, "::before").transform
+                ).d,
+                shown: shown(dot),
+              };
+            }),
+            figures: steps.map((s) => {
+              const layer = s.querySelector(".mb-figure-lime") as Element;
+              return {
+                pieces: [...layer.children].map(
+                  (piece) =>
+                    piece.getAnimations()[0]?.effect?.getComputedTiming()
+                      .progress ?? null
+                ),
+                shown: shown(layer),
+              };
+            }),
+            rails: steps.map((s) => ({
+              in: fillOf(s.querySelector(".mb-step-in")),
+              out: fillOf(s.querySelector(".mb-step-out")),
             })),
-            figures: [...how.querySelectorAll(".mb-figure-lime")].map((layer) =>
-              [...layer.children].map(
-                (piece) =>
-                  piece.getAnimations()[0]?.effect?.getComputedTiming()
-                    .progress ?? null
-              )
-            ),
             y: scrollY,
           });
         }
@@ -998,22 +1030,96 @@ test.describe("home page", () => {
       const firstY = (passes: (sample: (typeof samples)[number]) => boolean) =>
         samples.find(passes)?.y ?? Number.NaN;
 
-      const figureCount = samples[0]?.figures.length ?? 0;
-      expect(figureCount).toBe(5);
-      for (let f = 0; f < figureCount; f += 1) {
-        const start = firstY((s) =>
-          (s.figures[f] ?? []).some((p) => p !== null && p > 0)
-        );
-        const end = firstY((s) => (s.figures[f] ?? []).every((p) => p === 1));
+      // The route as a list of parts, each read as its progress (0 to 1)
+      // in a sample: mark 01, drawing 01, rail to 02, mark 02 ... drawing
+      // 05. The rail between two marks is the piece out of one and the
+      // piece into the next.
+      type Sample = (typeof samples)[number];
+      const mean = (values: (number | null)[]) =>
+        values.reduce<number>((a, b) => a + (b ?? 0), 0) / values.length;
+      const parts: {
+        name: string;
+        progress: (s: Sample) => number;
+        shown?: (s: Sample) => boolean;
+      }[] = [];
+      for (let n = 0; n < 5; n += 1) {
+        if (n > 0) {
+          parts.push({
+            name: `rail to mark ${n + 1}`,
+            progress: (s) =>
+              mean([s.rails[n - 1]?.out ?? null, s.rails[n]?.in ?? null]),
+          });
+        }
+        parts.push({
+          name: `mark ${n + 1}`,
+          progress: (s) => s.dots[n]?.fill ?? 0,
+          shown: (s) => s.dots[n]?.shown ?? false,
+        });
+        parts.push({
+          name: `drawing ${n + 1}`,
+          progress: (s) => mean(s.figures[n]?.pieces ?? []),
+          shown: (s) => s.figures[n]?.shown ?? false,
+        });
+      }
+
+      const first = samples[0] as Sample;
+      const last = samples.at(-1) as Sample;
+      for (const part of parts) {
+        // Each part runs its whole course within the scroll.
+        expect(part.progress(first), part.name).toBe(0);
+        expect(part.progress(last), part.name).toBe(1);
+      }
+      for (const sample of samples) {
+        for (const [k, part] of parts.entries()) {
+          const progress = part.progress(sample);
+          // Nothing starts before the part before it is complete.
+          const before = parts[k - 1];
+          if (before && progress > 0) {
+            expect(
+              before.progress(sample),
+              `${part.name} at ${progress} before ${before.name} is complete, y ${sample.y}`
+            ).toBe(1);
+          }
+          // A mark or a drawing plays only while it is on screen.
+          if (part.shown && progress > 0 && progress < 1) {
+            expect(
+              part.shown(sample),
+              `${part.name} at ${progress} off screen, y ${sample.y}`
+            ).toBe(true);
+          }
+        }
+      }
+      // The rail between two marks runs as one line: on a phone out of one
+      // mark, then into the next; on desktop the piece into the next mark
+      // reaches up under this one and fills with the piece out of it.
+      for (const sample of samples) {
+        for (let n = 1; n < 5; n += 1) {
+          const out = sample.rails[n - 1]?.out ?? 0;
+          const into = sample.rails[n]?.in ?? 0;
+          if (viewport.width > 880) {
+            expect(into, `rail to mark ${n + 1}, y ${sample.y}`).toBeCloseTo(
+              out,
+              5
+            );
+          } else if (into > 0) {
+            expect(out, `rail to mark ${n + 1}, y ${sample.y}`).toBe(1);
+          }
+        }
+      }
+
+      for (let f = 0; f < 5; f += 1) {
+        const pieces = (s: Sample) => s.figures[f]?.pieces ?? [];
+        const start = firstY((s) => pieces(s).some((p) => p !== null && p > 0));
+        const end = firstY((s) => pieces(s).every((p) => p === 1));
         expect(end - start, `drawing ${f + 1}`).toBeGreaterThanOrEqual(
-          viewport.height * 0.3
+          viewport.height * draw
         );
         // A piece starts only once the one before it is drawn.
         for (const sample of samples) {
-          const pieces = sample.figures[f] ?? [];
-          for (let k = 1; k < pieces.length; k += 1) {
-            if ((pieces[k] ?? 0) > 0) {
-              expect(pieces[k - 1], `drawing ${f + 1}`).toBeGreaterThan(0.99);
+          const drawn = pieces(sample);
+          for (let k = 1; k < drawn.length; k += 1) {
+            if ((drawn[k] ?? 0) > 0) {
+              expect(drawn[k - 1], `drawing ${f + 1}`).toBeGreaterThan(0.99);
             }
           }
         }
@@ -1021,24 +1127,25 @@ test.describe("home page", () => {
 
       const dotSize = viewport.width > 880 ? 48 : 36;
       for (let d = 0; d < 5; d += 1) {
-        const filling = samples.filter((s) => {
-          const fill = s.dots[d]?.fill;
-          return fill !== null && fill !== undefined && fill > 0 && fill < 1;
-        });
         const start = firstY((s) => (s.dots[d]?.fill ?? 0) > 0);
         const end = firstY((s) => s.dots[d]?.fill === 1);
         expect(end - start, `mark ${d + 1}`).toBeGreaterThanOrEqual(
           dotSize / 2
         );
-        // The rail's tip, on the middle line, has reached the top edge.
-        for (const sample of filling) {
-          expect(sample.dots[d]?.top, `mark ${d + 1}`).toBeLessThanOrEqual(0.5);
-        }
-        // Eased: early in the range the fill lags its linear share.
-        for (const sample of filling) {
+        for (const sample of samples) {
           const dot = sample.dots[d];
+          // Eased: early in the range the fill lags its linear share.
           if (dot?.fill && dot.fill < 0.4) {
             expect(dot.scale, `mark ${d + 1}`).toBeLessThan(dot.fill);
+          }
+          // On desktop the connector turns lime as the fill passes the
+          // mark's middle (within the pixel its colour change takes), not
+          // before.
+          const fill = dot?.fill ?? 0;
+          if (viewport.width > 880 && (fill < 0.5 || fill > 0.55)) {
+            expect(dot?.linked, `connector ${d + 1}, y ${sample.y}`).toBe(
+              fill >= 0.5
+            );
           }
         }
       }

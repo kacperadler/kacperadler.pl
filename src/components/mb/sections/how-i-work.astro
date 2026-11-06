@@ -36,9 +36,9 @@ import StepMarker from "../step-marker.astro";
       </Fragment>
     </SectionHead>
 
-    <ol class="mb-how-steps">
+    <ol class="mb-how-steps" style={`--mb-how-count: ${processSteps.length}`}>
       {processSteps.map((step, i) => (
-        <li class="mb-step" style={`--mb-step-row: ${i + 1}`}>
+        <li class="mb-step" style={`--mb-step: ${i + 1}`}>
           <StepMarker num={step.num} />
           <Card tag="div">
             <ProcessFigure name={step.figure} slot="image" />
@@ -81,11 +81,15 @@ import StepMarker from "../step-marker.astro";
    * side stand a row gap apart. The gap (64px, a fifth of a card with its
    * drawing, about 330px) sets the stagger: a card starts a little past
    * the middle of the one before it, so the route reads as one zigzag,
-   * neither side has a hole and the section stays short. */
+   * neither side has a hole and the section stays short. A mark's row
+   * starts about half a gap below the centre of the mark before it, so the
+   * rail into it reaches that far up, under that mark (step-marker.astro). */
   .mb-how-steps {
+    --mb-how-gap: 64px;
+    --mb-step-reach: calc(var(--mb-how-gap) / 2);
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--mb-how-rail) minmax(0, 1fr);
-    row-gap: 64px;
+    row-gap: var(--mb-how-gap);
     padding: 0;
     margin: 0;
     list-style: none;
@@ -96,7 +100,7 @@ import StepMarker from "../step-marker.astro";
   }
 
   .mb-step > :global(*) {
-    grid-row: var(--mb-step-row) / span 2;
+    grid-row: var(--mb-step) / span 2;
   }
 
   .mb-step > :global(.mb-step-marker) {
@@ -117,9 +121,9 @@ import StepMarker from "../step-marker.astro";
   }
 
   /* The connector: from the mark's edge to the card's, on the mark's
-   * centre. A 2px box drawing a 1px ink line until the fill reaches the
-   * mark, then a 2px lime one; filled from the start under reduced motion
-   * or without view timelines, like the rail. */
+   * centre. A 2px box drawing a 1px ink line until the mark's fill passes
+   * its middle, then a 2px lime one; filled from the start under reduced
+   * motion or without view timelines, like the rail. */
   .mb-step-link {
     position: relative;
     grid-column: 2;
@@ -135,17 +139,115 @@ import StepMarker from "../step-marker.astro";
     justify-self: end;
   }
 
+  /* With motion the steps play in order, one part at a time, on one
+   * timeline: the list's (--mb-how). Mark 01 fills, then drawing 01 draws
+   * in, then the rail runs on to mark 02, which fills, then drawing 02,
+   * and so on to drawing 05; scrolling back plays it backwards. The run
+   * starts at --mb-how-from and ends at --mb-how-to (`cover` offsets of
+   * the list: 100% - 100vh is its height) and is cut into consecutive
+   * slots, a mark --mb-how-slot-mark long, a drawing --mb-how-slot-draw,
+   * the rail between two marks --mb-how-slot-rail. A mark's slot comes
+   * after the slots of the steps before it, so the order holds wherever
+   * the cards stand; the run's ends, set from where the marks and the
+   * drawings stand in the list, keep each part on screen while it plays
+   * (a drawing whole, under the header), at 1440 and at 390px (home.spec.ts).
+   *
+   * Desktop: the run starts as mark 01 comes into the bottom tenth of the
+   * viewport and ends with drawing 05 near the top, under the header; the
+   * rail between two marks fills as one piece (the piece into the next
+   * mark reaches up under this one and covers the piece out of it). */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
+      .mb-how-steps {
+        --mb-how-from: calc(7.5vh + (100% - 100vh) * 0.14);
+        --mb-how-to: calc(97.5vh + (100% - 100vh) * 0.625);
+        --mb-how-slot-mark: 0.2;
+        --mb-how-slot-draw: 1;
+        --mb-how-slot-rail: 0.15;
+        --mb-how-split: 0;
+        --mb-step-timeline: --mb-how;
+        --mb-figure-timeline: --mb-how;
+        view-timeline: --mb-how block;
+        /* Not the scroll padding (html's, under the header): the offsets
+         * count from the viewport's edges. */
+        view-timeline-inset: 0;
+      }
+
+      /* One slot unit, where this step's run starts (its mark's slot), and
+       * each part's range. The rail from this mark to the next: the piece
+       * out of it, then the piece into the next one (split at
+       * --mb-how-split; at 0 both take the whole slot). */
+      .mb-step {
+        --mb-how-unit: calc(
+          (var(--mb-how-to) - var(--mb-how-from)) /
+          (
+            var(--mb-how-count) *
+            (var(--mb-how-slot-mark) + var(--mb-how-slot-draw)) +
+            (var(--mb-how-count) - 1) *
+            var(--mb-how-slot-rail)
+          )
+        );
+        --mb-how-at: calc(
+          var(--mb-how-from) +
+          var(--mb-how-unit) *
+          (var(--mb-step) - 1) *
+          (
+            var(--mb-how-slot-mark) +
+            var(--mb-how-slot-draw) +
+            var(--mb-how-slot-rail)
+          )
+        );
+        --mb-step-in-from: calc(
+          var(--mb-how-at) -
+          var(--mb-how-unit) *
+          var(--mb-how-slot-rail) *
+          (1 - var(--mb-how-split))
+        );
+        --mb-step-in-to: var(--mb-how-at);
+        --mb-step-dot-from: var(--mb-how-at);
+        --mb-step-dot-to: calc(
+          var(--mb-how-at) +
+          var(--mb-how-unit) *
+          var(--mb-how-slot-mark)
+        );
+        --mb-figure-from: var(--mb-step-dot-to);
+        --mb-figure-to: calc(
+          var(--mb-step-dot-to) +
+          var(--mb-how-unit) *
+          var(--mb-how-slot-draw)
+        );
+        --mb-step-out-from: var(--mb-figure-to);
+        --mb-step-out-to: calc(
+          var(--mb-figure-to) +
+          var(--mb-how-unit) *
+          var(--mb-how-slot-rail) *
+          (1 - var(--mb-how-split))
+        );
+      }
+
       .mb-step-link {
         animation: mb-step-link linear both;
-        animation-range: cover calc(50vh + 1px) cover calc(50vh + 2px);
+        animation-range: cover
+          calc(
+            var(--mb-how-at) +
+            var(--mb-how-unit) *
+            var(--mb-how-slot-mark) /
+            2
+          )
+          cover
+          calc(
+            var(--mb-how-at) +
+            var(--mb-how-unit) *
+            var(--mb-how-slot-mark) /
+            2 +
+            1px
+          );
       }
 
       /* Its own rule: the build's minifier folds an animation-timeline
        * into the animation shorthand, where browsers drop it. */
       .mb-step > .mb-step-link {
-        animation-timeline: view();
+        animation-timeline: --mb-how;
       }
     }
   }
@@ -220,9 +322,11 @@ import StepMarker from "../step-marker.astro";
     margin-top: var(--mb-block-gap);
   }
 
-  /* Phone: the rail on the left, the cards one column, 40px apart. */
+  /* Phone: the rail on the left, the cards one column, 40px apart. The
+   * rows abut, so the rail into a mark starts at its row's top. */
   @media (max-width: 880px) {
     .mb-how-steps {
+      --mb-step-reach: 0px;
       display: flex;
       flex-direction: column;
       row-gap: 0;
@@ -257,6 +361,21 @@ import StepMarker from "../step-marker.astro";
     .mb-how-cta {
       justify-content: flex-start;
       padding-left: calc(40px + 12px);
+    }
+  }
+
+  /* Phone: the run starts as mark 01 comes into the bottom fifth of the
+   * viewport and ends with drawing 05 near the top, under the header; the
+   * cards stand farther apart, so the rail between two marks gets a longer
+   * slot and fills out of one mark, then into the next. */
+  @media (prefers-reduced-motion: no-preference) and (max-width: 880px) {
+    @supports (animation-timeline: view()) {
+      .mb-how-steps {
+        --mb-how-from: calc(20vh + (100% - 100vh) * 0.06);
+        --mb-how-to: calc(75vh + (100% - 100vh) * 0.85);
+        --mb-how-slot-rail: 0.5;
+        --mb-how-split: 0.5;
+      }
     }
   }
 </style>
