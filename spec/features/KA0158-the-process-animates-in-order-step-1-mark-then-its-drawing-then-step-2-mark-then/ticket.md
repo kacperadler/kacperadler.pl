@@ -41,3 +41,4 @@ Out:
 
 ## Decisions
 - 2026-11-05: KA0158 starts: the process animates in order, mark then drawing per step; preview before merge; the owner: "But right now im looking on this how the scroll trigger the animations and steps and there should be animation for step 1 then step 1 box then animation for step 2 then step 2 box ect" (KA-D19)
+- 2026-11-06: Merge KA0158 to kacperadler.pl main; the owner: "KA-D20 - 1" (KA-D20)

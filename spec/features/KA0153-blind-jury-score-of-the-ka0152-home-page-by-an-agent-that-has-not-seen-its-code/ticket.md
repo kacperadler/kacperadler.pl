@@ -39,3 +39,4 @@ Out:
 
 ## Decisions
 - 2026-11-05: KA0153 starts: a new agent scores the KA0152 page blind, as the owner asked in KA-D13; the owner: "ok, to check the score use new agent, not the same one" (KA-D15)
+- 2026-11-06: Keep KA0153 (the blind score report) in the repo: merge it for the record; the owner: "KA-D21 - 1" (KA-D21)
