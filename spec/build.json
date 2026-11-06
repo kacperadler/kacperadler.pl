@@ -1250,9 +1250,9 @@
   {
     "id": "KA0153",
     "title": "Blind jury score of the KA0152 home page, by an agent that has not seen its code or earlier scores",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/ticket.md",
-    "updated": "2026-11-05T19:49:36.009Z"
+    "updated": "2026-11-06T07:37:57.001Z"
   },
   {
     "id": "KA0154",
