@@ -6,6 +6,7 @@ Generated from the merged tickets of `spec/build.json` by `arthur changelog`; a 
 
 ### Changed
 
+- KA0153 Blind jury score of the KA0152 home page, by an agent that has not seen its code or earlier scores (dfc21ea)
 - KA0158 The process animates in order: step 1 mark, then its drawing, then step 2 mark, then its drawing (72aa697)
 
 ## 2026-11-05

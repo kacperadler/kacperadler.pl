@@ -1250,9 +1250,9 @@
   {
     "id": "KA0153",
     "title": "Blind jury score of the KA0152 home page, by an agent that has not seen its code or earlier scores",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0153-blind-jury-score-of-the-ka0152-home-page-by-an-agent-that-has-not-seen-its-code/ticket.md",
-    "updated": "2026-11-06T07:37:57.001Z"
+    "updated": "2026-11-06T07:42:30.827Z"
   },
   {
     "id": "KA0154",
@@ -1309,5 +1309,33 @@
     "status": "planning",
     "path": "spec/features/KA0161-lower-drawing-floor-the-minimum-scroll-per-drawing-drops-from-ka0157-s-30-of-the/ticket.md",
     "updated": "2026-11-06T07:36:25.850Z"
+  },
+  {
+    "id": "KA0162",
+    "title": "A blind jury job in this repository is not fully blind: the harness preloads AGENTS.md",
+    "status": "planning",
+    "path": "spec/features/KA0162-a-blind-jury-job-in-this-repository-is-not-fully-blind-the-harness-preloads/ticket.md",
+    "updated": "2026-11-06T07:42:30.813Z"
+  },
+  {
+    "id": "KA0163",
+    "title": "jury skill's `skipLinkFirst` misses a non-English skip link",
+    "status": "planning",
+    "path": "spec/features/KA0163-jury-skill-s-skiplinkfirst-misses-a-non-english-skip-link/ticket.md",
+    "updated": "2026-11-06T07:42:30.815Z"
+  },
+  {
+    "id": "KA0164",
+    "title": "Jury evidence adds about 29 MB of PNG to the repository per scoring run",
+    "status": "planning",
+    "path": "spec/features/KA0164-jury-evidence-adds-about-29-mb-of-png-to-the-repository-per-scoring-run/ticket.md",
+    "updated": "2026-11-06T07:42:30.817Z"
+  },
+  {
+    "id": "KA0165",
+    "title": "about 29 MB of PNG goes into the git history, and each re-score would add as much again",
+    "status": "planning",
+    "path": "spec/features/KA0165-about-29-mb-of-png-goes-into-the-git-history-and-each-re-score-would-add-as-much/ticket.md",
+    "updated": "2026-11-06T07:42:30.819Z"
   }
 ]
