@@ -11,6 +11,7 @@ Generated from the merged tickets of `spec/build.json` by `arthur changelog`; a 
 ### Changed
 
 - KA0166 Section heads lose the numbered label above the heading (the "§ 01 / PROBLEM" line) on every page (d5b48c5)
+- KA0168 CI runs on Arthur's branches, so a KA branch merges on its own after a PASS and green CI (d071f79)
 
 ## 2026-11-06
 
