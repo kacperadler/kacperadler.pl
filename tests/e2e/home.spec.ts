@@ -126,6 +126,37 @@ test.describe("home page", () => {
     await expect(page.locator("aside.eu-funding")).toBeVisible();
   });
 
+  // The label over a section's heading went (KA0166), its space did not
+  // (KA-D24): the heading stands as far under the dimension line as it did
+  // under the label - the rule, 24px, the label's 18.6px line and the gap
+  // under it (16px at 880px and below, 24px on a poster, 32px otherwise).
+  for (const { gap, path, width } of [
+    { gap: 59.6, path: "/", width: 390 },
+    { gap: 67.6, path: "/", width: 1440 },
+    { gap: 59.6, path: "/polityka-prywatnosci/", width: 390 },
+    { gap: 75.6, path: "/polityka-prywatnosci/", width: 1440 },
+  ]) {
+    test(`${path} at ${width}px: each heading stands ${gap}px under its dimension line`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ height: 900, width });
+      await page.goto(path);
+      const gaps = await page
+        .locator("main .mb-section-head")
+        .evaluateAll((heads) =>
+          heads.map(
+            (head) =>
+              (head.querySelector(".mb-section-title")?.getBoundingClientRect()
+                .top ?? Number.NaN) - head.getBoundingClientRect().top
+          )
+        );
+      expect(gaps.length).toBeGreaterThan(0);
+      for (const measured of gaps) {
+        expect(measured).toBeCloseTo(gap, 0);
+      }
+    });
+  }
+
   test("the header and the mobile menu name the sections and the call CTA", async ({
     page,
   }) => {

@@ -40,12 +40,17 @@ const Heading = as;
 <style>
   .mb-section-head {
     --bl-s: clamp(0, var(--bl-p) / 0.6, 1);
+    /* The headline stands where it stood under the section label, which
+     * went (KA0166) with its space kept (KA-D24): the rule's 24px, the
+     * label's 12px line at the body's 1.55, then the gap under it - 32px
+     * here, 24px on a poster, 16px at 880px and below. */
+    --mb-head-top: calc(24px + 12px * 1.55);
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     column-gap: var(--v2-space-xl);
     align-items: end;
-    padding-top: 24px;
+    padding-top: calc(var(--mb-head-top) + var(--v2-space-lg));
     margin: 0 0 var(--mb-block-gap);
     container-type: inline-size;
     counter-reset: bl-cell;
@@ -156,10 +161,15 @@ const Heading = as;
     color: var(--ink);
   }
 
-  /* Poster: the headline fills the row; the lede steps under it into the
-   * right column, 24px down, clear of a callout hanging off a brace above
-   * it. 40px on a 390px phone to 88px at the 1160px container on a rem +
-   * vw slope, capped at 13vw like the default. */
+  /* Poster: the headline fills the row, 24px under the label's line; the
+   * lede steps under it into the right column, 24px down, clear of a
+   * callout hanging off a brace above it. 40px on a 390px phone to 88px at
+   * the 1160px container on a rem + vw slope, capped at 13vw like the
+   * default. */
+  .mb-section-head-poster {
+    padding-top: calc(var(--mb-head-top) + 24px);
+  }
+
   .mb-section-head-poster .mb-section-title {
     grid-column: 1 / -1;
     font-size: min(clamp(2.5rem, 0.9805rem + 6.2338vw, 5.5rem), 13vw);
@@ -174,9 +184,11 @@ const Heading = as;
   }
 
   @media (max-width: 880px) {
-    .mb-section-head {
+    .mb-section-head,
+    .mb-section-head-poster {
       grid-template-columns: minmax(0, 1fr);
       row-gap: var(--v2-space-md);
+      padding-top: calc(var(--mb-head-top) + var(--v2-space-md));
     }
 
     .mb-section-head-poster .mb-section-lede {
