@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    # arthur/** are the branches Arthur's jobs push: CI on them lets a
+    # reviewed ticket merge on its own once its branch is green.
+    branches: [main, "arthur/**"]
   pull_request:
     branches: [main]
 
