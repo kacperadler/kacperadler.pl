@@ -11,4 +11,4 @@ A finding ends in one of four statuses: `fixed in <commit>` (the branch fixed it
 - Where: `tests/e2e/security-headers.spec.ts:210`, `tests/e2e/pagination-jump.spec.ts:29`, `tests/e2e/lead-rate-limit.spec.ts:120`
 - What: `dockerAnswers()` (and, in `pagination-jump` and `security-headers`, the `SERVE_IMAGE` / `WEB_ROOT` parsing and the `docker run` of the nginx image with `nginx.conf` and `dist/client`) is copied in each spec, with the same skip reason. A change to how the Docker specs detect Docker or start nginx has to be made three times. The review of KA0167 noted it.
 - Suggestion: move the probe and the nginx-container start/stop into one helper beside the specs (as `tests/e2e/send-a-lead.ts` is), and have the three specs import it. No behavior change; the skip reason stays.
-- Status: open
+- Status: ticket KA0169

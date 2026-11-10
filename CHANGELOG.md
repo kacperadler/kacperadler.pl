@@ -4,6 +4,10 @@ Generated from the merged tickets of `spec/build.json` by `arthur changelog`; a 
 
 ## 2026-11-10
 
+### Fixed
+
+- KA0167 Security headers and two redirects from an outside SEO audit: HSTS and CSP, /index.html, footer links without the trailing slash (e277630)
+
 ### Changed
 
 - KA0166 Section heads lose the numbered label above the heading (the "§ 01 / PROBLEM" line) on every page (d5b48c5)

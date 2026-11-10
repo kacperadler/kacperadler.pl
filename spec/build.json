@@ -1348,9 +1348,9 @@
   {
     "id": "KA0167",
     "title": "Security headers and two redirects from an outside SEO audit: HSTS and CSP, /index.html, footer links without the trailing slash",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0167-security-headers-and-two-redirects-from-an-outside-seo-audit-hsts-and-csp-index/ticket.md",
-    "updated": "2026-11-10T13:01:11.762Z",
+    "updated": "2026-11-10T13:10:17.164Z",
     "after": [
       "KA0166"
     ]
@@ -1361,5 +1361,12 @@
     "status": "planned",
     "path": "spec/features/KA0168-ci-runs-on-arthur-s-branches-so-a-ka-branch-merges-on-its-own-after-a-pass-and/ticket.md",
     "updated": "2026-11-10T13:03:55.102Z"
+  },
+  {
+    "id": "KA0169",
+    "title": "Three e2e specs carry their own copy of the Docker probe and the nginx container setup",
+    "status": "planning",
+    "path": "spec/features/KA0169-three-e2e-specs-carry-their-own-copy-of-the-docker-probe-and-the-nginx-container/ticket.md",
+    "updated": "2026-11-10T13:10:17.154Z"
   }
 ]
