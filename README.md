@@ -41,7 +41,7 @@ Stack w szczegółach, konwencje i zasady pracy opisuje [`AGENTS.md`](./AGENTS.m
 
 ## Checki
 
-Przed każdym commitem hook poprawia lint i format zmienionych plików, a potem uruchamia `astro check` na całym projekcie. CI na GitHub Actions przy pushu i pull requeście do `main` uruchamia lint, check i build, a po nich testy e2e. Raport Playwrighta zostaje jako artefakt `playwright-report`.
+Przed każdym commitem hook poprawia lint i format zmienionych plików, a potem uruchamia `astro check` na całym projekcie. CI na GitHub Actions przy pushu do `main` i do gałęzi `arthur/**` (gałęzie jobów Arthura) oraz przy pull requeście do `main` uruchamia lint, check i build, a po nich testy e2e. Raport Playwrighta zostaje jako artefakt `playwright-report`.
 
 ## Formularz kontaktowy
 
