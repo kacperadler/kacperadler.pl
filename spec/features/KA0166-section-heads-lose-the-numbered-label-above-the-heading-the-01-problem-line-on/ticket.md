@@ -36,3 +36,4 @@ Out:
 ## Decisions
 - 2026-11-10: KA0166 approved: remove the section label on every section; the owner: "KA -> We should remove on every section this information what this section is about, we dont need it" (KA-D22)
 - 2026-11-10: Keep the old spacing: the heading stays where it was, only the label disappears; the owner: "KA-D24 - 1" (KA-D24)
+- 2026-11-10: Merge KA0166 to kacperadler.pl main; the owner: "KA-D25 -> merge" (KA-D25)
