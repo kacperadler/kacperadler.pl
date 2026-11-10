@@ -39,3 +39,4 @@ Out:
 - The audit's other advice (meta description length, WebMCP, more content): content and case studies are KA0029 to KA0035 and KA0137.
 
 ## Decisions
+- 2026-11-10: KA0167 approved; the owner: "KA-D23: approve" (KA-D23)
