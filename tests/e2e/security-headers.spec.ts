@@ -1,5 +1,7 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { request } from "node:http";
 import { fileURLToPath } from "node:url";
 import { expect, type Page, test } from "@playwright/test";
 
@@ -8,11 +10,12 @@ import { expect, type Page, test } from "@playwright/test";
 // <dir>/index) to its directory URL (KA0167).
 //
 // The policy is checked twice. On the preview, in every run, the CSP is read
-// from nginx.conf and put on each page the browser loads, so an edit to an
-// inline script of base-head.astro that leaves its old hash in nginx.conf
-// fails here with the violation named. In Docker, the production nginx image
-// serves the e2e build with nginx.conf, which answers the headers and the
-// redirects itself.
+// from nginx.conf and put on each page the browser loads, and each inline
+// script of the page must have its sha256 in it: an edit to an inline script
+// of base-head.astro that leaves its old hash in nginx.conf fails here with
+// the new hash and the script's first characters. In Docker, the production
+// nginx image serves the e2e build with nginx.conf, which answers the headers
+// and the redirects itself.
 
 declare global {
   interface Window {
@@ -49,6 +52,21 @@ const watchViolations = async (page: Page): Promise<string[]> => {
     });
   });
   return violations;
+};
+
+// The inline scripts of the page whose sha256 the CSP lacks, each as
+// "'sha256-<hash>' <its first characters>", so a failure names the script and
+// the hash nginx.conf needs. JSON-LD is data the browser never runs.
+const unhashedInlineScripts = async (page: Page): Promise<string[]> => {
+  const sources = await page
+    .locator("script:not([src]):not([type='application/ld+json'])")
+    .evaluateAll((scripts) =>
+      scripts.map((script) => script.textContent ?? "")
+    );
+  return sources.flatMap((source) => {
+    const hash = `'sha256-${createHash("sha256").update(source).digest("base64")}'`;
+    return CSP?.includes(hash) ? [] : [`${hash} ${source.trim().slice(0, 60)}`];
+  });
 };
 
 test.describe("the CSP of nginx.conf on the preview", () => {
@@ -95,6 +113,7 @@ test.describe("the CSP of nginx.conf on the preview", () => {
 
     const response = await page.goto("/");
     expect(response?.headers()["content-security-policy"]).toBe(CSP);
+    expect(await unhashedInlineScripts(page)).toEqual([]);
 
     // The inline script of base-head.astro marks the page live and plays the
     // entrance; the module script of base-layout.astro runs nav-active.ts.
@@ -167,6 +186,7 @@ test.describe("the CSP of nginx.conf on the preview", () => {
       const violations = await watchViolations(page);
       const response = await page.goto(path);
       expect(response?.headers()["content-security-policy"]).toBe(CSP);
+      expect(await unhashedInlineScripts(page)).toEqual([]);
       await expect(page.locator("html")).toHaveAttribute("data-bl-enter", "go");
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       expect(violations).toEqual([]);
@@ -200,6 +220,19 @@ const get = (path: string) =>
   fetch(`${origin}${path}`, {
     headers: { Host: "kacperadler.pl" },
     redirect: "manual",
+  });
+
+// "<status> <Location>" for a path sent exactly as written: fetch() would
+// turn \ into / before sending, and an attacker's link need not.
+const answerTo = (path: string) =>
+  new Promise<string>((resolve, reject) => {
+    request(`${origin}/`, { headers: { Host: "kacperadler.pl" }, path })
+      .on("response", (response) => {
+        response.resume();
+        resolve(`${response.statusCode} ${response.headers.location}`);
+      })
+      .on("error", reject)
+      .end();
   });
 
 test.describe("headers and redirects of nginx.conf in Docker", () => {
@@ -289,19 +322,18 @@ test.describe("headers and redirects of nginx.conf in Docker", () => {
 
   test("a directory page's second address goes 301 to its directory URL, the query kept", async () => {
     const redirects = {
+      "/%69ndex.html": "/",
       "/index": "/",
       "/index.html": "/",
       "/index.html?utm_source=audit": "/?utm_source=audit",
       "/lista/3/index": "/lista/3/",
       "/polityka-prywatnosci/index.html": "/polityka-prywatnosci/",
       "/realizacje/przyklad/index.html": "/realizacje/przyklad/",
+      "/regulamin/%69ndex.html": "/regulamin/",
       "/regulamin/index.html": "/regulamin/",
     };
     const answers = await Promise.all(
-      Object.keys(redirects).map(async (path) => {
-        const response = await get(path);
-        return [path, `${response.status} ${response.headers.get("location")}`];
-      })
+      Object.keys(redirects).map(async (path) => [path, await answerTo(path)])
     );
     expect(Object.fromEntries(answers)).toEqual(
       Object.fromEntries(
@@ -315,6 +347,34 @@ test.describe("headers and redirects of nginx.conf in Docker", () => {
         directories.map(async (path) => (await get(path)).status)
       )
     ).toEqual(directories.map(() => 200));
+  });
+
+  // A Location of //host or /\host is another site to a browser: a link
+  // starting with the owner's domain must never land anywhere else.
+  test("an index path naming another host never redirects off the site", async () => {
+    const probes = [
+      "//evil.example/index.html",
+      "//evil.example/index",
+      "///evil.example/index.html",
+      "/\\evil.example/index.html",
+      "/%2F%2Fevil.example/index.html",
+      "/%5Cevil.example/index.html",
+      "/%09/evil.example/index.html",
+    ];
+    const answers = await Promise.all(
+      probes.map(async (path) => {
+        const [status, location] = (await answerTo(path)).split(" ");
+        return [
+          path,
+          status === "301"
+            ? new URL(location ?? "", "https://kacperadler.pl/").host
+            : "no redirect",
+        ];
+      })
+    );
+    for (const [path, host] of answers) {
+      expect(["kacperadler.pl", "no redirect"], path).toContain(host);
+    }
   });
 
   test("no internal link of a page answers with a redirect", async () => {
