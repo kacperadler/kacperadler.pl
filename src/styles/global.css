@@ -150,7 +150,7 @@ a,
 }
 
 /* The blueprint: the page is an engineer's drawing (section-head.astro:
- * a dimension line, ticks, the width, the § label, the brace under the
+ * a dimension line, ticks, the width, the brace under the
  * <em> and its callout; card.astro: the numbered frame, the grips;
  * step-marker.astro: the dash-dot rail; footer.astro: the legend;
  * hero.astro: the datum and the title block; page-frame.astro: the

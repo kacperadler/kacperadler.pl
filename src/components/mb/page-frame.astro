@@ -12,7 +12,8 @@ import MobileSheet from "./mobile-sheet.astro";
  * (global.css's .skip-link), the header, the page in the slot, the footer,
  * the EU funding band, and after the frame the mobile sheet, a modal
  * <dialog> that leaves the frame inert while it is open.
- * The frame resets the `mb-section` counter <SectionHead> numbers from.
+ * The frame resets the `mb-section` counter: every <SectionHead> counts it
+ * up, and a card numbers its item from it ("01.3").
  * The page loads scripts/mobile-sheet.ts and scripts/blueprint-live.ts
  * itself. */
 ---

@@ -15,15 +15,6 @@ const SECTIONS = [
   "faq",
   "contact",
 ];
-const SECTION_LABELS = [
-  "Problem",
-  "Oferta",
-  "Realizacje",
-  "Proces",
-  "O mnie",
-  "FAQ",
-  "Kontakt",
-];
 const NAV_LABELS = ["Oferta", "Realizacje", "Proces", "O mnie", "FAQ"];
 const TITLE = "Wdrożenia AI i automatyzacje dla firm | Kacper Adler";
 const DESCRIPTION =
@@ -109,9 +100,17 @@ test.describe("home page", () => {
         .locator("main section[id]")
         .evaluateAll((sections) => sections.map((s) => s.id))
     ).toEqual(SECTIONS);
-    await expect(page.locator("main .mb-section-label")).toHaveText(
-      SECTION_LABELS
-    );
+    // Each section after the hero and the trust bar opens with a head that
+    // holds its h2 and its lede only: no label names the section (KA0166).
+    expect(
+      await page
+        .locator("main .mb-section-head")
+        .evaluateAll((heads) =>
+          heads.map((head) =>
+            [...head.children].map((child) => child.localName).join(" ")
+          )
+        )
+    ).toEqual(Array.from({ length: SECTIONS.length - 2 }, () => "h2 p"));
 
     // Header before main; the footer, then the EFS+ band, after it
     // (querySelectorAll returns document order).

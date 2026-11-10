@@ -40,8 +40,8 @@ test.describe("nav active section", () => {
   });
 
   // A menu link parks its section 8px under the sticky header: the
-  // dimension line with its ticks (6px above it) and the "§ … / Realizacje"
-  // label show, not hidden behind it. Below 360px the header takes two rows;
+  // dimension line with its ticks (6px above it) and the headline show,
+  // not hidden behind it. Below 360px the header takes two rows;
   // at every width its height is the token the scroll padding reads, filled
   // by its row(s) with no empty band under them.
   for (const width of [1440, 390, 350, 320]) {
