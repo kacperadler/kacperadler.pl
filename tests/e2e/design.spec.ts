@@ -490,7 +490,6 @@ const RUNNING_TEXT = {
 };
 
 const NOTES = [
-  ".mb-section-label",
   ".mb-status-caption",
   ".mb-trust-caption",
   ".mb-contact-label",
@@ -588,7 +587,6 @@ const SENTENCE_CASE = /^\p{Lu}.*\p{Ll}/u;
 
 // The drawing's marks, some of them drawn by a pseudo-element.
 const DRAWING_MARKS: { pseudo?: string; selector: string }[] = [
-  { selector: ".mb-section-label" },
   { pseudo: "::after", selector: ".mb-section-head" },
   { pseudo: "::before", selector: ".mb-card" },
   { pseudo: "::after", selector: ".mb-hero-grid" },

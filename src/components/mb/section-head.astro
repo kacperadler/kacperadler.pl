@@ -1,10 +1,9 @@
 ---
 /* Section head: a two-column row under an ink rule - the headline (default
- * slot) left, the lede (slot "lede") right, bottom-aligned - under a
- * numbered mono label ("§ 01 / Usługi"). One column at 880px and below.
- *   - The number is the `mb-section` counter: <PageFrame> resets it, every
- *     head counts one up. It is generated content with empty alt text, so
- *     screen readers read the label alone.
+ * slot) left, the lede (slot "lede") right, bottom-aligned. One column at
+ * 880px and below.
+ *   - Every head counts the `mb-section` counter one up (<PageFrame> resets
+ *     it) and resets `bl-cell`, so its cells number "01.1", "01.2".
  *   - The rule is a dimension line: extension ticks at both ends and the
  *     section's own width in px (its container size, as a number, through
  *     typed trigonometry; a browser without it prints nothing) on its
@@ -12,8 +11,8 @@
  *     a callout letter (A, B, counted per headline) at its right end.
  *   - It stands drawn from the start (global.css: only the hero enters on
  *     page load). Its pieces still read --bl-p, at its initial 1, in stages
- *     (the rule, the ticks, the dimension and label with the brace, the
- *     callout), so a pen could draw a head again without a new rule.
+ *     (the rule, the ticks, the dimension with the brace, the callout), so
+ *     a pen could draw a head again without a new rule.
  *   - `as` picks the heading level (h2 by default).
  *   - `poster` (the home page's sections) sets the headline on its own
  *     full-width row, 40px on a 390px phone to 88px at the 1160px
@@ -22,16 +21,14 @@
  *     columns at 32-54px. */
 interface Props {
   as?: "h1" | "h2" | "h3";
-  label: string;
   poster?: boolean;
 }
 
-const { as = "h2", label, poster = false } = Astro.props;
+const { as = "h2", poster = false } = Astro.props;
 const Heading = as;
 ---
 
 <header class:list={["mb-section-head", { "mb-section-head-poster": poster }]}>
-  <p class="mb-section-label">{label}</p>
   <Heading class="mb-section-title"><slot /></Heading>
   {Astro.slots.has("lede") && (
     <p class="mb-section-lede">
@@ -43,12 +40,17 @@ const Heading = as;
 <style>
   .mb-section-head {
     --bl-s: clamp(0, var(--bl-p) / 0.6, 1);
+    /* The headline stands where it stood under the section label, which
+     * went (KA0166) with its space kept (KA-D24): the rule's 24px, the
+     * label's 12px line at the body's 1.55, then the gap under it - 32px
+     * here, 24px on a poster, 16px at 880px and below. */
+    --mb-head-top: calc(24px + 12px * 1.55);
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     column-gap: var(--v2-space-xl);
     align-items: end;
-    padding-top: 24px;
+    padding-top: calc(var(--mb-head-top) + var(--v2-space-lg));
     margin: 0 0 var(--mb-block-gap);
     container-type: inline-size;
     counter-reset: bl-cell;
@@ -94,29 +96,6 @@ const Heading = as;
       clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
       transform: translate(-50%, -50%);
     }
-  }
-
-  /* Written left to right with the dimension. Its box hugs the text, so
-   * the pen writes the words, not the empty row. */
-  .mb-section-label {
-    --bl-s: clamp(0, (var(--bl-p) - 0.7) * 5, 1);
-    display: flex;
-    grid-column: 1 / -1;
-    gap: 10px;
-    justify-self: start;
-    margin: 0 0 var(--v2-space-lg);
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--ink-2);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    clip-path: inset(0 calc((1 - var(--bl-e)) * 100%) 0 0);
-  }
-
-  .mb-section-label::before {
-    color: var(--blue);
-    content: "§ " counter(mb-section, decimal-leading-zero) " /" / "";
   }
 
   .mb-section-title {
@@ -182,13 +161,13 @@ const Heading = as;
     color: var(--ink);
   }
 
-  /* Poster: the label 24px over the headline; the headline fills the row;
-   * the lede steps under it into the right column, 24px down, clear of a
+  /* Poster: the headline fills the row, 24px under the label's line; the
+   * lede steps under it into the right column, 24px down, clear of a
    * callout hanging off a brace above it. 40px on a 390px phone to 88px at
    * the 1160px container on a rem + vw slope, capped at 13vw like the
    * default. */
-  .mb-section-head-poster .mb-section-label {
-    margin-bottom: 24px;
+  .mb-section-head-poster {
+    padding-top: calc(var(--mb-head-top) + 24px);
   }
 
   .mb-section-head-poster .mb-section-title {
@@ -205,13 +184,11 @@ const Heading = as;
   }
 
   @media (max-width: 880px) {
-    .mb-section-head {
+    .mb-section-head,
+    .mb-section-head-poster {
       grid-template-columns: minmax(0, 1fr);
       row-gap: var(--v2-space-md);
-    }
-
-    .mb-section-head .mb-section-label {
-      margin-bottom: 0;
+      padding-top: calc(var(--mb-head-top) + var(--v2-space-md));
     }
 
     .mb-section-head-poster .mb-section-lede {

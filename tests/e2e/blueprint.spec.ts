@@ -31,7 +31,6 @@ interface HeadDrawing {
   brace: number;
   callout: number;
   dimension: number;
-  label: number;
   rule: number;
   ticks: number;
 }
@@ -43,9 +42,8 @@ interface HeadDrawing {
 const headDrawing = (head: Locator): Promise<HeadDrawing> =>
   head.evaluate((el) => {
     const em = el.querySelector("em");
-    const label = el.querySelector(".mb-section-label");
-    if (!(em && label)) {
-      throw new Error("The section head has no label or <em>.");
+    if (!em) {
+      throw new Error("The section head has no <em>.");
     }
     const drawnPart = (hidden: number, whole: number) =>
       Math.round((1 - hidden / whole) * 1000) / 1000;
@@ -65,7 +63,6 @@ const headDrawing = (head: Locator): Promise<HeadDrawing> =>
       brace: written(em, "::after"),
       callout: written(em, "::before"),
       dimension: written(el, "::after"),
-      label: written(label, null),
       rule: drawnPart(100 - Number.parseFloat(own.backgroundSize), 100),
       ticks: drawnPart(inset(el, "::before", 0), 50),
     };
@@ -194,7 +191,6 @@ const expectBelowDrawn = async (page: Page) => {
     brace: 1,
     callout: 1,
     dimension: 1,
-    label: 1,
     rule: 1,
     ticks: 1,
   });
@@ -652,8 +648,9 @@ test.describe("the first screen's entrance", () => {
   }
 
   // The 404 opens as every other page does: its h1 in a section head with
-  // `404` for a label, under the rule drawn as a dimension line - ticks at
-  // both ends and the head's own width in px on its middle (KA0102).
+  // no label over it (KA0166), under the rule drawn as a dimension line -
+  // ticks at both ends and the head's own width in px on its middle
+  // (KA0102).
   test("the 404 opens with a section head, its rule a dimension line", async ({
     page,
   }) => {
@@ -662,7 +659,10 @@ test.describe("the first screen's entrance", () => {
     const head = page.locator("#top .mb-section-head");
     await expect(head).toHaveCount(1);
     await expect(head.locator("h1")).toHaveText("Tej strony nie ma.");
-    await expect(head.locator(".mb-section-label")).toHaveText("404");
+    await expect(head.locator(":scope > *").first()).toHaveJSProperty(
+      "localName",
+      "h1"
+    );
     const rule = await head.evaluate((el) => {
       const ticks = getComputedStyle(el, "::before");
       const dimension = getComputedStyle(el, "::after");
