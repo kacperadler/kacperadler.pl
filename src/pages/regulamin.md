@@ -39,7 +39,7 @@ W Serwisie dostępny jest formularz kontaktowy umożliwiający przesłanie wiado
 - nie powoduje zawarcia umowy,
 - nie zobowiązuje żadnej ze stron do podjęcia dalszych działań.
 
-Szczegółowe zasady przetwarzania danych osobowych podanych w formularzu opisuje [Polityka prywatności](/polityka-prywatnosci).
+Szczegółowe zasady przetwarzania danych osobowych podanych w formularzu opisuje [Polityka prywatności](/polityka-prywatnosci/).
 
 ## 5. Prawa autorskie
 
