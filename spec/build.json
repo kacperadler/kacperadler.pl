@@ -1350,7 +1350,7 @@
     "title": "Security headers and two redirects from an outside SEO audit: HSTS and CSP, /index.html, footer links without the trailing slash",
     "status": "in-progress",
     "path": "spec/features/KA0167-security-headers-and-two-redirects-from-an-outside-seo-audit-hsts-and-csp-index/ticket.md",
-    "updated": "2026-11-10T11:54:59.714Z",
+    "updated": "2026-11-10T12:39:37.877Z",
     "after": [
       "KA0166"
     ]
