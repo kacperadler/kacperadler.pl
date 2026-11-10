@@ -1341,8 +1341,15 @@
   {
     "id": "KA0166",
     "title": "Section heads lose the numbered label above the heading (the \"§ 01 / PROBLEM\" line) on every page",
-    "status": "planned",
+    "status": "in-progress",
     "path": "spec/features/KA0166-section-heads-lose-the-numbered-label-above-the-heading-the-01-problem-line-on/ticket.md",
-    "updated": "2026-11-10T09:59:05.827Z"
+    "updated": "2026-11-10T10:13:06.542Z"
+  },
+  {
+    "id": "KA0167",
+    "title": "Security headers and two redirects from an outside SEO audit: HSTS and CSP, /index.html, footer links without the trailing slash",
+    "status": "planning",
+    "path": "spec/features/KA0167-security-headers-and-two-redirects-from-an-outside-seo-audit-hsts-and-csp-index/ticket.md",
+    "updated": "2026-11-10T10:31:06.241Z"
   }
 ]
