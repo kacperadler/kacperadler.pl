@@ -1348,11 +1348,18 @@
   {
     "id": "KA0167",
     "title": "Security headers and two redirects from an outside SEO audit: HSTS and CSP, /index.html, footer links without the trailing slash",
-    "status": "in-progress",
+    "status": "done",
     "path": "spec/features/KA0167-security-headers-and-two-redirects-from-an-outside-seo-audit-hsts-and-csp-index/ticket.md",
-    "updated": "2026-11-10T12:39:37.877Z",
+    "updated": "2026-11-10T13:01:11.762Z",
     "after": [
       "KA0166"
     ]
+  },
+  {
+    "id": "KA0168",
+    "title": "CI runs on Arthur's branches, so a KA branch merges on its own after a PASS and green CI",
+    "status": "planning",
+    "path": "spec/features/KA0168-ci-runs-on-arthur-s-branches-so-a-ka-branch-merges-on-its-own-after-a-pass-and/ticket.md",
+    "updated": "2026-11-10T13:01:38.927Z"
   }
 ]
