@@ -33,4 +33,5 @@ Out:
 - Any change to the CI jobs themselves.
 
 ## Decisions
+- 2026-11-10: KA0168 approved; the owner: "KA-D28: approve" (KA-D28)
 

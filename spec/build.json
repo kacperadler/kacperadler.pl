@@ -1358,8 +1358,8 @@
   {
     "id": "KA0168",
     "title": "CI runs on Arthur's branches, so a KA branch merges on its own after a PASS and green CI",
-    "status": "planning",
+    "status": "planned",
     "path": "spec/features/KA0168-ci-runs-on-arthur-s-branches-so-a-ka-branch-merges-on-its-own-after-a-pass-and/ticket.md",
-    "updated": "2026-11-10T13:01:38.927Z"
+    "updated": "2026-11-10T13:03:55.102Z"
   }
 ]

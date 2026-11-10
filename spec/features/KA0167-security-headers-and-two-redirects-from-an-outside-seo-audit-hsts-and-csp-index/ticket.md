@@ -40,3 +40,4 @@ Out:
 
 ## Decisions
 - 2026-11-10: KA0167 approved; the owner: "KA-D23: approve" (KA-D23)
+- 2026-11-10: Merge KA0167 and deploy it; the owner: "KA-D27: merge" (KA-D27)
