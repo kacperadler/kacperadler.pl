@@ -42,3 +42,4 @@ Out:
 
 ## Decisions
 - 2026-11-11: KA0170 approved: a planner reviews the site with the tponscr-debug awwwards skill and proposes a plan the owner approves; the owner: "KA-D30 - approve" (KA-D30)
+- 2026-11-11: Plan approved by the owner: plan.md at ab361d3; the owner: "KA-D31 - 1" (KA-D31)
