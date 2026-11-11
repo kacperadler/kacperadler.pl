@@ -36,5 +36,4 @@ Out:
 
 ## Decisions
 
-<!-- - YYYY-MM-DD: one decision the human made, in one line. -->
 - 2026-11-11: KA0171 approved; the owner: "KA-D35 - approve" (KA-D35)
