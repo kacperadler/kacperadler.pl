@@ -88,13 +88,26 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
 
+      # The browser alone, no --with-deps and no install-deps: those run apt
+      # against Ubuntu's package servers, which the runner failed to resolve
+      # in every run from 2026-11-11 (KA0171). ubuntu-latest carries Google
+      # Chrome, whose packages bring the libraries Chromium needs; the next
+      # step checks that on every run.
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: bunx playwright install --with-deps chromium
+        run: bunx playwright install chromium
 
-      - name: Install system deps for cached browsers
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: bunx playwright install-deps chromium
+      # Playwright looks for missing libraries in a folder its Chromium no
+      # longer has (chrome-linux, not chrome-linux64), so a library the image
+      # drops would only show as a crash in every spec. ldd names it here.
+      - name: Check Chromium's system libraries
+        run: |
+          missing=$(find ~/.cache/ms-playwright/chromium* -type f \( -perm -u+x -o -name '*.so*' \) -exec ldd {} + 2>/dev/null | awk '$2 == "=>" && $3 == "not" { print $1 }' | sort -u)
+          if [ -n "$missing" ]; then
+            echo "::error title=Chromium lacks system libraries::the runner image has no" $missing "- this job installs no apt packages (KA0171): add the packages that ship them before this step"
+            exit 1
+          fi
+          echo "Every library Chromium links is on the runner."
 
       - name: Run Playwright tests
         run: bun run test:e2e
