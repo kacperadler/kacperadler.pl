@@ -41,3 +41,4 @@ Out:
 - Copy beyond what the plan names, written with marked placeholders where Kacper must supply words.
 
 ## Decisions
+- 2026-11-11: KA0170 approved: a planner reviews the site with the tponscr-debug awwwards skill and proposes a plan the owner approves; the owner: "KA-D30 - approve" (KA-D30)
