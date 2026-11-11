@@ -1368,5 +1368,12 @@
     "status": "planning",
     "path": "spec/features/KA0169-three-e2e-specs-carry-their-own-copy-of-the-docker-probe-and-the-nginx-container/ticket.md",
     "updated": "2026-11-10T13:10:17.154Z"
+  },
+  {
+    "id": "KA0170",
+    "title": "The awwwards skill of tponscr-debug reviews the site and proposes what to change, as a plan the owner approves",
+    "status": "planning",
+    "path": "spec/features/KA0170-the-awwwards-skill-of-tponscr-debug-reviews-the-site-and-proposes-what-to-change/ticket.md",
+    "updated": "2026-11-11T07:25:37.338Z"
   }
 ]
