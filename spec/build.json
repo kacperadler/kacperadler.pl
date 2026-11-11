@@ -1375,5 +1375,12 @@
     "status": "done",
     "path": "spec/features/KA0170-the-awwwards-skill-of-tponscr-debug-reviews-the-site-and-proposes-what-to-change/ticket.md",
     "updated": "2026-11-11T15:58:42.651Z"
+  },
+  {
+    "id": "KA0171",
+    "title": "CI e2e fails at \"Install system deps for cached browsers\": the runner cannot resolve the Ubuntu package servers",
+    "status": "planning",
+    "path": "spec/features/KA0171-ci-e2e-fails-at-install-system-deps-for-cached-browsers-the-runner-cannot/ticket.md",
+    "updated": "2026-11-11T16:20:19.360Z"
   }
 ]
