@@ -1379,8 +1379,8 @@
   {
     "id": "KA0171",
     "title": "CI e2e fails at \"Install system deps for cached browsers\": the runner cannot resolve the Ubuntu package servers",
-    "status": "planned",
+    "status": "done",
     "path": "spec/features/KA0171-ci-e2e-fails-at-install-system-deps-for-cached-browsers-the-runner-cannot/ticket.md",
-    "updated": "2026-11-11T18:32:29.534Z"
+    "updated": "2026-11-11T19:09:35.028Z"
   }
 ]
