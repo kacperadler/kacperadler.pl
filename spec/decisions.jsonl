@@ -69,3 +69,4 @@
 {"record":"answer","id":"KA-D34","time":"2026-11-11T19:31:35+01:00","decided":"Drop KA0170: the redesign is not merged and the live site stays as it is","picked":1,"words":"KA-D34 - drop","message":13943}
 {"record":"answer","id":"KA-D35","time":"2026-11-11T19:31:36+01:00","decided":"KA0171 approved","picked":1,"words":"KA-D35 - approve","message":13943}
 {"record":"ask","id":"KA-D36","time":"2026-11-11T20:10:01+01:00","project":"kacperadler.pl","kind":"merge","question":"Merge KA0171? The kacperadler.pl CI fix: browser tests no longer install anything from the Ubuntu package servers that kept failing; a new step checks the browser libraries are on the runner. Review PASS, its CI run 43080273143 passed. Needs your word because it changes the CI workflow.","options":["Merge it","Not yet"],"ticket":"KA0171"}
+{"record":"answer","id":"KA-D36","time":"2026-11-11T21:00:52+01:00","decided":"Merge KA0171","picked":1,"words":"KA-D36 - 1","message":14080}

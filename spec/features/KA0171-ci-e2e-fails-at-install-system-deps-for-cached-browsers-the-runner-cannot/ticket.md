@@ -37,3 +37,4 @@ Out:
 ## Decisions
 
 - 2026-11-11: KA0171 approved; the owner: "KA-D35 - approve" (KA-D35)
+- 2026-11-11: Merge KA0171; the owner: "KA-D36 - 1" (KA-D36)
