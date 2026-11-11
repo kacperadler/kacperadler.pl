@@ -45,3 +45,4 @@ Out:
 - 2026-11-11: Plan approved by the owner: plan.md at ab361d3; the owner: "KA-D31 - 1" (KA-D31)
 - 2026-11-11: KA0170 merges only on the owner's approval, after a preview link; KA autoMerge off until then; the owner: "when you done the kacperadler.pl redesign, run this and send me a link and merge only on my approve" (KA-D32)
 - 2026-11-11: Raise the 1440px page height cap to 10100px; the plan stays whole; the owner: "KA-D33 - raise the limit" (KA-D33)
+- 2026-11-11: Drop KA0170: the redesign is not merged and the live site stays as it is; the owner: "KA-D34 - drop" (KA-D34)
