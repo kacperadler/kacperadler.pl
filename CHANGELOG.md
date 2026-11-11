@@ -2,6 +2,12 @@
 
 Generated from the merged tickets of `spec/build.json` by `arthur changelog`; a hand edit is overwritten at the next merge.
 
+## 2026-11-11
+
+### Changed
+
+- KA0171 CI e2e fails at "Install system deps for cached browsers": the runner cannot resolve the Ubuntu package servers (c1e7ef5)
+
 ## 2026-11-10
 
 ### Fixed
