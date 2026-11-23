@@ -38,3 +38,4 @@ Out:
 
 - 2026-10-29: The human asked for it: the site should come up in Google for AI/programming/systems/apps searches with Krotoszyn, Ostrów Wielkopolski, Jarocin and nearby towns.
 - 2026-11-23: KA0137 approved: local SEO around Krotoszyn on the home page, no town pages, no street address, wording approved on the branch, budget $15; the owner: "PG-D177 PG-D178 AR-D703 AR-D704 AR-D705 AR-D706 AR-D707 KA-D37 yes" (KA-D37)
+- 2026-11-23: Keep the live KA0137 wording as it is; the owner: "AR-D712 1 arthur-ci-oom.sh - done KA-D39 1" (KA-D39)
