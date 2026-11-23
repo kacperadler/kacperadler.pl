@@ -1132,9 +1132,9 @@
   {
     "id": "KA0137",
     "title": "The site shows up in Google for local searches around Krotoszyn",
-    "status": "done",
+    "status": "merged",
     "path": "spec/features/KA0137-the-site-shows-up-in-google-for-local-searches-around-krotoszyn/ticket.md",
-    "updated": "2026-11-23T17:48:59.150Z"
+    "updated": "2026-11-23T17:58:24.507Z"
   },
   {
     "id": "KA0138",

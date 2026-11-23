@@ -2,6 +2,12 @@
 
 Generated from the merged tickets of `spec/build.json` by `arthur changelog`; a hand edit is overwritten at the next merge.
 
+## 2026-11-23
+
+### Added
+
+- KA0137 The site shows up in Google for local searches around Krotoszyn (64973ec)
+
 ## 2026-11-11
 
 ### Changed
