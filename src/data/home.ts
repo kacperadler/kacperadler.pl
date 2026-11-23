@@ -1,7 +1,8 @@
 /* Home page copy that /llms-full.txt serves too, so both read one source:
  * the problems and their effects (#problems), the offer's pricing lede and
  * custom apps (#services), the case highlights (#cases), the about text
- * (#about) and the FAQ (#faq). Copy used only on the page stays in its section. */
+ * (#about) and the FAQ (#faq), with the towns Kacper meets firms in. Copy
+ * used only on the page stays in its section. */
 
 /* The situations a visitor should recognise (#problems), each with the
  * effect an automation gives: the card's heading, its sentence and, under
@@ -120,6 +121,20 @@ export const about: readonly string[] = [
   "Pracuję z firmami jako ich partner technologiczny. Rozumiem biznes, tłumaczę technologię na ludzki język i biorę odpowiedzialność za efekt.",
 ];
 
+/* Where Kacper meets a firm in person: Krotoszyn, where he works from, and
+ * the towns around it (KA0137). One list for the FAQ's answer and for the
+ * ProfessionalService JSON-LD (`areaServed`, src/lib/seo.ts), so the page
+ * and the structured data name the same towns. */
+export const localTowns: readonly string[] = [
+  "Krotoszyn",
+  "Ostrów Wielkopolski",
+  "Jarocin",
+  "Kalisz",
+  "Pleszew",
+  "Koźmin Wielkopolski",
+  "Zduny",
+];
+
 export interface FaqItem {
   answer: string;
   question: string;
@@ -164,5 +179,9 @@ export const faq: readonly FaqItem[] = [
     answer:
       "Przyjmuję 1-2 projekty jednocześnie, żeby każdy dostał pełną uwagę.",
     question: "Ile projektów prowadzisz jednocześnie?",
+  },
+  {
+    answer: `Jedno i drugie. Pracuję z Krotoszyna, więc z firmami z okolicy spotykam się na miejscu: ${localTowns.join(", ")}. Z resztą Polski pracuję zdalnie.`,
+    question: "Pracujesz na miejscu czy zdalnie?",
   },
 ];

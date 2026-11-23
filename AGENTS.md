@@ -19,7 +19,7 @@ Gdy dokumentacja i kod się rozjeżdżają, rację ma kod.
 - **Markdown pages** dla treści statycznej (polityka prywatności, regulamin) - `src/pages/*.md` z `layout: "@/layouts/legal-layout.astro"`
 - **Ikony**: `astro-icon` + `@iconify-json/lucide` (`<Icon name="lucide:..." />`), nie inline SVG.
 - **Fonty**: self-hosted Geist + Geist Mono (variable woff2 w `public/fonts`, `font-display: swap`, preload w `base-head.astro`) - bez zewnętrznych CDN.
-- **SEO**: `@astrojs/sitemap` + `public/robots.txt`; JSON-LD (`Person`, `WebSite`, `ProfessionalService`) z `src/lib/seo.ts` w `base-head.astro`; OG image (1200×630) generowany w buildzie przez sharp z SVG (`src/pages/og-default.png.ts`).
+- **SEO**: `@astrojs/sitemap` + `public/robots.txt`; JSON-LD (`Person`, `WebSite`, `ProfessionalService`) z `src/lib/seo.ts` w `base-head.astro`; OG image (1200×630) generowany w buildzie przez sharp z SVG (`src/pages/og-default.png.ts`). Lokalnie (KA0137): `localTowns` w `src/data/home.ts` (Krotoszyn i miasta w okolicy) to jedna lista dla odpowiedzi FAQ „Pracujesz na miejscu czy zdalnie?” i dla `areaServed` w `ProfessionalService` (każde miasto jako `City`, po nich `Poland` i `European Union`); `address` kończy się na mieście (Krotoszyn, wielkopolskie, PL, bez ulicy); tytuł strony głównej wymienia Krotoszyn, a opis Krotoszyn i Wielkopolskę (`siteConfig.title`, `siteConfig.description`). Pilnuje `home.spec.ts`.
 
 ### Integracje runtime
 

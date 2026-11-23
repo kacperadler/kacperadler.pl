@@ -11,8 +11,11 @@ export const siteConfig = {
     umamiUrl: "https://analytics.kacperadler.pl",
     umamiWebsiteId: "937a952a-548b-4e9d-ba9a-d511be5454f6",
   },
+  // The home page's meta description; Person and ProfessionalService JSON-LD
+  // and llms*.txt carry it too. It names Krotoszyn and Wielkopolska for local
+  // searches (KA0137).
   description:
-    "Automatyzuję ręczną pracę w firmach: agenci AI, integracje i aplikacje szyte na miarę. Audyt, wdrożenie i stała opieka, bez zatrudniania działu IT.",
+    "Automatyzuję ręczną pracę w firmach z Krotoszyna, Wielkopolski i całej Polski: agenci AI, integracje i aplikacje szyte na miarę. Audyt, wdrożenie i stała opieka, bez zatrudniania działu IT.",
   email: "kontakt@kacperadler.pl",
   lang: "pl",
   locale: "pl-PL",
@@ -26,8 +29,9 @@ export const siteConfig = {
     linkedin: "https://www.linkedin.com/in/kacperadler/",
   },
   tagline: "Wdrożenia AI i automatyzacje dla firm.",
-  // The home page's <title>; other pages are "<page> - <name>".
-  title: "Wdrożenia AI i automatyzacje dla firm | Kacper Adler",
+  // The home page's <title>; other pages are "<page> - <name>". Krotoszyn is
+  // in it for local searches (KA0137).
+  title: "Wdrożenia AI i automatyzacje dla firm - Krotoszyn | Kacper Adler",
   url: "https://kacperadler.pl",
 } as const;
 

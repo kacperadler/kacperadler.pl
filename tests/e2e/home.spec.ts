@@ -16,9 +16,23 @@ const SECTIONS = [
   "contact",
 ];
 const NAV_LABELS = ["Oferta", "Realizacje", "Proces", "O mnie", "FAQ"];
-const TITLE = "Wdrożenia AI i automatyzacje dla firm | Kacper Adler";
+// Krotoszyn in the title, Krotoszyn and Wielkopolska in the description, each
+// once (KA0137).
+const TITLE =
+  "Wdrożenia AI i automatyzacje dla firm - Krotoszyn | Kacper Adler";
 const DESCRIPTION =
-  "Automatyzuję ręczną pracę w firmach: agenci AI, integracje i aplikacje szyte na miarę. Audyt, wdrożenie i stała opieka, bez zatrudniania działu IT.";
+  "Automatyzuję ręczną pracę w firmach z Krotoszyna, Wielkopolski i całej Polski: agenci AI, integracje i aplikacje szyte na miarę. Audyt, wdrożenie i stała opieka, bez zatrudniania działu IT.";
+// Where Kacper meets firms in person (KA0137): Krotoszyn and the towns
+// around it.
+const LOCAL_TOWNS = [
+  "Krotoszyn",
+  "Ostrów Wielkopolski",
+  "Jarocin",
+  "Kalisz",
+  "Pleszew",
+  "Koźmin Wielkopolski",
+  "Zduny",
+];
 const REMOVED = [
   "Wizytówki",
   "Buduję interfejsy",
@@ -438,7 +452,7 @@ test.describe("home page", () => {
   }) => {
     await page.goto("/");
     const faq = page.locator("#faq details");
-    await expect(faq).toHaveCount(8);
+    await expect(faq).toHaveCount(9);
     for (const item of await faq.all()) {
       // biome-ignore lint/performance/noAwaitInLoops: one item at a time
       await expect(item).not.toHaveAttribute("open");
@@ -504,17 +518,19 @@ test.describe("home page", () => {
     const head = await box(page.locator("#faq .mb-section-head"));
     const rows = page.locator("#faq summary");
     const wide = await Promise.all((await rows.all()).map((row) => box(row)));
-    expect(wide).toHaveLength(8);
-    const left = wide.slice(0, 4);
-    const right = wide.slice(4);
-    for (const [i, row] of left.entries()) {
+    expect(wide).toHaveLength(9);
+    // The odd question stays on the left: five rows there, four on the right.
+    const left = wide.slice(0, 5);
+    const right = wide.slice(5);
+    for (const row of left) {
       expect(Math.abs(row.x - (left[0] as typeof row).x)).toBeLessThanOrEqual(
         TOLERANCE
       );
-      expect(Math.abs(row.y - (right[i] as typeof row).y)).toBeLessThanOrEqual(
-        TOLERANCE
-      );
-      expect((right[i] as typeof row).x).toBeGreaterThan(row.x + row.width);
+    }
+    for (const [i, row] of right.entries()) {
+      const beside = left[i] as typeof row;
+      expect(Math.abs(row.y - beside.y)).toBeLessThanOrEqual(TOLERANCE);
+      expect(row.x).toBeGreaterThan(beside.x + beside.width);
     }
     const frames = page.locator("#faq .mb-accordion");
     const last = await box(frames.last());
@@ -526,10 +542,10 @@ test.describe("home page", () => {
     // left moves down, the right column's rows keep their spacing.
     const gap = async (from: number, to: number) =>
       (await box(rows.nth(to))).y - (await box(rows.nth(from))).y;
-    const [leftGap, rightGap] = [await gap(0, 1), await gap(4, 5)];
+    const [leftGap, rightGap] = [await gap(0, 1), await gap(5, 6)];
     await rows.nth(0).click();
     await expect.poll(() => gap(0, 1)).toBeGreaterThan(leftGap + 20);
-    expect(await gap(4, 5)).toBe(rightGap);
+    expect(await gap(5, 6)).toBe(rightGap);
 
     await page.setViewportSize({ height: 844, width: 390 });
     const narrow = await Promise.all((await rows.all()).map((row) => box(row)));
@@ -1422,5 +1438,39 @@ test.describe("home page", () => {
 
     const llms = await (await request.get("/llms.txt")).text();
     expect(llms).toMatch(LLMS_HEAD);
+  });
+
+  // Local searches around Krotoszyn (KA0137): the copy and the structured
+  // data name the same towns, the address stops at the town.
+  test("the home page names Krotoszyn and the towns around it, in the FAQ and in the ProfessionalService JSON-LD", async ({
+    page,
+    request,
+  }) => {
+    await page.goto("/");
+    const answer = page
+      .locator("#faq details")
+      .filter({ hasText: "Pracujesz na miejscu czy zdalnie?" })
+      .locator(".mb-accordion-content p");
+    const copy = `Jedno i drugie. Pracuję z Krotoszyna, więc z firmami z okolicy spotykam się na miejscu: ${LOCAL_TOWNS.join(", ")}. Z resztą Polski pracuję zdalnie.`;
+    await expect(answer).toHaveText(copy);
+    expect(await (await request.get("/llms-full.txt")).text()).toContain(copy);
+
+    const service = (
+      await page.locator('script[type="application/ld+json"]').allTextContents()
+    )
+      .map((json) => JSON.parse(json))
+      .find((schema) => schema["@type"] === "ProfessionalService");
+    // No street: the owner publishes none here (KA-D37).
+    expect(service.address).toEqual({
+      "@type": "PostalAddress",
+      addressCountry: "PL",
+      addressLocality: "Krotoszyn",
+      addressRegion: "wielkopolskie",
+    });
+    expect(service.areaServed).toEqual([
+      ...LOCAL_TOWNS.map((name) => ({ "@type": "City", name })),
+      "Poland",
+      "European Union",
+    ]);
   });
 });

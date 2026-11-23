@@ -1,4 +1,5 @@
 import type { CollectionEntry } from "astro:content";
+import { localTowns } from "@/data/home";
 import { siteConfig } from "@/data/site-config";
 
 export interface PersonSchema {
@@ -30,7 +31,13 @@ export interface WebSiteSchema {
 export interface ProfessionalServiceSchema {
   "@context": "https://schema.org";
   "@type": "ProfessionalService";
-  areaServed: string[];
+  address: {
+    "@type": "PostalAddress";
+    addressCountry: string;
+    addressLocality: string;
+    addressRegion: string;
+  };
+  areaServed: Array<{ "@type": "City"; name: string } | string>;
   description: string;
   founder: { "@type": "Person"; name: string; url: string };
   hasOfferCatalog: {
@@ -91,14 +98,26 @@ export const websiteSchema: WebSiteSchema = {
 /* Build a ProfessionalService schema with an OfferCatalog of the offer's
  * steps (the services collection): each step's name and what the client
  * gets. Lets crawlers / AI agents enumerate the offer instead of inferring
- * it from page copy. */
+ * it from page copy. For local searches (KA0137) it carries the address
+ * down to the town, with no street, and names each town Kacper meets firms
+ * in as a City, before the country and the EU he serves remotely. */
 export function professionalServiceSchema(
   services: CollectionEntry<"services">[]
 ): ProfessionalServiceSchema {
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    areaServed: ["Poland", "European Union"],
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "PL",
+      addressLocality: "Krotoszyn",
+      addressRegion: "wielkopolskie",
+    },
+    areaServed: [
+      ...localTowns.map((name) => ({ "@type": "City" as const, name })),
+      "Poland",
+      "European Union",
+    ],
     description: siteConfig.description,
     founder: {
       "@type": "Person",
