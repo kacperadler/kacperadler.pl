@@ -16,7 +16,7 @@ Someone near Krotoszyn who searches Google for AI, automation, programming, syst
 
 The site names where Kacper works, in the copy and in the structured data Google reads, so it can rank for "<service> <town>" searches in the Krotoszyn area. The biggest lever is outside the code: a Google Business Profile (Google Maps listing). The code can point to it but cannot create it.
 
-- Kind: improvement
+- Kind: feat
 
 ## Done means
 
@@ -37,3 +37,4 @@ Out:
 ## Decisions
 
 - 2026-10-29: The human asked for it: the site should come up in Google for AI/programming/systems/apps searches with Krotoszyn, Ostrów Wielkopolski, Jarocin and nearby towns.
+- 2026-11-23: KA0137 approved: local SEO around Krotoszyn on the home page, no town pages, no street address, wording approved on the branch, budget $15; the owner: "PG-D177 PG-D178 AR-D703 AR-D704 AR-D705 AR-D706 AR-D707 KA-D37 yes" (KA-D37)
